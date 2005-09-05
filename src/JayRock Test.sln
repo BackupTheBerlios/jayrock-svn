@@ -1,0 +1,18 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JayRock Test", "JayRock\JayRock Test.csproj", "{A178A4BB-CE12-4BF3-8B17-6DF0D82120C8}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Test = Test
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{A178A4BB-CE12-4BF3-8B17-6DF0D82120C8}.Test.ActiveCfg = Test|.NET
+		{A178A4BB-CE12-4BF3-8B17-6DF0D82120C8}.Test.Build.0 = Test|.NET
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

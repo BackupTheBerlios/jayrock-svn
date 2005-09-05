@@ -1,0 +1,78 @@
+#region License, Terms and Conditions
+//
+// JayRock - A JSON-RPC implementation for the Microsoft .NET Framework
+// Written by Atif Aziz (atif.aziz@skybow.com)
+// Copyright (c) Atif Aziz. All rights reserved.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License as published by the Free
+// Software Foundation; either version 2.1 of the License, or (at your option)
+// any later version.
+//
+// This library is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+// FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+// details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with this library; if not, write to the Free Software Foundation, Inc.,
+// 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
+//
+#endregion
+
+namespace JayRock.Json.Rpc.Web
+{
+    #region Imports
+
+    using System.IO;
+    using System.Web;
+
+    #endregion
+
+    public sealed class JsonRpcExecutive : JsonRpcServiceFeature
+        // TODO: Add IHttpAsyncHandler as soon as JsonRpcWorker supports 
+        //       async processing.
+    {
+        protected override void ProcessRequest()
+        {
+            //
+            // Sets the "Cache-Control" header value to "no-cache".
+            // NOTE: It does not send the common HTTP 1.0 request directive
+            // "Pragma" with the value "no-cache".
+            //
+
+            Response.Cache.SetCacheability(HttpCacheability.NoCache);
+
+            //
+            // Response will be plain text, though it would have been nice to 
+            // be more specific, like text/json.
+            //
+
+            Response.ContentType = "text/plain";
+
+            //
+            // Delegate rest of the work to JsonRpcServer.
+            //
+
+            JsonRpcDispatcher dispatcher = new JsonRpcDispatcher(TargetService);
+            
+            if (HttpRequestSecurity.IsLocal(Request))
+                dispatcher.SetLocalExecution();
+
+            using (StreamReader reader = new StreamReader(Request.InputStream, Request.ContentEncoding))
+                dispatcher.Process(reader, Response.Output);
+        }
+
+        /*
+        public IAsyncResult BeginProcessRequest(HttpContext context, AsyncCallback cb, object extraData)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void EndProcessRequest(IAsyncResult result)
+        {
+            throw new NotImplementedException();
+        }
+        */
+    }
+}

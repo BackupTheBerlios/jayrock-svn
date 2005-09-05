@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project default="all" xmlns="http://nant.sf.net/schemas/nant.xsd">
+
+    <!--======================== PROPERTY SECTION ========================-->
+
+    <!-- General -->
+
+    <property name="my.project.name" value="JayRock" />
+
+    <property name="my.program.files" value="${environment::get-variable('ProgramFiles')}" />
+    
+    <!-- NCover (code coverage) -->
+
+    <property name="my.ncover.dir.path" value="${path::combine(my.program.files, 'NCover')}" />
+    <property name="my.ncover.console.exe.path" value="${path::combine(my.ncover.dir.path, 'ncover.console')}" />
+    <property name="my.coverage-short.xsl.path" value="${nant.project.basedir}\CoverageShort.xsl" />
+    <property name="my.coverage-long.xsl.path" value="${nant.project.basedir}\CoverageLong.xsl" />
+    <property name="my.coverage-type.xsl.path" value="${my.coverage-short.xsl.path}" />
+    <property name="my.coverage.xsl.path" value="${nant.project.basedir}\Coverage.xsl" />    
+    
+    <!-- NUnit 2.2 (unit-testing) -->
+
+    <property name="my.nunit.dir.path" value="${path::combine(my.program.files, 'NUnit 2.2')}" />
+    <property name="my.nunit.console.exe.path" value="${path::combine(my.nunit.dir.path, 'bin\nunit-console')}" />
+
+    <!-- NCover (code coverage) -->
+
+    <property name="my.bin.dir.name" value="bin" />
+    <property name="my.bin.dir.path" value="${path::combine(nant.project.basedir, my.bin.dir.name)}" />
+   
+    <property name="my.output.assembly.name" value="JayRock" />
+    <property name="my.output.assembly.filename" value="${my.output.assembly.name + '.dll'}" />
+    
+    <!-- Mailing -->
+    
+    <property name="my.smtp.server" value="${environment::get-variable('SMTPSERVER')}" />
+    <property name="my.mail.from" value="buildserver@jayrock.org" />
+    <property name="my.mail.to" value="atif.aziz@skybow.com" />
+
+    <!-- Draco (build server) -->
+
+    <property name="draco" value="false" overwrite="false" />
+
+    <!--======================== PROPERTY SECTION ========================-->
+
+    <target name="build" depends="" />
+
+    <target name="clean">
+        <delete dir="bin" failonerror="false" />
+        <delete dir="obj" failonerror="false" />
+    </target>
+
+    <target name="debug">
+        <property name="my.output.dir.path" value="${path::combine(my.bin.dir.path, 'Debug')}" />
+        <solution configuration="Debug">
+            <projects>
+                <include name="JayRock.csproj" />
+            </projects>
+        </solution>
+    </target>
+
+    <target name="release">
+        <property name="my.output.dir.path" value="${path::combine(my.bin.dir.path, 'Release')}" />
+        <solution configuration="Release">
+            <projects>
+                <include name="JayRock.csproj" />
+            </projects>
+        </solution>
+    </target>
+
+    <target name="compile-test">
+        <property name="my.output.dir.path" value="${path::combine(my.bin.dir.path, 'Test')}" />
+        <solution configuration="Test">
+            <projects>
+                <include name="JayRock Test.csproj" />
+            </projects>
+        </solution>
+    </target>
+
+    <target name="all">
+        <call target="cover" />
+        <call target="debug" />
+        <call target="release" />
+    </target>
+
+    <target name="test" depends="compile-test">
+        <property name="my.output.assembly.path" value="${path::combine(my.output.dir.path, my.output.assembly.filename)}" />
+        <nunit2>
+            <formatter type="Plain" />
+            <test assemblyname="${my.output.assembly.path}" />
+        </nunit2>
+    </target>
+    
+    <target name="cover" depends="compile-test">
+        <property name="my.output.assembly.path" value="${path::combine(my.output.dir.path, my.output.assembly.filename)}" />
+        <exec program="${my.ncover.console.exe.path}" commandline='/q /o coverage.xml /c "${my.nunit.console.exe.path}" "\"${my.output.assembly.path}\"" /a ${my.output.assembly.name}' />
+        <copy file="${my.coverage-type.xsl.path}" tofile="${my.coverage.xsl.path}" overwrite="true" failonerror="false" />
+        <style style="${my.coverage.xsl.path}" in="${nant.project.basedir}\coverage.xml" out="${nant.project.basedir}\coverage.htm" />
+        <call target="draco" if="${draco}" />
+    </target>
+    
+    <target name="cover-long">
+        <property name="my.coverage-type.xsl.path" value="${my.coverage-long.xsl.path}" />
+        <call target="cover" />
+    </target>
+
+    <target name="draco">
+        <!-- 
+        NOTE:   This sleep seems to be needed because the <style> task in the cover 
+                target appears to leak a file handle, causing a share violation error
+                when the report has to be zipped.
+        -->
+        <sleep seconds="3" />
+        <zip zipfile="${nant.project.basedir}\coverage.zip" ziplevel="9">
+            <fileset>
+                <include name="${nant.project.basedir}\coverage.*" />
+            </fileset>
+        </zip>
+        <mail 
+            from="${my.mail.from}" 
+            tolist="${my.mail.to}" 
+            subject="JayRock coverage for build ${build.id}"
+            format="Html"
+            mailhost="${my.smtp.server}">
+            <attachments>
+                <include name="${nant.project.basedir}\coverage.zip" />
+            </attachments>
+            <files>
+                <include name="${nant.project.basedir}\coverage.htm" />
+            </files>
+        </mail>
+    </target>
+    
+    <target name="props">
+
+        <!-- 
+            This target is used to check proper setup of properties 
+            Find what: \<property name="{[^"]+}".+$
+            Replace with: <echo message="\1 = ${\1}" />
+        -->
+        
+        <echo message="my.program.files = ${my.program.files}" />
+        
+        <echo message="my.ncover.dir.path = ${my.ncover.dir.path}" />
+        <echo message="my.ncover.console.exe.path = ${my.ncover.console.exe.path}" />
+        <echo message="my.coverage-short.xsl.path = ${my.coverage-short.xsl.path}" />
+        <echo message="my.coverage-long.xsl.path = ${my.coverage-long.xsl.path}" />
+        <echo message="my.coverage-type.xsl.path = ${my.coverage-type.xsl.path}" />
+        <echo message="my.coverage.xsl.path = ${my.coverage.xsl.path}" />
+
+        <echo message="my.nunit.dir.path = ${my.nunit.dir.path}" />
+        <echo message="my.nunit.console.exe.path = ${my.nunit.console.exe.path}" />
+
+        <echo message="my.bin.dir.name = ${my.bin.dir.name}" />
+        <echo message="my.bin.dir.path = ${my.bin.dir.path}" />
+       
+        <echo message="my.output.assembly.name = ${my.output.assembly.name}" />
+        <echo message="my.output.assembly.filename = ${my.output.assembly.filename}" />
+        
+        <echo message="my.smtp.server = ${my.smtp.server}" />
+        <echo message="my.mail.from = ${my.mail.from}" />
+        <echo message="my.mail.to = ${my.mail.to}" />
+
+        <echo message="draco = ${draco}" />
+
+    </target>
+
+</project>

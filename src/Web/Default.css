@@ -1,0 +1,58 @@
+#Content
+{
+    font-family: Georgia;
+    margin: 1em;
+    width: 75%;
+}
+
+#Content p
+{
+    line-height: 1.7em;
+}
+
+a
+{
+    color: darkred;
+}
+
+a:hover
+{
+    color: red;
+}
+
+h1
+{
+    color: darkgreen;
+    font-family: Arial;
+    font-size: x-large;
+    text-transform: uppercase;
+    margin-top: 2em;
+    letter-spacing: 0.5em;
+}
+
+pre.code
+{
+    font-family: Monospace;
+    padding: 1em;
+    border-top: solid 5px darkorange;
+    border-bottom: solid 2px silver;
+    background: #EEEEEE;
+}
+
+.fake-a
+{
+    color: Blue;
+    text-decoration: underline;
+}
+
+.em
+{
+    font-style: italic;
+}
+
+.figure
+{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
