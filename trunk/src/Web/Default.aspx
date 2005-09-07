@@ -62,10 +62,11 @@
             <p>
                 Please <a href="http://www.raboof.com/contact.aspx">contact Atif Aziz</a>
                 (principal developer) if you are interested in contributing. You don't
-                have to necessarily contribute in code form only. Contribution are
-                appreciated and needed whether you can help diagnose problems,
+                have to necessarily contribute in the form of code submissions only. 
+                Contributions are appreciated and needed whether you can help diagnose problems,
                 suggest fixes, improve the code or provide peer support on forums,
-                mailing lists and newsgroups. See <a href="http://developer.berlios.de/projects/jayrock/">JayRock on berliOS</a>.
+                mailing lists and newsgroups. For more information, see 
+                <a href="http://developer.berlios.de/projects/jayrock/">JayRock on berliOS</a>.
             </p>
             <h1><a name="setup">Setting Up JayRock</a></h1>
             <ol>
