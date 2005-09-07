@@ -10,14 +10,25 @@
     </head>
     <body>
         <div id="Content">
-            <h1 class="h1-first">What is JayRock?</h1>
+            <div id="Toc">
+                <p id="TocTitle">Table of Contents</p>
+                <ul>
+                    <li><a href="#what-is">What is JayRock?</a></li>
+                    <li><a href="#get-source">Downloading &amp; Compiling</a></li>
+                    <li><a href="#contributing">Contributing to the Project</a></li>
+                    <li><a href="#setup">Setting Up JayRock</a></li>
+                    <li><a href="#quick-start">ASP.NET Quick Start</a></li>
+                    <li><a href="#samples">Samples &amp; Demos</a></li>
+                </ul>
+            </div>
+            <h1 class="h1-first"><a name="what-is">What is JayRock?</a></h1>
             <p>
                 JayRock is an implementation of the <a href="http://www.json-rpc.org/">
                     JSON-RPC</a>
                 protocol for the <a href="http://msdn.microsoft.com/netframework/">Microsoft .NET
                     Framework</a> and
                 <a href="http://www.asp.net/">ASP.NET</a>. </p>
-            <h1>Downloading &amp; Compiling</h1>
+            <h1><a name="get-source">Downloading &amp; Compiling</a></h1>
             <p>You can obtain the latest source of code of JayRock from the <a href="http://subversion.tigris.org/">
                     Subversion</a> repository hosted at <a href="http://www.berlios.de">BerliOS</a>.
                 Needless to say, you will need <a href="http://subversion.tigris.org/project_packages.html">
@@ -30,7 +41,28 @@
             <p><code>svn checkout svn://svn.berlios.de/jayrock/trunk jayrock</code></p>
             <p> The third argument (<code>jayrock</code>) is the directory name where the local
                 working copy will be downloaded so this can be another name if you like.</p>
-            <h1>Setting Up JayRock</h1>
+            <h1><a name="contributing">Contributing to the Project</a></h1>
+            <p>
+                JayRock is provided as open source and free software (as per
+                <a href="http://www.opensource.org/docs/definition.php">Open Source Definition</a>)
+                for two principal reasons. First, an open source community provides a way for 
+                individuals
+                and companies to collaborate on projects that none could achieve on
+                their own. Second, the open source model has the technical advantage of
+                turning users into potential co-developers. With source code readily
+                available, users will help you debug quickly and promote rapid code 
+                enhancements.
+                In short, <strong>you are absolutely encoraged to contribute!</strong>
+            </p>
+            <p>
+                Please <a href="http://www.raboof.com/contact.aspx">contact Atif Aziz</a>
+                (principal developer) if you are interested in contributing. You don't
+                have to necessarily contribute in code form only. Contribution are
+                appreciated and needed whether you can help diagnose problems,
+                suggest fixes, improve the code or provide peer support on forums
+                and newsgroups.
+            </p>
+            <h1><a name="setup">Setting Up JayRock</a></h1>
             <ol>
                 <li>Setup a virtual directory and application in IIS called <code>jayrock</code> that
                     points to the directory <code>src\Web</code> under your working copy of
@@ -42,7 +74,7 @@
                 <li>Open up a browser window (Internet Explorer and
                     FireFox tested) and navigate to the virtual root created in the first step
                     (most probably <code><span class="fake-a">http://localhost/jayrock/</span></code>).</li></ol>
-            <h1>ASP.NET Quick Start</h1>
+            <h1><a name="quick-start">ASP.NET Quick Start</a></h1>
             <p>
                 To use JayRock in your ASP.NET project, add a reference to the principal
                 assembly,
@@ -190,15 +222,15 @@ namespace JayRockWeb
                 You should see the string <code>"Welcome to JayRock!"</code> returned in
                 the response box of the page.
             </p>
-            <h1>Samples &amp; Demos</h1>
+            <h1><a name="samples">Samples &amp; Demos</a></h1>
             <p>
                 You can find a number JSON-RPC methods demonstrating various features in the
-                supplied demo service. See <code><span class=fake-a>http://localhost/jayrock/demo.ashx</span></code>
+                supplied demo service. See <code><span class="fake-a">http://localhost/jayrock/demo.ashx</span></code>
                 on your machine for a working copy of the demo.
             </p>
             <p>
                 Note that some of the methods on the demo service that illustrate
-                data access assume that you have a default instance of 
+                data access assume that you have a default instance of
                 <a href="http://www.microsoft.com/sql/">Microsoft SQL Server 2000</a>
                 running on your machihne with the Northwind database loaded.
             </p>

@@ -31,6 +31,22 @@ a:hover
     color: red;
 }
 
+#Toc
+{
+    font-size: small;
+    float: right;
+    border: solid 2px silver;
+    padding: 1em;
+    margin-left: 1em;
+    margin-bottom: 1em;
+    background-color: cornsilk;
+}
+
+#TocTitle
+{
+    text-transform: uppercase;
+}
+
 h1
 {
     color: darkgreen;
@@ -39,6 +55,11 @@ h1
     text-transform: uppercase;
     letter-spacing: 0.5em;
     margin-top: 2em;
+}
+
+h1 a
+{
+    color: darkgreen;
 }
 
 h1.h1-first
