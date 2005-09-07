@@ -1,1 +1,1 @@
-<%@ Application Codebehind="Global.asax.cs" Inherits="JamAgainWeb.Global" %>
+<%@ Application Codebehind="Global.asax.cs" Inherits="JayRockWeb.Global" %>

@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Web;
 using System.Web.SessionState;
 
-namespace JamAgainWeb 
+namespace JayRockWeb 
 {
 	/// <summary>
 	/// Summary description for Global.
