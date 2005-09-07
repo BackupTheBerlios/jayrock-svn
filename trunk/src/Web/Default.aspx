@@ -91,7 +91,7 @@
                 In this
                 quick start, we will create a JSON-RPC service called <code>HelloWorld</code>.
                 Begin by creating
-                a file called <code>HelloWorld.ashx</code> in the root your ASP.NET
+                a file called <code>helloworld.ashx</code> in the root your ASP.NET
                 application.
                 Add the following code to the file:
             </p>
@@ -147,22 +147,26 @@ namespace JayRockWeb
                 <code>web.config</code> of your ASP.NET application:
             </p>
             <pre class="code">
-&lt;configsections&gt;
+&lt;configSections&gt;
     ...
-    &lt;sectiongroup name="json.rpc"&gt;
-        &lt;section name="features" type="JayRock.Json.Rpc.Web.JsonRpcFeaturesSectionHandler, JayRock" /&gt;        
-    &lt;/sectiongroup&gt;
+    &lt;sectionGroup name="jayrock"&gt;
+        &lt;sectionGroup name="json.rpc"&gt;
+            &lt;section name="features" type="JayRock.Json.Rpc.Web.JsonRpcFeaturesSectionHandler, JayRock" /&gt;        
+        &lt;/sectionGroup&gt;
+    &lt;/sectionGroup&gt;
     ...
-&lt;/configsections&gt;
+&lt;/configSections&gt;
 ...
-&lt;json.rpc&gt;
-    &lt;features&gt;
-        &lt;add name="rpc" type="JayRock.Json.Rpc.Web.JsonRpcExecutive, JayRock" /&gt;
-        &lt;add name="proxy" type="JayRock.Json.Rpc.Web.JsonRpcProxyGenerator, JayRock" /&gt;
-        &lt;add name="help" type="JayRock.Json.Rpc.Web.JsonRpcHelp, JayRock" /&gt;
-        &lt;add name="test" type="JayRock.Json.Rpc.Web.JsonRpcTester, JayRock" /&gt;
-    &lt;/features&gt;
-&lt;/json.rpc&gt;
+&lt;jayrock&gt;
+    &lt;json.rpc&gt;
+        &lt;features&gt;
+            &lt;add name="rpc" type="JayRock.Json.Rpc.Web.JsonRpcExecutive, JayRock" /&gt;
+            &lt;add name="proxy" type="JayRock.Json.Rpc.Web.JsonRpcProxyGenerator, JayRock" /&gt;
+            &lt;add name="help" type="JayRock.Json.Rpc.Web.JsonRpcHelp, JayRock" /&gt;
+            &lt;add name="test" type="JayRock.Json.Rpc.Web.JsonRpcTester, JayRock" /&gt;
+        &lt;/features&gt;
+    &lt;/json.rpc&gt;
+&lt;/jayrock&gt;
 ...
 </pre>
             <p>
@@ -230,13 +234,13 @@ namespace JayRockWeb
             </p>
             <h1><a name="samples">Samples &amp; Demos</a></h1>
             <p>
-                You can find a number JSON-RPC methods demonstrating various features in the
+                You can find a number of JSON-RPC methods demonstrating various features in the
                 supplied demo service. See <code><span class="fake-a">http://localhost/jayrock/demo.ashx</span></code>
                 on your machine for a working copy of the demo.
             </p>
             <p>
-                Note that some of the methods on the demo service that illustrate
-                data access assume that you have a default instance of
+                Note that some of the methods on the demo service, which illustrate
+                data access, assume that you have a default instance of
                 <a href="http://www.microsoft.com/sql/">Microsoft SQL Server 2000</a>
                 running on your machihne with the Northwind database loaded.
             </p>
