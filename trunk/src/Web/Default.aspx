@@ -23,19 +23,24 @@
             </div>
             <h1 class="h1-first"><a name="what-is">What is JayRock?</a></h1>
             <p>
-                JayRock is an implementation of the <a href="http://www.json-rpc.org/">
-                    JSON-RPC</a>
-                protocol for the <a href="http://msdn.microsoft.com/netframework/">Microsoft .NET
-                    Framework</a> and
-                <a href="http://www.asp.net/">ASP.NET</a>. </p>
+                JayRock is an implementation of the 
+                <a href="http://www.json-rpc.org/">JSON-RPC</a> protocol for the 
+                <a href="http://msdn.microsoft.com/netframework/">Microsoft .NET
+                    Framework</a> and <a href="http://www.asp.net/">ASP.NET</a>. </p>
             <h1><a name="get-source">Downloading &amp; Compiling</a></h1>
-            <p>You can obtain the latest source of code of JayRock from the <a href="http://subversion.tigris.org/">
-                    Subversion</a> repository hosted at <a href="http://www.berlios.de">BerliOS</a>.
-                Needless to say, you will need <a href="http://subversion.tigris.org/project_packages.html">
-                    a Subversion
-                    client</a> (see also <a href="http://tortoisesvn.tigris.org/">TortoiseSVN, a
-                    Windows Shell Extension for Subversion</a>) to access the repository.</p>
-            <p>For anonymous access to the respository trunk, use
+            <p>
+                You can obtain the latest source of code of JayRock from the 
+                <a href="http://subversion.tigris.org/">Subversion</a> repository 
+                hosted at <a href="http://www.berlios.de">berliOS</a>.
+                Needless to say, you will need <a href="http://subversion.tigris.org/project_packages.html">a Subversion 
+                client</a> (see also <a href="http://tortoisesvn.tigris.org/">TortoiseSVN, a
+                Windows Shell Extension for Subversion</a>) to access the repository.
+                If you don't have a Subversion client handy and just wish to
+                browse the source code, you can do so online using either
+                <a href="http://svn.berlios.de/wsvn/jayrock">WebSVN</a> or 
+                <a href="http://svn.berlios.de/viewcvs/jayrock">ViewCVS</a>.</p>
+            <p>
+                For anonymous access to the respository trunk, use
                 <code>svn://svn.berlios.de/jayrock/trunk</code>. The commnad-line
                 for the Subversion client would therefore be:</p>
             <p><code>svn checkout svn://svn.berlios.de/jayrock/trunk jayrock</code></p>
@@ -59,8 +64,8 @@
                 (principal developer) if you are interested in contributing. You don't
                 have to necessarily contribute in code form only. Contribution are
                 appreciated and needed whether you can help diagnose problems,
-                suggest fixes, improve the code or provide peer support on forums
-                and newsgroups.
+                suggest fixes, improve the code or provide peer support on forums,
+                mailing lists and newsgroups. See <a href="http://developer.berlios.de/projects/jayrock/">JayRock on berliOS</a>.
             </p>
             <h1><a name="setup">Setting Up JayRock</a></h1>
             <ol>
