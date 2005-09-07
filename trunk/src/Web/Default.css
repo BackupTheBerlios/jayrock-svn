@@ -42,6 +42,11 @@ a:hover
     background-color: cornsilk;
 }
 
+#Toc li
+{
+    margin-left: -1.25em;
+}
+
 #TocTitle
 {
     text-transform: uppercase;
