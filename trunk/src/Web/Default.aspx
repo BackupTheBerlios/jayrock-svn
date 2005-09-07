@@ -6,7 +6,7 @@
         <meta name="GENERATOR" content="Microsoft Visual Studio .NET 7.1">
         <meta name="ProgId" content="VisualStudio.HTML">
         <meta name="Originator" content="Microsoft Visual Studio .NET 7.1">
-        <link rel="stylesheet" type="text/css" href="default.css">
+        <link rel="stylesheet" type="text/css" href="Default.css">
     </head>
     <body>
         <div id="Content">
@@ -194,7 +194,7 @@ namespace JayRockWeb
                 <code><span class="fake-a">http://localhost/foobar/helloworld.ashx</span></code>.
                 You should now see a page appear that lists the methods exposed by your
                 service:</p>
-            <img class="figure" src="images/helloworldhelp.jpg" width="800" height="600" alt="HelloWorld Help">
+            <img class="figure" src="images/HelloWorldHelp.jpg" width="800" height="600" alt="HelloWorld Help">
             <p>
                 Notice that there are two methods, namely <code>greetings</code> and
                 <code>system.listMethods</code>. The <code>system.listMethods</code> is always
@@ -214,7 +214,7 @@ namespace JayRockWeb
                 can invoke and test each individual method. Click on this link now,
                 which should yield a page similar to the one shown here:
             </p>
-            <img class="figure" src="images/helloworldtest.jpg" width="800" height="600" alt="HelloWorld Test">
+            <img class="figure" src="images/HelloWorldTest.jpg" width="800" height="600" alt="HelloWorld Test">
             <p>
                 To see if everything
                 is working correctly, select the <code>greetings</code> method from
