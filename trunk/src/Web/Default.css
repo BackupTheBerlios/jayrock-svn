@@ -1,13 +1,24 @@
+body
+{
+    background-color: white;
+}
+
 #Content
 {
     font-family: Georgia;
     margin: 1em;
-    width: 75%;
+    padding: 1em;
 }
 
 #Content p
 {
     line-height: 1.7em;
+}
+
+li
+{
+    line-height: 1.7em;
+    margin-bottom: 0.5em;
 }
 
 a
@@ -26,8 +37,13 @@ h1
     font-family: Arial;
     font-size: x-large;
     text-transform: uppercase;
-    margin-top: 2em;
     letter-spacing: 0.5em;
+    margin-top: 2em;
+}
+
+h1.h1-first
+{
+    margin-top: 0;
 }
 
 pre.code
@@ -41,7 +57,6 @@ pre.code
 
 .fake-a
 {
-    color: Blue;
     text-decoration: underline;
 }
 
