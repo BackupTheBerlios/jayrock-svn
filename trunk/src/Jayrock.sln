@@ -3,7 +3,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jayrock", "Jayrock\Jayrock.
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JayRockWeb", "http://localhost/jayrock/JayRockWeb.csproj", "{083110C9-DE0C-43C0-A98B-9C8DECD8BC64}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JayrockWeb", "http://localhost/jayrock/JayrockWeb.csproj", "{083110C9-DE0C-43C0-A98B-9C8DECD8BC64}"
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
