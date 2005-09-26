@@ -54,7 +54,7 @@
         <property name="my.output.dir.path" value="${path::combine(my.bin.dir.path, 'Debug')}" />
         <solution configuration="Debug">
             <projects>
-                <include name="JayRock.csproj" />
+                <include name="Jayrock.csproj" />
             </projects>
         </solution>
     </target>
@@ -63,7 +63,7 @@
         <property name="my.output.dir.path" value="${path::combine(my.bin.dir.path, 'Release')}" />
         <solution configuration="Release">
             <projects>
-                <include name="JayRock.csproj" />
+                <include name="Jayrock.csproj" />
             </projects>
         </solution>
     </target>
@@ -72,7 +72,7 @@
         <property name="my.output.dir.path" value="${path::combine(my.bin.dir.path, 'Test')}" />
         <solution configuration="Test">
             <projects>
-                <include name="JayRock Test.csproj" />
+                <include name="Jayrock Test.csproj" />
             </projects>
         </solution>
     </target>

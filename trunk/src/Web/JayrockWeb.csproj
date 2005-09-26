@@ -95,7 +95,7 @@
                     HintPath = "..\..\..\..\WINDOWS\Microsoft.NET\Framework\v1.1.4322\System.Web.Services.dll"
                 />
                 <Reference
-                    Name = "JayRock"
+                    Name = "Jayrock"
                     Project = "{A178A4BB-CE12-4BF3-8B17-6DF0D82120C8}"
                     Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
