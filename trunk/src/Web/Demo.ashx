@@ -11,11 +11,11 @@ namespace JayRockWeb
     using System.Web.SessionState;
     using System.Web.UI;
     using System.Web.UI.WebControls;
-    using JayRock.Json;
-    using JayRock.Json.Rpc;
-    using JayRock.Json.Rpc.Web;
+    using Jayrock.Json;
+    using Jayrock.Json.Rpc;
+    using Jayrock.Json.Rpc.Web;
 
-    [ JsonRpcHelp("This is JSON-RPC service that demonstrates the basic features of the JayRock library.") ]    
+    [ JsonRpcHelp("This is JSON-RPC service that demonstrates the basic features of the Jayrock library.") ]    
     public class Demo : JsonRpcHandler, IRequiresSessionState 
     {
         [ JsonRpcMethod("echo")]

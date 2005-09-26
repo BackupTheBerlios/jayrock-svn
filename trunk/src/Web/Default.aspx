@@ -1,7 +1,7 @@
 <!doctype html public "-//w3c//dtd html 4.0 transitional//en" "http://www.w3.org/tr/html4/loose.dtd\">
 <html>
     <head>
-        <title>JayRock Home Page</title>
+        <title>Jayrock Home Page</title>
         <meta name="vs_targetSchema" content="http://schemas.microsoft.com/intellisense/ie5">
         <meta name="GENERATOR" content="Microsoft Visual Studio .NET 7.1">
         <meta name="ProgId" content="VisualStudio.HTML">
@@ -13,23 +13,23 @@
             <div id="Toc">
                 <p id="TocTitle">Table of Contents</p>
                 <ul>
-                    <li><a href="#what-is">What is JayRock?</a></li>
+                    <li><a href="#what-is">What is Jayrock?</a></li>
                     <li><a href="#get-source">Downloading &amp; Compiling</a></li>
                     <li><a href="#contributing">Contributing to the Project</a></li>
-                    <li><a href="#setup">Setting Up JayRock</a></li>
+                    <li><a href="#setup">Setting Up Jayrock</a></li>
                     <li><a href="#quick-start">ASP.NET Quick Start</a></li>
                     <li><a href="#samples">Samples &amp; Demos</a></li>
                 </ul>
             </div>
-            <h1 class="h1-first"><a name="what-is">What is JayRock?</a></h1>
+            <h1 class="h1-first"><a name="what-is">What is Jayrock?</a></h1>
             <p>
-                JayRock is an implementation of the 
+                Jayrock is an implementation of the 
                 <a href="http://www.json-rpc.org/">JSON-RPC</a> protocol for the 
                 <a href="http://msdn.microsoft.com/netframework/">Microsoft .NET
                     Framework</a> and <a href="http://www.asp.net/">ASP.NET</a>. </p>
             <h1><a name="get-source">Downloading &amp; Compiling</a></h1>
             <p>
-                You can obtain the latest source of code of JayRock from the 
+                You can obtain the latest source of code of Jayrock from the 
                 <a href="http://subversion.tigris.org/">Subversion</a> repository 
                 hosted at <a href="http://www.berlios.de">berliOS</a>.
                 Needless to say, you will need <a href="http://subversion.tigris.org/project_packages.html">a Subversion 
@@ -48,7 +48,7 @@
                 working copy will be downloaded so this can be another name if you like.</p>
             <h1><a name="contributing">Contributing to the Project</a></h1>
             <p>
-                JayRock is provided as open source and free software (as per
+                Jayrock is provided as open source and free software (as per
                 <a href="http://www.opensource.org/docs/definition.php">Open Source Definition</a>)
                 for two principal reasons. First, an open source community provides a way for 
                 individuals
@@ -66,26 +66,26 @@
                 Contributions are appreciated and needed whether you can help diagnose problems,
                 suggest fixes, improve the code or provide peer support on forums,
                 mailing lists and newsgroups. For more information, see 
-                <a href="http://developer.berlios.de/projects/jayrock/">JayRock on berliOS</a>.
+                <a href="http://developer.berlios.de/projects/jayrock/">Jayrock on berliOS</a>.
             </p>
-            <h1><a name="setup">Setting Up JayRock</a></h1>
+            <h1><a name="setup">Setting Up Jayrock</a></h1>
             <ol>
                 <li>Setup a virtual directory and application in IIS called <code>jayrock</code> that
                     points to the directory <code>src\Web</code> under your working copy of
-                JayRock.
+                Jayrock.
                 <li>Open the Visual Studio .NET 2003 solution and compile all projects. There
                     is also a <a href="http://nant.sourceforge.net/">NAnt</a> 0.85 RC2 build
                 script included, but this only
-                builds the main JayRock assembly at the moment and not all other projects.
+                builds the main Jayrock assembly at the moment and not all other projects.
                 <li>Open up a browser window (Internet Explorer and
                     FireFox tested) and navigate to the virtual root created in the first step
                     (most probably <code><span class="fake-a">http://localhost/jayrock/</span></code>).</li></ol>
             <h1><a name="quick-start">ASP.NET Quick Start</a></h1>
             <p>
-                To use JayRock in your ASP.NET project, add a reference to the principal
+                To use Jayrock in your ASP.NET project, add a reference to the principal
                 assembly,
-                <code>JayRock.dll</code>.
-                A JSON-RPC service is best exposed using JayRock by creating an
+                <code>Jayrock.dll</code>.
+                A JSON-RPC service is best exposed using Jayrock by creating an
                 <a href="http://msdn.microsoft.com/library/en-us/cpguide/html/cpconhttpruntimesupport.asp">
                     ASP.NET HTTP handler</a>.
                 In this
@@ -102,28 +102,28 @@ namespace JayRockWeb
 {
     using System;
     using System.Web;
-    using JayRock.Json;
-    using JayRock.Json.Rpc;
-    using JayRock.Json.Rpc.Web;
+    using Jayrock.Json;
+    using Jayrock.Json.Rpc;
+    using Jayrock.Json.Rpc.Web;
 
     public class HelloWorld : JsonRpcHandler
     {
         [ JsonRpcMethod("greetings") ]
         public string Greetings()
         {
-            return "Welcome to JayRock!";
+            return "Welcome to Jayrock!";
         }
     }
 }
 </pre>
             <p>
                 There are a few interesting things to note about this code. First of all, <code>HelloWorld</code>
-                inherits from the <code>JayRock.Json.Rpc.Web.JsonRpcHandler</code> class. This
+                inherits from the <code>Jayrock.Json.Rpc.Web.JsonRpcHandler</code> class. This
                 is all that is
                 needed to make your service callable using the standard JSON-RPC protocol.
                 Second, the
                 <code>Greetings</code> method is decorated with the <code>JsonRpcMethod</code> attribute.
-                This is required to tell JayRock that your method should be callable over
+                This is required to tell Jayrock that your method should be callable over
                 JSON-RPC. By default,
                 public methods of your class are not exposed automatically. Next the first
                 parameter to the
@@ -151,7 +151,7 @@ namespace JayRockWeb
     ...
     &lt;sectionGroup name="jayrock"&gt;
         &lt;sectionGroup name="json.rpc"&gt;
-            &lt;section name="features" type="JayRock.Json.Rpc.Web.JsonRpcFeaturesSectionHandler, JayRock" /&gt;        
+            &lt;section name="features" type="Jayrock.Json.Rpc.Web.JsonRpcFeaturesSectionHandler, Jayrock" /&gt;        
         &lt;/sectionGroup&gt;
     &lt;/sectionGroup&gt;
     ...
@@ -160,10 +160,10 @@ namespace JayRockWeb
 &lt;jayrock&gt;
     &lt;json.rpc&gt;
         &lt;features&gt;
-            &lt;add name="rpc" type="JayRock.Json.Rpc.Web.JsonRpcExecutive, JayRock" /&gt;
-            &lt;add name="proxy" type="JayRock.Json.Rpc.Web.JsonRpcProxyGenerator, JayRock" /&gt;
-            &lt;add name="help" type="JayRock.Json.Rpc.Web.JsonRpcHelp, JayRock" /&gt;
-            &lt;add name="test" type="JayRock.Json.Rpc.Web.JsonRpcTester, JayRock" /&gt;
+            &lt;add name="rpc" type="Jayrock.Json.Rpc.Web.JsonRpcExecutive, Jayrock" /&gt;
+            &lt;add name="proxy" type="Jayrock.Json.Rpc.Web.JsonRpcProxyGenerator, Jayrock" /&gt;
+            &lt;add name="help" type="Jayrock.Json.Rpc.Web.JsonRpcHelp, Jayrock" /&gt;
+            &lt;add name="test" type="Jayrock.Json.Rpc.Web.JsonRpcTester, Jayrock" /&gt;
         &lt;/features&gt;
     &lt;/json.rpc&gt;
 &lt;/jayrock&gt;
@@ -217,7 +217,7 @@ namespace JayRockWeb
                 string. That's because <code>JsonRpcHandler</code> defaults to the
                 help feature when it sees a plain HTTP <code><a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.3">
                         GET</a></code>
-                request for your JSON-RPC service (JayRock does not supports invocations over
+                request for your JSON-RPC service (Jayrock does not supports invocations over
                 HTTP <code><a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.5">POST</a></code>
                 right now).
                 You should also be able to see a link to the test page from where you
@@ -229,7 +229,7 @@ namespace JayRockWeb
                 To see if everything
                 is working correctly, select the <code>greetings</code> method from
                 the drop-down list and click the button labeled <code>Test</code>.
-                You should see the string <code>"Welcome to JayRock!"</code> returned in
+                You should see the string <code>"Welcome to Jayrock!"</code> returned in
                 the response box of the page.
             </p>
             <h1><a name="samples">Samples &amp; Demos</a></h1>

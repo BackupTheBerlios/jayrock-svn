@@ -1,6 +1,6 @@
 #region License, Terms and Conditions
 //
-// JayRock - A JSON-RPC implementation for the Microsoft .NET Framework
+// Jayrock - A JSON-RPC implementation for the Microsoft .NET Framework
 // Written by Atif Aziz (atif.aziz@skybow.com)
 // Copyright (c) Atif Aziz. All rights reserved.
 //
@@ -20,7 +20,7 @@
 //
 #endregion
 
-namespace JayRock.Json.Rpc
+namespace Jayrock.Json.Rpc
 {
     #region Imports
 
@@ -30,7 +30,7 @@ namespace JayRock.Json.Rpc
     using System.Data;
     using System.IO;
     using System.Web.UI;
-    using JayRock.Json.Formatters;
+    using Jayrock.Json.Formatters;
 
     #endregion
 

@@ -1,6 +1,6 @@
 #region License, Terms and Conditions
 //
-// JayRock - A JSON-RPC implementation for the Microsoft .NET Framework
+// Jayrock - A JSON-RPC implementation for the Microsoft .NET Framework
 // Written by Atif Aziz (atif.aziz@skybow.com)
 // Copyright (c) Atif Aziz. All rights reserved.
 //
@@ -32,10 +32,10 @@ using ComVisible = System.Runtime.InteropServices.ComVisibleAttribute;
 // General description
 //
 
-[assembly: AssemblyTitle("JayRock")]
+[assembly: AssemblyTitle("Jayrock")]
 [assembly: AssemblyDescription("JSON-RPC implementation for ASP.NET")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("JayRock")]
+[assembly: AssemblyProduct("Jayrock")]
 [assembly: AssemblyCopyright("Copyright (c) 2005, Atif Aziz. All rights reserved.")]
 [assembly: AssemblyCulture("")]
 

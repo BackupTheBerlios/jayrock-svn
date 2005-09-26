@@ -9,7 +9,7 @@
             <Settings
                 ApplicationIcon = ""
                 AssemblyKeyContainerName = ""
-                AssemblyName = "JayRock"
+                AssemblyName = "Jayrock"
                 AssemblyOriginatorKeyFile = ""
                 DefaultClientScript = "JScript"
                 DefaultHTMLPageLayout = "Grid"
@@ -18,7 +18,7 @@
                 OutputType = "Library"
                 PreBuildEvent = ""
                 PostBuildEvent = ""
-                RootNamespace = "JayRock"
+                RootNamespace = "Jayrock"
                 RunPostBuildEvent = "OnBuildSuccess"
                 StartupObject = ""
             >

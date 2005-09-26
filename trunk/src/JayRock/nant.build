@@ -5,7 +5,7 @@
 
     <!-- General -->
 
-    <property name="my.project.name" value="JayRock" />
+    <property name="my.project.name" value="Jayrock" />
 
     <property name="my.program.files" value="${environment::get-variable('ProgramFiles')}" />
     
@@ -28,7 +28,7 @@
     <property name="my.bin.dir.name" value="bin" />
     <property name="my.bin.dir.path" value="${path::combine(nant.project.basedir, my.bin.dir.name)}" />
    
-    <property name="my.output.assembly.name" value="JayRock" />
+    <property name="my.output.assembly.name" value="Jayrock" />
     <property name="my.output.assembly.filename" value="${my.output.assembly.name + '.dll'}" />
     
     <!-- Mailing -->
@@ -119,7 +119,7 @@
         <mail 
             from="${my.mail.from}" 
             tolist="${my.mail.to}" 
-            subject="JayRock coverage for build ${build.id}"
+            subject="Jayrock coverage for build ${build.id}"
             format="Html"
             mailhost="${my.smtp.server}">
             <attachments>

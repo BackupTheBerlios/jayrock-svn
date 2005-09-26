@@ -4,16 +4,16 @@ namespace JamAgainWeb
 {
     using System;
     using System.Web;
-    using JayRock.Json;
-    using JayRock.Json.Rpc;
-    using JayRock.Json.Rpc.Web;
+    using Jayrock.Json;
+    using Jayrock.Json.Rpc;
+    using Jayrock.Json.Rpc.Web;
 
     public class HelloWorld : JsonRpcHandler
     {
         [ JsonRpcMethod("greetings") ]
         public string Greetings()
         {
-            return "Welcome to JayRock!";
+            return "Welcome to Jayrock!";
         }
     }
 }
