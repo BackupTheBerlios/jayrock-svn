@@ -175,6 +175,9 @@ namespace Jayrock.Json
         {
             Debug.Assert(current != null);
 
+            _currentArray = null;
+            _currentObject = null;
+
             if (Stack.Count != 0)
             {
                 object o = Stack.Pop();
@@ -205,5 +208,28 @@ namespace Jayrock.Json
                 return _stack;
             }
         }
+
+        //
+        // Test-only members
+        //
+
+        #if TEST
+
+        internal object TestCurrentObject
+        {
+            get { return _currentObject; }
+        }
+
+        internal object TestCurrentArray
+        {
+            get { return _currentArray; }
+        }
+
+        internal Stack TestStack
+        {
+            get { return Stack; }
+        }
+
+        #endif
     }
 }
