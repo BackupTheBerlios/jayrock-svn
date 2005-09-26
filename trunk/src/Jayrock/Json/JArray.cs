@@ -163,6 +163,15 @@ namespace Jayrock.Json
             return (JObject) GetValue(index);
         }
 
+        protected override void OnValidate(object value)
+        {
+            //
+            // Null values are allowed in a JSON array so don't delegate
+            // to the base class (CollectionBase) implementation since that
+            // disallows null entries by default.
+            //
+        }
+
         /// <summary>
         /// Make an JSON external form string of this JsonArray. For
         /// compactness, no unnecessary whitespace is added.
