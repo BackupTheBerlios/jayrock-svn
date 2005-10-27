@@ -32,8 +32,11 @@
     <property name="my.output.assembly.filename" value="${my.output.assembly.name + '.dll'}" />
     
     <!-- Mailing -->
-    
-    <property name="my.smtp.server" value="${environment::get-variable('SMTPSERVER')}" />
+
+    <property name="my.smtp.server" value="" />
+    <if test="${environment::variable-exists('SMTPSERVER')}">
+        <property name="my.smtp.server" value="${environment::get-variable('SMTPSERVER')}" />
+    </if>
     <property name="my.mail.from" value="buildserver@jayrock.org" />
     <property name="my.mail.to" value="atif.aziz@skybow.com" />
 
@@ -105,6 +108,10 @@
     </target>
 
     <target name="draco">
+
+        <fail if="${string::get-length(my.smtp.server) == 0}" 
+            message="You must specify an SMTP server host value via the SMTPSERVER environment variable for this build target to succeed." />
+        
         <!-- 
         NOTE:   This sleep seems to be needed because the <style> task in the cover 
                 target appears to leak a file handle, causing a share violation error
