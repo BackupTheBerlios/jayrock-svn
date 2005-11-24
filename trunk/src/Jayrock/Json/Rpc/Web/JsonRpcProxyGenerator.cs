@@ -58,7 +58,7 @@ namespace Jayrock.Json.Rpc.Web
             
             writer.Write("function ");
             writer.Write(service.Name);
-            writer.WriteLine("Service()");
+            writer.WriteLine("Service(url)");
             writer.WriteLine("{");
             writer.Indent++;
 
@@ -110,7 +110,7 @@ namespace Jayrock.Json.Rpc.Web
                 writer.WriteLine();
             }
 
-            writer.Write("var url = '");
+            writer.Write("var url = typeof(url) === 'string' ? url : '");
             writer.Write(Request.FilePath);
             writer.WriteLine("';");
             writer.WriteLine(@"var self = this;
