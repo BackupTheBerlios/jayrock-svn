@@ -160,7 +160,7 @@ namespace Jayrock.Json.Rpc.Web
 
     function newHTTP()
     {
-        return window.ActiveXObject ? 
+        return typeof(ActiveXObject) === 'function' ? 
             new ActiveXObject('Microsoft.XMLHTTP') : /* IE 5 */
             new XMLHttpRequest(); /* Safari 1.2, Mozilla 1.0/Firefox, and Netscape 7 */
     }
