@@ -64,11 +64,11 @@ namespace Jayrock.Json.Rpc
         }
 
         /// <remarks>
-        /// The default implementation calls Invoke synchronously and returns an
-        /// IAsyncResult that also indicates that the operation completed
-        /// synchronously. If a callback was supplied, it will be called before
-        /// BeginInvoke returns. Also, if Invoke throws an exception, it delayed
-        /// until EndInvoke is called to retrieve the results.
+        /// The default implementation calls Invoke synchronously and returns
+        /// an IAsyncResult that also indicates that the operation completed
+        /// synchronously. If a callback was supplied, it will be called 
+        /// before BeginInvoke returns. Also, if Invoke throws an exception, 
+        /// it is delayed until EndInvoke is called to retrieve the results.
         /// </remarks>
 
         public IAsyncResult BeginInvoke(string methodName, object[] args, AsyncCallback callback, object asyncState)
@@ -105,15 +105,16 @@ namespace Jayrock.Json.Rpc
                 throw new ArgumentOutOfRangeException("asyncResult", "IAsyncResult object did not come from the corresponding async method on this type.");
 
             //
-            // IMPORTANT! The End method on SynchronousAsyncResult will throw an
-            // exception is that's what Invoke when BeginInvoke called it. There
-            // is an unforunate side effect here that the stack trace
-            // information for the exception is lost and reset to this point.
-            // There seems to be a basic failure in the framework for
-            // accommodate for this case more generally. We could handle this
-            // through a custom exception that wraps the original exception, but
-            // this assumes that an invocation will only throw an exception of
-            // that custom type. We need to think more about this.
+            // IMPORTANT! The End method on SynchronousAsyncResult will 
+            // throw an exception if that's what Invoke did when 
+            // BeginInvoke called it. The unforunate side effect of this is
+            // the stack trace information for the exception is lost and 
+            // reset to this point. There seems to be a basic failure in the 
+            // framework to accommodate for this case more generally. One 
+            // could handle this through a custom exception that wraps the 
+            // original exception, but this assumes that an invocation will 
+            // only throw an exception of that custom type. We need to 
+            // think more about this.
             //
 
             return ar.End("Invoke");
