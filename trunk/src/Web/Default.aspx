@@ -1,4 +1,4 @@
-<!doctype html public "-//w3c//dtd html 4.0 transitional//en" "http://www.w3.org/tr/html4/loose.dtd\">
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/tr/html4/loose.dtd">
 <html>
     <head>
         <title>Jayrock Home Page</title>
@@ -6,6 +6,7 @@
         <meta name="GENERATOR" content="Microsoft Visual Studio .NET 7.1">
         <meta name="ProgId" content="VisualStudio.HTML">
         <meta name="Originator" content="Microsoft Visual Studio .NET 7.1">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <link rel="stylesheet" type="text/css" href="Default.css">
     </head>
     <body>
@@ -252,7 +253,11 @@ namespace JayrockWeb
             <hr>
             <p>
                 <a href="http://developer.berlios.de">
-                    <img src="http://developer.berlios.de/bslogo.php?group_id=0" width="124" height="32" border="0" alt="BerliOS Logo"></a>
+                    <img src="http://developer.berlios.de/bslogo.php?group_id=0" width="124" height="32" 
+                    alt="BerliOS Logo"></a>
+                <a href="http://validator.w3.org/check?uri=referer">
+                    <img src="http://www.w3.org/Icons/valid-html401"
+                    alt="Valid HTML 4.01 Transitional" height="31" width="88"></a>
             </p>
         </div>
     </body>
