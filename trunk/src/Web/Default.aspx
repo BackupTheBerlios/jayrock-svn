@@ -19,6 +19,7 @@
                     <li><a href="#setup">Setting Up Jayrock</a></li>
                     <li><a href="#quick-start">ASP.NET Quick Start</a></li>
                     <li><a href="#samples">Samples &amp; Demos</a></li>
+                    <li><a href="#docs">Documents</a></li>
                 </ul>
             </div>
             <h1 class="h1-first"><a name="what-is">What is Jayrock?</a></h1>
@@ -242,6 +243,12 @@ namespace JayrockWeb
                 <a href="http://www.microsoft.com/sql/">Microsoft SQL Server 2000</a>
                 running on your machihne with the Northwind database loaded.
             </p>
+            <h1><a name="docs">Documents</a></h1>
+            <dl>
+                <dt><a href="Jayrock.pdf">Jayrock Project Presentation</a></dt>
+                <dd>This presentation contains illustrations that briefly cover the architecture of 
+                Jayrock's JSON and JSON-RPC implementations.</dd>
+            </dl>
             <hr>
             <p>
                 <a href="http://developer.berlios.de">
