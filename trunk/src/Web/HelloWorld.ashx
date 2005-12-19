@@ -1,6 +1,6 @@
-<%@ WebHandler Class="JamAgainWeb.HelloWorld" %>
+<%@ WebHandler Class="JayrockWeb.HelloWorld" Language="C#" %>
 
-namespace JamAgainWeb
+namespace JayrockWeb
 {
     using System;
     using System.Web;

@@ -96,9 +96,9 @@
                 Add the following code to the file:
             </p>
             <pre class="code">
-&lt;%@ WebHandler Class="JayRockWeb.HelloWorld" %&gt;
+&lt;%@ WebHandler Class="JayrockWeb.HelloWorld" %&gt;
 
-namespace JayRockWeb
+namespace JayrockWeb
 {
     using System;
     using System.Web;
@@ -146,8 +146,7 @@ namespace JayRockWeb
                 the
                 <code>web.config</code> of your ASP.NET application:
             </p>
-            <pre class="code">
-&lt;configSections&gt;
+            <pre class="code">&lt;configSections&gt;
     ...
     &lt;sectionGroup name="jayrock"&gt;
         &lt;sectionGroup name="json.rpc"&gt;
@@ -187,8 +186,7 @@ namespace JayRockWeb
                 handler's URL as the script source and using <code>?proxy</code> as the query
                 string:</p>
             <div>
-                <pre class="code">
-&lt;script 
+                <pre class="code">&lt;script 
     type="text/javascript" 
     src="http://localhost/foobar/helloworld.ashx?proxy"&gt;
 &lt;/script&gt;</pre></div>

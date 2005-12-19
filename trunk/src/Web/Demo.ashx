@@ -1,6 +1,6 @@
-<%@ WebHandler Class="JayRockWeb.Demo" %>
+<%@ WebHandler Class="JayrockWeb.Demo" Language="C#" %>
 
-namespace JayRockWeb
+namespace JayrockWeb
 {
     using System;
     using System.Configuration;
