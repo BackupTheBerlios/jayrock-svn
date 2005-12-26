@@ -194,10 +194,10 @@ namespace JayrockWeb
         }
         
         [ JsonRpcMethod("sleep") ]
-        [ JsonRpcHelp("Blocks the request for the specified number of milliseconds.") ]
+        [ JsonRpcHelp("Blocks the request for the specified number of milliseconds (maximum 7 seconds).") ]
         public void Sleep(int milliseconds)
         {
-            System.Threading.Thread.Sleep(Math.Min(10000, milliseconds));
+            System.Threading.Thread.Sleep(Math.Min(7000, milliseconds));
         }
         
         [ JsonRpcMethod("throwError")]
