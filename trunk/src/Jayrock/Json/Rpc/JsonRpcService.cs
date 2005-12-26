@@ -126,7 +126,7 @@ namespace Jayrock.Json.Rpc
         /// </remarks>
 
         [ JsonRpcMethod("system.listMethods") ]
-        [ JsonRpcHelp("Returns an array of method names implemented by this service") ]
+        [ JsonRpcHelp("Returns an array of method names implemented by this service.") ]
         public virtual string[] SystemListMethods()
         {
             IRpcMethodDescriptor[] methods = GetDescriptor().GetMethods();
