@@ -46,8 +46,14 @@
                 <code>svn://svn.berlios.de/jayrock/trunk</code>. The commnad-line
                 for the Subversion client would therefore be:</p>
             <p><code>svn checkout svn://svn.berlios.de/jayrock/trunk jayrock</code></p>
-            <p> The third argument (<code>jayrock</code>) is the directory name where the local
+            <p> The third argument, <code>jayrock</code>, is the directory name where the local
                 working copy will be downloaded so this can be another name if you like.</p>
+            <p>
+                If you want a snapshot of the latest files without bothering
+                to go through the source repository then you can simply download them from the
+                <a href="http://developer.berlios.de/project/showfiles.php?group_id=4638">Files</a> 
+                section of the project.                
+            </p>
             <h1><a name="contributing">Contributing to the Project</a></h1>
             <p>
                 Jayrock is provided as open source and free software (as per
