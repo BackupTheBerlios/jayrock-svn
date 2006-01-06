@@ -234,12 +234,12 @@ namespace Jayrock.Json.Rpc.Web
 
         private void AddScriptBlock(string script)
         {
-            _head.Controls.Add(new LiteralControl("<script type='text/javascript'>" + script + "</script>"));
+            Head.Controls.Add(new LiteralControl("<script type='text/javascript'>" + script + "</script>"));
         }
 
         private void AddScriptInclude(string url)
         {
-            _head.Controls.Add(new LiteralControl("<script type='text/javascript' src='" + url + "'></script>"));
+            Head.Controls.Add(new LiteralControl("<script type='text/javascript' src='" + url + "'></script>"));
         }
 
         private void AddStyles()

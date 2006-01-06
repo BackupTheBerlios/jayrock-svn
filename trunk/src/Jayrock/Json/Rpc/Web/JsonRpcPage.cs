@@ -38,7 +38,7 @@ namespace Jayrock.Json.Rpc.Web
         private IRpcServiceDescriptor _serviceDescriptor;
         private IRpcMethodDescriptor[] _methods;
         private bool _serviceDescriptorInitialized;
-        protected HtmlGenericControl _head;
+        private HtmlGenericControl _head;
         private HtmlGenericControl _body;
 
         public IRpcService TargetService
