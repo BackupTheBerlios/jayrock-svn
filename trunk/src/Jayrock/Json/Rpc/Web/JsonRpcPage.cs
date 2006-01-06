@@ -107,12 +107,12 @@ namespace Jayrock.Json.Rpc.Web
             base.OnInit(e);
         }
 
-        protected Control Head
+        protected virtual Control Head
         {
             get { return _head; }
         }
 
-        protected Control Body
+        protected virtual Control Body
         {
             get { return _body; }
         }
