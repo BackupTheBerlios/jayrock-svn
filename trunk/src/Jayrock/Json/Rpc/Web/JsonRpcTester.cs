@@ -102,7 +102,8 @@ namespace Jayrock.Json.Rpc.Web
             responseArea.Attributes.Add("title", "The result or error object (in JSON) from the last RPC response.");
             responsePara.Controls.Add(responseArea);
 
-            AddScriptInclude("json.js");
+            AddScriptInclude((Request.ApplicationPath.Equals("/") ? 
+                string.Empty : Request.ApplicationPath) + "/json.js");
 
             AddScriptBlock(@"
                 var callTemplates = " + BuildCallTemplatesObject() + @";
