@@ -230,6 +230,7 @@ namespace Jayrock.Json.Rpc
             {
                 CompositeFormatter formatter = new CompositeFormatter();
 
+                formatter.AddFormatter(typeof(DateTime), new DateTimeFormatter());
                 formatter.AddFormatter(typeof(DataSet), new DataSetFormatter());
                 formatter.AddFormatter(typeof(DataTable), new DataTableFormatter());
                 formatter.AddFormatter(typeof(DataRowView), new DataRowViewFormatter());

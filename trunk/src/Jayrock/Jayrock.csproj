@@ -228,6 +228,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Json\Formatters\DateTimeFormatter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\Rpc\DuplicateMethodException.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
