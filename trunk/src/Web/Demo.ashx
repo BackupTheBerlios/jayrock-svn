@@ -70,7 +70,7 @@ namespace JayrockWeb
         }
         
         [ JsonRpcMethod("now")]
-        [ JsonRpcHelp("Returns the local time on the server. Demonstrates how DateTime is returned simply as a formatted string.") ]
+        [ JsonRpcHelp("Returns the local time on the server. Demonstrates how DateTime is returned simply as a string using the ISO 8601 format.") ]
         public DateTime Now()
         {
             return DateTime.Now;
