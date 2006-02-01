@@ -25,11 +25,10 @@ namespace Jayrock.Json.Rpc
     #region Imports
 
     using System;
-    using System.Collections;
     using System.ComponentModel;
     using System.Diagnostics;
+    using System.IO;
     using System.Reflection;
-    using System.Runtime.InteropServices;
 
     #endregion
 
@@ -136,6 +135,50 @@ namespace Jayrock.Json.Rpc
                 names[i] = methods[i].Name;
 
             return names;
+        }
+
+        [ JsonRpcMethod("system.version") ]
+        [ JsonRpcHelp("Returns the version JSON-RPC server implementation using the major, minor, build and revision format.") ]
+        public virtual string SystemVersion()
+        {
+            return typeof(JsonRpcService).Assembly.GetName().Version.ToString();
+        }
+
+        [ JsonRpcMethod("system.about") ]
+        [ JsonRpcHelp("Returns a summary about the JSON-RPC server implementation for display purposes.") ]
+        public virtual string SystemLogo()
+        {
+            StringWriter writer = new StringWriter();
+            
+            Assembly assembly = typeof(JsonRpcService).Assembly;
+            AssemblyName name = assembly.GetName();
+
+            writer.Write(name.Name);
+            writer.Write(", ");
+            writer.Write(name.Version.ToString());
+
+            Uri codeBase = new Uri(name.CodeBase);
+
+            if (codeBase.IsFile && 
+                File.Exists(codeBase.LocalPath))
+            {
+                FileVersionInfo versionInfo = FileVersionInfo.GetVersionInfo(codeBase.LocalPath);
+
+                writer.Write(" (");
+                writer.Write(versionInfo.FileVersion);
+                writer.Write(")");
+            }
+
+            writer.WriteLine();
+            
+            AssemblyCopyrightAttribute copyright = (AssemblyCopyrightAttribute) Attribute.GetCustomAttribute(assembly, typeof(AssemblyCopyrightAttribute));
+
+            if (copyright != null && Mask.NullString(copyright.Copyright).Length > 0)
+                writer.WriteLine(copyright.Copyright);
+
+            writer.WriteLine("For more information, visit http://jayrock.berlios.de/");
+
+            return writer.GetStringBuilder().ToString();
         }
     }
 }
