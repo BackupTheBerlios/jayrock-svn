@@ -102,6 +102,9 @@ namespace Jayrock.Json.Rpc.Web
             responseArea.Attributes.Add("title", "The result or error object (in JSON) from the last RPC response.");
             responsePara.Controls.Add(responseArea);
 
+            Control timingPara = AddPara(content, null, null);
+            timingPara.ID = "timing";
+
             AddScriptInclude((Request.ApplicationPath.Equals("/") ? 
                 string.Empty : Request.ApplicationPath) + "/json.js");
 
@@ -147,6 +150,7 @@ namespace Jayrock.Json.Rpc.Web
 
                 function callSync(request)
                 {
+                    var clockStart = new Date();
                     var http = window.ActiveXObject ? 
                         new ActiveXObject('Microsoft.XMLHTTP') :
                         new XMLHttpRequest();
@@ -157,6 +161,8 @@ namespace Jayrock.Json.Rpc.Web
                     if (http.status != 200)
                         throw { message : http.status + ' ' + http.statusText, toString : function() { return message; } };
                     var response = JSON.parse(http.responseText);
+                    var timeTaken = (new Date()) - clockStart;
+                    document.getElementById('timing').innerText = 'Time taken = ' + (timeTaken / 1000).toFixed(4) + ' milliseconds.';
                     if (response.error != null) throw response.error;
                     return response.result;
                 }
