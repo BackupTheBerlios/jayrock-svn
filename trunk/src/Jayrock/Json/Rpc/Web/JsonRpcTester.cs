@@ -162,7 +162,12 @@ namespace Jayrock.Json.Rpc.Web
                         throw { message : http.status + ' ' + http.statusText, toString : function() { return message; } };
                     var response = JSON.parse(http.responseText);
                     var timeTaken = (new Date()) - clockStart;
-                    document.getElementById('timing').innerText = 'Time taken = ' + (timeTaken / 1000).toFixed(4) + ' milliseconds.';
+                    var timing = document.getElementById('timing');
+                    var timingText = document.createTextNode('Time taken = ' + (timeTaken / 1000).toFixed(4) + ' milliseconds.');
+                    if (timing.firstChild == null)
+                        timing.appendChild(timingText);
+                    else
+                        timing.replaceChild(timingText, timing.firstChild);
                     if (response.error != null) throw response.error;
                     return response.result;
                 }
