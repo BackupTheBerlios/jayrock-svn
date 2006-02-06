@@ -131,7 +131,7 @@ namespace Jayrock.Json.Rpc.Web
         http.send(JSON.stringify(request));
         if (http.status != 200)
             throw { message : http.status + ' ' + http.statusText, toString : function() { return message; } };
-        var response = JSON.parse(http.responseText);
+        var response = JSON.eval(http.responseText);
         if (response.error != null) throw response.error;
         return response.result;
     }
@@ -155,7 +155,7 @@ namespace Jayrock.Json.Rpc.Web
     function http_onreadystatechange(sender, callback)
     {
         if (sender.readyState == /* complete */ 4)
-            callback(JSON.parse(sender.responseText));
+            callback(JSON.eval(sender.responseText));
     }
 
     function newHTTP()

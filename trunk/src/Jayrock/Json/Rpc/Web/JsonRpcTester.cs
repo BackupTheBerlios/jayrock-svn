@@ -160,7 +160,7 @@ namespace Jayrock.Json.Rpc.Web
                     http.send(JSON.stringify(request));
                     if (http.status != 200)
                         throw { message : http.status + ' ' + http.statusText, toString : function() { return message; } };
-                    var response = JSON.parse(http.responseText);
+                    var response = JSON.eval(http.responseText);
                     var timeTaken = (new Date()) - clockStart;
                     var timing = document.getElementById('timing');
                     var timingText = document.createTextNode('Time taken = ' + (timeTaken / 1000).toFixed(4) + ' milliseconds.');
