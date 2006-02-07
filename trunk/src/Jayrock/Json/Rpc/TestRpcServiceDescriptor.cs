@@ -69,10 +69,18 @@ namespace Jayrock.Json.Rpc
             Assert.AreEqual(2, descriptor.GetMethods().Length);
         }
 
+        [ Test ]
+        public void CustomServiceName()
+        {
+            RpcServiceDescriptor descriptor = RpcServiceDescriptor.GetDescriptor(typeof(TestService));
+            Assert.AreEqual("MyService", descriptor.Name);
+        }
+
         private sealed class EmptyService
         {
         }
 
+        [ JsonRpcService("MyService") ]
         private sealed class TestService
         {
             [ JsonRpcMethod ]

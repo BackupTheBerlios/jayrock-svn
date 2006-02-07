@@ -38,7 +38,7 @@ namespace Jayrock.Json.Rpc
         private readonly string _serviceName;
         private readonly Hashtable _nameMethodTable;
         private readonly RpcMethodDescriptor[] _methods;
-        private static readonly Hashtable _typeDescriptorCache = new Hashtable();
+        private static readonly Hashtable _typeDescriptorCache = Hashtable.Synchronized(new Hashtable());
         
         public static RpcServiceDescriptor GetDescriptor(Type type)
         {
@@ -63,10 +63,16 @@ namespace Jayrock.Json.Rpc
             _serviceType = type;
 
             //
-            // Determine the service name.
+            // Determine the service name, allowing customization via the
+            // JsonRpcService attribute.
             //
 
-            _serviceName = type.Name;
+            JsonRpcServiceAttribute serviceAttribute = (JsonRpcServiceAttribute) Attribute.GetCustomAttribute(type, typeof(JsonRpcServiceAttribute), true);
+
+            if (serviceAttribute != null)
+                _serviceName = serviceAttribute.Name.Trim();
+
+            _serviceName = Mask.EmptyString(_serviceName, type.Name);
 
             //
             // Get all the public instance methods on the type and create a
@@ -81,14 +87,14 @@ namespace Jayrock.Json.Rpc
                 if (method.IsAbstract)
                     continue;
 
-                JsonRpcMethodAttribute attribute = (JsonRpcMethodAttribute) Attribute.GetCustomAttribute(method, typeof(JsonRpcMethodAttribute));
+                JsonRpcMethodAttribute methodAttribute = (JsonRpcMethodAttribute) Attribute.GetCustomAttribute(method, typeof(JsonRpcMethodAttribute));
 
                 //
                 // Only proceed with methods that are decorated with the
                 // JsonRpcMethod attribute.
                 //
                 
-                if (attribute == null)
+                if (methodAttribute == null)
                     continue;
 
                 //
@@ -97,7 +103,7 @@ namespace Jayrock.Json.Rpc
                 // the actual base method name.
                 //
 
-                string externalName = attribute.Name;
+                string externalName = methodAttribute.Name;
 
                 if (externalName.Length == 0)
                     externalName = method.Name;

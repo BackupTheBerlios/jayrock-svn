@@ -58,7 +58,7 @@ namespace Jayrock.Json.Rpc.Web
             
             writer.Write("function ");
             writer.Write(service.Name);
-            writer.WriteLine("Service(url)");
+            writer.WriteLine("(url)");
             writer.WriteLine("{");
             writer.Indent++;
 
