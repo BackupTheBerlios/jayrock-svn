@@ -35,6 +35,9 @@ namespace Jayrock.Json
     public class JsonTextWriter : JsonWriter
     {
         private readonly TextWriter _writer;
+        private bool _prettyPrint;
+        private bool _newLine;
+        private int _indent;
 
         private Stack _stack;
         private object _currentBracket = _noBracket;
@@ -70,27 +73,49 @@ namespace Jayrock.Json
             get { return _writer; }
         }
 
+        public bool PrettyPrint
+        {
+            get { return _prettyPrint; }
+            set { _prettyPrint = value; }
+        }
+
         public override void WriteStartObject()
         {
             BeforeWrite();
             EnterBracket(_newObjectBracket);
 
-            _writer.Write('{');
+            WriteDelimiter('{');
+            PrettySpace();
         }
 
         public override void WriteEndObject()
         {
-            _writer.Write('}');
+            if (_currentBracket == _runningObjectBracket)
+            {
+                PrettyLine();
+                _indent--;
+            }
+            WriteDelimiter('}');
             ExitBracket();
         }
 
         public override void WriteMember(string name)
         {
             if (_currentBracket == _runningObjectBracket)
-                _writer.Write(',');
+            {
+                WriteDelimiter(',');
+                PrettyLine();
+            }
+            else
+            {
+                PrettyLine();
+                _indent++;
+            }
             
             WriteString(name);
-            _writer.Write(':');
+            PrettySpace();
+            WriteDelimiter(':');
+            PrettySpace();
             _currentBracket = _runningObjectBracket;
         }
 
@@ -119,18 +144,24 @@ namespace Jayrock.Json
             BeforeWrite();
             EnterBracket(_newArrayBracket);
 
-            _writer.Write('[');
+            WriteDelimiter('[');
+            PrettySpace();
         }
 
         public override void WriteEndArray()
         {
-            _writer.Write(']');            
+            if (_currentBracket == _runningArrayBracket)
+                PrettySpace();
+            WriteDelimiter(']');
             ExitBracket();
         }
 
         private void BracketedWrite(string text)
         {
             BeforeWrite();
+            if (_prettyPrint && _newLine)
+                _writer.Write(new string(' ', _indent * 4));
+            _newLine = false;
             _writer.Write(text);
             AfterWrite();
         }
@@ -153,14 +184,39 @@ namespace Jayrock.Json
         private void BeforeWrite()
         {
             if (_currentBracket == _runningArrayBracket)
-                _writer.Write(',');
+            {
+                WriteDelimiter(',');
+                PrettySpace();
+            }
         }
 
         private void AfterWrite()
         {
-            _currentBracket = _currentBracket == _newObjectBracket ? 
-                _runningObjectBracket : 
-                _runningArrayBracket;
+            if (_currentBracket == _newObjectBracket)
+                _currentBracket = _runningObjectBracket;
+            else if (_currentBracket == _newArrayBracket)
+                _currentBracket = _runningArrayBracket;
+        }
+
+        private void WriteDelimiter(char ch)
+        {
+            if (_prettyPrint && _newLine)
+                _writer.Write(new string(' ', _indent * 4));
+            _newLine = false;
+            _writer.Write(ch);
+        }
+
+        private void PrettySpace()
+        {
+            if (!_prettyPrint) return;
+            WriteDelimiter(' ');
+        }
+
+        private void PrettyLine()
+        {
+            if (!_prettyPrint) return;
+            _writer.WriteLine();
+            _newLine = true;
         }
 
         public override void Flush()
