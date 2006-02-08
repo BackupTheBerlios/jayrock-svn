@@ -40,6 +40,10 @@ namespace Jayrock.Json.Rpc.Web
             if (request == null)
                 throw new ArgumentNullException("request");
 
+            //
+            // NOTE: In ASP.NET 2.0, one can simply use IsLocal on HttpRequest.
+            //
+
             string userHostAddress = Mask.NullString(request.UserHostAddress);
             
             return userHostAddress.Equals("127.0.0.1") /* IP v4 */ || 
