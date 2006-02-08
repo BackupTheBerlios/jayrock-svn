@@ -358,6 +358,10 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Json\Rpc\Web\json.js"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
                     RelPath = "Json\Rpc\Web\JsonRpcExecutive.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -399,6 +403,16 @@
                 />
                 <File
                     RelPath = "Json\Rpc\Web\JsonRpcWebTraceAdapter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Rpc\Web\WebResourceAttribute.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Rpc\Web\WebResourceHandler.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
