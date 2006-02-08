@@ -89,11 +89,6 @@
     <target name="test" depends="compile-test">
         <property name="my.output.assembly.path" value="${path::combine(my.output.dir.path, my.output.assembly.filename)}" />
         <exec program="${my.nunit.console.exe.path}" commandline='"${my.output.assembly.path}"' />
-        <!--
-        <nunit2>
-            <formatter type="Plain" />
-            <test assemblyname="${my.output.assembly.path}" />
-        </nunit2>-->
     </target>
     
     <target name="cover" depends="compile-test">
