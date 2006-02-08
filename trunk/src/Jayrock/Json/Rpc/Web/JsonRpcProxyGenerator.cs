@@ -126,7 +126,7 @@ namespace Jayrock.Json.Rpc.Web
     function callSync(method, request)
     {
         var http = newHTTP();
-        http.open('POST', url, false);
+        http.open('POST', url, false, self.httpUserName, self.httpPassword);
         setupHeaders(http, method);
         http.send(JSON.stringify(request));
         if (http.status != 200)
@@ -139,7 +139,7 @@ namespace Jayrock.Json.Rpc.Web
     function callAsync(method, request, callback)
     {
         var http = newHTTP();
-        http.open('POST', url, true);
+        http.open('POST', url, true, self.httpUserName, self.httpPassword);
         setupHeaders(http, method);
         http.onreadystatechange = function() { http_onreadystatechange(http, callback); }
         http.send(JSON.stringify(request));
