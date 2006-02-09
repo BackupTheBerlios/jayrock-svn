@@ -67,7 +67,7 @@
                 <Reference
                     Name = "nunit.framework"
                     AssemblyName = "nunit.framework"
-                    HintPath = "..\..\tools\NUnit 2.2.3\nunit.framework.dll"
+                    HintPath = "..\..\tools\NUnit 2.2\nunit.framework.dll"
                 />
             </References>
         </Build>
@@ -95,6 +95,11 @@
                 />
                 <File
                     RelPath = "Configuration\DictionarySectionHandler.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\DelimitedListParser.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -174,6 +179,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Json\TestDelimitedListParser.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\TestJArray.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -200,6 +210,11 @@
                 />
                 <File
                     RelPath = "Json\TestParserOutput.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\TextParser.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

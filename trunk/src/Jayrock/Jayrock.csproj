@@ -118,6 +118,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Json\DelimitedListParser.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\IJsonFormattable.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -189,6 +194,11 @@
                 />
                 <File
                     RelPath = "Json\ParserOutput.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\TextParser.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

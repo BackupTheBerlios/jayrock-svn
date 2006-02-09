@@ -25,6 +25,7 @@ namespace Jayrock.Json
     #region Imports
 
     using System;
+    using System.Diagnostics;
     using System.Globalization;
     using System.IO;
     using System.Text;
@@ -44,8 +45,6 @@ namespace Jayrock.Json
 
     public sealed class JsonParser
     {
-        private int _index;
-        private string _source;
         private IParserOutput _output;
         
         private const char EOF = (char) 0;
@@ -54,8 +53,6 @@ namespace Jayrock.Json
 
         public JsonParser(IParserOutput output)
         {
-            _index = 0;
-            _source = string.Empty;
             _output = output;
         }
 
@@ -64,18 +61,18 @@ namespace Jayrock.Json
             if (sourceReader == null)
                 throw new ArgumentNullException("sourceReader");
 
-            return Parse(sourceReader.ReadToEnd());
+            return Parse(new TextParser(sourceReader.ReadToEnd()));
         }
 
         public object Parse(string source)
         {
-            _index = 0;
-            _source = Mask.NullString(source);
-            return Parse();
+            return Parse(new TextParser(source));
         }
 
-        private object Parse()
+        private object Parse(TextParser parser)
         {
+            Debug.Assert(parser != null);
+
             //
             // Fault-in an AST strategy if one wasn't supplied thus far.
             //
@@ -87,61 +84,7 @@ namespace Jayrock.Json
             // Parse and return the next object found.
             //
 
-            return NextObject();
-        }
-
-        /// <summary>
-        /// Back up one character. This provides a sort of lookahead capability,
-        /// so that you can test for a digit or letter before attempting to
-        /// parse the next number or identifier.
-        /// </summary>
-        
-        private void Back()
-        {
-            if (_index > 0)
-                _index -= 1;
-        }
-
-        /// <summary>
-        /// Determine if the source string still contains characters that Next()
-        /// can consume.
-        /// </summary>
-        /// <returns>true if not yet at the end of the source.</returns>
-        
-        private bool More()
-        {
-            return _index < _source.Length;
-        }
-
-        /// <summary>
-        /// Get the next character in the source string.
-        /// </summary>
-        /// <returns>The next character, or 0 if past the end of the source string.</returns>
-        
-        private char Next()
-        {
-            if (!More())
-                return EOF;
-
-            return _source[_index++];
-        }
-
-        /// <summary>
-        /// Get the next count characters.
-        /// </summary>
-        /// <param name="count">The number of characters to take.</param>
-        /// <returns>A string of count characters.</returns>
-        
-        private string Next(int count)
-        {
-            int start = _index;
-            int end = start + count;
-            
-            if (end >= _source.Length)
-                throw new ArgumentOutOfRangeException("count");
-
-            _index += count;
-            return _source.Substring(start, count);
+            return NextObject(parser);
         }
 
         /// <summary>
@@ -150,21 +93,23 @@ namespace Jayrock.Json
         /// </summary>
         /// <returns>A character, or 0 if there are no more characters.</returns>
         
-        private char NextClean()
+        private char NextClean(TextParser parser)
         {
+            Debug.Assert(parser != null);
+
             while (true) 
             {
-                char ch = Next();
+                char ch = parser.Next();
 
                 if (ch == '/') 
                 {
-                    switch (Next()) 
+                    switch (parser.Next()) 
                     {
                         case '/' :
                         {
                             do 
                             {
-                                ch = Next();
+                                ch = parser.Next();
                             } 
                             while (ch != '\n' && ch != '\r' && ch != EOF);
                             break;
@@ -173,24 +118,24 @@ namespace Jayrock.Json
                         {
                             while (true) 
                             {
-                                ch = Next();
+                                ch = parser.Next();
 
                                 if (ch == EOF) 
                                     throw new ParseException("Unclosed comment.");
 
                                 if (ch == '*') 
                                 {
-                                    if (Next() == '/') 
+                                    if (parser.Next() == '/') 
                                         break;
                                     
-                                    Back();
+                                    parser.Back();
                                 }
                             }
                             break;
                         }
                         default :
                         {
-                            Back();
+                            parser.Back();
                             return '/';
                         }
                     }
@@ -203,84 +148,23 @@ namespace Jayrock.Json
         }
 
         /// <summary>
-        /// Return the characters up to the next close quote character.
-        /// Backslash processing is done. The formal JSON format does not
-        /// allow strings in single quotes, but an implementation is allowed to
-        /// accept them.
-        /// </summary>
-        /// <param name="quote">The quoting character, either " or '</param>
-        /// <returns>A String.</returns>
-        
-        private string NextString(char quote)
-        {
-            char ch;
-            StringBuilder sb = new StringBuilder();
-            
-            while (true)
-            {
-                ch = Next();
-
-                if ((ch == EOF) || (ch == '\n') || (ch == '\r')) 
-                    throw new ParseException("Unterminated string.");
-
-                if (ch == '\\')
-                {
-                    ch = Next();
-
-                    switch (ch)
-                    {
-                        case 'b': // Backspace
-                            sb.Append('\b');
-                            break;
-                        case 't': // Horizontal tab
-                            sb.Append('\t');
-                            break;
-                        case 'n':  // Newline
-                            sb.Append('\n');
-                            break;
-                        case 'f':  // Form feed
-                            sb.Append('\f');
-                            break;
-                        case 'r':  // Carriage return
-                            sb.Append('\r');
-                            break;
-                        case 'u':
-                            // TODO: Review
-                            //sb.append((char)Integer.parseInt(next(4), 16)); // 16 == radix, ie. hex
-                            int iascii = int.Parse(Next(4),NumberStyles.HexNumber);
-                            sb.Append((char)iascii);
-                            break;
-                        default:
-                            sb.Append(ch);
-                            break;
-                    }
-                }
-                else
-                {
-                    if (ch == quote)
-                        return sb.ToString();
-
-                    sb.Append(ch);
-                }
-            }
-        }
-
-        /// <summary>
         /// Gets the next value as object. The value can be a Boolean, a Double,
         /// an Integer, an object array, a JObject, a String, or 
         /// JObject.NULL.
         /// </summary>
         
-        private object NextObject()
+        private object NextObject(TextParser parser)
         {
-            char ch = NextClean();
+            Debug.Assert(parser != null);
+
+            char ch = NextClean(parser);
 
             //
             // String
             //
 
             if (ch == '"' || ch == '\'') 
-                return _output.ToStringPrimitive(NextString(ch));
+                return _output.ToStringPrimitive(parser.NextString(ch));
 
             //
             // Object
@@ -288,8 +172,8 @@ namespace Jayrock.Json
 
             if (ch == '{') 
             {
-                Back();
-                return ParseObject();
+                parser.Back();
+                return ParseObject(parser);
             }
 
             //
@@ -298,8 +182,8 @@ namespace Jayrock.Json
 
             if (ch == '[')
             {
-                Back();
-                return ParseArray();
+                parser.Back();
+                return ParseArray(parser);
             }
 
             StringBuilder sb = new StringBuilder();
@@ -308,10 +192,10 @@ namespace Jayrock.Json
             while (ch >= ' ' && ch != ':' && ch != ',' && ch != ']' && ch != '}' && ch != '/')
             {
                 sb.Append(ch);
-                ch = Next();
+                ch = parser.Next();
             }
 
-            Back();
+            parser.Back();
 
             string s = sb.ToString().Trim();
             
@@ -340,40 +224,33 @@ namespace Jayrock.Json
             return s;
         }
 
-        /// <summary>
-        /// Returns a printable string of this object.
-        /// </summary>
-        
-        public override string ToString()
+        private object ParseArray(TextParser parser)
         {
-            return " at charachter " + _index + " of " + _source;
-        }
+            Debug.Assert(parser != null);
 
-        private object ParseArray()
-        {
-            if (NextClean() != '[') 
+            if (NextClean(parser) != '[') 
                 throw new ParseException("An array must start with '['.");
 
             _output.StartArray();
             
-            if (NextClean() != ']') 
+            if (NextClean(parser) != ']') 
             {
-                Back();
+                parser.Back();
 
                 bool end = false;
 
                 do
                 {
-                    _output.ArrayPut(NextObject());
+                    _output.ArrayPut(NextObject(parser));
 
-                    switch (NextClean()) 
+                    switch (NextClean(parser)) 
                     {
                         case ',' :
                         {
-                            if (NextClean() == ']') 
+                            if (NextClean(parser) == ']') 
                                 end = true;
                             else
-                                Back();
+                                parser.Back();
 
                             break;
                         }
@@ -394,19 +271,21 @@ namespace Jayrock.Json
             return _output.EndArray();
         }
 
-        private object ParseObject()
+        private object ParseObject(TextParser parser)
         {
-            if (Next() == '%') 
-                Unescape();
+            Debug.Assert(parser != null);
 
-            Back();
+            if (parser.Next() == '%')
+                parser.Restart(Unescape(parser.Source), parser.Index);
 
-            if (NextClean() != '{') 
+            parser.Back();
+
+            if (NextClean(parser) != '{') 
                 throw new ParseException("An object must begin with '{'.");
 
             _output.StartObject();
 
-            char ch = NextClean();
+            char ch = NextClean(parser);
 
             while (ch != '}')
             {
@@ -422,27 +301,27 @@ namespace Jayrock.Json
                     
                     default :
                     {
-                        Back();
-                        memberName = NextObject().ToString();
+                        parser.Back();
+                        memberName = NextObject(parser).ToString();
                         break;
                     }
                 }
 
-                if (NextClean() != ':') 
+                if (NextClean(parser) != ':') 
                     throw new ParseException("Expected a ':' after a key.");
 
-                object memberValue = NextObject();
+                object memberValue = NextObject(parser);
 
                 _output.ObjectPut(memberName, memberValue);
 
-                switch (ch = NextClean())
+                switch (ch = NextClean(parser))
                 {
                     case ',' :
                     {
-                        if ((ch = NextClean()) == '}') 
+                        if ((ch = NextClean(parser)) == '}') 
                             continue;
 
-                        Back();
+                        parser.Back();
                         break;
                     }
                     
@@ -453,21 +332,10 @@ namespace Jayrock.Json
                         throw new ParseException("Expected a ',' or '}'.");
                 }
 
-                ch = NextClean();
+                ch = NextClean(parser);
             }
 
             return _output.EndObject();
-        }
-
-        /// <summary>
-        /// Unescape the source text. Convert %hh sequences to single characters,
-        /// and convert plus to space. There are Web transport systems that insist on
-        /// doing unnecessary URL encoding. This provides a way to undo it.
-        /// </summary>
-        
-        private void Unescape()
-        {
-            _source = Unescape(_source);
         }
 
         /// <summary>
@@ -477,6 +345,8 @@ namespace Jayrock.Json
         
         private static string Unescape(string s)
         {
+            s = Mask.NullString(s);
+
             int length = s.Length;
             StringBuilder sb = new StringBuilder();
             
