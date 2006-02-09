@@ -1,4 +1,4 @@
-<%@ WebHandler Class="JayrockWeb.Demo" Language="C#" %>
+<%@ WebHandler Class="JayrockWeb.DemoService" Language="C#" %>
 
 namespace JayrockWeb
 {
@@ -16,7 +16,7 @@ namespace JayrockWeb
     using Jayrock.Json.Rpc.Web;
 
     [ JsonRpcHelp("This is JSON-RPC service that demonstrates the basic features of the Jayrock library.") ]    
-    public class Demo : JsonRpcHandler, IRequiresSessionState 
+    public class DemoService : JsonRpcHandler, IRequiresSessionState 
     {
         [ JsonRpcMethod("echo")]
         [ JsonRpcHelp("Echoes back the text sent as input.") ]

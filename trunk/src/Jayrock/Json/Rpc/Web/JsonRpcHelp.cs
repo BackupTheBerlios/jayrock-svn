@@ -33,17 +33,20 @@ namespace Jayrock.Json.Rpc.Web
 
     internal sealed class JsonRpcHelp : JsonRpcPage, IRpcServiceFeature
     {
-        protected override void OnLoad(EventArgs e)
+        protected override void AddHeader()
         {
-            AddStyles();
+            Control header = AddDiv(Body, null);
+            header.ID = "Header";
 
-            Control banner = AddDiv(Body, null);
-            banner.ID = "banner";
+            AddGeneric(header, "h1", null, Title);
 
-            AddGeneric(banner, "h1", null, ServiceDescriptor.Name);
+            base.AddHeader();
+        }
 
+        protected override void AddContent()
+        {
             Control content = AddDiv(Body, null);
-            content.ID = "content";
+            content.ID = "Content";
             
             string summary = JsonRpcHelpAttribute.GetText(ServiceDescriptor.AttributeProvider);
             
@@ -53,47 +56,35 @@ namespace Jayrock.Json.Rpc.Web
             Control para = AddPara(content, "intro", null);
             AddLiteral(para, "The following ");
             AddLink(para, "JSON-RPC", "http://www.json-rpc.org/");
-            AddLiteral(para, " methods are supported (try these using ");
-            AddLink(para, "the test page for " + JsonRpcServices.GetServiceName(TargetService), Request.FilePath + "?test");
+            AddLiteral(para, " methods are supported (try these using the ");
+            AddLink(para, JsonRpcServices.GetServiceName(TargetService) + " test page", Request.FilePath + "?test");
             AddLiteral(para, "):");
 
-            HtmlGenericControl methodList = new HtmlGenericControl("ul");
+            HtmlGenericControl methodList = new HtmlGenericControl("dl");
             content.Controls.Add(methodList);
 
             foreach (IRpcMethodDescriptor method in SortedMethods)
-            {
-                HtmlGenericControl bullet = new HtmlGenericControl("li");
-                methodList.Controls.Add(bullet);
-                AddMethod(bullet, method);
-            }
+                AddMethod(methodList, method);
 
-            base.OnLoad(e);
+            base.AddContent ();
         }
 
         private void AddMethod(Control parent, IRpcMethodDescriptor method)
         {
             JsonRpcObsoleteAttribute obsoleteAttribute = JsonRpcObsoleteAttribute.Get(method.AttributeProvider);
 
-            Control methodSpan = AddSpan(parent, 
-                obsoleteAttribute == null ? "method" : "method obsolete-method", null);
-    
-            HyperLink link = new HyperLink();
-            link.CssClass = "method-name";
-            link.Text = Server.HtmlEncode(method.Name);
-            methodSpan.Controls.Add(link);
+            Control methodTerm = AddGeneric(parent, "dt", obsoleteAttribute == null ? "method" : "method obsolete-method");
+            AddSpan(methodTerm, "method-name", method.Name);
+            AddSignature(methodTerm, method);
 
-            AddSignature(methodSpan, method);
             string summary = JsonRpcHelpAttribute.GetText(method.AttributeProvider);
 
-            if (summary.Length > 0)
+            if (summary.Length > 0 || obsoleteAttribute != null)
             {
-                AddSpan(parent, "method-summary-sep", " - ");
-                AddSpan(parent, "method-summary", summary);
-            }
+                AddGeneric(parent, "dd", "method-summary", summary);
 
-            if (obsoleteAttribute != null)
-            {
-                AddSpan(parent, "obsolete-message", " This method has been obsoleted. " + obsoleteAttribute.Message);
+                if (obsoleteAttribute != null)
+                    AddSpan(parent, "obsolete-message", " This method has been obsoleted. " + obsoleteAttribute.Message);
             }
         }
 
@@ -165,8 +156,10 @@ namespace Jayrock.Json.Rpc.Web
             return link;
         }
 
-        private void AddStyles()
+        protected override void AddStyleSheet()
         {
+            base.AddStyleSheet();
+
             HtmlGenericControl style = (HtmlGenericControl) AddGeneric(Head, "style", null, @"
                 body { 
                     margin: 0; 
@@ -182,9 +175,17 @@ namespace Jayrock.Json.Rpc.Web
                     background-color: #003366; 
                 }
 
-                #content {
+                #Content {
                     margin: 1em;
                     font-size: 0.7em;
+                }
+
+                dt {
+                    margin-top: 0.5em;
+                }
+
+                dd {
+                    margin-left: 2.5em;
                 }
 
                 .method {

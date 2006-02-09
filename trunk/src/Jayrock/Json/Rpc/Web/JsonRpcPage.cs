@@ -106,6 +106,32 @@ namespace Jayrock.Json.Rpc.Web
 
             base.OnInit(e);
         }
+        
+        protected override void OnLoad(EventArgs e)
+        {
+            AddStyleSheet();
+            AddHeader();
+            AddContent();
+            AddFooter();
+
+            base.OnLoad(e);
+        }
+
+        protected virtual void AddStyleSheet()
+        {
+        }
+        
+        protected virtual void AddHeader()
+        {
+        }
+
+        protected virtual void AddContent()
+        {
+        }
+        
+        protected virtual void AddFooter()
+        {
+        }
 
         protected virtual Control Head
         {

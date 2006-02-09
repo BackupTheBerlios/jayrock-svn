@@ -39,17 +39,20 @@ namespace Jayrock.Json.Rpc.Web
             get { return "Test " + base.Title; }
         }
 
-        protected override void OnLoad(EventArgs e)
+        protected override void AddHeader()
         {
-            AddStyles();
+            Control header = AddDiv(Body, null);
+            header.ID = "Header";
 
-            Control banner = AddDiv(Body, null);
-            banner.ID = "banner";
+            AddGeneric(header, "h1", null, Title);
 
-            AddGeneric(banner, "h1", null, Title);
+            base.AddHeader();
+        }
 
+        protected override void AddContent()
+        {
             Control content = AddDiv(Body, null);
-            content.ID = "content";
+            content.ID = "Content";
             
             string summary = JsonRpcHelpAttribute.GetText(ServiceDescriptor.AttributeProvider);
 
@@ -173,7 +176,7 @@ namespace Jayrock.Json.Rpc.Web
                 }
                 ");
 
-            base.OnLoad(e);
+            base.AddContent();
         }
 
         private JObject BuildCallTemplatesObject()
@@ -253,8 +256,10 @@ namespace Jayrock.Json.Rpc.Web
             Head.Controls.Add(new LiteralControl("<script type='text/javascript' src='" + url + "'></script>"));
         }
 
-        private void AddStyles()
+        protected override void AddStyleSheet()
         {
+            base.AddStyleSheet();
+
             HtmlGenericControl style = (HtmlGenericControl) AddGeneric(Head, "style", null, @"
                 body { 
                     margin: 0; 
@@ -270,7 +275,7 @@ namespace Jayrock.Json.Rpc.Web
                     background-color: #003366; 
                 }
 
-                #content {
+                #Content {
                     margin: 1em;
                     font-size: 0.7em;
                 }
@@ -283,8 +288,7 @@ namespace Jayrock.Json.Rpc.Web
 
                 #Response.error {
                     color: red;
-                }
-                ");
+                }");
 
             style.Attributes["type"] = "text/css";
         }
