@@ -146,7 +146,7 @@ namespace Jayrock.Json.Rpc
 
         [ JsonRpcMethod("system.about") ]
         [ JsonRpcHelp("Returns a summary about the JSON-RPC server implementation for display purposes.") ]
-        public virtual string SystemLogo()
+        public virtual string SystemAbout()
         {
             StringWriter writer = new StringWriter();
             
