@@ -62,8 +62,14 @@ namespace Jayrock.Json.Rpc.Web
             writer.WriteLine("{");
             writer.Indent++;
 
-            foreach (IRpcMethodDescriptor method in service.GetMethods())
+            IRpcMethodDescriptor[] methods = service.GetMethods();
+            string[] methodNames = new string[methods.Length];
+
+            for (int i = 0; i < methods.Length; i++)
             {
+                IRpcMethodDescriptor method = methods[i];
+                methodNames[i] = method.Name;
+
                 string summary = JsonRpcHelpAttribute.GetText(method.AttributeProvider);
                 if (summary.Length > 0)
                 {
@@ -155,7 +161,14 @@ namespace Jayrock.Json.Rpc.Web
     function http_onreadystatechange(sender, callback)
     {
         if (sender.readyState == /* complete */ 4)
-            callback(JSON.eval(sender.responseText));
+        {
+            var response = sender.status == 200 ? 
+                JSON.eval(sender.responseText) : {};
+            
+            response.xmlHTTP = sender;
+                
+            callback(response);
+        }
     }
 
     function newHTTP()
@@ -168,6 +181,13 @@ namespace Jayrock.Json.Rpc.Web
             
             writer.Indent--;
             writer.WriteLine("}");
+
+            writer.WriteLine();
+            writer.Write(service.Name);
+            writer.Write(".rpcMethods = ");
+            JsonTextWriter jsonWriter = new JsonTextWriter(writer);
+            jsonWriter.WriteArray(methodNames);
+            writer.WriteLine(";");
         }
     }
 }
