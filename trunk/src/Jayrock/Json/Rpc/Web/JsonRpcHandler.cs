@@ -76,13 +76,14 @@ namespace Jayrock.Json.Rpc.Web
 
         protected virtual IRpcServiceFeature GetDefaultFeature()
         {
-            if (CaselessEquals(Request.RequestType, "GET") ||
-                CaselessEquals(Request.RequestType, "HEAD"))
+            string verb = Request.RequestType;
+
+            if (CaselessString.Equals(verb, "GET") ||
+                CaselessString.Equals(verb, "HEAD"))
             {
                 return GetFeatureByName("help");
             }
-            else if (CaselessEquals(Request.RequestType, "POST") &&
-                     Mask.NullString(Request.Headers["X-JSON-RPC"]).Length > 0) 
+            else if (CaselessString.Equals(verb, "POST")) 
             {
                 return GetFeatureByName("rpc");
             }
@@ -172,11 +173,6 @@ namespace Jayrock.Json.Rpc.Web
         public virtual bool IsReusable
         {
             get { return false; }
-        }
-
-        private bool CaselessEquals(string a, string b)
-        {
-            return string.Compare(a, b, true, CultureInfo.InvariantCulture) == 0;
         }
     }
 }

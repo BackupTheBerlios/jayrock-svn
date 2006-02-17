@@ -24,6 +24,7 @@ namespace Jayrock.Json.Rpc.Web
 {
     #region Imports
 
+    using System;
     using System.IO;
     using System.Web;
 
@@ -35,6 +36,11 @@ namespace Jayrock.Json.Rpc.Web
     {
         protected override void ProcessRequest()
         {
+            if (!CaselessString.Equals(Request.RequestType, "POST"))
+            {
+                throw new JsonRpcException(string.Format("HTTP {0} is not supported for RPC execution. Use HTTP POST only.", Request.RequestType));
+            }
+
             //
             // Sets the "Cache-Control" header value to "no-cache".
             // NOTE: It does not send the common HTTP 1.0 request directive
@@ -59,8 +65,21 @@ namespace Jayrock.Json.Rpc.Web
             if (HttpRequestSecurity.IsLocal(Request))
                 dispatcher.SetLocalExecution();
 
-            using (StreamReader reader = new StreamReader(Request.InputStream, Request.ContentEncoding))
+            using (TextReader reader = GetRequestReader())
                 dispatcher.Process(reader, Response.Output);
+        }
+
+        private TextReader GetRequestReader()
+        {
+            if (CaselessString.Equals(Request.ContentType, "application/x-www-form-urlencoded"))
+            {
+                string request = Request.Form.Count == 1 ? Request.Form[0] : Request.Form["JSON-RPC"];
+                return new StringReader(request);
+            }
+            else
+            {
+                return new StreamReader(Request.InputStream, Request.ContentEncoding);
+            }
         }
 
         /*
