@@ -26,6 +26,7 @@ namespace Jayrock.Json.Rpc.Web
 
     using System;
     using System.CodeDom.Compiler;
+    using System.Diagnostics;
 
     #endregion
 
@@ -55,16 +56,34 @@ namespace Jayrock.Json.Rpc.Web
                 timeZone.DaylightName : timeZone.StandardName);
             writer.WriteLine(")");
             writer.WriteLine();
-            
+
+            string version = Mask.EmptyString(Request.QueryString["v"], "1").Trim();
+
+            if (version.Equals("2"))
+                Version2(service, new Uri(Request.Url.GetLeftPart(UriPartial.Path)), writer);
+            else
+                Version1(service, new Uri(Request.Url.GetLeftPart(UriPartial.Path)), writer);
+        }
+
+        private static void Version1(IRpcServiceDescriptor service, Uri url, IndentedTextWriter writer)
+        {
+            Debug.Assert(service != null);
+            Debug.Assert(url!= null);
+            Debug.Assert(!url.IsFile);
+            Debug.Assert(writer != null);
+
+            writer.WriteLine("// Proxy version 1.0");
+            writer.WriteLine();
+
             writer.Write("function ");
             writer.Write(service.Name);
             writer.WriteLine("(url)");
             writer.WriteLine("{");
             writer.Indent++;
-
+    
             IRpcMethodDescriptor[] methods = service.GetMethods();
             string[] methodNames = new string[methods.Length];
-
+    
             for (int i = 0; i < methods.Length; i++)
             {
                 IRpcMethodDescriptor method = methods[i];
@@ -97,9 +116,9 @@ namespace Jayrock.Json.Rpc.Web
                 writer.WriteLine("{");
                 writer.Indent++;
 
-                writer.Write("return call('");
+                writer.Write("return call(\"");
                 writer.Write(method.Name);
-                writer.Write("', [");
+                writer.Write("\", [");
 
                 foreach (IRpcParameterDescriptor parameter in parameters)
                 {
@@ -115,9 +134,9 @@ namespace Jayrock.Json.Rpc.Web
                 writer.WriteLine("}");
                 writer.WriteLine();
             }
-
+    
             writer.Write("var url = typeof(url) === 'string' ? url : '");
-            writer.Write(Request.FilePath);
+            writer.Write(url);
             writer.WriteLine("';");
             writer.WriteLine(@"var self = this;
     var nextId = 0;
@@ -176,18 +195,127 @@ namespace Jayrock.Json.Rpc.Web
         return typeof(ActiveXObject) === 'function' ? 
             new ActiveXObject('Microsoft.XMLHTTP') : /* IE 5 */
             new XMLHttpRequest(); /* Safari 1.2, Mozilla 1.0/Firefox, and Netscape 7 */
-    }
-");
-            
+    }");
+    
             writer.Indent--;
             writer.WriteLine("}");
-
+    
             writer.WriteLine();
             writer.Write(service.Name);
             writer.Write(".rpcMethods = ");
             JsonTextWriter jsonWriter = new JsonTextWriter(writer);
             jsonWriter.WriteArray(methodNames);
             writer.WriteLine(";");
+        }
+
+        private void Version2(IRpcServiceDescriptor service, Uri url, IndentedTextWriter writer)
+        {
+            Debug.Assert(service != null);
+            Debug.Assert(url!= null);
+            Debug.Assert(!url.IsFile);
+            Debug.Assert(writer != null);
+ 
+            writer.WriteLine("// Proxy version 2.0");
+            writer.WriteLine();
+ 
+            writer.Write("var ");
+            writer.Write(service.Name);
+            writer.Write(@" = function()
+{
+    var nextId = 0;
+
+    var proxy = {
+
+        url : """);
+            writer.Write(url);
+            writer.Write(@""",
+        rpc : {");
+            writer.WriteLine();
+            writer.Indent += 3;
+    
+            IRpcMethodDescriptor[] methods = service.GetMethods();
+            
+            string[] methodNames = new string[methods.Length];
+            for (int i = 0; i < methods.Length; i++)
+                methodNames[i] = methods[i].Name;
+            
+            Array.Sort(methodNames, methods);
+    
+            for (int i = 0; i < methods.Length; i++)
+            {
+                IRpcMethodDescriptor method = methods[i];
+
+                writer.WriteLine();
+
+                string summary = JsonRpcHelpAttribute.GetText(method.AttributeProvider);
+                if (summary.Length > 0)
+                {
+                    // TODO: What to do if /* and */ appear in the summary?
+
+                    writer.Write("/* ");
+                    writer.Write(summary);
+                    writer.WriteLine(" */");
+                    writer.WriteLine();
+                }
+
+                writer.Write('\"');
+                writer.Write(method.Name);
+                writer.Write("\" : function(");
+
+                IRpcParameterDescriptor[] parameters = method.GetParameters();
+                
+                foreach (IRpcParameterDescriptor parameter in parameters)
+                {
+                    writer.Write(parameter.Name);
+                    writer.Write(", ");
+                }
+
+                writer.WriteLine("callback) {");
+                writer.Indent++;
+
+                writer.Write("return new Call(\"");
+                writer.Write(method.Name);
+                writer.Write("\", [");
+
+                foreach (IRpcParameterDescriptor parameter in parameters)
+                {
+                    if (parameter.Position > 0)
+                        writer.Write(',');
+                    writer.Write(' ');
+                    writer.Write(parameter.Name);
+                }
+
+                writer.WriteLine(" ], callback);");
+
+                writer.Indent--;
+                writer.Write("}");
+                if (i < (methods.Length - 1))
+                    writer.Write(',');
+                writer.WriteLine();
+            }
+    
+            writer.Indent--;
+            writer.WriteLine(@"}
+    }
+
+    function Call(method, params, callback)
+    {
+        this.url = proxy.url;
+        this.callback = callback;
+        this.request = 
+        { 
+            id     : ++nextId, 
+            method : method, 
+            params : params 
+        };
+    }
+    
+    Call.prototype.call = function(channel) { channel(this); }
+    
+    return proxy;
+}();");
+    
+            writer.Indent--;
         }
     }
 }
