@@ -9,8 +9,8 @@ namespace Jayrock
     #endregion
 
     [ TestFixture ]
-	public class TestInternetDate
-	{
+    public class TestInternetDate
+    {
         [ Test ]
         public void CannotBeCreated()
         {
@@ -145,5 +145,5 @@ namespace Jayrock
             DateTime time = InternetDate.Parse(input);
             Assert.AreEqual(expected, time.ToUniversalTime().ToString("r"), "Input = " + input);
         }
-	}
+    }
 }

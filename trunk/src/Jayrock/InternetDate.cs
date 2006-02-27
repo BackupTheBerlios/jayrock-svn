@@ -34,8 +34,8 @@ namespace Jayrock
     /// RFC 822/1123 specification.
     /// </summary>
 
-	public sealed class InternetDate
-	{
+    public sealed class InternetDate
+    {
         private static readonly string[] _formats =
         {
                 "dd MMM yyyy HH':'mm",
@@ -172,5 +172,5 @@ namespace Jayrock
         {
             throw new NotSupportedException();   
         }
-	}
+    }
 }
