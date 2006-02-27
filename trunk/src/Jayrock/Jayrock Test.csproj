@@ -94,7 +94,17 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "InternetDate.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Mask.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "TestInternetDate.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

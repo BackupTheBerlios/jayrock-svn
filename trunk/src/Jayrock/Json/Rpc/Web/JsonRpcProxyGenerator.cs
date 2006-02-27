@@ -27,13 +27,30 @@ namespace Jayrock.Json.Rpc.Web
     using System;
     using System.CodeDom.Compiler;
     using System.Diagnostics;
+    using System.IO;
+    using System.Web;
 
     #endregion
 
     public sealed class JsonRpcProxyGenerator : JsonRpcServiceFeature
     {
+        private DateTime _lastModifiedTime;
+        private bool _lastModifiedTimeInitialized;
+
         protected override void ProcessRequest()
         {
+            if (!Modified())
+            {
+                Response.StatusCode = 304;
+                return;
+            }
+
+            if (HasLastModifiedTime)
+            {
+                Response.Cache.SetCacheability(HttpCacheability.Public);
+                Response.Cache.SetLastModified(LastModifiedTime);
+            }
+
             IRpcServiceDescriptor service = TargetService.GetDescriptor();
 
             Response.ContentType = "text/javascript";
@@ -316,6 +333,68 @@ namespace Jayrock.Json.Rpc.Web
 }();");
     
             writer.Indent--;
+        }
+
+        private bool Modified()
+        {
+            if (!HasLastModifiedTime)
+                return true;
+
+            string modifiedSinceHeader = Mask.NullString(Request.Headers["If-Modified-Since"]);
+        
+            if (modifiedSinceHeader.Length == 0)
+                return true;
+
+            DateTime modifiedSinceTime = InternetDate.Parse(modifiedSinceHeader);
+
+            DateTime time = LastModifiedTime;
+            time = new DateTime(time.Year, time.Month, time.Day, time.Hour, time.Minute, time.Second);
+
+            if (time > modifiedSinceTime)
+                return true;
+
+            return false;
+        }
+
+        private bool HasLastModifiedTime
+        {
+            get { return LastModifiedTime > DateTime.MinValue; }
+        }
+
+        private DateTime LastModifiedTime
+        {
+            get
+            {
+                if (!_lastModifiedTimeInitialized)
+                {
+                    _lastModifiedTimeInitialized = true;
+
+                    //
+                    // The last modified time is determined by taking the
+                    // last modified time of the physical file (for example,
+                    // a DLL) representing the type's assembly.
+                    //
+
+                    Uri codeBase = new Uri(TargetService.GetType().Assembly.CodeBase);
+
+                    if (codeBase.IsFile)
+                    {
+                        string path = codeBase.LocalPath;
+
+                        if (File.Exists(path))
+                        {
+                            try
+                            {
+                                _lastModifiedTime = File.GetLastWriteTime(path);
+                            }
+                            catch (UnauthorizedAccessException) { /* ignored */ }
+                            catch (IOException) { /* ignored */ }
+                        }
+                    }
+                }
+
+                return _lastModifiedTime;
+            }
         }
     }
 }
