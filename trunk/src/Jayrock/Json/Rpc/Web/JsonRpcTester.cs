@@ -88,7 +88,7 @@ namespace Jayrock.Json.Rpc.Web
             helpLink.NavigateUrl = Request.FilePath + "?help";
             selectionPara.Controls.Add(helpLink);
 
-            Control requestPara = AddPara(form, null, "Request: ");
+            Control requestPara = AddPara(form, null, "Request parameters: ");
 
             HtmlTextArea requestArea = new HtmlTextArea();
             requestArea.ID = "Request";
@@ -96,7 +96,7 @@ namespace Jayrock.Json.Rpc.Web
             requestArea.Attributes.Add("title", "Enter the array of parameters (in JSON) to send in the RPC request.");
             requestPara.Controls.Add(requestArea);
         
-            Control responsePara = AddPara(form, null, "Response: ");
+            Control responsePara = AddPara(form, null, "Response result/error: ");
 
             HtmlTextArea responseArea = new HtmlTextArea();
             responseArea.ID = "Response";
@@ -105,8 +105,8 @@ namespace Jayrock.Json.Rpc.Web
             responseArea.Attributes.Add("title", "The result or error object (in JSON) from the last RPC response.");
             responsePara.Controls.Add(responseArea);
 
-            Control timingPara = AddPara(content, null, null);
-            timingPara.ID = "timing";
+            Control statsPara = AddPara(content, null, null);
+            statsPara.ID = "Stats";
 
             AddScriptInclude((Request.ApplicationPath.Equals("/") ? 
                 string.Empty : Request.ApplicationPath) + "/json.js");
@@ -115,6 +115,18 @@ namespace Jayrock.Json.Rpc.Web
                 var callTemplates = " + BuildCallTemplatesObject() + @";
                 var theForm = null;
                 var nextRequestId = 0;
+
+                Number.prototype.formatWhole = function()
+                {
+                    var s = this.toFixed(0).toString();
+                    var groups = [];
+                    while (s.length > 0)
+                    {
+                        groups.unshift(s.slice(-3));
+                        s = s.slice(0, -3);
+                    }
+                    return groups.join();
+                }
 
                 window.onload = function() 
                 { 
@@ -165,12 +177,12 @@ namespace Jayrock.Json.Rpc.Web
                         throw { message : http.status + ' ' + http.statusText, toString : function() { return message; } };
                     var response = JSON.eval(http.responseText);
                     var timeTaken = (new Date()) - clockStart;
-                    var timing = document.getElementById('timing');
-                    var timingText = document.createTextNode('Time taken = ' + (timeTaken / 1000).toFixed(4) + ' milliseconds.');
-                    if (timing.firstChild == null)
-                        timing.appendChild(timingText);
+                    var stats = document.getElementById('Stats');
+                    var statsText = document.createTextNode('Time taken = ' + (timeTaken / 1000).toFixed(4) + ' milliseconds; Response size = ' + http.responseText.length.formatWhole() + ' char(s)');
+                    if (stats.firstChild == null)
+                        stats.appendChild(statsText);
                     else
-                        timing.replaceChild(timingText, timing.firstChild);
+                        stats.replaceChild(statsText, stats.firstChild);
                     if (response.error != null) throw response.error;
                     return response.result;
                 }
