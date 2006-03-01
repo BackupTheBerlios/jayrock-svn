@@ -108,6 +108,9 @@ namespace Jayrock.Json.Rpc.Web
             Control statsPara = AddPara(content, null, null);
             statsPara.ID = "Stats";
 
+            Control headersPre = AddGeneric(content, "pre");
+            headersPre.ID = "Headers";
+
             AddScriptInclude((Request.ApplicationPath.Equals("/") ? 
                 string.Empty : Request.ApplicationPath) + "/json.js");
 
@@ -141,6 +144,12 @@ namespace Jayrock.Json.Rpc.Web
 
                 function Test_onclick(sender)
                 {
+                    var stats = document.getElementById('Stats');
+                    setText(stats, null);
+
+                    var headers = document.getElementById('Headers');
+                    setText(headers, null);
+
                     var form = theForm;
 
                     try
@@ -153,7 +162,10 @@ namespace Jayrock.Json.Rpc.Web
                         form.Response.value = '';
                         form.Response.className = '';
                         var response = callSync(request);
-                        form.Response.value = JSON.stringify(response);
+                        setText(stats, 'Time taken = ' + (response.timeTaken / 1000).toFixed(4) + ' milliseconds; Response size = ' + response.http.text.length.formatWhole() + ' char(s)');
+                        setText(headers, response.http.headers);
+                        if (response.error != null) throw response.error;
+                        form.Response.value = JSON.stringify(response.result);
                     }
                     catch (e)
                     {
@@ -176,15 +188,26 @@ namespace Jayrock.Json.Rpc.Web
                     if (http.status != 200)
                         throw { message : http.status + ' ' + http.statusText, toString : function() { return this.message; } };
                     var response = JSON.eval(http.responseText);
-                    var timeTaken = (new Date()) - clockStart;
-                    var stats = document.getElementById('Stats');
-                    var statsText = document.createTextNode('Time taken = ' + (timeTaken / 1000).toFixed(4) + ' milliseconds; Response size = ' + http.responseText.length.formatWhole() + ' char(s)');
-                    if (stats.firstChild == null)
-                        stats.appendChild(statsText);
-                    else
-                        stats.replaceChild(statsText, stats.firstChild);
-                    if (response.error != null) throw response.error;
-                    return response.result;
+                    response.timeTaken = (new Date()) - clockStart;
+                    response.http = { text : http.responseText, headers : http.getAllResponseHeaders() };
+                    return response;
+                }
+
+                function setText(e, text)
+                {
+                    while (e.firstChild)
+                        e.removeChild(e.firstChild);
+
+                    if (text == null) 
+                        return;
+
+                    text = text.toString();
+
+                    if (0 === text.length) 
+                        return;
+
+                    var textNode = document.createTextNode(text);
+                    e.appendChild(textNode);
                 }
                 ");
 
@@ -300,6 +323,10 @@ namespace Jayrock.Json.Rpc.Web
 
                 #Response.error {
                     color: red;
+                }
+
+                #Headers {
+                    font-size: 100%;
                 }");
 
             style.Attributes["type"] = "text/css";
