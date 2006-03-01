@@ -174,7 +174,7 @@ namespace Jayrock.Json.Rpc.Web
                     http.setRequestHeader('X-JSON-RPC', request.method);
                     http.send(JSON.stringify(request));
                     if (http.status != 200)
-                        throw { message : http.status + ' ' + http.statusText, toString : function() { return message; } };
+                        throw { message : http.status + ' ' + http.statusText, toString : function() { return this.message; } };
                     var response = JSON.eval(http.responseText);
                     var timeTaken = (new Date()) - clockStart;
                     var stats = document.getElementById('Stats');
