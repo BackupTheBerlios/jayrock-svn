@@ -126,17 +126,6 @@
                     BuildAction = "Content"
                 />
                 <File
-                    RelPath = "Global.asax.cs"
-                    DependentUpon = "Global.asax"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Global.asax.resx"
-                    DependentUpon = "Global.asax.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
                     RelPath = "json.js"
                     BuildAction = "Content"
                 />
