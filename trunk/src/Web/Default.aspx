@@ -223,9 +223,9 @@ namespace JayrockWeb
                 string. That's because <code>JsonRpcHandler</code> defaults to the
                 help feature when it sees a plain HTTP <code><a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.3">
                         GET</a></code>
-                request for your JSON-RPC service (Jayrock does not supports invocations over
-                HTTP <code><a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.5">POST</a></code>
-                right now).
+                request for your JSON-RPC service (Jayrock does not support method invocations over
+                HTTP <code><a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.3">GET</a></code>
+                at present).
                 You should also be able to see a link to the test page from where you
                 can invoke and test each individual method. Click on this link now,
                 which should yield a page similar to the one shown here:
