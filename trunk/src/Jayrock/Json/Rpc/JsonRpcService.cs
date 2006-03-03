@@ -149,6 +149,10 @@ namespace Jayrock.Json.Rpc
         public virtual string SystemAbout()
         {
             StringWriter writer = new StringWriter();
+
+            //
+            // Write out the assembly name and version.
+            //
             
             Assembly assembly = typeof(JsonRpcService).Assembly;
             AssemblyName name = assembly.GetName();
@@ -157,24 +161,46 @@ namespace Jayrock.Json.Rpc
             writer.Write(", ");
             writer.Write(name.Version.ToString());
 
+            //
+            // Write out the build configuration, and if available, the 
+            // assembly file version.
+            //
+
+            writer.Write(" (");
+
+            AssemblyConfigurationAttribute configuration = (AssemblyConfigurationAttribute) Attribute.GetCustomAttribute(assembly, typeof(AssemblyConfigurationAttribute));
+            
+            Debug.Assert(configuration != null);
+            Debug.Assert(Mask.NullString(configuration.Configuration).Length > 0);
+
+            writer.Write(configuration.Configuration);
+            writer.Write(" build");
+
             Uri codeBase = new Uri(name.CodeBase);
 
-            if (codeBase.IsFile && 
-                File.Exists(codeBase.LocalPath))
+            if (codeBase.IsFile && File.Exists(codeBase.LocalPath))
             {
                 FileVersionInfo versionInfo = FileVersionInfo.GetVersionInfo(codeBase.LocalPath);
-
-                writer.Write(" (");
+                writer.Write(' ');
                 writer.Write(versionInfo.FileVersion);
-                writer.Write(")");
             }
 
+            writer.Write(")");
+
             writer.WriteLine();
-            
+
+            //
+            // Write out the copyright notice, if available.
+            //
+
             AssemblyCopyrightAttribute copyright = (AssemblyCopyrightAttribute) Attribute.GetCustomAttribute(assembly, typeof(AssemblyCopyrightAttribute));
 
             if (copyright != null && Mask.NullString(copyright.Copyright).Length > 0)
                 writer.WriteLine(copyright.Copyright);
+
+            //
+            // Write out project home page location.
+            //
 
             writer.WriteLine("For more information, visit http://jayrock.berlios.de/");
 
