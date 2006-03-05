@@ -249,13 +249,7 @@ namespace Jayrock.Json.Rpc
             if (JsonRpcTrace.Switch.TraceError)
                 JsonRpcTrace.Error(e);
 
-            JObject error = new JObject();
-            error.Put("message", e.GetBaseException().Message);
-
-            if (_localExecution)
-                error.Put("stackTrace", e.StackTrace);
-
-            return error;
+            return JsonRpcError.FromException(e, _localExecution);
         }
     }
 }
