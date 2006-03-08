@@ -177,7 +177,6 @@ namespace Jayrock.Json.Rpc.Web
 
                 function callSync(request)
                 {
-                    var clockStart = new Date();
                     var http = window.ActiveXObject ? 
                         new ActiveXObject('Microsoft.XMLHTTP') :
                         new XMLHttpRequest();
@@ -187,6 +186,7 @@ namespace Jayrock.Json.Rpc.Web
                     http.send(JSON.stringify(request));
                     if (http.status != 200)
                         throw { message : http.status + ' ' + http.statusText, toString : function() { return this.message; } };
+                    var clockStart = new Date();
                     var response = JSON.eval(http.responseText);
                     response.timeTaken = (new Date()) - clockStart;
                     response.http = { text : http.responseText, headers : http.getAllResponseHeaders() };
@@ -308,6 +308,7 @@ namespace Jayrock.Json.Rpc.Web
                     font-weight: normal; 
                     padding: 0.5em;
                     background-color: #003366; 
+                    margin-top: 0;
                 }
 
                 #Content {
@@ -326,7 +327,8 @@ namespace Jayrock.Json.Rpc.Web
                 }
 
                 #Headers {
-                    font-size: 100%;
+                    font-family: Courier New, Courier, Monospace;
+                    font-size: 120%;
                 }");
 
             style.Attributes["type"] = "text/css";

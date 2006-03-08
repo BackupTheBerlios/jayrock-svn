@@ -173,6 +173,7 @@ namespace Jayrock.Json.Rpc.Web
                     font-weight: normal; 
                     padding: 0.5em;
                     background-color: #003366; 
+                    margin-top: 0;
                 }
 
                 #Content {
@@ -190,7 +191,7 @@ namespace Jayrock.Json.Rpc.Web
 
                 .method {
                     font-size: 1.2em;
-                    font-family: monospace;
+                    font-family: Courier New, Courier, Monospace;
                 }
 
                 .method-name {
