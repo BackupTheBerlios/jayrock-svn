@@ -25,36 +25,55 @@ namespace Jayrock.Json.Formatters
     #region Imports
 
     using System;
+    using System.Collections;
+    using System.Collections.Specialized;
     using System.ComponentModel;
     using System.Diagnostics;
 
     #endregion
 
-    public sealed class ComponentFormatter : JsonFormatter
+    public sealed class NameValueCollectionFormatter : JsonFormatter
     {
-        protected override void FormatOther(object o, JsonWriter writer)
+        protected override void FormatEnumerable(IEnumerable enumerable, JsonWriter writer)
         {
             if (writer == null)
                 throw new ArgumentNullException("writer");
 
-            if (JNull.LogicallyEquals(o))
+            if (JNull.LogicallyEquals(enumerable))
             {
-                FormatNull(o, writer);
+                writer.WriteNull();   
                 return;
             }
 
+            NameValueCollection collection = enumerable as NameValueCollection;
+
+            if (collection != null)
+                FormatNameValueCollection(collection, writer);
+            else
+                base.FormatEnumerable(enumerable, writer);
+        }
+
+        private static void FormatNameValueCollection(NameValueCollection collection, JsonWriter writer)
+        {
+            Debug.Assert(collection != null);
+            Debug.Assert(writer != null);
+
             writer.WriteStartObject();
 
-            foreach (PropertyDescriptor property in TypeDescriptor.GetProperties(o))
+            if (collection.HasKeys())
             {
-                // TODO: Allow someone to indicate via an attribute (e.g. JsonIgnore) that a property should be excluded.
-
-                object value = property.GetValue(o);
-                
-                if (!JNull.LogicallyEquals(value))
+                for (int i = 0; i < collection.Count; i++)
                 {
-                    writer.WriteMember(property.Name);
-                    writer.WriteValue(value);
+                    writer.WriteMember(collection.GetKey(i));
+                    
+                    string[] values = collection.GetValues(i);
+                    
+                    if (values == null)
+                        writer.WriteNull();
+                    else if (values.Length > 1)
+                        writer.WriteValue(values);
+                    else
+                        writer.WriteValue(values[0]);
                 }
             }
 

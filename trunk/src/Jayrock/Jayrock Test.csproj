@@ -274,6 +274,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Json\Formatters\NameValueCollectionFormatter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\Formatters\TestComponentFormatter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -290,6 +295,11 @@
                 />
                 <File
                     RelPath = "Json\Formatters\TestDateTimeFormatter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Formatters\TestNameValueCollectionFormatter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

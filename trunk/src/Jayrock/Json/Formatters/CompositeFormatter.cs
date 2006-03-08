@@ -95,14 +95,14 @@ namespace Jayrock.Json.Formatters
             return null;
         }
 
-        protected override void FormatCustom(object o, JsonWriter writer)
+        protected override void FormatOther(object o, JsonWriter writer)
         {
             IJsonFormatter formatter = SelectFormatter(o.GetType());
                 
             if (formatter != null)
                 formatter.Format(o, writer);
             else
-                base.FormatCustom(o, writer);
+                base.FormatOther(o, writer);
         }
     }
 }

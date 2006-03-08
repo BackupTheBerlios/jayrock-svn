@@ -7,6 +7,7 @@ namespace JayrockWeb
     using System.Data;
     using System.Data.SqlClient;
     using System.Collections;
+    using System.Collections.Specialized;
     using System.Web;
     using System.Web.SessionState;
     using System.Web.UI;
@@ -90,6 +91,13 @@ namespace JayrockWeb
             return Request.Cookies;
         }
         
+        [ JsonRpcMethod("severVariables")]
+        [ JsonRpcHelp("Returns the server variables collection at the server. Demonstrates returning NameValueCollection.") ]
+        public NameValueCollection SeverVariables()
+        {
+            return Request.ServerVariables;
+        }
+
         [ JsonRpcMethod("getAuthor")]
         [ JsonRpcHelp("Returns information about the author. Demonstrates how a Hashtable from the server is automatically converted into an object on the client-side.") ]
         public IDictionary GetAuthor()

@@ -24,6 +24,8 @@ namespace Jayrock.Json
 {
     #region Imports
 
+    using System;
+    using System.Collections;
     using System.IO;
     using NUnit.Framework;
 
@@ -157,6 +159,37 @@ namespace Jayrock.Json
             int[] inner = new int[] { 1, 2, 3 };
             int[][] outer = new int[][] { inner, inner, inner };
             Assert.AreEqual("[[1,2,3],[1,2,3],[1,2,3]]", WriteValue(outer));
+        }
+
+        [ Test ]
+        public void WriteCustom()
+        {
+            JsonTextWriter writer = new JsonTextWriter(new StringWriter());
+            writer.ValueFormatter = new StringArrayFormatter();
+            writer.WriteValue(new object[] { 1, 2, 3, "Four", 5 });
+            Assert.AreEqual("\"1,2,3,Four,5\"", writer.ToString());
+        }
+
+        private sealed class StringArrayFormatter : JsonFormatter
+        {
+            protected override void FormatOther(object o, JsonWriter writer)
+            {
+                IEnumerable enumerable = o as IEnumerable;
+
+                if (enumerable != null)
+                {
+                    ArrayList list = new ArrayList();
+
+                    foreach (object item in enumerable)
+                        list.Add(item == null ? null : item.ToString());
+
+                    FormatString(string.Join(",", (string[]) list.ToArray(typeof(string))), writer);
+                }
+                else
+                {
+                    base.FormatOther(o, writer);
+                }
+            }
         }
 
         private static string WriteValue(object value)

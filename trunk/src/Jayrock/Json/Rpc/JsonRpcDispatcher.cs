@@ -26,6 +26,7 @@ namespace Jayrock.Json.Rpc
 
     using System;
     using System.Collections;
+    using System.Collections.Specialized;
     using System.ComponentModel.Design;
     using System.Data;
     using System.IO;
@@ -235,6 +236,7 @@ namespace Jayrock.Json.Rpc
                 formatter.AddFormatter(typeof(DataTable), new DataTableFormatter());
                 formatter.AddFormatter(typeof(DataRowView), new DataRowViewFormatter());
                 formatter.AddFormatter(typeof(DataRow), new DataRowFormatter());
+                formatter.AddFormatter(typeof(NameValueCollection), new NameValueCollectionFormatter(), true);
                 formatter.AddFormatter(typeof(Control), new ControlFormatter(), true);
 
                 writer = new JsonTextWriter(output);

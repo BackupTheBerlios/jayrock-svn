@@ -73,6 +73,16 @@ namespace Jayrock.Json
             }
 
             //
+            // For all other types, write out its string representation as a
+            // simple JSON string.
+            //
+
+            FormatOther(o, writer);
+        }
+
+        protected virtual void FormatOther(object o, JsonWriter writer)
+        {
+            //
             // If the value is a dictionary then encode it as a JSON
             // object.
             //
@@ -98,16 +108,6 @@ namespace Jayrock.Json
                 return;
             }
 
-            //
-            // For all other types, write out its string representation as a
-            // simple JSON string.
-            //
-
-            FormatCustom(o, writer);
-        }
-
-        protected virtual void FormatCustom(object o, JsonWriter writer)
-        {
             writer.WriteString(Convert.ToString(o, CultureInfo.InvariantCulture));
         }
 
