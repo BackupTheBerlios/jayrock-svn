@@ -36,17 +36,12 @@ namespace Jayrock
     {
         public static string NullString(string actual) 
         {
-            return IfStringEquals(actual, null, string.Empty);
+            return actual == null ? string.Empty : actual;
         }
 
-        public static string EmptyString(string actual, string onEmpty) 
+        public static string EmptyString(string actual, string emptyValue) 
         {
-            return Mask.NullString(actual).Length == 0 ? onEmpty : actual;
-        }
-
-        public static string IfStringEquals(string actual, string test, string newValue)
-        {
-            return string.Equals(actual, test) ? newValue : actual;
+            return Mask.NullString(actual).Length == 0 ? emptyValue : actual;
         }
 
         private Mask()
