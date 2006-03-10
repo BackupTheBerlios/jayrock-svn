@@ -1,4 +1,4 @@
-<%@ WebHandler Class="JayRockWeb.TemplateService" %>
+<%@ WebHandler Language="C#" Class="JayRockWeb.TemplateService" %>
 
 namespace JayRockWeb
 {
