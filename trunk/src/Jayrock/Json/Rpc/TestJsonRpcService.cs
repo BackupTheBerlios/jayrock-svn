@@ -38,7 +38,7 @@ namespace Jayrock.Json.Rpc
             try
             {
                 TestService service = new TestService();
-                service.Invoke("BadMethod", null);
+                service.GetDescriptor().GetMethodByName("BadMethod").Invoke(service, null);
                 Assert.Fail("Expecting an exception.");
             }
             catch (TargetMethodException e)
@@ -51,7 +51,7 @@ namespace Jayrock.Json.Rpc
         public void VariableArguments()
         {
             TestService service = new TestService();
-            IRpcMethodDescriptor method = service.GetDescriptor().GetMethodByName("VarMethod");
+            IRpcMethodDescriptor method = service.GetDescriptor().FindMethodByName("VarMethod");
             object[] args = new object[] { 1, 2, 3, 4 };
             object[] invokeArgs = JsonRpcServices.TransposeVariableArguments(method, args);
             Assert.AreEqual(1, invokeArgs.Length);
@@ -62,7 +62,7 @@ namespace Jayrock.Json.Rpc
         public void FixedAndVariableArguments()
         {
             TestService service = new TestService();
-            IRpcMethodDescriptor method = service.GetDescriptor().GetMethodByName("FixedVarMethod");
+            IRpcMethodDescriptor method = service.GetDescriptor().FindMethodByName("FixedVarMethod");
             object[] args = new object[] { 1, 2, 3, 4 };
             args = JsonRpcServices.TransposeVariableArguments(method, args);
             Assert.AreEqual(3, args.Length);
@@ -75,7 +75,7 @@ namespace Jayrock.Json.Rpc
         public void RetransposingYieldsTheSame()
         {
             TestService service = new TestService();
-            IRpcMethodDescriptor method = service.GetDescriptor().GetMethodByName("FixedVarMethod");
+            IRpcMethodDescriptor method = service.GetDescriptor().FindMethodByName("FixedVarMethod");
             object[] args = new object[] { 1, 2, 3, 4 };
             args = JsonRpcServices.TransposeVariableArguments(method, args);
             args = JsonRpcServices.TransposeVariableArguments(method, args);

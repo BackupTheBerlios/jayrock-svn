@@ -143,14 +143,29 @@ namespace Jayrock.Json.Rpc
             return (RpcMethodDescriptor[]) _methods.Clone();
         }
 
-        public RpcMethodDescriptor GetMethodByName(string name)
+        public RpcMethodDescriptor FindMethodByName(string name)
         {
             return (RpcMethodDescriptor) _nameMethodTable[name];
+        }
+
+        public RpcMethodDescriptor GetMethodByName(string name)
+        {
+            RpcMethodDescriptor method = FindMethodByName(name);
+
+            if (method == null)
+                throw new MethodNotFoundException();
+
+            return method;
         }
 
         IRpcMethodDescriptor[] IRpcServiceDescriptor.GetMethods()
         {
             return GetMethods();
+        }
+
+        IRpcMethodDescriptor IRpcServiceDescriptor.FindMethodByName(string name)
+        {
+            return FindMethodByName(name);
         }
 
         IRpcMethodDescriptor IRpcServiceDescriptor.GetMethodByName(string name)

@@ -32,6 +32,7 @@ namespace Jayrock.Json.Rpc
     {
         string Name { get; }
         IRpcMethodDescriptor[] GetMethods();
+        IRpcMethodDescriptor FindMethodByName(string name);
         IRpcMethodDescriptor GetMethodByName(string name);
     }
 }

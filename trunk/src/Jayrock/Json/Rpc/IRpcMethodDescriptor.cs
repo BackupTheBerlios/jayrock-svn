@@ -36,5 +36,8 @@ namespace Jayrock.Json.Rpc
         Type ResultType { get; }
         ICustomAttributeProvider ReturnTypeAttributeProvider { get; }
         IRpcServiceDescriptor ServiceDescriptor { get; }
+        object Invoke(IRpcService service, object[] args);
+        IAsyncResult BeginInvoke(IRpcService service, object[] args, AsyncCallback callback, object asyncState);
+        object EndInvoke(IAsyncResult asyncResult);
     }
 }

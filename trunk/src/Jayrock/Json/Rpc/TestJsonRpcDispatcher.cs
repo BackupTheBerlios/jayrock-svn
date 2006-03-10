@@ -26,6 +26,7 @@ namespace Jayrock.Json.Rpc
 
     using System;
     using System.Collections;
+    using System.Reflection;
     using NUnit.Framework;
 
     #endregion
@@ -101,30 +102,80 @@ namespace Jayrock.Json.Rpc
             return (new JsonParser()).Parse(source);
         }
 
-        private sealed class EchoService : IRpcService
+        private sealed class EchoService : IRpcService, IRpcServiceDescriptor, IRpcMethodDescriptor
         {
             public string LastMethodName;
             public object[] LastArguments;
             public object NextResult;
 
-            public IRpcServiceDescriptor GetDescriptor()
+            IRpcServiceDescriptor IRpcService.GetDescriptor()
+            {
+                return this;
+            }
+
+            string IRpcServiceDescriptor.Name
+            {
+                get { throw new NotImplementedException(); }
+            }
+
+            IRpcMethodDescriptor[] IRpcServiceDescriptor.GetMethods()
             {
                 throw new NotImplementedException();
             }
 
-            public object Invoke(string methodName, object[] args)
+            IRpcMethodDescriptor IRpcServiceDescriptor.FindMethodByName(string name)
             {
-                LastMethodName = methodName;
+                LastMethodName = name;
+                return this;
+            }
+
+            IRpcMethodDescriptor IRpcServiceDescriptor.GetMethodByName(string name)
+            {
+                LastMethodName = name;
+                return this;
+            }
+            ICustomAttributeProvider IRpcAnnotated.AttributeProvider
+            {
+                get { throw new NotImplementedException(); }
+            }
+
+            string IRpcMethodDescriptor.Name
+            {
+                get { throw new NotImplementedException(); }
+            }
+
+            IRpcParameterDescriptor[] IRpcMethodDescriptor.GetParameters()
+            {
+                throw new NotImplementedException();
+            }
+
+            Type IRpcMethodDescriptor.ResultType
+            {
+                get { throw new NotImplementedException(); }
+            }
+
+            ICustomAttributeProvider IRpcMethodDescriptor.ReturnTypeAttributeProvider
+            {
+                get { throw new NotImplementedException(); }
+            }
+
+            IRpcServiceDescriptor IRpcMethodDescriptor.ServiceDescriptor
+            {
+                get { throw new NotImplementedException(); }
+            }
+
+            object IRpcMethodDescriptor.Invoke(IRpcService service, object[] args)
+            {
                 LastArguments = args;
                 return NextResult;
             }
 
-            public IAsyncResult BeginInvoke(string methodName, object[] args, AsyncCallback callback, object asyncState)
+            IAsyncResult IRpcMethodDescriptor.BeginInvoke(IRpcService service, object[] args, AsyncCallback callback, object asyncState)
             {
                 throw new NotImplementedException();
             }
 
-            public object EndInvoke(IAsyncResult asyncResult)
+            object IRpcMethodDescriptor.EndInvoke(IAsyncResult asyncResult)
             {
                 throw new NotImplementedException();
             }

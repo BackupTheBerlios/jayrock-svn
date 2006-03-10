@@ -127,6 +127,11 @@ namespace Jayrock.Json.Rpc
                 throw new NotImplementedException();
             }
 
+            public IRpcMethodDescriptor FindMethodByName(string name)
+            {
+                throw new NotImplementedException();
+            }
+
             public IRpcMethodDescriptor GetMethodByName(string name)
             {
                 throw new NotImplementedException();
@@ -167,22 +172,6 @@ namespace Jayrock.Json.Rpc
             {
                 throw new NotImplementedException();
             }
-
-            public object Invoke(string methodName, object[] args)
-            {
-                throw new NotImplementedException();
-            }
-
-            public IAsyncResult BeginInvoke(string methodName, object[] args, AsyncCallback callback, object asyncState)
-            {
-                throw new NotImplementedException();
-            }
-
-            public object EndInvoke(IAsyncResult asyncResult)
-            {
-                throw new NotImplementedException();
-            }
-
         }
     }
 }

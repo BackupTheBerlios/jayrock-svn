@@ -166,7 +166,7 @@ namespace Jayrock.Json.Rpc
 
             try
             {
-                result = _service.Invoke(methodName, args);
+                result = _service.GetDescriptor().GetMethodByName(methodName).Invoke(_service, args);
             }
             catch (MethodNotFoundException e)
             {

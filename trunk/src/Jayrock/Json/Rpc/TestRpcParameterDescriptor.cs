@@ -105,6 +105,16 @@ namespace Jayrock.Json.Rpc
                 throw new NotImplementedException();
             }
 
+            public IAsyncResult BeginInvoke(IRpcService service, object[] args, AsyncCallback callback, object asyncState)
+            {
+                throw new NotImplementedException();
+            }
+
+            public object EndInvoke(IAsyncResult asyncResult)
+            {
+                throw new NotImplementedException();
+            }
+
             public ICustomAttributeProvider AttributeProvider
             {
                 get { throw new NotImplementedException(); }

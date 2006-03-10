@@ -154,14 +154,61 @@ namespace Jayrock.Json.Rpc
             get { return false; }
         }
 
+        /// <remarks>
+        /// The default implementation calls Invoke synchronously and returns
+        /// an IAsyncResult that also indicates that the operation completed
+        /// synchronously. If a callback was supplied, it will be called 
+        /// before BeginInvoke returns. Also, if Invoke throws an exception, 
+        /// it is delayed until EndInvoke is called to retrieve the results.
+        /// </remarks>
+
         public IAsyncResult BeginInvoke(IRpcService service, object[] args, AsyncCallback callback, object asyncState)
         {
-            throw new NotImplementedException();
+            if (service == null)
+                throw new ArgumentNullException("service");
+
+            SynchronousAsyncResult asyncResult;
+
+            try
+            {
+                object result = Invoke(service, args);
+                asyncResult = SynchronousAsyncResult.Success(asyncState, result);
+            }
+            catch (Exception e)
+            {
+                asyncResult = SynchronousAsyncResult.Failure(asyncState, e);
+            }
+
+            if (callback != null)
+                callback(asyncResult);
+                
+            return asyncResult;
         }
-        
-        public object EndInvoke(IRpcService service, IAsyncResult asyncResult)
+
+        public object EndInvoke(IAsyncResult asyncResult)
         {
-            throw new NotImplementedException();
+            if (asyncResult == null)
+                throw new ArgumentException("asyncResult");
+
+            SynchronousAsyncResult ar = asyncResult as SynchronousAsyncResult;
+
+            if (ar == null)
+                throw new ArgumentOutOfRangeException("asyncResult", "IAsyncResult object did not come from the corresponding async method on this type.");
+
+            //
+            // IMPORTANT! The End method on SynchronousAsyncResult will 
+            // throw an exception if that's what Invoke did when 
+            // BeginInvoke called it. The unforunate side effect of this is
+            // the stack trace information for the exception is lost and 
+            // reset to this point. There seems to be a basic failure in the 
+            // framework to accommodate for this case more generally. One 
+            // could handle this through a custom exception that wraps the 
+            // original exception, but this assumes that an invocation will 
+            // only throw an exception of that custom type. We need to 
+            // think more about this.
+            //
+
+            return ar.End("Invoke");
         }
 
         public ICustomAttributeProvider AttributeProvider

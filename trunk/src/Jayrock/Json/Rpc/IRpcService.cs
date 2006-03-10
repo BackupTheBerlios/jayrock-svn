@@ -32,8 +32,5 @@ namespace Jayrock.Json.Rpc
     public interface IRpcService
     {
         IRpcServiceDescriptor GetDescriptor();
-        object Invoke(string methodName, object[] args);
-        IAsyncResult BeginInvoke(string methodName, object[] args, AsyncCallback callback, object asyncState);
-        object EndInvoke(IAsyncResult asyncResult);
     }
 }
