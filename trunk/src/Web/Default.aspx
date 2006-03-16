@@ -17,6 +17,7 @@
                     <li><a href="#what-is">What is Jayrock?</a></li>
                     <li><a href="#get-source">Downloading &amp; Compiling</a></li>
                     <li><a href="#contributing">Contributing to the Project</a></li>
+                    <li><a href="#community">Community &amp; Discussions</a></li>
                     <li><a href="#setup">Setting Up Jayrock</a></li>
                     <li><a href="#quick-start">ASP.NET Quick Start</a></li>
                     <li><a href="#samples">Samples &amp; Demos</a></li>
@@ -63,19 +64,39 @@
                 and companies to collaborate on projects that none could achieve on
                 their own. Second, the open source model has the technical advantage of
                 turning users into potential co-developers. With source code readily
-                available, users will help you debug quickly and promote rapid code 
-                enhancements.
-                In short, <strong>you are absolutely encoraged to contribute!</strong>
+                available, users can help debug quickly and promote rapid code 
+                enhancements. In short, <strong>you are encoraged and invited to contribute!</strong>
             </p>
             <p>
                 Please <a href="http://www.raboof.com/contact.aspx">contact Atif Aziz</a>
-                (principal developer) if you are interested in contributing. You don't
+                (principal developer) if you are interested in contributing.</p>
+            <p>
+                You don't
                 have to necessarily contribute in the form of code submissions only. 
                 Contributions are appreciated and needed whether you can help diagnose problems,
-                suggest fixes, improve the code or provide peer support on forums,
-                mailing lists and newsgroups. For more information, see 
+                suggest fixes, improve the code or provide <a href="#community">peer support on 
+                mailing lists, forums or newsgroups</a>. For more information, see 
                 <a href="http://developer.berlios.de/projects/jayrock/">Jayrock on berliOS</a>.
             </p>
+            <h1><a name="community">Community &amp; Discussions</a></h1>
+            <p>
+                Jayrock is an open source project and so naturally relies on to build, leverage and
+                enjoy peer support from a community of users with a shared interest in the project. 
+                Assessing if Jayrock is right the right solution for you? Having trouble using some 
+                aspect of it? Want to simply provide feedback or ideas for further development? 
+                Then <a href="http://groups.google.com/group/jayrock">Jayrock Google Group</a> is
+                the place to go.
+            </p>
+            <table style="border:1px solid #aa0033; font-size:small" align="center">
+              <tr> 
+                <td rowspan="2">
+                 <img src="http://groups.google.com/groups/img/groups_medium.gif" height="58" width="150" alt="Google Groups">
+                </td>
+                <td align="center"><b>Jayrock</b></td>
+              </tr>
+              <tr><td align="center"><a href="http://groups.google.com/group/jayrock">Browse Archives</a> at <a href="http://groups.google.com">groups.google.com</a>
+              </td></tr>
+            </table>
             <h1><a name="setup">Setting Up Jayrock</a></h1>
             <ol>
                 <li>Setup a virtual directory and application in IIS called <code>jayrock</code> that
