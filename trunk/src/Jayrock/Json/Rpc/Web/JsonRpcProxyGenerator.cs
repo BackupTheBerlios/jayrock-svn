@@ -327,7 +327,7 @@ namespace Jayrock.Json.Rpc.Web
         };
     }
     
-    Call.prototype.call = function(channel) { channel(this); }
+    Call.prototype.call = function(channel) { return channel(this); }
     
     return proxy;
 }();");
