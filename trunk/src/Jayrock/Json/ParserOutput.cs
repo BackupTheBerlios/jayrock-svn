@@ -109,7 +109,7 @@ namespace Jayrock.Json
                 throw new ArgumentOutOfRangeException("name");
 
             if (_currentObject == null)
-                throw new InvalidOperationException("BuildObject must be called before ObjectPut.");
+                throw new InvalidOperationException("StartObject must be called before ObjectPut.");
 
             _currentObject[name] = value;
         }
@@ -117,7 +117,7 @@ namespace Jayrock.Json
         public object EndObject()
         {
             if (_currentObject == null)
-                throw new InvalidOperationException("BuildObject must be called before EndObject.");
+                throw new InvalidOperationException("StartObject must be called before EndObject.");
 
             return OnEnd(_currentObject);
         }
@@ -131,7 +131,7 @@ namespace Jayrock.Json
         public void ArrayPut(object value)
         {
             if (_currentArray == null)
-                throw new InvalidOperationException("BuildArray must be called before ArrayPut.");
+                throw new InvalidOperationException("StartArray must be called before ArrayPut.");
 
             _currentArray.Add(value);
         }
@@ -139,7 +139,7 @@ namespace Jayrock.Json
         public object EndArray()
         {
             if (_currentArray == null)
-                throw new InvalidOperationException("BuildArray must be called before EndArray.");
+                throw new InvalidOperationException("StartArray must be called before EndArray.");
 
             return OnEnd(_currentArray);
         }
