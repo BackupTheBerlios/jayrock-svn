@@ -49,10 +49,7 @@ namespace Jayrock.Json
         private ArrayList _nameIndexList;
         [ NonSerialized ] private IList _readOnlyNameIndexList;
 
-        public JObject()
-        {
-            _nameIndexList = new ArrayList();
-        }
+        public JObject() {}
 
         /// <summary>
         /// Construct a JObject from a IDictionary
@@ -80,6 +77,17 @@ namespace Jayrock.Json
         public virtual bool HasMembers
         {
             get { return Count > 0; }
+        }
+
+        private ArrayList NameIndexList
+        {
+            get
+            {
+                if (_nameIndexList == null)
+                    _nameIndexList = new ArrayList();
+
+                return _nameIndexList;
+            }
         }
 
         /// <summary>
@@ -160,7 +168,7 @@ namespace Jayrock.Json
             get
             {
                 if (_readOnlyNameIndexList == null)
-                    _readOnlyNameIndexList = ArrayList.ReadOnly(_nameIndexList);
+                    _readOnlyNameIndexList = ArrayList.ReadOnly(NameIndexList);
 
                 return _readOnlyNameIndexList;
             }
@@ -183,7 +191,7 @@ namespace Jayrock.Json
             if (list == null)
                 throw new ArgumentNullException("list");
 
-            foreach (string name in _nameIndexList)
+            foreach (string name in NameIndexList)
                 list.Add(name);
         }
 
@@ -202,7 +210,7 @@ namespace Jayrock.Json
         {
             writer.WriteStartObject();
             
-            foreach (string name in _nameIndexList)
+            foreach (string name in NameIndexList)
             {
                 writer.WriteMember(name);    
                 writer.WriteValue(InnerHashtable[name]);
@@ -232,7 +240,7 @@ namespace Jayrock.Json
             // add the new key at the end of the name list.
             //
 
-            _nameIndexList.Add(key);
+            NameIndexList.Add(key);
         }
 
         protected override void OnSet(object key, object oldValue, object newValue)
@@ -248,18 +256,18 @@ namespace Jayrock.Json
             // implementation would have done this for.
             //
 
-            if (oldValue == null && !_nameIndexList.Contains(key))
+            if (oldValue == null && !NameIndexList.Contains(key))
                 OnInsert(key, newValue);
         }
 
         protected override void OnRemove(object key, object value)
         {
-            _nameIndexList.Remove(key);
+            NameIndexList.Remove(key);
         }
 
         protected override void OnClear()
         {
-            _nameIndexList.Clear();
+            NameIndexList.Clear();
         }
     }
 }
