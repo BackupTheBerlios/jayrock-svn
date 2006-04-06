@@ -34,13 +34,15 @@ namespace Jayrock.Json
     [ Serializable ]
     public class ParseException : System.ApplicationException
     {
-        public ParseException() : this("An error occurred trying to parse the JSON string.") {}
+        private const string _defaultMessage = "An error occurred trying to parse the JSON string.";
+
+        public ParseException() : this(null) {}
 
         public ParseException(string message) : 
-            base(message) {}
+            base(Mask.NullString(message, _defaultMessage)) {}
 
         public ParseException(string message, Exception innerException) :
-            base(message, innerException) {}
+            base(Mask.NullString(message, _defaultMessage), innerException) {}
 
         protected ParseException(SerializationInfo info, StreamingContext context) :
             base(info, context) {}

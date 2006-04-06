@@ -45,10 +45,10 @@ namespace Jayrock.Json.Rpc
             base(_defaultMessage, innerException) {}
 
         public InvocationException(string message) : 
-            base(message) {}
+            base(Mask.NullString(message, _defaultMessage)) {}
 
         public InvocationException(string message, Exception innerException) :
-            base(message, innerException) {}
+            base(Mask.NullString(message, _defaultMessage), innerException) {}
 
         protected InvocationException(SerializationInfo info, StreamingContext context) :
             base(info, context) {}

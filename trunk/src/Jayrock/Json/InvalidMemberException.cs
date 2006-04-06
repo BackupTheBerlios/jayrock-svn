@@ -34,13 +34,15 @@ namespace Jayrock.Json
     [ Serializable ]
     public class InvalidMemberException : System.ApplicationException
     {
-        public InvalidMemberException() : this("No element exists at the specified index.") {}
+        private const string _defaultMessage = "No element exists at the specified index.";
+        
+        public InvalidMemberException() : this(null) {}
 
         public InvalidMemberException(string message) : 
-            base(message) {}
+            base(Mask.NullString(message, _defaultMessage)) {}
 
         public InvalidMemberException(string message, Exception innerException) :
-            base(message, innerException) {}
+            base(Mask.NullString(message, _defaultMessage), innerException) {}
 
         protected InvalidMemberException(SerializationInfo info, StreamingContext context) :
             base(info, context) {}

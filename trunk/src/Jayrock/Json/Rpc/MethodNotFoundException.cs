@@ -34,13 +34,15 @@ namespace Jayrock.Json.Rpc
     [ Serializable ]
     public class MethodNotFoundException : System.ApplicationException
     {
-        public MethodNotFoundException() : this("Method not found.") {}
+        private const string _defaultMessage = "Method not found.";
+
+        public MethodNotFoundException() : this(null) {}
 
         public MethodNotFoundException(string message) : 
-            base(message) {}
+            base(Mask.NullString(message, _defaultMessage)) {}
 
         public MethodNotFoundException(string message, Exception innerException) :
-            base(message, innerException) {}
+            base(Mask.NullString(message, _defaultMessage), innerException) {}
 
         protected MethodNotFoundException(SerializationInfo info, StreamingContext context) :
             base(info, context) {}

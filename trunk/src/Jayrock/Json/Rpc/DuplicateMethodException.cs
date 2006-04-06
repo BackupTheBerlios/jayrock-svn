@@ -34,13 +34,15 @@ namespace Jayrock.Json.Rpc
     [ Serializable ]
     public class DuplicateMethodException : System.ApplicationException
     {
-        public DuplicateMethodException() : this("A method with the same name has been defined elsewhere on the service.") {}
+        private const string _defaultMessage = "A method with the same name has been defined elsewhere on the service.";
+        
+        public DuplicateMethodException() : this(null) {}
 
         public DuplicateMethodException(string message) : 
-            base(message) {}
+            base(Mask.NullString(message, _defaultMessage)) {}
 
         public DuplicateMethodException(string message, Exception innerException) :
-            base(message, innerException) {}
+            base(Mask.NullString(message, _defaultMessage), innerException) {}
 
         protected DuplicateMethodException(SerializationInfo info, StreamingContext context) :
             base(info, context) {}

@@ -36,16 +36,16 @@ namespace Jayrock.Json.Rpc
     {
         private const string _defaultMessage = "The JSON-RPC request could not be completed due to an error.";
 
-        public JsonRpcException() : this(_defaultMessage) {}
+        public JsonRpcException() : this((string) null) {}
 
         public JsonRpcException(Exception innerException) :
             base(_defaultMessage, innerException) {}
 
         public JsonRpcException(string message) : 
-            base(message) {}
+            base(Mask.NullString(message, _defaultMessage)) {}
 
         public JsonRpcException(string message, Exception innerException) :
-            base(message, innerException) {}
+            base(Mask.NullString(message, _defaultMessage), innerException) {}
 
         protected JsonRpcException(SerializationInfo info, StreamingContext context) :
             base(info, context) {}
