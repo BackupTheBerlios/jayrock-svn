@@ -22,11 +22,11 @@
 
 namespace Jayrock
 {
-	#region Imports
+    #region Imports
 
-	using System;
+    using System;
 
-	#endregion
+    #endregion
 
     /// <summary>
     /// Provides masking services where one value masks another given a test.
