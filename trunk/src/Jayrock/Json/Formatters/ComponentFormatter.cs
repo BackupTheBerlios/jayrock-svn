@@ -32,6 +32,15 @@ namespace Jayrock.Json.Formatters
 
     public sealed class ComponentFormatter : JsonFormatter
     {
+        private PropertyDescriptorCollection _properties;
+
+        public ComponentFormatter() {}
+
+        public ComponentFormatter(PropertyDescriptorCollection properties)
+        {
+            _properties = properties;
+        }
+
         protected override void FormatOther(object o, JsonWriter writer)
         {
             if (writer == null)
@@ -45,7 +54,10 @@ namespace Jayrock.Json.Formatters
 
             writer.WriteStartObject();
 
-            foreach (PropertyDescriptor property in TypeDescriptor.GetProperties(o))
+            if (_properties == null)
+                _properties = TypeDescriptor.GetProperties(o);
+
+            foreach (PropertyDescriptor property in _properties)
             {
                 // TODO: Allow someone to indicate via an attribute (e.g. JsonIgnore) that a property should be excluded.
 

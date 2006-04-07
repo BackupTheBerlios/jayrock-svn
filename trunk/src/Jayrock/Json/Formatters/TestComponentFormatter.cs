@@ -25,6 +25,8 @@ namespace Jayrock.Json.Formatters
     #region Imports
 
     using System;
+    using System.Collections;
+    using System.ComponentModel;
     using NUnit.Framework;
 
     #endregion
@@ -70,13 +72,41 @@ namespace Jayrock.Json.Formatters
             Assert.AreEqual("{\"Id\":1,\"FullName\":\"Albert White\",\"Spouce\":{\"Id\":2,\"FullName\":\"Snow White\"}}", Format(albert));
         }
 
+        [ Test ]
+        public void CustomPropertiesInternally()
+        {
+            Point point = new Point(123, 456);
+            JsonTextWriter writer = new JsonTextWriter();
+            writer.WriteValue(point);
+            Assert.AreEqual("{\"X\":123,\"Y\":456}", writer.ToString());
+        }
+
+        [ Test ]
+        public void TypeSpecific()
+        {
+            Person john = new Person();
+            john.Id = 123;
+            john.FullName = "John Doe";
+            
+            Car beamer = new Car();            
+            beamer.Manufacturer = "BMW";
+            beamer.Model = "350";
+            beamer.Year = 2000;
+            beamer.Color = "Silver";
+
+            OwnerCars johnCars = new OwnerCars();
+            johnCars.Owner = john;
+            johnCars.Cars.Add(beamer);
+
+            Assert.AreEqual("{\"Owner\":{\"Id\":123,\"FullName\":\"John Doe\"},\"Cars\":[{\"Model\":\"350\",\"Year\":2000,\"Manufacturer\":\"BMW\",\"Color\":\"Silver\"}]}", Format(johnCars));
+        }
+
         private static string Format(object o)
         {
-            ComponentFormatter componentFormatter = new ComponentFormatter();
-
             CompositeFormatter compositeFormatter = new CompositeFormatter();
-            compositeFormatter.AddFormatter(typeof(Car), componentFormatter);
-            compositeFormatter.AddFormatter(typeof(Person), componentFormatter);
+            compositeFormatter.AddFormatter(typeof(Car), new ComponentFormatter());
+            compositeFormatter.AddFormatter(typeof(Person), new ComponentFormatter());
+            compositeFormatter.AddFormatter(typeof(OwnerCars), new ComponentFormatter());
 
             JsonTextWriter writer = new JsonTextWriter();
             writer.ValueFormatter = compositeFormatter;
@@ -139,6 +169,55 @@ namespace Jayrock.Json.Formatters
             {
                 get { return _spouce; }
                 set { _spouce = value; }
+            }
+        }
+
+        private sealed class OwnerCars
+        {
+            private Person _owner;
+            private ArrayList _cars = new ArrayList();
+
+            public Person Owner
+            {
+                get { return _owner; }
+                set { _owner = value; }
+            }
+
+            public ArrayList Cars
+            {
+                get { return _cars; }
+            }
+        }
+
+        private struct  Point : IJsonFormattable
+        {
+            private int _x;
+            private int _y;
+
+            private static readonly PropertyDescriptorCollection _properties;
+
+            static Point()
+            {
+                PropertyDescriptorCollection properties = TypeDescriptor.GetProperties(typeof(Point));
+                _properties = new PropertyDescriptorCollection(null);
+                _properties.Add(properties["X"]);
+                _properties.Add(properties["Y"]);
+            }
+
+            public Point(int x, int y)
+            {
+                _x = x;
+                _y = y;
+            }
+
+            public int X { get { return _x; } }
+            public int Y { get { return _y; } }
+            public string XYString { get { return X + "," + Y; } }
+
+            public void Format(JsonWriter writer)
+            {
+                ComponentFormatter formatter = new ComponentFormatter(_properties);
+                formatter.Format(this, writer);
             }
         }
     }
