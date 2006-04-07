@@ -154,6 +154,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Json\JsonException.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\JsonFormatter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -169,12 +174,27 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Json\JsonReader.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\JsonString.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Json\JsonTextReader.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\JsonTextWriter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\JsonToken.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -215,6 +235,11 @@
                 />
                 <File
                     RelPath = "Json\TestJsonParser.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\TestJsonTextReader.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

@@ -170,6 +170,27 @@ namespace Jayrock.Json
             Assert.AreEqual("\"1,2,3,Four,5\"", writer.ToString());
         }
 
+        [ Test ]
+        public void WriteFromReader()
+        {
+            JsonTextReader reader = new JsonTextReader(new StringReader(@"
+                {'menu': {
+                'id': 'file',
+                'value': 'File:',
+                'popup': {
+                    'menuitem': [
+                    {'value': 'New', 'onclick': 'CreateNewDoc()'},
+                    {'value': 'Open', 'onclick': 'OpenDoc()'},
+                    {'value': 'Close', 'onclick': 'CloseDoc()'}
+                    ]
+                }
+                }}"));
+
+            JsonTextWriter writer = new JsonTextWriter();
+            writer.WriteFromReader(reader);
+            Assert.AreEqual("{\"menu\":{\"id\":\"file\",\"value\":\"File:\",\"popup\":{\"menuitem\":[{\"value\":\"New\",\"onclick\":\"CreateNewDoc()\"},{\"value\":\"Open\",\"onclick\":\"OpenDoc()\"},{\"value\":\"Close\",\"onclick\":\"CloseDoc()\"}]}}}", writer.ToString());
+        }
+
         private sealed class StringArrayFormatter : JsonFormatter
         {
             protected override void FormatOther(object o, JsonWriter writer)

@@ -127,5 +127,64 @@ namespace Jayrock.Json
         {
             ValueFormatter.Format(value, this);
         }
+
+        public void WriteValueFromReader(JsonReader reader)
+        {
+            if (reader == null)            
+                throw new ArgumentNullException("reader");
+
+            if (!reader.MoveToContent())
+                return;
+
+            switch (reader.Token)
+            {
+                case JsonToken.String: WriteString(reader.Text); break;
+                case JsonToken.Number: WriteNumber(reader.Text); break;
+                case JsonToken.Boolean : WriteBoolean(reader.Text == JsonReader.FalseText); break;
+                case JsonToken.Null : WriteNull(); break;
+
+                case JsonToken.Object :
+                {
+                    WriteStartObject();
+                    reader.ReadMember();
+
+                    do
+                    {
+                        WriteMember(reader.Text);
+                        reader.Read();
+                        WriteValueFromReader(reader);
+                    }
+                    while (reader.Token != JsonToken.EndObject);
+
+                    WriteEndObject();
+                    break;
+                }
+            
+                case JsonToken.Array :
+                {
+                    WriteStartArray();
+                    reader.Read();
+
+                    while (reader.Token != JsonToken.EndArray)
+                        WriteValueFromReader(reader);
+
+                    WriteEndArray();
+                    break;
+                }
+
+                default : throw new ParseException(string.Format("{0} not expected.", reader.Token));
+            }
+
+            reader.Read();
+        }
+        
+        public void WriteFromReader(JsonReader reader)
+        {
+            if (reader == null)            
+                throw new ArgumentNullException("reader");
+
+            while (!reader.EOF)
+                WriteValueFromReader(reader);
+        }
     }
 }
