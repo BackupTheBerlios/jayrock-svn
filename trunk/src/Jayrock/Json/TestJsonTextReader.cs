@@ -42,7 +42,7 @@ namespace Jayrock.Json
             _reader = null;
         }
 
-        [ Test, ExpectedException(typeof(ParseException)) ]
+        [ Test, ExpectedException(typeof(JsonException)) ]
         public void Blank()
         {
             JsonTextReader reader = new JsonTextReader(new StringReader(string.Empty));
@@ -302,7 +302,7 @@ namespace Jayrock.Json
             AssertEOF();
         }
 
-        [ Test, ExpectedException(typeof(ParseException)) ]
+        [ Test, ExpectedException(typeof(JsonException)) ]
         public void BadNumber()
         {
             CreateReader("123-45").Read();
@@ -430,25 +430,25 @@ namespace Jayrock.Json
             AssertTokenText(token, null);
         }
 
-        [ Test, ExpectedException(typeof(ParseException)) ]
+        [ Test, ExpectedException(typeof(JsonException)) ]
         public void UnterminatedObject()
         {
             CreateReader("{x:1,y:2").SkipObject();
         }
 
-        [ Test, ExpectedException(typeof(ParseException)) ]
+        [ Test, ExpectedException(typeof(JsonException)) ]
         public void UnterminatedArray()
         {
             CreateReader("[1,2").SkipArray();
         }
         
-        [ Test, ExpectedException(typeof(ParseException)) ]
+        [ Test, ExpectedException(typeof(JsonException)) ]
         public void MissingObjectMember()
         {
             CreateReader("{x:1,/*y:2*/,z:3}").SkipObject();
         }
 
-        [ Test, ExpectedException(typeof(ParseException)) ]
+        [ Test, ExpectedException(typeof(JsonException)) ]
         public void MissingObjectMemberNameValueDelimiter()
         {
             CreateReader("{x 1}").SkipObject();

@@ -127,7 +127,7 @@ namespace Jayrock.Json
             Assert.AreEqual("http://www.json-rpc.org/", reference["Link"]);
         }
 
-        [ Test, ExpectedException(typeof(ParseException)) ]
+        [ Test, ExpectedException(typeof(JsonException)) ]
         public void ParseUnclosedComment()
         {
             Parse(@"/* This is an unclosed comment");
@@ -139,7 +139,7 @@ namespace Jayrock.Json
             Parse("\"Hello World'");
         }
 
-        [ Test, ExpectedException(typeof(ParseException)) ]
+        [ Test, ExpectedException(typeof(JsonException)) ]
         public void CannotParseEmpty()
         {
             Parse(string.Empty);
@@ -153,7 +153,7 @@ namespace Jayrock.Json
             Assert.AreEqual(123, parser.Parse("123"));
         }
 
-        [ Test, ExpectedException(typeof(ParseException)) ]
+        [ Test, ExpectedException(typeof(JsonException)) ]
         public void ParseBadNumber()
         {
             Parse("1234S6");
