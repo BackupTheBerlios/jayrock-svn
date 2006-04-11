@@ -172,7 +172,7 @@ namespace Jayrock.Json
                     break;
                 }
 
-                default : throw new ParseException(string.Format("{0} not expected.", reader.Token));
+                default : throw new JsonException(string.Format("{0} not expected.", reader.Token));
             }
 
             reader.Read();

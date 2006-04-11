@@ -135,7 +135,10 @@ namespace Jayrock.Json
             //
 
             if (ch == '"' || ch == '\'')
+            {
+                // TODO: TextParser.NextString throw ParseException when we should throw JsonException!
                 return Yield(JsonToken.String, _parser.NextString(ch));
+            }
 
             //
             // Object
@@ -180,7 +183,7 @@ namespace Jayrock.Json
             string s = sb.ToString().Trim();
 
             if (s.Length == 0)
-                throw new ParseException("Missing value.");
+                throw new JsonException("Missing value.");
 
             if (s == JsonTextReader.TrueText || s == JsonTextReader.FalseText)
                 return Yield(JsonToken.Boolean, s);
@@ -192,7 +195,7 @@ namespace Jayrock.Json
             {
                 double unused;
                 if (!double.TryParse(s, NumberStyles.Float, CultureInfo.InvariantCulture, out unused))
-                    throw new ParseException(string.Format("The text '{0}' has the incorrect syntax for a number.", s));
+                    throw new JsonException(string.Format("The text '{0}' has the incorrect syntax for a number.", s));
 
                 return Yield(JsonToken.Number, s);
             }
@@ -216,7 +219,7 @@ namespace Jayrock.Json
         private JsonToken ParseArray()
         {
             if (NextClean() != '[')
-                throw new ParseException("An array must start with '['.");
+                throw new JsonException("An array must start with '['.");
 
             return Yield(JsonToken.Array, ParseArrayFirstMethod);
         }
@@ -270,7 +273,7 @@ namespace Jayrock.Json
                 }
 
                 default:
-                    throw new ParseException("Expected a ',' or ']'.");
+                    throw new JsonException("Expected a ',' or ']'.");
             }
 
             _stack.Push(ParseArrayNextMethod);
@@ -298,7 +301,7 @@ namespace Jayrock.Json
             _parser.Back();
 
             if (NextClean() != '{')
-                throw new ParseException("An object must begin with '{'.");
+                throw new JsonException("An object must begin with '{'.");
 
             return Yield(JsonToken.Object, ParseObjectMemberMethod);
         }
@@ -316,7 +319,7 @@ namespace Jayrock.Json
                 return Yield(JsonToken.EndObject);
 
             if (ch == JsonTextReader.NIL)
-                throw new ParseException("An object must end with '}'.");
+                throw new JsonException("An object must end with '}'.");
 
             _parser.Back();
             Parse();
@@ -343,7 +346,7 @@ namespace Jayrock.Json
                     _parser.Back();
             }
             else if (ch != ':')
-                throw new ParseException("Expected a ':' after a key.");
+                throw new JsonException("Expected a ':' after a key.");
 
             _stack.Push(ParseNextMemberMethod);
             return Parse();
@@ -376,7 +379,7 @@ namespace Jayrock.Json
                     return Yield(JsonToken.EndObject);
 
                 default:
-                    throw new ParseException("Expected a ',' or '}'.");
+                    throw new JsonException("Expected a ',' or '}'.");
             }
 
             _parser.Back();
@@ -492,7 +495,7 @@ namespace Jayrock.Json
                                 ch = _parser.Next();
 
                                 if (ch == NIL)
-                                    throw new ParseException("Unclosed comment.");
+                                    throw new JsonException("Unclosed comment.");
 
                                 if (ch == '*')
                                 {

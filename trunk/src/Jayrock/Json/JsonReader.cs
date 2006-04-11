@@ -229,8 +229,8 @@ namespace Jayrock.Json
                     return output.EndObject();
                 }
 
-                case JsonToken.EOF : throw new ParseException("Unexpected EOF.");
-                default : throw new ParseException(string.Format("{0} not expected.", this.Token));
+                case JsonToken.EOF : throw new JsonException("Unexpected EOF.");
+                default : throw new JsonException(string.Format("{0} not expected.", this.Token));
             }
         }
 
