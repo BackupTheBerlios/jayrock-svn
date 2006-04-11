@@ -118,8 +118,6 @@ namespace Jayrock.Json.Rpc
             if (service == null)
                 throw new ArgumentNullException("service");
 
-            args = JsonRpcServices.TransposeVariableArguments(this, args);
-
             try
             {
                 return _method.Invoke(service, args);

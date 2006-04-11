@@ -97,6 +97,16 @@ namespace Jayrock.Json.Rpc
             Assert.AreEqual(new int[] { 3, 2, 1 }, result);
         }
 
+        [ Test ]
+        public void CallWithNamedArgs()
+        {
+            JsonRpcDispatcher server = new JsonRpcDispatcher(new TestService());
+            string responseString = server.Process("{ id : 42, method : 'replicate', params : { count : 3, text : 'Hello' } }");
+            IDictionary response = (IDictionary) Parse(responseString);
+            object[] result = ((JArray) JsonRpcServices.GetResult(response)).ToArray();
+            Assert.AreEqual(new string[] { "Hello", "Hello", "Hello" }, result);
+        }
+
         private object Parse(string source)
         {
             return (new JsonParser()).Parse(source);
@@ -134,6 +144,7 @@ namespace Jayrock.Json.Rpc
                 LastMethodName = name;
                 return this;
             }
+
             ICustomAttributeProvider IRpcAnnotated.AttributeProvider
             {
                 get { throw new NotImplementedException(); }
@@ -146,7 +157,7 @@ namespace Jayrock.Json.Rpc
 
             IRpcParameterDescriptor[] IRpcMethodDescriptor.GetParameters()
             {
-                throw new NotImplementedException();
+                return new IRpcParameterDescriptor[0];
             }
 
             Type IRpcMethodDescriptor.ResultType

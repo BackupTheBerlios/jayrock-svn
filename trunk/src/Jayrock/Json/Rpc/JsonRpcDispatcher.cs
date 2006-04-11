@@ -152,8 +152,6 @@ namespace Jayrock.Json.Rpc
             if (methodName.Length == 0)
                 throw new JsonRpcException("No method name supplied for this request.");
 
-            object[] args = CollectionHelper.ToArray((ICollection) request["params"]);
-    
             if (JsonRpcTrace.Switch.TraceInfo)
                 JsonRpcTrace.Info("Invoking method {1} on service {0}.", ServiceName, methodName);
 
@@ -166,7 +164,9 @@ namespace Jayrock.Json.Rpc
 
             try
             {
-                result = _service.GetDescriptor().GetMethodByName(methodName).Invoke(_service, args);
+                IRpcMethodDescriptor method = _service.GetDescriptor().GetMethodByName(methodName);
+                object[] args = JsonRpcServices.MapArguments(method, request["params"]);
+                result = method.Invoke(_service, args);
             }
             catch (MethodNotFoundException e)
             {

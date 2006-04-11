@@ -56,6 +56,29 @@ namespace Jayrock.Json.Rpc
             return Mask.EmptyString(name, anonymousName);
         }
 
+        public static object[] MapArguments(IRpcMethodDescriptor method, object argsObject)
+        {
+            object[] args;
+            IDictionary namedArgs = argsObject as IDictionary;
+
+            if (namedArgs != null)
+            {
+                IRpcParameterDescriptor[] parameters = method.GetParameters();
+                args = new object[parameters.Length];
+
+                for (int i = 0; i < parameters.Length; i++)
+                    args[i] = namedArgs[parameters[i].Name];
+
+                return args;
+            }
+            else
+            {
+                args = CollectionHelper.ToArray((ICollection) argsObject);
+            }
+
+            return JsonRpcServices.TransposeVariableArguments(method, args);
+        }
+
         /// <summary>
         /// Takes an array of arguments that are designated for a method and
         /// transposes them if the target method supports variable arguments (in
@@ -147,6 +170,38 @@ namespace Jayrock.Json.Rpc
 
             IRpcParameterDescriptor lastParameter = parameters[parameterCount - 1];
             return JsonRpcParamsAttribute.IsDefined(lastParameter.AttributeProvider);
+        }
+
+        public static object GetResult(IDictionary response)
+        {
+            if (response == null)
+                throw new ArgumentNullException("response");
+
+            object errorObject = response["error"];
+
+            if (errorObject != null)
+            {
+                IDictionary error = errorObject as IDictionary;
+                
+                string message = null;
+
+                if (!JNull.LogicallyEquals(error))
+                {
+                    object messageObject = error["message"];
+                    
+                    if (!JNull.LogicallyEquals(messageObject))
+                        message = messageObject.ToString();
+                }
+                else
+                    message = error.ToString();
+   
+                throw new JsonRpcException(message);
+            }
+
+            if (!response.Contains("result"))
+                throw new ArgumentException("Response object is not valid because it does not contain the expected 'result' member.");
+
+            return response["result"];
         }
 
         private JsonRpcServices()
