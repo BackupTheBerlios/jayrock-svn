@@ -25,6 +25,7 @@ namespace Jayrock.Json
     #region Imports
 
     using System.Collections;
+    using System.IO;
     using NUnit.Framework;
 
     #endregion
@@ -52,8 +53,7 @@ namespace Jayrock.Json
 
         private static string Json(string s)
         {
-            JsonParser parser = new JsonParser();
-            return parser.Parse(s).ToString();
+            return (new JsonTextReader(new StringReader(s))).DeserializeNext().ToString();
         }
 
         private static object ParseRowToArray(string s)

@@ -209,12 +209,12 @@ namespace Jayrock.Json.Rpc
             if (input == null)
                 throw new ArgumentNullException("input");
 
-            JsonParser parser = (JsonParser) _serviceProvider.GetService(typeof(JsonParser));
+            JsonReader reader = (JsonReader) _serviceProvider.GetService(typeof(JsonReader));
 
-            if (parser == null)
-                parser = new JsonParser();
+            if (reader == null)
+                reader = new JsonTextReader(input);
 
-            return parser.Parse(input);
+            return reader.DeserializeNext();
         }
 
         protected virtual void WriteResponse(object response, TextWriter output)

@@ -26,6 +26,7 @@ namespace Jayrock.Json.Rpc
 
     using System;
     using System.Collections;
+    using System.IO;
     using System.Reflection;
     using NUnit.Framework;
 
@@ -109,7 +110,7 @@ namespace Jayrock.Json.Rpc
 
         private object Parse(string source)
         {
-            return (new JsonParser()).Parse(source);
+            return (new JsonTextReader(new StringReader(source))).DeserializeNext();
         }
 
         private sealed class EchoService : IRpcService, IRpcServiceDescriptor, IRpcMethodDescriptor
