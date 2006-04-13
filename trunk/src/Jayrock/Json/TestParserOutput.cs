@@ -37,5 +37,16 @@ namespace Jayrock.Json
             Assert.IsNull(output.TestCurrentObject, "No current object when done.");
             Assert.AreEqual(0, output.TestStack.Count, "Stack is empty when done.");
         }
+
+        [ Test ]
+        public void EmptyMemberName()
+        {
+            ParserOutput output = new ParserOutput();
+            output.StartObject();
+            output.ObjectPut(string.Empty, string.Empty);
+            JObject o = (JObject) output.EndObject();
+            Assert.AreEqual(1, o.Count);
+            Assert.AreEqual(string.Empty, o[string.Empty]);
+        }
     }
 }

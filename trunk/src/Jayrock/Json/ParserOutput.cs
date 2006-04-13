@@ -105,9 +105,6 @@ namespace Jayrock.Json
             if (name == null)
                 throw new ArgumentNullException("name");
                 
-            if (name.Length == 0)
-                throw new ArgumentOutOfRangeException("name");
-
             if (_currentObject == null)
                 throw new InvalidOperationException("StartObject must be called before ObjectPut.");
 
