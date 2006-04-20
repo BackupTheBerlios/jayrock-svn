@@ -91,9 +91,9 @@ namespace JayrockWeb
             return Request.Cookies;
         }
         
-        [ JsonRpcMethod("severVariables")]
+        [ JsonRpcMethod("serverVariables")]
         [ JsonRpcHelp("Returns the server variables collection at the server. Demonstrates returning NameValueCollection.") ]
-        public NameValueCollection SeverVariables()
+        public NameValueCollection ServerVariables()
         {
             return Request.ServerVariables;
         }
