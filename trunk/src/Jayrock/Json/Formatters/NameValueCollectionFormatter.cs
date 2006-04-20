@@ -60,21 +60,18 @@ namespace Jayrock.Json.Formatters
 
             writer.WriteStartObject();
 
-            if (collection.HasKeys())
+            for (int i = 0; i < collection.Count; i++)
             {
-                for (int i = 0; i < collection.Count; i++)
-                {
-                    writer.WriteMember(collection.GetKey(i));
-                    
-                    string[] values = collection.GetValues(i);
-                    
-                    if (values == null)
-                        writer.WriteNull();
-                    else if (values.Length > 1)
-                        writer.WriteValue(values);
-                    else
-                        writer.WriteValue(values[0]);
-                }
+                writer.WriteMember(collection.GetKey(i));
+
+                string[] values = collection.GetValues(i);
+
+                if (values == null)
+                    writer.WriteNull();
+                else if (values.Length > 1)
+                    writer.WriteValue(values);
+                else
+                    writer.WriteValue(values[0]);
             }
 
             writer.WriteEndObject();
