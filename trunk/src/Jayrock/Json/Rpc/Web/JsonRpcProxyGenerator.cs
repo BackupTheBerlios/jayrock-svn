@@ -341,11 +341,53 @@ namespace Jayrock.Json.Rpc.Web
                 return true;
 
             string modifiedSinceHeader = Mask.NullString(Request.Headers["If-Modified-Since"]);
+
+            //
+            // Apparently, Netscape added a non-standard extension to the
+            // If-Modified-Since header in HTTP/1.0 where extra parameters
+            // can be sent using a semi-colon as the delimiter. One such 
+            // parameter is the original content length, which was meant 
+            // to improve the accuracy of If-Modified-Since in case a 
+            // document is updated twice in the same second. Here's an
+            // example: 
+            //
+            // If-Modified-Since: Thu, 11 May 2006 07:59:51 GMT; length=3419
+            //
+            // HTTP/1.1 solved the same problem in a better way via the ETag 
+            // header and If-None-Match. However, it looks like that some
+            // proxies still use this technique, so the following checks for
+            // a semi-colon in the header value and clips it to everything
+            // before it.
+            //
+            // This is a fix for bug #7462:
+            // http://developer.berlios.de/bugs/?func=detailbug&bug_id=7462&group_id=4638
+            //
         
+            int paramsIndex = modifiedSinceHeader.IndexOf(';');
+            if (paramsIndex >= 0)
+                modifiedSinceHeader = modifiedSinceHeader.Substring(0, paramsIndex);
+
             if (modifiedSinceHeader.Length == 0)
                 return true;
 
-            DateTime modifiedSinceTime = InternetDate.Parse(modifiedSinceHeader);
+            DateTime modifiedSinceTime;
+            
+            try
+            {
+                modifiedSinceTime = InternetDate.Parse(modifiedSinceHeader);
+            }
+            catch (FormatException)
+            {
+                //
+                // Accorinding to the HTTP specification, if the passed 
+                // If-Modified-Since date is invalid, the response is 
+                // exactly the same as for a normal GET. See section
+                // 14.25 of RFC 2616 for more information:
+                // http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.25
+                //
+
+                return true;
+            }
 
             DateTime time = LastModifiedTime;
             time = new DateTime(time.Year, time.Month, time.Day, time.Hour, time.Minute, time.Second);
