@@ -25,9 +25,9 @@ namespace Jayrock.Json.Rpc.Web
     #region Imports
 
     using System;
-    using System.CodeDom.Compiler;
     using System.Diagnostics;
     using System.IO;
+    using System.Security;
     using System.Web;
 
     #endregion
@@ -375,21 +375,34 @@ namespace Jayrock.Json.Rpc.Web
                     // a DLL) representing the type's assembly.
                     //
 
-                    Uri codeBase = new Uri(TargetService.GetType().Assembly.CodeBase);
-
-                    if (codeBase.IsFile)
+                    try
                     {
-                        string path = codeBase.LocalPath;
+                        Uri codeBase = new Uri(TargetService.GetType().Assembly.CodeBase);
 
-                        if (File.Exists(path))
+                        if (codeBase != null && codeBase.IsFile)
                         {
-                            try
+                            string path = codeBase.LocalPath;
+
+                            if (File.Exists(path))
                             {
-                                _lastModifiedTime = File.GetLastWriteTime(path);
+                                try
+                                {
+                                    _lastModifiedTime = File.GetLastWriteTime(path);
+                                }
+                                catch (UnauthorizedAccessException) { /* ignored */ }
+                                catch (IOException) { /* ignored */ }
                             }
-                            catch (UnauthorizedAccessException) { /* ignored */ }
-                            catch (IOException) { /* ignored */ }
                         }
+                    }
+                    catch (SecurityException)
+                    {
+                        //
+                        // This clause ignores security exceptions that may
+                        // be caused by an application that is partially
+                        // trusted and therefore would not be allowed to
+                        // disover the service assembly code base as well
+                        // as the physical file's modification time.
+                        //
                     }
                 }
 

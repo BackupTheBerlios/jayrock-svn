@@ -101,18 +101,30 @@ namespace Jayrock.Json.Rpc
             writer.Write(configuration.Configuration);
             writer.Write(" build");
 
-            Uri codeBase = new Uri(name.CodeBase);
+            //
+            // Display the file version. Ideally, this could be obtained from
+            // FileVersionInfo, but that requires a link demand of full trust
+            // that we don't want to require from the application. Using the
+            // reflection attribute allows this method to work in partial 
+            // trust cases.
+            //
 
-            if (codeBase.IsFile && File.Exists(codeBase.LocalPath))
+            AssemblyFileVersionAttribute version = (AssemblyFileVersionAttribute) Attribute.GetCustomAttribute(assembly, typeof(AssemblyFileVersionAttribute));
+
+            if (version != null)
             {
-                FileVersionInfo versionInfo = FileVersionInfo.GetVersionInfo(codeBase.LocalPath);
-                writer.Write(' ');
-                writer.Write(versionInfo.FileVersion);
+                try
+                {
+                    string versionDisplay = (new Version(version.Version)).ToString();
+                    writer.Write(' ');
+                    writer.Write(versionDisplay);
+                }
+                catch (ArgumentException) { /* version has fewer than two components or more than four components. */ }
+                catch (FormatException) { /* At least one component of version does not parse to an integer. */ }
+                catch (OverflowException) { /* At least one component of version caused an overflow. */ }
             }
 
-            writer.Write(")");
-
-            writer.WriteLine();
+            writer.WriteLine(")");
 
             //
             // Write out the copyright notice, if available.
