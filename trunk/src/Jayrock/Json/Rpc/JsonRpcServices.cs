@@ -26,6 +26,7 @@ namespace Jayrock.Json.Rpc
 
     using System;
     using System.Collections;
+    using System.Globalization;
 
     #endregion
 
@@ -59,15 +60,55 @@ namespace Jayrock.Json.Rpc
         public static object[] MapArguments(IRpcMethodDescriptor method, object argsObject)
         {
             object[] args;
-            IDictionary namedArgs = argsObject as IDictionary;
+            IDictionary argsMap = argsObject as IDictionary;
 
-            if (namedArgs != null)
+            if (argsMap != null)
             {
+                JObject namedArgs = new JObject(argsMap);
+                
                 IRpcParameterDescriptor[] parameters = method.GetParameters();
                 args = new object[parameters.Length];
 
                 for (int i = 0; i < parameters.Length; i++)
+                {
                     args[i] = namedArgs[parameters[i].Name];
+                    namedArgs.Remove(parameters[i].Name);
+                }
+
+                foreach (DictionaryEntry entry in namedArgs)
+                {
+                    if (entry.Key == null)
+                        continue;
+
+                    string key = entry.Key.ToString();
+                    
+                    char ch1;
+                    char ch2;
+
+                    if (key.Length == 2)
+                    {
+                        ch1 = key[0];
+                        ch2 = key[1];
+                    }
+                    else if (key.Length == 1)
+                    {
+                        ch1 = '0';
+                        ch2 = key[0];
+                    }
+                    else
+                    {
+                        continue;
+                    }
+
+                    if (ch1 >= '0' && ch1 < '9' &&
+                        ch2 >= '0' && ch2 < '9')
+                    {
+                        int index = int.Parse(key, NumberStyles.Number, CultureInfo.InvariantCulture);
+                        
+                        if (index < parameters.Length)
+                            args[index] = entry.Value;
+                    }
+                }
 
                 return args;
             }
