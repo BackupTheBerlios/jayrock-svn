@@ -24,6 +24,7 @@ namespace Jayrock.Json
 {
     #region Imports
 
+    using System;
     using System.Collections;
     using NUnit.Framework;
 
@@ -42,6 +43,75 @@ namespace Jayrock.Json
             IEnumerator e = names.GetEnumerator();
             e.MoveNext(); Assert.AreEqual("one", e.Current);
             e.MoveNext(); Assert.AreEqual("two", e.Current);
+        }
+
+        [ Test ]
+        public void InitWithKeyValuePairs()
+        {
+            JObject o = new JObject(new string[] { "one", "two", }, new object[] { 1, 2 });
+            Assert.AreEqual(2, o.Count);
+            Assert.AreEqual(1, o["one"]);
+            Assert.AreEqual(2, o["two"]);
+        }
+
+        [ Test ]
+        public void InitWithKeyValuePairsAccumulates()
+        {
+            JObject o = new JObject(new string[] { "one", "two", "three", "two" }, new object[] { 1, 2, 3, 4 });
+            Assert.AreEqual(3, o.Count);
+            Assert.AreEqual(1, o["one"]);
+            IList two = o["two"] as IList;
+            Assert.IsNotNull(two, "Member 'two' should be an ordered list of accumulated values.");
+            Assert.AreEqual(2, two.Count, "Count of values under 'two'.");
+            Assert.AreEqual(2, two[0]);
+            Assert.AreEqual(4, two[1]);
+            Assert.AreEqual(3, o["three"]);
+        }
+
+        [ Test ]
+        public void InitWithExtraKeys()
+        {
+            JObject o = new JObject(new string[] { "one", "two", "three" }, new object[] { 1, 2 });
+            Assert.AreEqual(3, o.Count);
+            Assert.AreEqual(1, o["one"]);
+            Assert.AreEqual(2, o["two"]);
+            Assert.IsTrue(JNull.LogicallyEquals(o["three"]));
+        }
+
+        [ Test ]
+        public void InitWithNullValues()
+        {
+            JObject o = new JObject(new string[] { "one", "two", "three" }, null);
+            Assert.AreEqual(3, o.Count);
+            Assert.IsTrue(JNull.LogicallyEquals(o["one"]));
+            Assert.IsTrue(JNull.LogicallyEquals(o["two"]));
+            Assert.IsTrue(JNull.LogicallyEquals(o["three"]));
+        }
+
+        [ Test ]
+        public void InitWithExtraValues()
+        {
+            JObject o = new JObject(new string[] { "one", "two" }, new object[] { 1, 2, 3, 4 });
+            Assert.AreEqual(2, o.Count);
+            Assert.AreEqual(1, o["one"]);
+            IList two = (IList) o["two"];
+            Assert.AreEqual(3, two.Count, "Count of values under 'two'.");
+            Assert.AreEqual(2, two[0]);
+            Assert.AreEqual(3, two[1]);
+            Assert.AreEqual(4, two[2]);
+        }
+
+        [ Test ]
+        public void InitWithNullKeys()
+        {
+            JObject o = new JObject(null, new object[] { 1, 2, 3, 4 });
+            Assert.AreEqual(1, o.Count);
+            IList values = (IList) o[""];
+            Assert.AreEqual(4, values.Count, "Count of values.");
+            Assert.AreEqual(1, values[0]);
+            Assert.AreEqual(2, values[1]);
+            Assert.AreEqual(3, values[2]);
+            Assert.AreEqual(4, values[3]);
         }
     }
 }

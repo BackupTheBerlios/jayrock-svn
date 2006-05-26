@@ -68,6 +68,23 @@ namespace Jayrock.Json
             _nameIndexList = new ArrayList(members.Keys);
         }
 
+        public JObject(string[] keys, object[] values)
+        {
+            int keyCount = keys == null ? 0 : keys.Length;
+            int valueCount = values == null ? 0 : values.Length;
+            int count = Math.Max(keyCount, valueCount);
+
+            string key = string.Empty;
+
+            for (int i = 0; i < count; i++)
+            {
+                if (i < keyCount)
+                    key = Mask.NullString(keys[i]);
+
+                Accumulate(key, i < valueCount ? values[i] : JNull.Value);
+            }
+        }
+
         public virtual object this[string key]
         {
             get { return InnerHashtable[key]; }
