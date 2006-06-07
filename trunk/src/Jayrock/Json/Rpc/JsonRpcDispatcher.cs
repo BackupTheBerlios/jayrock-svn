@@ -234,6 +234,7 @@ namespace Jayrock.Json.Rpc
                 formatter.AddFormatter(typeof(DateTime), new DateTimeFormatter());
                 formatter.AddFormatter(typeof(DataSet), new DataSetFormatter());
                 formatter.AddFormatter(typeof(DataTable), new DataTableFormatter());
+                formatter.AddFormatter(typeof(DataView), new DataViewFormatter());
                 formatter.AddFormatter(typeof(DataRowView), new DataRowViewFormatter());
                 formatter.AddFormatter(typeof(DataRow), new DataRowFormatter());
                 formatter.AddFormatter(typeof(NameValueCollection), new NameValueCollectionFormatter(), true);

@@ -30,27 +30,43 @@ namespace Jayrock.Json.Formatters
 
     #endregion
 
-    public class DataTableFormatter : JsonFormatter
+    public class DataViewFormatter : JsonFormatter
     {
         public override void Format(object o, JsonWriter writer)
         {
             if (writer == null)
                 throw new ArgumentNullException("writer");
 
-            DataTable table = o as DataTable;
+            DataView view = o as DataView;
 
-            if (table != null)
-                FormatTable(table, writer);
+            if (view != null)
+                FormatView(view, writer);
             else
                 base.Format(o, writer);
         }
 
-        internal static void FormatTable(DataTable table, JsonWriter writer)
+        internal static void FormatView(DataView view, JsonWriter writer)
         {
-            Debug.Assert(table != null);
+            Debug.Assert(view != null);
             Debug.Assert(writer != null);
 
-            DataViewFormatter.FormatView(table.DefaultView, writer);
-       }
+            writer.WriteStartObject();
+
+            writer.WriteMember("columns");
+
+            writer.WriteStartArray();
+            foreach (DataColumn column in view.Table.Columns)
+                writer.WriteValue(column.ColumnName);
+            writer.WriteEndArray();
+
+            writer.WriteMember("rows");
+
+            writer.WriteStartArray();
+            foreach (DataRowView row in view)
+                writer.WriteValue(row.Row.ItemArray);
+            writer.WriteEndArray();
+
+            writer.WriteEndObject();
+        }
     }
 }
