@@ -1,0 +1,104 @@
+body
+{
+    background-color: white;
+}
+
+#Content
+{
+    font-family: Georgia;
+    margin: 1em;
+    padding: 1em;
+}
+
+#Content p
+{
+    line-height: 1.7em;
+}
+
+li
+{
+    line-height: 1.7em;
+    margin-bottom: 0.5em;
+}
+
+a
+{
+    color: darkred;
+}
+
+a:hover
+{
+    color: red;
+}
+
+#Toc
+{
+    font-size: small;
+    float: right;
+    border: solid 2px silver;
+    padding: 1em;
+    margin-left: 1em;
+    margin-bottom: 1em;
+    background-color: cornsilk;
+}
+
+#Toc li
+{
+    margin-left: -1.25em;
+}
+
+#TocTitle
+{
+    text-transform: uppercase;
+}
+
+h1
+{
+    color: darkgreen;
+    font-family: Arial;
+    font-size: x-large;
+    text-transform: uppercase;
+    letter-spacing: 0.5em;
+    margin-top: 2em;
+}
+
+h1 a
+{
+    color: darkgreen;
+}
+
+h1.h1-first
+{
+    margin-top: 0;
+}
+
+pre.code
+{
+    font-family: Monospace;
+    padding: 1em;
+    border-top: solid 5px darkorange;
+    border-bottom: solid 2px silver;
+    background: #EEEEEE;
+}
+
+.fake-a
+{
+    text-decoration: underline;
+}
+
+.em
+{
+    font-style: italic;
+}
+
+.figure
+{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+img
+{
+    border: none;
+}
