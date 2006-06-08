@@ -25,9 +25,6 @@ namespace Jayrock.Json.Rpc.Web
     #region Imports
 
     using System;
-    using System.Collections;
-    using System.Configuration;
-    using System.Globalization;
     using System.Security.Principal;
     using System.Web;
     using System.Web.SessionState;
@@ -37,97 +34,19 @@ namespace Jayrock.Json.Rpc.Web
     public class JsonRpcHandler : JsonRpcService, IHttpHandler
     {
         private HttpContext _context;
-        private IDictionary _features;
-        private bool _featuresInitialized;
 
         public virtual void ProcessRequest(HttpContext context)
         {
+            if (context == null)
+                throw new ArgumentNullException("context");
+
             _context = context;
-
-            try
-            {
-                ProcessRequest();
-            }
-            finally
-            {
-                _context = null;
-            }
+            JsonRpcWebAdapter.ProcessRequest(this, context);
         }
 
-        protected virtual void ProcessRequest()
+        public bool IsReusable
         {
-            string featureName = Mask.NullString(FeatureNameFromContext());
-            featureName = featureName.ToLower(CultureInfo.InvariantCulture);
-
-            IRpcServiceFeature feature = featureName.Length == 0 ? 
-                GetDefaultFeature() : GetFeatureByName(featureName);
-
-            if (feature == null)
-                throw new JsonRpcException(string.Format("Don't know how to handle {0} type of JSON-RPC requests.", Mask.EmptyString(featureName, "(default)")));
-
-            IHttpHandler handler = feature as IHttpHandler;
-        
-            if (handler == null)
-                throw new JsonRpcException(string.Format("The {0} feature does not support the HTTP protocol.", feature.GetType().FullName));
-
-            feature.Initialize(this);
-            handler.ProcessRequest(Context);
-        }
-
-        protected virtual IRpcServiceFeature GetDefaultFeature()
-        {
-            string verb = Request.RequestType;
-
-            if (CaselessString.Equals(verb, "GET") ||
-                CaselessString.Equals(verb, "HEAD"))
-            {
-                return GetFeatureByName("help");
-            }
-            else if (CaselessString.Equals(verb, "POST")) 
-            {
-                return GetFeatureByName("rpc");
-            }
-
-            return null;
-        }
-
-        protected virtual IDictionary GetFeatures()
-        {
-            if (!_featuresInitialized)
-            {
-                _featuresInitialized = true;
-                _features = (IDictionary) ConfigurationSettings.GetConfig("jayrock/json.rpc/features");
-            }
-
-            return _features;
-        }
-
-        protected virtual IRpcServiceFeature GetFeatureByName(string name)
-        {
-            IDictionary features = GetFeatures();
-            
-            if (features == null || !features.Contains(name))
-                throw new JsonRpcException(string.Format("There is no feature registered for '{0}' type of requests.", name));
-
-            string featureTypeSpec = Mask.NullString((string) features[name]);
-            
-            if (featureTypeSpec.Length == 0)
-                throw new JsonRpcException("Missing feature type specification.");
-
-            Type featureType = Type.GetType(featureTypeSpec, true);
-            object featureObject = Activator.CreateInstance(featureType);
-
-            IRpcServiceFeature feature = featureObject as IRpcServiceFeature;
-
-            if (feature == null)
-                throw new JsonRpcException(string.Format("{0} is not a valid type for JSON-RPC.", featureObject.GetType().FullName));
-
-            return feature;
-        }
-
-        protected virtual string FeatureNameFromContext()
-        {
-            return Mask.NullString(Request.QueryString[null]);
+            get { return false; }
         }
 
         public HttpContext Context
@@ -168,11 +87,6 @@ namespace Jayrock.Json.Rpc.Web
         public IPrincipal User
         {
             get { return Context.User; }
-        }
-
-        public virtual bool IsReusable
-        {
-            get { return false; }
         }
     }
 }

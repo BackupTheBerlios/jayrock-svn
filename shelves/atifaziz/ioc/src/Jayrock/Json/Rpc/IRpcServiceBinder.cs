@@ -22,17 +22,8 @@
 
 namespace Jayrock.Json.Rpc
 {
-    public interface IRpcServiceFeature : IRpcServiceBinding
+    public interface IRpcServiceBinder
     {
-        //
-        // Consider these alternate names instead of "feature":
-        //
-        //  - binding
-        //  - connector
-        //  - channel
-        //  - handler
-        //  - adapter *
-        //  - port
-        //
+        IRpcServiceFeature Bind();
     }
 }

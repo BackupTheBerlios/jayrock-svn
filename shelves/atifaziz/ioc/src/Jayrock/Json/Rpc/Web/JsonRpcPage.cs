@@ -46,7 +46,7 @@ namespace Jayrock.Json.Rpc.Web
             get { return _targetService; }
         }
 
-        void IRpcServiceFeature.Initialize(IRpcService targetService)
+        void IRpcServiceBinding.Initialize(IRpcService targetService)
         {
             if (_targetService != null)
                 throw new InvalidOperationException();

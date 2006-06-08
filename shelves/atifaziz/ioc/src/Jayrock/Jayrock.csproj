@@ -124,8 +124,23 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "NamedServiceContainer.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "nant.build"
                     BuildAction = "None"
+                />
+                <File
+                    RelPath = "ServiceNotAvailableException.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "ServiceQuery.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
                 />
                 <File
                     RelPath = "Configuration\DictionarySectionHandler.cs"
@@ -144,6 +159,11 @@
                 />
                 <File
                     RelPath = "Json\IJsonFormatter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\IJsonTextService.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -198,7 +218,17 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Json\JsonRecorder.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\JsonString.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\JsonText.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -293,6 +323,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Json\Rpc\IJsonRpcDispatcher.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\Rpc\InvocationException.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -314,6 +349,21 @@
                 />
                 <File
                     RelPath = "Json\Rpc\IRpcService.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Rpc\IRpcServiceBinder.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Rpc\IRpcServiceBinding.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Rpc\IRpcServiceBound.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -398,7 +448,17 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Json\Rpc\RpcServiceContext.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\Rpc\RpcServiceDescriptor.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Rpc\RpcServiceFeatureRegistry.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -453,8 +513,18 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Json\Rpc\Web\JsonRpcServiceWebBinder.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\Rpc\Web\JsonRpcTester.cs"
                     SubType = "ASPXCodeBehind"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Rpc\Web\JsonRpcWebAdapter.cs"
+                    SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File

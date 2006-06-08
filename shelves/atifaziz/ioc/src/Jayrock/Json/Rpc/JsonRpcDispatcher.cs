@@ -42,7 +42,7 @@ namespace Jayrock.Json.Rpc
 
     // TODO: Add async processing.
 
-    public class JsonRpcDispatcher
+    public class JsonRpcDispatcher 
     {
         private readonly IRpcService _service;
         private readonly IServiceProvider _serviceProvider;
@@ -116,6 +116,17 @@ namespace Jayrock.Json.Rpc
             IDictionary request = (IDictionary) ParseRequest(input);
             IDictionary response = Invoke(request);
             WriteResponse(response, output);
+        }
+
+        public virtual void Invoke(JsonReader requestReader, JsonWriter responseWriter)
+        {
+            if (requestReader == null)
+                throw new ArgumentNullException("requestReader");
+
+            if (responseWriter == null)
+                throw new ArgumentNullException("responseWriter");
+
+            responseWriter.WriteValue(Invoke((IDictionary) requestReader.DeserializeNext()));
         }
 
         public virtual IDictionary Invoke(IDictionary request)
@@ -209,10 +220,14 @@ namespace Jayrock.Json.Rpc
             if (input == null)
                 throw new ArgumentNullException("input");
 
-            JsonReader reader = (JsonReader) _serviceProvider.GetService(typeof(JsonReader));
+            JsonReader reader = null;
+            IJsonTextService textService = (IJsonTextService) ServiceQuery.FindByType(_serviceProvider, typeof(IJsonTextService));
+            
+            if (textService != null)
+                reader = textService.CreateReader(input);
 
             if (reader == null)
-                reader = new JsonTextReader(input);
+                reader = JsonText.CreateReader(input);
 
             return reader.DeserializeNext();
         }
@@ -225,10 +240,16 @@ namespace Jayrock.Json.Rpc
             if (output == null)
                 throw new ArgumentNullException("output");
             
-            JsonWriter writer = (JsonWriter) _serviceProvider.GetService(typeof(JsonWriter));
+            JsonWriter writer = null;
+            IJsonTextService textService = (IJsonTextService) ServiceQuery.FindByType(_serviceProvider, typeof(IJsonTextService));
             
+            if (textService != null)
+                writer = textService.CreateWriter(output);
+
             if (writer == null)
             {
+                writer = JsonText.CreateWriter(output);
+
                 CompositeFormatter formatter = new CompositeFormatter();
 
                 formatter.AddFormatter(typeof(DateTime), new DateTimeFormatter());
@@ -240,7 +261,6 @@ namespace Jayrock.Json.Rpc
                 formatter.AddFormatter(typeof(NameValueCollection), new NameValueCollectionFormatter(), true);
                 formatter.AddFormatter(typeof(Control), new ControlFormatter(), true);
 
-                writer = new JsonTextWriter(output);
                 writer.ValueFormatter = formatter;
             }
 

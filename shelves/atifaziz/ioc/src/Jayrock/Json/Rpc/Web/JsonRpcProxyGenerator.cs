@@ -48,7 +48,16 @@ namespace Jayrock.Json.Rpc.Web
             if (HasLastModifiedTime)
             {
                 Response.Cache.SetCacheability(HttpCacheability.Public);
-                Response.Cache.SetLastModified(LastModifiedTime);
+
+                //
+                // Unfortunately, HttpCachePolicy.SetLastModified fails
+                // if the last modified time passed has a precision higher
+                // than second so we need to crop anything less than a 
+                // second before setting it.
+                //
+
+                long lastModifiedTicks = LastModifiedTime.Ticks;
+                Response.Cache.SetLastModified(new DateTime(lastModifiedTicks - (lastModifiedTicks % TimeSpan.TicksPerSecond)));
             }
 
             IRpcServiceDescriptor service = TargetService.GetDescriptor();

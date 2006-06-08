@@ -1,4 +1,5 @@
 #region License, Terms and Conditions
+
 //
 // Jayrock - A JSON-RPC implementation for the Microsoft .NET Framework
 // Written by Atif Aziz (atif.aziz@skybow.com)
@@ -18,21 +19,20 @@
 // along with this library; if not, write to the Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
 //
+
 #endregion
 
-namespace Jayrock.Json.Rpc
+namespace Jayrock.Json
 {
-    public interface IRpcServiceFeature : IRpcServiceBinding
+    #region Imports
+
+    using System.IO;
+
+    #endregion
+
+    public interface IJsonTextService
     {
-        //
-        // Consider these alternate names instead of "feature":
-        //
-        //  - binding
-        //  - connector
-        //  - channel
-        //  - handler
-        //  - adapter *
-        //  - port
-        //
+        JsonReader CreateReader(TextReader reader);
+        JsonWriter CreateWriter(TextWriter writer);
     }
 }
