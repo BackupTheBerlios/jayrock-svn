@@ -232,11 +232,11 @@ namespace Jayrock.Json.Rpc
                 CompositeFormatter formatter = new CompositeFormatter();
 
                 formatter.AddFormatter(typeof(DateTime), new DateTimeFormatter());
-                formatter.AddFormatter(typeof(DataSet), new DataSetFormatter());
-                formatter.AddFormatter(typeof(DataTable), new DataTableFormatter());
-                formatter.AddFormatter(typeof(DataView), new DataViewFormatter());
-                formatter.AddFormatter(typeof(DataRowView), new DataRowViewFormatter());
-                formatter.AddFormatter(typeof(DataRow), new DataRowFormatter());
+                formatter.AddFormatter(typeof(DataSet), new DataSetFormatter(), true);
+                formatter.AddFormatter(typeof(DataTable), new DataTableFormatter(), true);
+                formatter.AddFormatter(typeof(DataView), new DataViewFormatter(), true);
+                formatter.AddFormatter(typeof(DataRowView), new DataRowViewFormatter(), true);
+                formatter.AddFormatter(typeof(DataRow), new DataRowFormatter(), true);
                 formatter.AddFormatter(typeof(NameValueCollection), new NameValueCollectionFormatter(), true);
                 formatter.AddFormatter(typeof(Control), new ControlFormatter(), true);
 
