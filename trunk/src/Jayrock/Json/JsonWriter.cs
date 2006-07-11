@@ -103,11 +103,6 @@ namespace Jayrock.Json
         
         public virtual void WriteArray(IEnumerable values)
         {
-            WriteArray(values, this);
-        }
-
-        public virtual void WriteArray(IEnumerable values, JsonWriter valueWriter)
-        {
             if (values == null)
             {
                 WriteNull();
@@ -117,7 +112,7 @@ namespace Jayrock.Json
                 WriteStartArray();
 
                 foreach (object value in values)
-                    valueWriter.WriteValue(value);
+                    WriteValue(value);
 
                 WriteEndArray();
             }
