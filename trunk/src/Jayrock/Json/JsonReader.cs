@@ -22,7 +22,12 @@
 
 namespace Jayrock.Json
 {
+    #region Imports
+
+    using System;
     using System.Globalization;
+
+    #endregion
 
     /// <summary>
     /// Represents a reader that provides fast, non-cached, forward-only 
@@ -136,6 +141,11 @@ namespace Jayrock.Json
 
         public void SkipTo(JsonToken token)
         {
+            // BUGBUG: Depth check missing bug!
+            // This loop would exit prematurely if it find the sought token at
+            // a depth lower than where it started, such as in the case of
+            // nested structures.
+            
             while (Read())
             {
                 if (Token == token)
