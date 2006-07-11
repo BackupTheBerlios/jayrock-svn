@@ -61,8 +61,8 @@ namespace Jayrock.Json
             }
                     
             //
-            // For all other types, write out its string representation as a
-            // simple JSON string.
+            // For all other types, go through a method that can be
+            // overridden by subtypes.
             //
 
             FormatOther(o, writer);
@@ -108,6 +108,11 @@ namespace Jayrock.Json
                 return;
             }
 
+            //
+            // For all other types, write out its string representation as a
+            // simple JSON string.
+            //
+            
             writer.WriteString(Convert.ToString(o, CultureInfo.InvariantCulture));
         }
 
