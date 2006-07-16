@@ -42,7 +42,7 @@ namespace Jayrock.Json.Importers
 
         private delegate object Converter(string s);
         
-        private Converter _converter;
+        private readonly Converter _converter;
         
         private NumberImporter(Converter converter)
         {
