@@ -25,6 +25,7 @@ namespace Jayrock.Json
     #region Imports
 
     using System;
+    using System.Collections;
     using System.Globalization;
 
     #endregion
@@ -36,6 +37,7 @@ namespace Jayrock.Json
 
     public abstract class JsonReader
     {
+        private ITypeImporterLocator _importerLocator;
         public const string TrueText = "true";
         public const string FalseText = "false";
         public const string NullText = "null";
@@ -244,9 +246,62 @@ namespace Jayrock.Json
             }
         }
 
+        public ITypeImporterLocator TypeImporterLocator
+        {
+            get
+            {
+                if (_importerLocator == null)
+                    _importerLocator = new TypeImporterCollection();
+                
+                return _importerLocator;
+            }
+            
+            set
+            {
+                if (value == null) 
+                    throw new ArgumentNullException("value");
+                
+                _importerLocator = value;
+            }
+        }
+
+        public object Get(Type type)
+        {
+            ITypeImporter importer = TypeImporterLocator.Find(type);
+            
+            if (importer == null)
+                throw new JsonException(string.Format("Don't know how to read the type {0} from JSON.", type.FullName)); // TODO: Review the choice of exception type here.
+            
+            return importer.Import(this);
+        }
+
         public override string ToString()
         {
             return Token + ":" + Text;
+        }
+    }
+
+    public interface ITypeImporterLocator
+    {
+        ITypeImporter Find(Type type);
+    }
+    
+    public sealed class TypeImporterCollection : DictionaryBase, ITypeImporterLocator
+    {
+        public void Add(Type type, ITypeImporter importer)
+        {
+            if (type == null)
+                throw new ArgumentNullException("type");
+
+            if (importer == null)
+                throw new ArgumentNullException("importer");
+            
+            InnerHashtable.Add(type, importer);
+        }
+        
+        public ITypeImporter Find(Type type)
+        {
+            return (ITypeImporter) InnerHashtable[type];
         }
     }
 }

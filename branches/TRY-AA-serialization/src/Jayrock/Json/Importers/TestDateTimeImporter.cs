@@ -1,0 +1,101 @@
+#region License, Terms and Conditions
+//
+// Jayrock - A JSON-RPC implementation for the Microsoft .NET Framework
+// Written by Atif Aziz (atif.aziz@skybow.com)
+// Copyright (c) Atif Aziz. All rights reserved.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License as published by the Free
+// Software Foundation; either version 2.1 of the License, or (at your option)
+// any later version.
+//
+// This library is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+// FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+// details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with this library; if not, write to the Free Software Foundation, Inc.,
+// 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
+//
+#endregion
+
+namespace Jayrock.Json.Importers
+{
+    #region Imports
+
+    using System;
+    using System.IO;
+    using NUnit.Framework;
+
+    #endregion
+
+    [ TestFixture ]
+    public class TestDateTimeImporter
+    {
+        [ Test ]
+        public void ImportNull()
+        {
+            Assert.IsNull(Import("null"));
+        }
+
+        [ Test ]
+        public void ImportString()
+        {
+            DateTime time = new DateTime(1999, 12, 31, 23, 30, 59, 999);
+            AssertImport(time, "\"1999-12-31T23:30:59.9990000" + Tzd(time) + "\"");
+        }
+
+        [ Test, Ignore("Need to finish implementation of importing date by number.") ]
+        public void ImportNumber()
+        {
+            AssertImport(new DateTime(1999, 12, 31, 23, 30, 59, 999), "123");
+        }
+
+        [ Test, ExpectedException(typeof(JsonSerializationException)) ]
+        public void CannotImportTrue()
+        {
+            Import("true");
+        }
+
+        [ Test, ExpectedException(typeof(JsonSerializationException)) ]
+        public void CannotImportFalse()
+        {
+            Import("false");
+        }
+
+        [ Test, ExpectedException(typeof(JsonSerializationException)) ]
+        public void CannotImportArray()
+        {
+            Import("[]");
+        }
+        
+        [ Test, ExpectedException(typeof(JsonSerializationException)) ]
+        public void CannotImportObject()
+        {
+            Import("{}");
+        }
+        
+        private static void AssertImport(object expected, string input)
+        {
+            object o = Import(input);
+            Assert.IsInstanceOfType(expected.GetType(), o);
+            Assert.AreEqual(expected, o);
+        }
+
+        private static object Import(string input)
+        {
+            JsonTextReader reader = new JsonTextReader(new StringReader(input));
+            return TypeImporterStock.Get(typeof(DateTime)).Import(reader);
+        }
+
+        private static string Tzd(DateTime localTime)
+        {
+            TimeSpan offset = TimeZone.CurrentTimeZone.GetUtcOffset(localTime);
+            string offsetString = offset.ToString();
+            return offset.Ticks < 0 ? 
+                   (offsetString.Substring(0, 6)) : 
+                   ("+" + offsetString.Substring(0, 5));
+        }
+    }
+}
