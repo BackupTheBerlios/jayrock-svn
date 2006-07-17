@@ -44,30 +44,28 @@ namespace Jayrock.Json.Importers
         public static ITypeImporter DateTime = new DateTimeImporter();
         public static ITypeImporterFactory Array = new ArrayImporterFactory();
         
-        // TODO: Mark _importers as read-only
-        
-        private static ITypeImporter[] _importers = 
-            {
-                null,    // Empty = 0     - Null reference
-                null,    // Object = 1    - Instance that isn't a value
-                null,    // DBNull = 2    - Database null value
-                null,    // Boolean = 3   - Boolean
-                null,    // Char = 4      - Unicode character
-                null,    // SByte = 5     - Signed 8-bit integer
-                Byte,    // Byte = 6      - Unsigned 8-bit integer
-                Int16,   // Int16 = 7     - Signed 16-bit integer
-                null,    // UInt16 = 8    - Unsigned 16-bit integer
-                Int32,   // Int32 = 9     - Signed 32-bit integer
-                null,    // UInt32 = 10   - Unsigned 32-bit integer
-                Int64,   // Int64 = 11    - Signed 64-bit integer
-                null,    // UInt64 = 12   - Unsigned 64-bit integer
-                Single,  // Single = 13   - IEEE 32-bit float
-                Double,  // Double = 14   - IEEE 64-bit double
-                Decimal, // Decimal = 15  - Decimal
-                DateTime,// DateTime = 16 - DateTime
-                null,
-                String   // String = 18   - Unicode character string
-            };  
+        private readonly static ITypeImporter[] _importers = 
+        {
+            null,    // Empty = 0     - Null reference
+            null,    // Object = 1    - Instance that isn't a value
+            null,    // DBNull = 2    - Database null value
+            null,    // Boolean = 3   - Boolean
+            null,    // Char = 4      - Unicode character
+            null,    // SByte = 5     - Signed 8-bit integer
+            Byte,    // Byte = 6      - Unsigned 8-bit integer
+            Int16,   // Int16 = 7     - Signed 16-bit integer
+            null,    // UInt16 = 8    - Unsigned 16-bit integer
+            Int32,   // Int32 = 9     - Signed 32-bit integer
+            null,    // UInt32 = 10   - Unsigned 32-bit integer
+            Int64,   // Int64 = 11    - Signed 64-bit integer
+            null,    // UInt64 = 12   - Unsigned 64-bit integer
+            Single,  // Single = 13   - IEEE 32-bit float
+            Double,  // Double = 14   - IEEE 64-bit double
+            Decimal, // Decimal = 15  - Decimal
+            DateTime,// DateTime = 16 - DateTime
+            null,
+            String   // String = 18   - Unicode character string
+        };  
         
         public static ITypeImporter Get(Type type)
         {
