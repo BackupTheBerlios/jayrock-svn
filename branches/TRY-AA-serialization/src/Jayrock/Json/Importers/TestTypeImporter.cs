@@ -64,7 +64,12 @@ namespace Jayrock.Json.Importers
         {
             public object ReturnValue;
             public bool Called;
-            
+
+            public override void Register(ITypeImporterRegistry registry)
+            {
+                throw new NotImplementedException();
+            }
+
             protected override object SubImport(JsonReader reader)
             {
                 Called = true;

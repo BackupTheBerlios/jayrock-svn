@@ -26,8 +26,23 @@ namespace Jayrock.Json.Importers
 
     using System;
     using System.Collections;
+    using System.Diagnostics;
+    using System.Text;
 
     #endregion
+    
+    public sealed class ArrayImporterFactory : ITypeImporterFactory
+    {
+        public ITypeImporter Create(Type type)
+        {
+            return new ArrayImporter(type.GetElementType());
+        }
+
+        public void Register(ITypeImporterRegistry registry)
+        {
+            registry.RegisterFactory(typeof(Array), this);
+        }
+    }
 
     public sealed class ArrayImporter : TypeImporter
     {
@@ -51,6 +66,33 @@ namespace Jayrock.Json.Importers
             get { return _elementType; }
         }
 
+        public override void Register(ITypeImporterRegistry registry)
+        {
+            Type elementType = ElementType;
+            
+            //
+            // For sake of convenience, if the element type does not have an
+            // importer already registered then we'll check if the stock has
+            // one. If yes, then we'll auto-register it here at the same time
+            // as registering the importer for the array type. This allows 
+            // simple types like array of integers to be handles without
+            // requiring the user to register the element type and
+            // then the array, which can seem like extra steps for the most
+            // common cases.
+            //
+            
+            ITypeImporter importer = registry.Find(elementType);
+            
+            if (importer == null)
+            {
+                importer = TypeImporterStock.Find(elementType);
+                if (importer != null)
+                    registry.Register(elementType, importer);
+            }
+
+            registry.Register(MakeArrayType(elementType), this);
+        }
+
         protected override object SubImport(JsonReader reader)
         {
             if (reader == null)
@@ -66,6 +108,34 @@ namespace Jayrock.Json.Importers
                 list.Add(reader.Get(_elementType));
          
             return list.ToArray(_elementType);
+        }
+ 
+        private static Type MakeArrayType(Type type)
+        {
+            Debug.Assert(type != null);
+            
+            //
+            // Under .NET Framework 2.0, one can use Type.MakeArrayType, 
+            // but as this does not exist for .NET Framework 1.x, we need to 
+            // use the element type name specification and insert the array 
+            // notation to get at the array type. So:
+            //
+            //      System.Int32, mscorlib, Version=1.0.5000.0, ...
+            //
+            // becomes:
+            //
+            //      System.Int32[], mscorlib, Version=1.0.5000.0, ...
+            //
+            // NOTE: If the type name contains an escaped comma, the this
+            // method will fail.
+            //
+            
+            string typeName = type.AssemblyQualifiedName;
+            StringBuilder sb = new StringBuilder(typeName, typeName.Length + 2);
+            int index = typeName.IndexOf(',');
+            Debug.Assert(index > 0);
+            sb.Insert(index, "[]");
+            return Type.GetType(sb.ToString());
         }
     }
 }

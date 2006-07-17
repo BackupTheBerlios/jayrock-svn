@@ -32,23 +32,32 @@ namespace Jayrock.Json.Importers
 
     public sealed class NumberImporter : TypeImporter
     {
-        internal static NumberImporter Byte = new NumberImporter(new Converter(ConvertToByte));
-        internal static NumberImporter Int16 = new NumberImporter(new Converter(ConvertToInt16));
-        internal static NumberImporter Int32 = new NumberImporter(new Converter(ConvertToInt32));
-        internal static NumberImporter Int64 = new NumberImporter(new Converter(ConvertToInt64));
-        internal static NumberImporter Single = new NumberImporter(new Converter(ConvertToSingle));
-        internal static NumberImporter Double = new NumberImporter(new Converter(ConvertToDouble));
-        internal static NumberImporter Decimal = new NumberImporter(new Converter(ConvertToDecimal));
+        internal static NumberImporter Byte = new NumberImporter(typeof(byte), new Converter(ConvertToByte));
+        internal static NumberImporter Int16 = new NumberImporter(typeof(short), new Converter(ConvertToInt16));
+        internal static NumberImporter Int32 = new NumberImporter(typeof(int), new Converter(ConvertToInt32));
+        internal static NumberImporter Int64 = new NumberImporter(typeof(long), new Converter(ConvertToInt64));
+        internal static NumberImporter Single = new NumberImporter(typeof(float), new Converter(ConvertToSingle));
+        internal static NumberImporter Double = new NumberImporter(typeof(double), new Converter(ConvertToDouble));
+        internal static NumberImporter Decimal = new NumberImporter(typeof(decimal), new Converter(ConvertToDecimal));
 
         private delegate object Converter(string s);
         
         private readonly Converter _converter;
-        
-        private NumberImporter(Converter converter)
+        private readonly Type _type;
+
+        private NumberImporter(Type type, Converter converter)
         {
+            Debug.Assert(type != null);
+            Debug.Assert(type.IsValueType);
             Debug.Assert(converter != null);
-            
+
+            _type = type;
             _converter = converter;
+        }
+
+        public override void Register(ITypeImporterRegistry registry)
+        {
+            registry.Register(_type, this);
         }
 
         protected override object SubImport(JsonReader reader)

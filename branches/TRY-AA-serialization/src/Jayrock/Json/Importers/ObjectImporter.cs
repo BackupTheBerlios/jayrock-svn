@@ -41,6 +41,11 @@ namespace Jayrock.Json.Importers
             _type = type;
         }
 
+        public override void Register(ITypeImporterRegistry registry)
+        {
+            registry.Register(_type, this);
+        }
+
         protected override object SubImport(JsonReader reader)
         {
             if (reader == null)

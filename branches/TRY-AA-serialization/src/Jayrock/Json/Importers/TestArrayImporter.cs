@@ -68,15 +68,13 @@ namespace Jayrock.Json.Importers
         
         private static void AssertImport(Array expected, string s)
         {
-            TypeImporterCollection importers = new TypeImporterCollection();
-
-            Type expectedType = expected.GetType();
-            importers.Add(expectedType.GetElementType(), TypeImporterStock.Get(expectedType.GetElementType()));
-            importers.Add(expectedType, new ArrayImporter(expectedType.GetElementType()));
+            TypeImporterRegistry importers = new TypeImporterRegistry();
+            TypeImporterStock.Array.Register(importers);
 
             JsonReader reader = CreateReader(s);
-            reader.TypeImporterLocator = importers;
-            object o = reader.Get(expectedType);
+            reader.TypeImporterRegistry = importers;
+            
+            object o = reader.Get(expected.GetType());
 
             if (expected == null)
                 Assert.IsNull(o);

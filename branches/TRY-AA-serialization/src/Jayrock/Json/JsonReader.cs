@@ -37,7 +37,7 @@ namespace Jayrock.Json
 
     public abstract class JsonReader
     {
-        private ITypeImporterLocator _importerLocator;
+        private ITypeImporterRegistry _importerRegistry;
         public const string TrueText = "true";
         public const string FalseText = "false";
         public const string NullText = "null";
@@ -246,14 +246,14 @@ namespace Jayrock.Json
             }
         }
 
-        public ITypeImporterLocator TypeImporterLocator
+        public ITypeImporterRegistry TypeImporterRegistry
         {
             get
             {
-                if (_importerLocator == null)
-                    _importerLocator = new TypeImporterCollection();
+                if (_importerRegistry == null)
+                    _importerRegistry = new TypeImporterRegistry();
                 
-                return _importerLocator;
+                return _importerRegistry;
             }
             
             set
@@ -261,13 +261,13 @@ namespace Jayrock.Json
                 if (value == null) 
                     throw new ArgumentNullException("value");
                 
-                _importerLocator = value;
+                _importerRegistry = value;
             }
         }
 
         public object Get(Type type)
         {
-            ITypeImporter importer = TypeImporterLocator.Find(type);
+            ITypeImporter importer = TypeImporterRegistry.Find(type);
             
             if (importer == null)
                 throw new JsonException(string.Format("Don't know how to read the type {0} from JSON.", type.FullName)); // TODO: Review the choice of exception type here.
@@ -278,30 +278,6 @@ namespace Jayrock.Json
         public override string ToString()
         {
             return Token + ":" + Text;
-        }
-    }
-
-    public interface ITypeImporterLocator
-    {
-        ITypeImporter Find(Type type);
-    }
-    
-    public sealed class TypeImporterCollection : DictionaryBase, ITypeImporterLocator
-    {
-        public void Add(Type type, ITypeImporter importer)
-        {
-            if (type == null)
-                throw new ArgumentNullException("type");
-
-            if (importer == null)
-                throw new ArgumentNullException("importer");
-            
-            InnerHashtable.Add(type, importer);
-        }
-        
-        public ITypeImporter Find(Type type)
-        {
-            return (ITypeImporter) InnerHashtable[type];
         }
     }
 }

@@ -42,7 +42,10 @@ namespace Jayrock.Json.Importers
         public static ITypeImporter String = new StringImporter();
         public static ITypeImporter Boolean = new BooleanImporter();
         public static ITypeImporter DateTime = new DateTimeImporter();
-
+        public static ITypeImporterFactory Array = new ArrayImporterFactory();
+        
+        // TODO: Mark _importers as read-only
+        
         private static ITypeImporter[] _importers = 
             {
                 null,    // Empty = 0     - Null reference

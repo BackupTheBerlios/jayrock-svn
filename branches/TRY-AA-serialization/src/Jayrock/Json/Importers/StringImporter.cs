@@ -30,6 +30,11 @@ namespace Jayrock.Json.Importers
 
     public sealed class StringImporter : TypeImporter
     {
+        public override void Register(ITypeImporterRegistry registry)
+        {
+            registry.Register(typeof(string), this);
+        }
+
         protected override object SubImport(JsonReader reader)
         {
             if (reader == null)
