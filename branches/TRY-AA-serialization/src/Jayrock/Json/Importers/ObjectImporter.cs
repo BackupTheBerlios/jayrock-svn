@@ -33,14 +33,20 @@ namespace Jayrock.Json.Importers
     public sealed class ObjectImporter : TypeImporter
     {
         private readonly Type _type;
-        private WeakReference _properties;
+        private PropertyDescriptorCollection _properties;
 
-        public ObjectImporter(Type type)
+        public ObjectImporter(Type type) :
+            this(type, null) {}
+
+        public ObjectImporter(Type type, ICustomTypeDescriptor typeDescriptor)
         {
             if (type == null)
                 throw new ArgumentNullException("type");
             
             _type = type;
+            _properties = typeDescriptor == null ? 
+                TypeDescriptor.GetProperties(type) : 
+                typeDescriptor.GetProperties();
         }
 
         public override void Register(ITypeImporterRegistry registry)
@@ -59,42 +65,18 @@ namespace Jayrock.Json.Importers
             reader.Read();
             object o = Activator.CreateInstance(_type);
             
-            PropertyDescriptorCollection properties = null;
-           
             while (reader.Token != JsonToken.EndObject)
             {
                 string memberName = reader.Text;
                 reader.Read();
-
-                if (properties == null)
-                    properties = Properties;
-                
-                PropertyDescriptor property = properties[memberName];
+               
+                PropertyDescriptor property = _properties[memberName];
                 
                 if (property != null)
                     property.SetValue(o, reader.Get(property.PropertyType));
             }
          
             return o;
-        }
-
-        private PropertyDescriptorCollection Properties
-        {
-            get
-            {
-                PropertyDescriptorCollection properties = null;
-
-                if (_properties != null)
-                    properties = (PropertyDescriptorCollection) _properties.Target;
-
-                if (properties == null)
-                {
-                    properties = TypeDescriptor.GetProperties(_type);
-                    _properties = new WeakReference(properties);
-                }
-
-                return properties;
-            }
         }
     }
 }

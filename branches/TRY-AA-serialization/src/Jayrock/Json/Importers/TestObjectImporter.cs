@@ -1,7 +1,30 @@
+#region License, Terms and Conditions
+//
+// Jayrock - A JSON-RPC implementation for the Microsoft .NET Framework
+// Written by Atif Aziz (atif.aziz@skybow.com)
+// Copyright (c) Atif Aziz. All rights reserved.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License as published by the Free
+// Software Foundation; either version 2.1 of the License, or (at your option)
+// any later version.
+//
+// This library is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+// FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+// details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with this library; if not, write to the Free Software Foundation, Inc.,
+// 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
+//
+#endregion
+
 namespace Jayrock.Json.Importers
 {
     using System;
     using System.IO;
+    using NetMatters;
     using NUnit.Framework;
 
     [ TestFixture ]
@@ -132,10 +155,10 @@ namespace Jayrock.Json.Importers
             }";
             
             JsonTextReader reader = new JsonTextReader(new StringReader(text));
-            (new ObjectImporter(typeof(YahooResponse))).Register(reader.TypeImporterRegistry);
-            (new ObjectImporter(typeof(YahooResultSet))).Register(reader.TypeImporterRegistry);
-            (new ObjectImporter(typeof(YahooResult))).Register(reader.TypeImporterRegistry);
-            (new ObjectImporter(typeof(YahooThumbnail))).Register(reader.TypeImporterRegistry);
+            (new ObjectImporter(typeof(YahooResponse), new FieldsToPropertiesProxyTypeDescriptor(typeof(YahooResponse)))).Register(reader.TypeImporterRegistry);
+            (new ObjectImporter(typeof(YahooResultSet), new FieldsToPropertiesProxyTypeDescriptor(typeof(YahooResultSet)))).Register(reader.TypeImporterRegistry);
+            (new ObjectImporter(typeof(YahooResult), new FieldsToPropertiesProxyTypeDescriptor(typeof(YahooResult)))).Register(reader.TypeImporterRegistry);
+            (new ObjectImporter(typeof(YahooThumbnail), new FieldsToPropertiesProxyTypeDescriptor(typeof(YahooThumbnail)))).Register(reader.TypeImporterRegistry);
             
             YahooResponse response = (YahooResponse) reader.Get(typeof(YahooResponse));
             Assert.IsNotNull(response);
@@ -205,146 +228,40 @@ namespace Jayrock.Json.Importers
             return new JsonTextReader(new StringReader(s));
         }
 
-        struct YahooResponse
+        private class YahooResponse
         {
-            public YahooResultSet _resultSet;
-
-            public YahooResultSet ResultSet
-            {
-                get { return _resultSet; }
-                set { _resultSet = value; }
-            }
+            public YahooResultSet ResultSet;
         }
 
-        struct YahooResultSet
+        private class YahooResultSet
         {
-            private int _totalResultsAvailable;
-            private int _totalResultsReturned;
-            private int _firstResultPosition;
-            public YahooResult[] _result;
-
-            public int totalResultsAvailable
-            {
-                get { return _totalResultsAvailable; }
-                set { _totalResultsAvailable = value; }
-            }
-
-            public int totalResultsReturned
-            {
-                get { return _totalResultsReturned; }
-                set { _totalResultsReturned = value; }
-            }
-
-            public int firstResultPosition
-            {
-                get { return _firstResultPosition; }
-                set { _firstResultPosition = value; }
-            }
-
-            public YahooResult[] Result
-            {
-                get { return _result; }
-                set { _result = value; }
-            }
+            public int totalResultsAvailable;
+            public int totalResultsReturned;
+            public int firstResultPosition;
+            public YahooResult[] Result;
         }
 
-        struct YahooResult
+        private class YahooResult
         {
-            private string _title;
-            private string _summary;
-            private string _url;
-            private string _clickUrl;
-            private string _newsSource;
-            private string _newsSourceUrl;
-            private string _language;
-            private long _publishDate;
-            private long _modificationDate;
-            private YahooThumbnail _thumbnail;
-
-            public string Title
-            {
-                get { return _title; }
-                set { _title = value; }
-            }
-
-            public string Summary
-            {
-                get { return _summary; }
-                set { _summary = value; }
-            }
-
-            public string Url
-            {
-                get { return _url; }
-                set { _url = value; }
-            }
-
-            public string ClickUrl
-            {
-                get { return _clickUrl; }
-                set { _clickUrl = value; }
-            }
-
-            public string NewsSource
-            {
-                get { return _newsSource; }
-                set { _newsSource = value; }
-            }
-
-            public string NewsSourceUrl
-            {
-                get { return _newsSourceUrl; }
-                set { _newsSourceUrl = value; }
-            }
-
-            public string Language
-            {
-                get { return _language; }
-                set { _language = value; }
-            }
-
-            public long PublishDate
-            {
-                get { return _publishDate; }
-                set { _publishDate = value; }
-            }
-
-            public long ModificationDate
-            {
-                get { return _modificationDate; }
-                set { _modificationDate = value; }
-            }
-
-            public YahooThumbnail Thumbnail
-            {
-                get { return _thumbnail; }
-                set { _thumbnail = value; }
-            }
+            public string Title;
+            public string Summary;
+            public string Url;
+            public string ClickUrl;
+            public string NewsSource;
+            public string NewsSourceUrl;
+            public string Language;
+            public long PublishDate;
+            public long ModificationDate;
+            public int Height;
+            public int Width;
+            public YahooThumbnail Thumbnail;
         }
 
-        struct YahooThumbnail
+        private class YahooThumbnail
         {
-            private string _url;
-            private int _height;
-            private int _width;
-
-            public string Url
-            {
-                get { return _url; }
-                set { _url = value; }
-            }
-
-            public int Height
-            {
-                get { return _height; }
-                set { _height = value; }
-            }
-
-            public int Width
-            {
-                get { return _width; }
-                set { _width = value; }
-            }
+            public string Url;
+            public int Height;
+            public int Width;
         }
     }
 }
