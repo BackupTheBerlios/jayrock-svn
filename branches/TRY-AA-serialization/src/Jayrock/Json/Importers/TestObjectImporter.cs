@@ -51,16 +51,24 @@ namespace Jayrock.Json.Importers
         [ Test ]
         public void ImportObject()
         {
-            Person p = (Person) Import("{Id:42,FullName:'Bob'}");
+            Person p = (Person) Import("{ Id : 42, FullName : 'Bob'}");
             Assert.AreEqual(42, p.Id, "Id");
             Assert.AreEqual("Bob", p.FullName, "FullName");
             Assert.IsNull(p.Spouce, "Spouce");
         }
 
         [ Test ]
-        public void ImportEmbeddedObejects()
+        public void ImportEmbeddedObjects()
         {
-            Person p = (Person) Import("{Id:42,FullName:'Bob',Spouce:{FullName:'Alice',Id:43,Spouce:null}}");
+            Person p = (Person) Import(@"{
+                Id : 42,
+                FullName : 'Bob',
+                Spouce: { 
+                    FullName : 'Alice', 
+                    Id       : 43,
+                    Spouce   : null 
+                } 
+            }");
             Assert.AreEqual(42, p.Id, "Id");
             Assert.AreEqual("Bob", p.FullName, "FullName");
             Assert.IsNotNull(p.Spouce, "Spouce");
