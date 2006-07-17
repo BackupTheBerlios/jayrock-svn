@@ -46,10 +46,10 @@ namespace Jayrock.Json.Importers
             AssertImport(time, "\"1999-12-31T23:30:59.9990000" + Tzd(time) + "\"");
         }
 
-        [ Test, Ignore("Need to finish implementation of importing date by number.") ]
+        [ Test ]
         public void ImportNumber()
         {
-            AssertImport(new DateTime(1999, 12, 31, 23, 30, 59, 999), "123");
+            AssertImport(new DateTime(2006, 7, 17, 10, 56, 56), "1153133816", true);
         }
 
         [ Test, ExpectedException(typeof(JsonSerializationException)) ]
@@ -75,18 +75,26 @@ namespace Jayrock.Json.Importers
         {
             Import("{}");
         }
-        
-        private static void AssertImport(object expected, string input)
+
+        private static void AssertImport(DateTime expected, string input)
+        {
+            AssertImport(expected, input, false);
+        }
+
+        private static void AssertImport(DateTime expected, string input, bool expectingUTC)
         {
             object o = Import(input);
-            Assert.IsInstanceOfType(expected.GetType(), o);
-            Assert.AreEqual(expected, o);
+            Assert.IsInstanceOfType(typeof(DateTime), o);
+            if (expectingUTC)
+                Assert.AreEqual(expected, ((DateTime) o).ToUniversalTime());
+            else 
+                Assert.AreEqual(expected, o);
         }
 
         private static object Import(string input)
         {
             JsonTextReader reader = new JsonTextReader(new StringReader(input));
-            return TypeImporterStock.Get(typeof(DateTime)).Import(reader);
+            return reader.Get(typeof(DateTime));
         }
 
         private static string Tzd(DateTime localTime)

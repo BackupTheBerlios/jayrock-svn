@@ -114,6 +114,16 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "TestUnixTime.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "UnixTime.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Configuration\DictionarySectionHandler.cs"
                     SubType = "Code"
                     BuildAction = "Compile"

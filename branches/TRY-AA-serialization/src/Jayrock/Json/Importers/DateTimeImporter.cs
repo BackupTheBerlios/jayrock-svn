@@ -25,6 +25,7 @@ namespace Jayrock.Json.Importers
     #region Imports
 
     using System;
+    using System.Globalization;
     using System.Xml;
 
     #endregion
@@ -47,13 +48,22 @@ namespace Jayrock.Json.Importers
             }
             else if (reader.Token == JsonToken.Number)
             {
-                throw new NotImplementedException(/* TODO: Implement importing date/time by JSON number.
-                    The number would represent the number of milliseconds in UTC between the specified 
-                    date and midnight January 1, 1970 */);
+                try
+                {
+                    return UnixTime.ToDateTime(Convert.ToInt64(reader.Text, CultureInfo.InvariantCulture));
+                }
+                catch (FormatException e)
+                {
+                    throw new JsonSerializationException(null, e); // TODO: Supply an exception message.
+                }
+                catch (OverflowException e)
+                {
+                    throw new JsonSerializationException(null, e); // TODO: Supply an exception message.
+                }
             }
             else
             {
-                throw new JsonSerializationException(string.Format("Found {0} where expecting a string.", reader.Token));
+                throw new JsonSerializationException(string.Format("Found {0} where expecting a string in ISO 8601 time format or a number expressed in Unix time.", reader.Token));
             }
         }
     }

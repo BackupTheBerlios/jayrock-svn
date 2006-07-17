@@ -108,6 +108,11 @@
                     BuildAction = "None"
                 />
                 <File
+                    RelPath = "UnixTime.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\DelimitedListParser.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
