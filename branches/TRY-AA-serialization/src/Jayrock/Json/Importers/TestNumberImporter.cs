@@ -69,6 +69,12 @@ namespace Jayrock.Json.Importers
             AssertImport((short) 0, "456789");
         }
         
+        [ Test ]
+        public void ImportString()
+        {
+            AssertImport(123456789, "'123456789'");
+        }
+
         private static void AssertImport(object expected, string input)
         {
             JsonTextReader reader = new JsonTextReader(new StringReader(input));

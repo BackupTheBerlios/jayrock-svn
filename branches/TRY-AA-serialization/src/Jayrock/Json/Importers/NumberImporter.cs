@@ -67,7 +67,7 @@ namespace Jayrock.Json.Importers
             
             reader.MoveToContent();
             
-            if (reader.Token != JsonToken.Number)
+            if (reader.Token != JsonToken.Number && reader.Token != JsonToken.String)
                 throw new JsonSerializationException(string.Format("Found {0} where expecting a number.", reader.Token));
 
             try
