@@ -34,10 +34,22 @@ namespace Jayrock.Json.Importers
     [ TestFixture ]
     public class TestArrayImporter
     {
+        [ Test, ExpectedException(typeof(ArgumentException)) ]
+        public void InitializationTypeMustBeArray()
+        {
+            new ArrayImporter(typeof(object));
+        }
+
+        [ Test, ExpectedException(typeof(ArgumentException)) ]
+        public void InitializationTypeMustBeOneDimensionArray()
+        {
+            new ArrayImporter(typeof(object[,]));
+        }
+
         [ Test ]
         public void ImportNull()
         {
-            ArrayImporter importer = new ArrayImporter(typeof(object));
+            ArrayImporter importer = new ArrayImporter();
             Assert.IsNull(importer.Import(CreateReader("null")));
         }
 
@@ -69,7 +81,6 @@ namespace Jayrock.Json.Importers
         private static void AssertImport(Array expected, string s)
         {
             JsonReader reader = CreateReader(s);
-            TypeImporterStock.Array.Register(reader.TypeImporterRegistry);
             
             object o = reader.Get(expected.GetType());
 

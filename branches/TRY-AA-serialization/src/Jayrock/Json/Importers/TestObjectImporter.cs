@@ -76,8 +76,6 @@ namespace Jayrock.Json.Importers
             JsonReader reader = CreateReader(s);
             ITypeImporterRegistry registry = reader.TypeImporterRegistry;
             (new ObjectImporter(expectedType)).Register(registry);
-            TypeImporterStock.Int32.Register(registry);
-            TypeImporterStock.String.Register(registry);
             object o = reader.Get(expectedType);            
             Assert.IsNotNull(o);
             Assert.IsInstanceOfType(expectedType, o);

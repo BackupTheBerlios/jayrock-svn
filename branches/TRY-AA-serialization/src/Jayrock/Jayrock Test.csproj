@@ -424,6 +424,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Json\Importers\TestTypeImporterStock.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\Importers\TypeImporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"

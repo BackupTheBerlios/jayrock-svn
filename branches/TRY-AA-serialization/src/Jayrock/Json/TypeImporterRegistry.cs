@@ -26,6 +26,7 @@ namespace Jayrock.Json
 
     using System;
     using System.Collections;
+    using Jayrock.Json.Importers;
 
     #endregion
 
@@ -36,24 +37,48 @@ namespace Jayrock.Json
 
         public ITypeImporter Find(Type type)
         {
+            //
+            // First look up in the table of specific type registrations.
+            //
+            
             ITypeImporter importer = (ITypeImporter) _importerByType[type];
             
-            if (importer == null)
+            if (importer != null)
+                return importer;
+            
+            //
+            // No importer found, so look one up using the wide types, where
+            // the factory creates one on demand. For example, an array is
+            // wide type that covers a lot of specific instantiations. An
+            // array importer would be produce an importer on demand at the
+            // time the specific instantiation is demanded. If the factory
+            // creates the importer, it is registered.
+            //
+            
+            foreach (DictionaryEntry entry in _factoryByType)
             {
-                foreach (DictionaryEntry entry in _factoryByType)
+                Type wideType = (Type) entry.Key;
+            
+                if (wideType.IsAssignableFrom(type))
                 {
-                    Type wideType = (Type) entry.Key;
-                
-                    if (wideType.IsAssignableFrom(type))
-                    {
-                        ITypeImporterFactory factory = (ITypeImporterFactory) entry.Value;
-                        importer = factory.Create(type);
-                        importer.Register(this);
-                        break;
-                    }
+                    ITypeImporterFactory factory = (ITypeImporterFactory) entry.Value;
+                    importer = factory.Create(type);
+                    break;
                 }
             }
             
+            //
+            // If still no importer found, then we fault in one from the
+            // stock. This allows known and common types to be 
+            // conveniently and automatically set up.
+            //
+            
+            if (importer == null)
+                importer = TypeImporterStock.Find(type);
+            
+            if (importer != null)
+                importer.Register(this);
+
             return importer;
         }
 

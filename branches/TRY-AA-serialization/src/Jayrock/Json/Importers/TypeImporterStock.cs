@@ -84,6 +84,9 @@ namespace Jayrock.Json.Importers
         {
             if (type == null)
                 throw new ArgumentNullException("type");
+
+            if (type.IsArray)
+                return Array.Create(type);
             
             return Find(Type.GetTypeCode(type));
         }

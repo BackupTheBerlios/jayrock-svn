@@ -35,7 +35,7 @@ namespace Jayrock.Json.Importers
     {
         public ITypeImporter Create(Type type)
         {
-            return new ArrayImporter(type.GetElementType());
+            return new ArrayImporter(type);
         }
 
         public void Register(ITypeImporterRegistry registry)
@@ -46,29 +46,27 @@ namespace Jayrock.Json.Importers
 
     public sealed class ArrayImporter : TypeImporter
     {
-        private readonly Type _elementType;
+        private readonly Type _arrayType;
 
         public ArrayImporter() : this(null) {}
 
-        public ArrayImporter(Type elementType)
+        public ArrayImporter(Type arrayType)
         {
-            if (elementType == null)
-                elementType = typeof(object);
+            if (arrayType == null)
+                arrayType = typeof(object[]);
             
-            if (elementType.IsArray)
-                throw new ArgumentException("Element type itself cannot be yet another array.", "elementType");
+            if (!arrayType.IsArray)
+                throw new ArgumentException(string.Format("{0} is not an array.", arrayType.FullName), "arrayType");
             
-            _elementType = elementType;
-        }
+            if (arrayType.GetArrayRank() != 1)
+                throw new ArgumentException(string.Format("{0} is not one-dimension array. Multi-dimensional arrays are not supported.", arrayType.FullName), "arrayType");
 
-        public Type ElementType
-        {
-            get { return _elementType; }
+            _arrayType = arrayType;
         }
 
         public override void Register(ITypeImporterRegistry registry)
         {
-            Type elementType = ElementType;
+            Type elementType = _arrayType.GetElementType();
             
             //
             // For sake of convenience, if the element type does not have an
@@ -90,7 +88,7 @@ namespace Jayrock.Json.Importers
                     registry.Register(elementType, importer);
             }
 
-            registry.Register(MakeArrayType(elementType), this);
+            registry.Register(_arrayType, this);
         }
 
         protected override object SubImport(JsonReader reader)
@@ -102,40 +100,14 @@ namespace Jayrock.Json.Importers
                 throw new JsonSerializationException(string.Format("Found {0} where expecting an array.", reader.Token));
 
             reader.Read();
+
+            Type elementType = _arrayType.GetElementType();
             ArrayList list = new ArrayList();
 
             while (reader.Token != JsonToken.EndArray)
-                list.Add(reader.Get(_elementType));
-         
-            return list.ToArray(_elementType);
-        }
- 
-        private static Type MakeArrayType(Type type)
-        {
-            Debug.Assert(type != null);
-            
-            //
-            // Under .NET Framework 2.0, one can use Type.MakeArrayType, 
-            // but as this does not exist for .NET Framework 1.x, we need to 
-            // use the element type name specification and insert the array 
-            // notation to get at the array type. So:
-            //
-            //      System.Int32, mscorlib, Version=1.0.5000.0, ...
-            //
-            // becomes:
-            //
-            //      System.Int32[], mscorlib, Version=1.0.5000.0, ...
-            //
-            // NOTE: If the type name contains an escaped comma, the this
-            // method will fail.
-            //
-            
-            string typeName = type.AssemblyQualifiedName;
-            StringBuilder sb = new StringBuilder(typeName, typeName.Length + 2);
-            int index = typeName.IndexOf(',');
-            Debug.Assert(index > 0);
-            sb.Insert(index, "[]");
-            return Type.GetType(sb.ToString());
+                list.Add(reader.Get(elementType));
+
+            return list.ToArray(elementType);
         }
     }
 }
