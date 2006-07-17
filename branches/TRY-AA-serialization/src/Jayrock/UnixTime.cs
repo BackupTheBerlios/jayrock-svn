@@ -34,6 +34,15 @@ namespace Jayrock
     {
         private static readonly int[] _days = { -1, 30, 58, 89, 119, 150, 180, 211, 242, 272, 303, 333, 364 };
         private static readonly int[] _leapDays = { -1, 30, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365 };
+        
+        /// <summary>
+        /// Converts a 64-bit Unix time (UTC) into a DateTime instance that
+        /// represents the same time in local time.
+        /// </summary>
+        /// <remarks>
+        /// See <a href="http://en.wikipedia.org/wiki/Unix_time">Unix time on Wikipedia</a>
+        /// for more information.
+        /// </remarks>
 
         public static DateTime ToDateTime(long time)
         {
