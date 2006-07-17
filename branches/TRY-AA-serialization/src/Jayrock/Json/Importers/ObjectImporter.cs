@@ -25,6 +25,7 @@ namespace Jayrock.Json.Importers
     #region Imports
 
     using System;
+    using System.ComponentModel;
     using System.Reflection;
 
     #endregion
@@ -32,6 +33,7 @@ namespace Jayrock.Json.Importers
     public sealed class ObjectImporter : TypeImporter
     {
         private readonly Type _type;
+        private WeakReference _properties;
 
         public ObjectImporter(Type type)
         {
@@ -56,16 +58,43 @@ namespace Jayrock.Json.Importers
             
             reader.Read();
             object o = Activator.CreateInstance(_type);
-
+            
+            PropertyDescriptorCollection properties = null;
+           
             while (reader.Token != JsonToken.EndObject)
             {
                 string memberName = reader.Text;
-                PropertyInfo property = _type.GetProperty(memberName);
                 reader.Read();
-                property.SetValue(o, reader.Get(property.PropertyType), null);
+
+                if (properties == null)
+                    properties = Properties;
+                
+                PropertyDescriptor property = properties[memberName];
+                
+                if (property != null)
+                    property.SetValue(o, reader.Get(property.PropertyType));
             }
          
             return o;
+        }
+
+        private PropertyDescriptorCollection Properties
+        {
+            get
+            {
+                PropertyDescriptorCollection properties = null;
+
+                if (_properties != null)
+                    properties = (PropertyDescriptorCollection) _properties.Target;
+
+                if (properties == null)
+                {
+                    properties = TypeDescriptor.GetProperties(_type);
+                    _properties = new WeakReference(properties);
+                }
+
+                return properties;
+            }
         }
     }
 }
