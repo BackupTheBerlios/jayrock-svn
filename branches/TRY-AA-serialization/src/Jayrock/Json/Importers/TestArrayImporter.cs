@@ -68,11 +68,8 @@ namespace Jayrock.Json.Importers
         
         private static void AssertImport(Array expected, string s)
         {
-            TypeImporterRegistry importers = new TypeImporterRegistry();
-            TypeImporterStock.Array.Register(importers);
-
             JsonReader reader = CreateReader(s);
-            reader.TypeImporterRegistry = importers;
+            TypeImporterStock.Array.Register(reader.TypeImporterRegistry);
             
             object o = reader.Get(expected.GetType());
 

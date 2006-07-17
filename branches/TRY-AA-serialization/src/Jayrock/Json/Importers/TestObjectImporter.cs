@@ -72,16 +72,15 @@ namespace Jayrock.Json.Importers
 
         private static object Import(string s)
         {
-            TypeImporterRegistry importers = new TypeImporterRegistry();
-            Type type = typeof(Person);
-            (new ObjectImporter(type)).Register(importers);
-            TypeImporterStock.Int32.Register(importers);
-            TypeImporterStock.String.Register(importers);
+            Type expectedType = typeof(Person);
             JsonReader reader = CreateReader(s);
-            reader.TypeImporterRegistry = importers;
-            object o = reader.Get(type);            
+            ITypeImporterRegistry registry = reader.TypeImporterRegistry;
+            (new ObjectImporter(expectedType)).Register(registry);
+            TypeImporterStock.Int32.Register(registry);
+            TypeImporterStock.String.Register(registry);
+            object o = reader.Get(expectedType);            
             Assert.IsNotNull(o);
-            Assert.IsInstanceOfType(typeof(Person), o);
+            Assert.IsInstanceOfType(expectedType, o);
             return o;
         }
 
