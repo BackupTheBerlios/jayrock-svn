@@ -86,6 +86,26 @@ namespace Jayrock.Json.Rpc
         }
 
         [ Test ]
+        public void Bug8131()
+        {
+            //
+            // Bug #8131: Varargs transposition when last arg is collection
+            // http://developer.berlios.de/bugs/?func=detailbug&bug_id=8131&group_id=4638
+            //
+            
+            TestService service = new TestService();
+            IRpcMethodDescriptor method = service.GetDescriptor().FindMethodByName("VarMethod");
+            object[] args = new object[] { 1, 2, new int[] { 3, 4 } };
+            args = JsonRpcServices.TransposeVariableArguments(method, args);
+            Assert.AreEqual(1, args.Length);
+            object[] varargs = (object[]) args[0];
+            Assert.AreEqual(3, varargs.Length);
+            Assert.AreEqual(1, varargs[0]);
+            Assert.AreEqual(2, varargs[1]);
+            Assert.AreEqual(new int[] { 3, 4 }, varargs[2]);
+        }
+
+        [ Test ]
         public void Test()
         {
             RpcServiceDescriptor serviceDescriptor = RpcServiceDescriptor.GetDescriptor(typeof(TestService));
@@ -93,7 +113,6 @@ namespace Jayrock.Json.Rpc
             Assert.IsTrue(JsonRpcServices.HasMethodVariableArguments(serviceDescriptor.GetMethodByName("VarMethod")));
             Assert.IsTrue(JsonRpcServices.HasMethodVariableArguments(serviceDescriptor.GetMethodByName("FixedVarMethod")));
         }
-
 
         private sealed class TestService : JsonRpcService
         {

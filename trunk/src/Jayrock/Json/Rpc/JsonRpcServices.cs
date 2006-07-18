@@ -148,7 +148,7 @@ namespace Jayrock.Json.Rpc
 
             object[] varArgs = null;
             
-            if (args.Length >= parameterCount)
+            if (parameterCount > 1 && args.Length >= parameterCount)
             {
                 object lastArg = args[args.Length - 1];
 
