@@ -1,11 +1,12 @@
 ﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-    <title>Jayrock Home Page</title>
+    <title>Jayrock: JSON and JSON-RPC for .NET</title>
     <meta name="vs_targetSchema" content="http://schemas.microsoft.com/intellisense/ie5" />
     <meta name="GENERATOR" content="Microsoft Visual Studio .NET 7.1" />
     <meta name="ProgId" content="VisualStudio.HTML" />
     <meta name="Originator" content="Microsoft Visual Studio .NET 7.1" />
+    <meta name="Description" content="Jayrock is JSON and JSON-RPC for .NET" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link rel="stylesheet" type="text/css" href="Default.css" />
 </head>
@@ -16,7 +17,8 @@
                 Table of Contents</p>
             <ul>
                 <li><a href="#what-is">What is Jayrock?</a></li>
-                <li><a href="#get-source">Downloading &amp; Compiling</a></li>
+                <li><a href="#get-source">Where is the Source, Luke?</a></li>
+                <li><a href="#compiling">Compiling</a></li>
                 <li><a href="#contributing">Contributing to the Project</a></li>
                 <li><a href="#community">Community &amp; Discussions</a></li>
                 <li><a href="#setup">Setting Up Jayrock</a></li>
@@ -24,22 +26,32 @@
                 <li><a href="#samples">Samples &amp; Demos</a></li>
                 <li><a href="#docs">Documents</a></li>
             </ul>
+            <p>
+                Updated:
+                <% = DateTime.Now.ToString("dd MMM yyyy") %></p>
         </div>
         <h1 class="h1-first">
-            <a name="what-is">What is Jayrock?</a></h1>
+            <a id="what-is" name="what-is">What is Jayrock?</a></h1>
         <p>
-            Jayrock is an implementation of JSON the <a href="http://www.json-rpc.org/">JSON-RPC</a>
-            protocol for the <a href="http://msdn.microsoft.com/netframework/">Microsoft .NET Framework</a>
-            and <a href="http://www.asp.net/">ASP.NET</a>.
+            <a href="http://developer.berlios.de/projects/jayrock/">Jayrock</a> is a modest implementation of 
+            <a href="http://www.json.org/"><acronym title="JavaScript Object Notation">JSON</acronym></a> and <a href="http://www.json-rpc.org/">JSON-RPC</a>
+            for the <a href="http://msdn.microsoft.com/netframework/">Microsoft .NET Framework</a>,
+            including <a href="http://www.asp.net/">ASP.NET</a>. Jayrock allows client-side
+            JavaScript to be able to call into server-side ASP.NET methods using JSON as the wire format and JSON-RPC as the procedure invocation protocol. The methods can be called synchronously or asynchronously.
         </p>
+        <ul>
+            <li><a href="http://developer.berlios.de/project/showfiles.php?group_id=4638">Download Jayrock now!</a></li>
+            <li><a href="http://groups.google.com/group/jayrock">Discuss Jayrock</a></li>
+        </ul>
         <h1>
-            <a name="get-source">Downloading &amp; Compiling</a></h1>
+            <a id="get-source" name="get-source">Where is the Source, Luke?</a></h1>
         <p>
             You can obtain the latest source of code of Jayrock from the <a href="http://subversion.tigris.org/">
                 Subversion</a> repository hosted at <a href="http://www.berlios.de">berliOS</a>.
-            Needless to say, you will need <a href="http://subversion.tigris.org/project_packages.html">
-                a Subversion client</a> (see also <a href="http://tortoisesvn.tigris.org/">TortoiseSVN,
-                    a Windows Shell Extension for Subversion</a>) to access the repository.
+            Needless to say, you will need a <a href="http://subversion.tigris.org/project_packages.html">
+                Subversion client</a> for your platform (Windows users may also want to check out 
+                <a href="http://tortoisesvn.tigris.org/">TortoiseSVN</a>,
+                    which is a Windows Shell Extension for Subversion) to access the repository.
             If you don't have a Subversion client handy and just wish to browse the source code,
             you can do so online using either <a href="http://svn.berlios.de/wsvn/jayrock">WebSVN</a>
             or <a href="http://svn.berlios.de/viewcvs/jayrock">ViewCVS</a>.</p>
@@ -57,7 +69,82 @@
                 Files</a> section of the project.
         </p>
         <h1>
-            <a name="contributing">Contributing to the Project</a></h1>
+            <a id="compiling" name="compiling">Compiling</a></h1>
+        <p>
+            Note: For quicker setup instructions, see the section <a href="#setup">Setting Up Jayrock</a>.</p>
+        <p>
+            Once you have checked out a working copy of <a href="#get-source">the source</a> from the 
+            respository, you can compile Jayrock in one of two ways. You can either open the
+            included <a href="http://msdn.microsoft.com/vstudio/">Microsoft Visual Studio</a>
+            solution files and use the IDE
+            to compile the projects or you can use the included <a href="http://nant.sourceforge.net/">Nant</a> build script to compile from the
+            command-line.</p>
+        <h2>Compiling With Nant</h2>
+        <p>
+            You do not need Nant installed on your machine to compile Jayrock. The right and
+            required version of all required tools (<a href="http://nant.sourceforge.net/">Nant</a>,
+            <a href="http://www.nunit.org/">
+                    NUnit</a> and <a href="http://ncover.org/">NCover</a>)
+            is already
+            included under the <code>tools</code> directory under Jayrock. If you are on
+            the Windows platform, you can simply run the batch file <code>src\Jayrock\build.bat</code> to
+            invoke Nant and have it build all the targets. To invoke Nant explicitly, otherwise,
+            use the following command (assuming you are in the root of the working directory):</p>
+        <p>
+            <code>tools\nant-0.85-rc2\NAnt /f:src\Jayrock\nant.build</code></p>
+        <p>
+            A full build runs the unit tests, creates a code coverage report from the tests
+            and then goes on to compile the debug and release assemblies for Jayrock and Jayrock-JSON.</p>
+        <p>
+            The Nant script can be used to build 5 different types of so-called <em><a href="http://nant.sourceforge.net/release/latest/help/fundamentals/targets.html">
+                targets</a></em>:</p>
+        <dl>
+            <dt>test </dt>
+            <dd>
+                Builds the test project and runs the unit tests using NUnit.
+            </dd>
+            <dt>debug</dt><dd>Builds the debug version of the Jayrock and Jayrock-JSON assemblies.</dd><dt>release</dt><dd>Builds the release version of the Jayrock and Jayrock-JSON assemblies. Debug symbols are
+                still included.</dd><dt>cover </dt>
+            <dd>
+                Builds the test project, and creates a <em>short</em> report using NCover for code coverage resulting from the unit tests. The generated report
+                can be found in <code>src\Jayrock\coverage.htm</code>. It is called a short report
+                because you cannot drilldown to see the line coverage information which can be rather extensive and make it painful to refresh frequently
+                in browsers and on older machines.</dd><dt>cover-long </dt>
+            <dd>
+                Same as the cover configuration, except it builds a <em>full</em> report. The full
+                report contains a lot of detailed line-level converage information that can
+                take a very long time to display in browsers.</dd></dl>
+        <h2>Compiling With Visual Studio</h2>
+        <p>
+            Jayrock comes with <a href="http://msdn.microsoft.com/vstudio/previous/2003/">Microsoft
+                Visual Studio 2003</a> project and solution files that compile assemblies for
+            Microsoft .NET Framework 1.1. There is little to know except open the desired solution in
+            Visual Studio and build away! The three solutions that you will find under <code>src</code>
+            are:</p>
+        <dl>
+        <dt>Jayrock Test </dt>
+        <dd>
+            Solution that contains a test-view of the project, containing references and sources
+            for unit tests.</dd><dt>Jayrock-JSON</dt><dd>Solution that builds the strictly
+      JSON subset of Jayrock, without all the JSON-RPC bells and whistles. If you are looking
+                to only work with the JSON data format then this is the right solution for you.</dd><dt>Jayrock</dt><dd>The
+      complete solution that includes JSON and JSON-RPC rolled into one.</dd></dl>
+        <h2>
+            Notes for Visual Studio 2002 &amp; 2005</h2>
+        <p>
+            If you are using Microsoft Visual Studio .NET 2002, you can use the <a href="http://www.codeproject.com/macro/vsconvert.asp">
+                Visual Studio Converter</a> utility to convert the 2003 solution files back
+            to the older format and compile for Microsoft .NET Framework 1.0.</p>
+        <p>
+            If you are working with Microsoft .NET Framework 2.0, you do not re-compile Jayrock
+            for it. The 1.1 assemblies will run just fine as they are. If you
+            wish to open the solution with Microsoft Visual Studio 2005 nonetheless, you can
+            open the 2003 solution files in 2005 have them upgraded automatically by the <a href="http://msdn2.microsoft.com/en-us/library/60z6y467.aspx">
+                Visual Studio Conversion Wizard</a>. You will see a few warnings after the upgrade due to some APIs that have been obsoleted
+            in Microsoft .NET Framework 2.0. These
+            are <a href="http://en.wikipedia.org/wiki/Mostly_Harmless">mostly harmless</a>.</p>
+        <h1>
+            <a id="contributing" name="contributing">Contributing to the Project</a></h1>
         <p>
             Jayrock is provided as open source and free software (as per <a href="http://www.opensource.org/docs/definition.php">
                 Open Source Definition</a>) for two principal reasons. First, an open source
@@ -69,16 +156,26 @@
         </p>
         <p>
             Please <a href="http://www.raboof.com/contact.aspx">contact Atif Aziz</a> (principal
-            developer) if you are interested in contributing.</p>
+            developer and project leader) if you are interested in contributing.</p>
         <p>
             You don't have to necessarily contribute in the form of code submissions only. Contributions
-            are appreciated and needed whether you can help diagnose problems, suggest fixes,
-            improve the code or provide <a href="#community">peer support on mailing lists, forums
-                or newsgroups</a>. For more information, see <a href="http://developer.berlios.de/projects/jayrock/">
+            are appreciated and needed in any of the following forms:</p>
+        <ul>
+            <li>Help diagnose and <a href="http://developer.berlios.de/bugs/?group_id=4638">report
+                problems</a></li>
+            <li>Suggest fixes or <a href="http://developer.berlios.de/patch/?group_id=4638">send
+                in your patches</a></li>
+            <li>Improve the code</li>
+            <li>Help with unit and end-to-end testing</li>
+            <li>Provide <a href="#community">peer support on mailing lists, forums
+                or newsgroups</a>. </li>
+        </ul>
+        <p>
+            For more information, see <a href="http://developer.berlios.de/projects/jayrock/">
                     Jayrock on berliOS</a>.
         </p>
         <h1>
-            <a name="community">Community &amp; Discussions</a></h1>
+            <a id="community" name="community">Community &amp; Discussions</a></h1>
         <p>
             Jayrock is an open source project and so naturally relies on to build, leverage
             and enjoy peer support from a community of users with a shared interest in the project.
@@ -104,7 +201,7 @@
             </tr>
         </table>
         <h1>
-            <a name="setup">Setting Up Jayrock</a></h1>
+            <a id="setup" name="setup">Setting Up Jayrock</a></h1>
         <ol>
             <li>Setup a virtual directory and application in IIS called <code>jayrock</code> that
                 points to the directory <code>src\Web</code> under your working copy of Jayrock.</li>
@@ -116,7 +213,7 @@
                     http://localhost/jayrock/</span></code>).</li>
         </ol>
         <h1>
-            <a name="quick-start">ASP.NET Quick Start</a></h1>
+            <a id="quick-start" name="quick-start">ASP.NET Quick Start</a></h1>
         <p>
             To use Jayrock in your ASP.NET project, add a reference to the principal assembly,
             <code>Jayrock.dll</code>. A JSON-RPC service is best exposed using Jayrock by creating
@@ -152,13 +249,13 @@ namespace JayrockWeb
             Second, the <code>Greetings</code> method is decorated with the <code>JsonRpcMethod</code>
             attribute. This is required to tell Jayrock that your method should be callable
             over JSON-RPC. By default, public methods of your class are not exposed automatically.
-            Next the first parameter to the <code>JsonRpcMethod</code> attribute is the client-side
+            Next, the first parameter to the <code>JsonRpcMethod</code> attribute is the client-side
             name of the method, which in this case happens to be <code>greetings</code>. This
             is optional, and if omitted, will default to the actual method name as it appears
             in the source (that is, <code>Greetings</code> with the capital letter G). Since
             <a href="http://en.wikipedia.org/wiki/Javascript">JavaScript</a> programs usually
             adopt the <a href="http://en.wikipedia.org/wiki/Camel_Case">camel case</a> naming
-            convention, providing an alternate and client-side version of you method's internal
+            convention, providing an alternate and client-side version of your method's internal
             name via the <code>JsonRpcMethod</code> attribute is always a good idea. You are
             now almost ready to test your service. The last item needed is the addition of a
             few sections in the <code>web.config</code> of your ASP.NET application:
@@ -187,9 +284,9 @@ namespace JayrockWeb
 </pre>
         <p>
             The above configuration lines enable various features on top of your service. These
-            features are accessed by using the feature name for the query string to your handler's
+            features are accessed by using the feature name in the query string to your handler's
             URL, as in <code>?<span class="em">feature</span></code> (very similar to <a href="http://msdn.microsoft.com/library/en-us/vbcon/html/vbtskExploringWebService.asp">
-                how you request the WSDL document for an ASP.NET Web Service</a>). . First and
+                how you request the WSDL document for an ASP.NET Web Service</a>). First and
             foremost, there is the <code>rpc</code> feature. It is responsible for actually
             making the JSON-RPC invocation on your service. Without this feature, your service
             is JSON-RPC ready but won't be callable by anyone. The <code>proxy</code> feature
@@ -231,12 +328,66 @@ namespace JayrockWeb
         <img class="figure" src="images/HelloWorldTest.jpg" width="800" height="600" alt="HelloWorld Test" />
         <p>
             To see if everything is working correctly, select the <code>greetings</code> method
-            from the drop-down list and click the button labeled <code>Test</code>. You should
+            from the drop-down list and click the button labeled <code>Test</code>. If all goes
+            well, you should
             see the string <code>"Welcome to Jayrock!"</code> returned in the response box of
-            the page.
-        </p>
+            the page.</p>
+        <p>
+            Great. So far we have the service running and tested. Now it is time to try and
+            call the service from JavaScript within a web page. In the same directory as where
+            you placed <code>helloworld.ashx</code>, create a plain text file called
+            <code>hello.html</code> and put the following HTML source in there:</p>
+        <pre class="code">&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;
+&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot; lang=&quot;en&quot; xml:lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;title&gt;Hello Jayrock&lt;/title&gt;
+    &lt;script type="text/javascript" src="json.js"&gt;&lt;/script&gt;
+    &lt;script type="text/javascript" src="helloworld.ashx?proxy"&gt;&lt;/script&gt;
+    &lt;script type="text/javascript"&gt;
+/* &lt;![CDATA[ */
+
+window.onload = function() 
+{
+    var s = new HelloWorld();
+
+    alert("sync:" + s.greetings());
+
+    s.greetings(function(response) { 
+      alert("async:" + response.result) 
+    });
+}
+
+/* ]]&gt; */
+    &lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;p&gt;This page tests the HelloWorld service with Jayrock.&lt;/p&gt;
+&lt;/body&gt;
+</pre>
+        <p>
+            This page references two scripts. The first one is <code>json.js</code>, which contains code
+            for converting JavaScript values into JSON text and vice versa. This is required by
+            the second script reference, which points to the JavaScript proxy that will be dynamically
+            generated by Jayrock from the server so that we can call the service. The third script is embedded in the page
+            and causes the greetings method to be called on the HelloWorld service twice. In
+            its first form, greetings is called synchronously whereas in its second form, 
+            it is called asynchronously. How is that? If the proxy sees that the last parameter
+            supplied is a JavaScript function then it treats it as a <em>callback</em>. The
+            call is made to the service and control returned immediately. When the response becomes
+            available, the proxy invokes the callback and sends it the JSON-RPC response object
+            as the first and only parameter. The <code>result</code> property of this object can then
+            be consulted to obtain the return value from the server-side RPC method. On failure, 
+            the response object instead contains an <code>error</code> property.</p>
+        <p>
+            Back in the browser, type the URL <code><span class="fake-a">http://localhost/jayrock/hello.html</span></code> in the
+            address bar. As soon as the page loads, you should see two message boxes
+            show up one after the other and which display the string <code>"Welcome to Jayrock!"</code>
+            returned from our JSON-RPC service
+            method <code>greetings</code>. The first message box will be from the synchronous execution
+            whereas the second from the asynchronous one.</p>
+        <p>That's it! We're done. Hope you enjoyed the quick tour.</p>
         <h1>
-            <a name="samples">Samples &amp; Demos</a></h1>
+            <a id="samples" name="samples">Samples &amp; Demos</a></h1>
         <p>
             You can find a number of JSON-RPC methods demonstrating various features in the
             supplied demo service. See <code><span class="fake-a">http://localhost/jayrock/demo.ashx</span></code>
@@ -248,7 +399,7 @@ namespace JayrockWeb
                 SQL Server 2000</a> running on your machihne with the Northwind database loaded.
         </p>
         <h1>
-            <a name="docs">Documents</a></h1>
+            <a id="docs" name="docs">Documents</a></h1>
         <dl>
             <dt><a href="Jayrock.pdf">Jayrock Project Presentation</a></dt>
             <dd>
@@ -256,6 +407,9 @@ namespace JayrockWeb
                 Jayrock's JSON and JSON-RPC implementations.</dd>
         </dl>
         <hr />
+        <p>
+            Updated on
+            <% = DateTime.Now.ToLongDateString() %></p>
         <p>
             <a href="http://developer.berlios.de"><img src="http://developer.berlios.de/bslogo.php?group_id=0" width="124" height="32" alt="BerliOS Logo" /></a> 
             <a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0 (Transitional)" height="31" width="88" /></a>
