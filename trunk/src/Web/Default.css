@@ -5,14 +5,20 @@ body
 
 #Content
 {
-    font-family: Georgia;
+    font-family: arial;
+    font-size: small;
     margin: 1em;
     padding: 1em;
 }
 
-#Content p
+code
 {
-    line-height: 1.5em;
+    font-size: small;
+}
+
+#Content p, li, dt, dd, h1, h2
+{
+    line-height: 1.25;
 }
 
 li
@@ -57,8 +63,6 @@ h1
     color: darkgreen;
     font-family: Arial;
     font-size: x-large;
-    text-transform: uppercase;
-    letter-spacing: 0.5em;
     margin-top: 2em;
 }
 
@@ -81,10 +85,7 @@ h2
 {
     margin-top: 2em;
     font-family: Arial;
-    text-transform: uppercase;
-    font-size: medium;
-    font-weight: bold;
-    letter-spacing: 0.2em;
+    font-size: large;
 }
 
 pre.code
