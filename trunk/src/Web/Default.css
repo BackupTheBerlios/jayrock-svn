@@ -23,7 +23,6 @@ code
 
 li
 {
-    line-height: 1.7em;
     margin-bottom: 0.5em;
 }
 
@@ -58,12 +57,15 @@ a:hover
     text-transform: uppercase;
 }
 
+h1, h2
+{
+    margin-top: 1.5em;
+}
+
 h1
 {
     color: darkgreen;
-    font-family: Arial;
     font-size: x-large;
-    margin-top: 2em;
 }
 
 h1 a
@@ -83,8 +85,6 @@ h1.h1-first
 
 h2
 {
-    margin-top: 2em;
-    font-family: Arial;
     font-size: large;
 }
 
