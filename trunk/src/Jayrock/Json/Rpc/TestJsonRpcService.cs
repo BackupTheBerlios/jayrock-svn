@@ -104,6 +104,31 @@ namespace Jayrock.Json.Rpc
             Assert.AreEqual(2, varargs[1]);
             Assert.AreEqual(new int[] { 3, 4 }, varargs[2]);
         }
+        
+        [ Test ]
+        public void Bug8148()
+        {
+            //
+            // Bug #8148: Varargs transposition drops args
+            // http://developer.berlios.de/bugs/?func=detailbug&bug_id=8148&group_id=4638
+            //
+            
+            TestService service = new TestService();
+            IRpcMethodDescriptor method = service.GetDescriptor().FindMethodByName("FixedVarMethod");
+            object[] args = new object[] { 1, 2, 
+                new int[] { 3, 4 }, 
+                new JObject(new string[] { "five", "six" }, new object[] { 5, 6 }) };
+            args = JsonRpcServices.TransposeVariableArguments(method, args);
+            Assert.AreEqual(3, args.Length);
+            Assert.AreEqual(1, args[0]);
+            Assert.AreEqual(2, args[1]);
+            object[] varargs = (object[]) args[2];
+            Assert.AreEqual(2, varargs.Length);
+            Assert.AreEqual(new int[] { 3, 4 }, varargs[0]);
+            JObject o = (JObject) varargs[1];
+            Assert.AreEqual(5, o["five"]);
+            Assert.AreEqual(6, o["six"]);
+        }
 
         [ Test ]
         public void Test()
