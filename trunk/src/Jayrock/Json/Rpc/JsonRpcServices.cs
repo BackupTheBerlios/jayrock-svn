@@ -148,22 +148,44 @@ namespace Jayrock.Json.Rpc
 
             object[] varArgs = null;
             
-            if (parameterCount > 1 && args.Length >= parameterCount)
+            //
+            // The variable argument may already be setup correctly as an
+            // array. If so then the formal and actual parameter count will
+            // match here.
+            //
+            
+            if (args.Length == parameterCount)
             {
                 object lastArg = args[args.Length - 1];
 
                 if (lastArg != null)
                 {
+                    //
+                    // Is the last argument already set up as an object 
+                    // array ready to be received as the variable arguments?
+                    //
+                    
                     varArgs = lastArg as object[];
-                
+                    
                     if (varArgs == null)
                     {
-                        ICollection collection = lastArg as ICollection;    
-                    
-                        if (collection != null)
+                        //
+                        // Is the last argument an array of some sort? If so 
+                        // then we convert it into an array of objects since 
+                        // that is what we support right now for variable 
+                        // arguments.
+                        //
+                        // TODO: Allow variable arguments to be more specific type, such as array of integers.
+                        // TODO: Don't make a copy if one doesn't have to be made. 
+                        // For example if the types are compatible on the receiving end.
+                        //
+                        
+                        Array lastArrayArg = lastArg as Array;
+                        
+                        if (lastArrayArg != null && lastArrayArg.GetType().GetArrayRank() == 1)
                         {
-                            varArgs = new object[collection.Count];
-                            collection.CopyTo(varArgs, 0);
+                            varArgs = new object[lastArrayArg.Length];
+                            Array.Copy(lastArrayArg, varArgs, varArgs.Length);
                         }
                     }
                 }
