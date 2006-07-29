@@ -30,15 +30,15 @@ namespace Jayrock.Json.Importers
 
     #endregion
 
-    public sealed class ObjectImporter : TypeImporter
+    public sealed class ComponentImporter : TypeImporter
     {
         private readonly Type _type;
         private PropertyDescriptorCollection _properties;
 
-        public ObjectImporter(Type type) :
+        public ComponentImporter(Type type) :
             this(type, null) {}
 
-        public ObjectImporter(Type type, ICustomTypeDescriptor typeDescriptor)
+        public ComponentImporter(Type type, ICustomTypeDescriptor typeDescriptor)
         {
             if (type == null)
                 throw new ArgumentNullException("type");

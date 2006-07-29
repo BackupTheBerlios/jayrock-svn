@@ -28,12 +28,12 @@ namespace Jayrock.Json.Importers
     using NUnit.Framework;
 
     [ TestFixture ]
-    public class TestObjectImporter
+    public class TestComponentImporter
     {
         [ Test ]
         public void ImportNull()
         {
-            ObjectImporter importer = new ObjectImporter(typeof(object));
+            ComponentImporter importer = new ComponentImporter(typeof(object));
             Assert.IsNull(importer.Import(CreateReader("null")));
         }
 
@@ -155,10 +155,10 @@ namespace Jayrock.Json.Importers
             }";
             
             JsonTextReader reader = new JsonTextReader(new StringReader(text));
-            (new ObjectImporter(typeof(YahooResponse), new FieldsToPropertiesProxyTypeDescriptor(typeof(YahooResponse)))).Register(reader.TypeImporterRegistry);
-            (new ObjectImporter(typeof(YahooResultSet), new FieldsToPropertiesProxyTypeDescriptor(typeof(YahooResultSet)))).Register(reader.TypeImporterRegistry);
-            (new ObjectImporter(typeof(YahooResult), new FieldsToPropertiesProxyTypeDescriptor(typeof(YahooResult)))).Register(reader.TypeImporterRegistry);
-            (new ObjectImporter(typeof(YahooThumbnail), new FieldsToPropertiesProxyTypeDescriptor(typeof(YahooThumbnail)))).Register(reader.TypeImporterRegistry);
+            (new ComponentImporter(typeof(YahooResponse), new FieldsToPropertiesProxyTypeDescriptor(typeof(YahooResponse)))).Register(reader.TypeImporterRegistry);
+            (new ComponentImporter(typeof(YahooResultSet), new FieldsToPropertiesProxyTypeDescriptor(typeof(YahooResultSet)))).Register(reader.TypeImporterRegistry);
+            (new ComponentImporter(typeof(YahooResult), new FieldsToPropertiesProxyTypeDescriptor(typeof(YahooResult)))).Register(reader.TypeImporterRegistry);
+            (new ComponentImporter(typeof(YahooThumbnail), new FieldsToPropertiesProxyTypeDescriptor(typeof(YahooThumbnail)))).Register(reader.TypeImporterRegistry);
             
             YahooResponse response = (YahooResponse) reader.Get(typeof(YahooResponse));
             Assert.IsNotNull(response);
@@ -216,7 +216,7 @@ namespace Jayrock.Json.Importers
             Type expectedType = typeof(Person);
             JsonReader reader = CreateReader(s);
             ITypeImporterRegistry registry = reader.TypeImporterRegistry;
-            (new ObjectImporter(expectedType)).Register(registry);
+            (new ComponentImporter(expectedType)).Register(registry);
             object o = reader.Get(expectedType);            
             Assert.IsNotNull(o);
             Assert.IsInstanceOfType(expectedType, o);

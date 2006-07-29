@@ -298,6 +298,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Json\Importers\ComponentImporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\Importers\DateTimeImporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -309,11 +314,6 @@
                 />
                 <File
                     RelPath = "Json\Importers\NumberImporter.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Json\Importers\ObjectImporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
