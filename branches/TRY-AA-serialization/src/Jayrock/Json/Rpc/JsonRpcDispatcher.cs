@@ -213,8 +213,91 @@ namespace Jayrock.Json.Rpc
 
             if (reader == null)
                 reader = new JsonTextReader(input);
+            
+            JObject request = new JObject();
+            IRpcMethodDescriptor method = null;
+            
+            reader.ReadToken(JsonToken.Object);
+            while (reader.ReadToken() != JsonToken.EndObject)
+            {
+                switch (reader.Text)
+                {
+                    case "id" :
+                    {
+                        reader.Read();
+                        request["id"] = reader.DeserializeNext();
+                        break;
+                    }
+                    case "method" :
+                    {
+                        string methodName = reader.ReadString();
+                        request["method"] = methodName;
+                        method = _service.GetDescriptor().GetMethodByName(methodName);
+                        break;
+                    }
+                    case "params" :
+                    {
+                        object args;
+                        
+                        if (method == null)
+                        {
+                            reader.Read();
+                            args = reader.DeserializeNext();
+                        }
+                        else
+                        {
+                            reader.Read();
 
-            return reader.DeserializeNext();
+                            IRpcParameterDescriptor[] parameters = method.GetParameters();
+                            
+                            if (reader.Token == JsonToken.Array)
+                            {
+                                reader.Read();
+                                ArrayList argList = new ArrayList(parameters.Length);
+                                                        
+                                for (int i = 0; reader.Token != JsonToken.EndArray; i++)
+                                    argList.Add(reader.Get(parameters[i].ParameterType));
+                            
+                                args = argList.ToArray();
+                            }
+                            else if (reader.Token == JsonToken.Object)
+                            {
+                                reader.Read();
+                                JObject argByName = new JObject();
+                                
+                                while (reader.Token != JsonToken.EndObject)
+                                {
+                                    IRpcParameterDescriptor matchedParameter = null;
+
+                                    foreach (IRpcParameterDescriptor parameter in parameters)
+                                    {
+                                        if (parameter.Name.Equals(reader.Text))
+                                        {
+                                            matchedParameter = parameter;
+                                            break;
+                                        }
+                                    }
+                                    
+                                    reader.Read();
+                                    argByName.Put(matchedParameter.Name, reader.Get(matchedParameter.ParameterType));
+                                }
+                                
+                                args = argByName;
+                            }
+                            else
+                            {
+                                args = reader.DeserializeNext();
+                            }
+                            
+                            request["params"] = args;
+                        }
+                        
+                        break;
+                    }
+                }
+            }
+            
+            return request;
         }
 
         protected virtual void WriteResponse(object response, TextWriter output)

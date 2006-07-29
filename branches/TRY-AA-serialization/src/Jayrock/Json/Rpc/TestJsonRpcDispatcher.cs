@@ -45,26 +45,11 @@ namespace Jayrock.Json.Rpc
         {
         }
 
-        [ Test ]
-        public void EchoCall()
-        {
-            EchoService service = new EchoService();
-            JsonRpcDispatcher server = new JsonRpcDispatcher(service);
-            service.NextResult = "Hello";
-            string responseString = server.Process("{ id : 1, method : 'Say', params : [ 'Hello' ] }");
-            IDictionary response = (IDictionary) Parse(responseString);
-            Assert.AreEqual(1, response["id"]);
-            Assert.IsFalse(response.Contains("error"));
-            Assert.AreEqual("Say", service.LastMethodName);
-            Assert.AreEqual(new object[] { "Hello" }, service.LastArguments);
-            Assert.AreEqual("Hello", response["result"]);
-        }
-
         [ Test, ExpectedException(typeof(NotSupportedException)) ]
         public void NotificationNotSupported()
         {
-            JsonRpcDispatcher server = new JsonRpcDispatcher(new EchoService());
-            server.Process("{ id : null, method : 'Test' }");
+            JsonRpcDispatcher server = new JsonRpcDispatcher(new TestService());
+            server.Process("{ id : null, method : 'Dummy' }");
         }
 
         [ Test ]
@@ -92,10 +77,10 @@ namespace Jayrock.Json.Rpc
         public void ProcWithArrayArg()
         {
             JsonRpcDispatcher server = new JsonRpcDispatcher(new TestService());
-            string responseString = server.Process("{ id : 42, method : 'rev', params : [ [ 1, 2, 3 ] ] }");
+            string responseString = server.Process("{ id : 42, method : 'rev', params : [ [ 1, 'two', 3 ] ] }");
             IDictionary response = (IDictionary) Parse(responseString);
             object[] result = ((JArray) response["result"]).ToArray();
-            Assert.AreEqual(new int[] { 3, 2, 1 }, result);
+            Assert.AreEqual(new object[] { 3, "two", 1 }, result);
         }
 
         [ Test ]
@@ -107,94 +92,28 @@ namespace Jayrock.Json.Rpc
             object[] result = ((JArray) JsonRpcServices.GetResult(response)).ToArray();
             Assert.AreEqual(new string[] { "Hello", "Hello", "Hello" }, result);
         }
+        
+        [ Test ]
+        public void CallWithIntArray()
+        {
+            JsonRpcDispatcher server = new JsonRpcDispatcher(new TestService());
+            string responseString = server.Process("{ id : 42, method : 'sum', params : [ [ 1, 2, 3, 4, 5 ] ] }");
+            IDictionary response = (IDictionary) Parse(responseString);
+            Assert.AreEqual(15, JsonRpcServices.GetResult(response));
+        }
 
         private object Parse(string source)
         {
             return (new JsonTextReader(new StringReader(source))).DeserializeNext();
         }
 
-        private sealed class EchoService : IRpcService, IRpcServiceDescriptor, IRpcMethodDescriptor
-        {
-            public string LastMethodName;
-            public object[] LastArguments;
-            public object NextResult;
-
-            IRpcServiceDescriptor IRpcService.GetDescriptor()
-            {
-                return this;
-            }
-
-            string IRpcServiceDescriptor.Name
-            {
-                get { throw new NotImplementedException(); }
-            }
-
-            IRpcMethodDescriptor[] IRpcServiceDescriptor.GetMethods()
-            {
-                throw new NotImplementedException();
-            }
-
-            IRpcMethodDescriptor IRpcServiceDescriptor.FindMethodByName(string name)
-            {
-                LastMethodName = name;
-                return this;
-            }
-
-            IRpcMethodDescriptor IRpcServiceDescriptor.GetMethodByName(string name)
-            {
-                LastMethodName = name;
-                return this;
-            }
-
-            ICustomAttributeProvider IRpcAnnotated.AttributeProvider
-            {
-                get { throw new NotImplementedException(); }
-            }
-
-            string IRpcMethodDescriptor.Name
-            {
-                get { throw new NotImplementedException(); }
-            }
-
-            IRpcParameterDescriptor[] IRpcMethodDescriptor.GetParameters()
-            {
-                return new IRpcParameterDescriptor[0];
-            }
-
-            Type IRpcMethodDescriptor.ResultType
-            {
-                get { throw new NotImplementedException(); }
-            }
-
-            ICustomAttributeProvider IRpcMethodDescriptor.ReturnTypeAttributeProvider
-            {
-                get { throw new NotImplementedException(); }
-            }
-
-            IRpcServiceDescriptor IRpcMethodDescriptor.ServiceDescriptor
-            {
-                get { throw new NotImplementedException(); }
-            }
-
-            object IRpcMethodDescriptor.Invoke(IRpcService service, object[] args)
-            {
-                LastArguments = args;
-                return NextResult;
-            }
-
-            IAsyncResult IRpcMethodDescriptor.BeginInvoke(IRpcService service, object[] args, AsyncCallback callback, object asyncState)
-            {
-                throw new NotImplementedException();
-            }
-
-            object IRpcMethodDescriptor.EndInvoke(IAsyncResult asyncResult)
-            {
-                throw new NotImplementedException();
-            }
-        }
-
         private sealed class TestService : JsonRpcService
         {
+            [ JsonRpcMethod ]
+            public void Dummy()
+            {                
+            }
+            
             [ JsonRpcMethod ]
             public string Say(string message)
             {
@@ -208,11 +127,19 @@ namespace Jayrock.Json.Rpc
             }
 
             [ JsonRpcMethod("rev") ]
-            public JArray Reverse(JArray values)
+            public object[] Reverse(object[] values)
             {
-                JArray reversedValues = new JArray(values);
-                reversedValues.Reverse();
-                return reversedValues;
+                Array.Reverse(values);
+                return values;
+            }
+            
+            [ JsonRpcMethod("sum") ]
+            public int Sum(int[] ints)
+            {
+                int sum = 0;
+                foreach (int i in ints)
+                    sum += i;
+                return sum;
             }
         }
     }

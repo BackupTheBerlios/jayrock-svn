@@ -313,6 +313,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Json\Importers\AutoImporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\Importers\BooleanImporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"

@@ -43,6 +43,7 @@ namespace Jayrock.Json.Importers
         public static ITypeImporter Boolean = new BooleanImporter();
         public static ITypeImporter DateTime = new DateTimeImporter();
         public static ITypeImporterFactory Array = new ArrayImporterFactory();
+        public static ITypeImporter Auto = new AutoImporter();
         
         private readonly static ITypeImporter[] _importers = 
         {
@@ -87,6 +88,9 @@ namespace Jayrock.Json.Importers
 
             if (type.IsArray)
                 return Array.Create(type);
+            
+            if (type == typeof(object))
+                return TypeImporterStock.Auto;
             
             return Find(Type.GetTypeCode(type));
         }
