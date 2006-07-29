@@ -129,3 +129,9 @@ dd
 {
     margin-bottom: 0.5em;
 }
+
+#osi-logo
+{
+    float: left;
+    margin: 0 0.75em 0.75em 0;
+}
