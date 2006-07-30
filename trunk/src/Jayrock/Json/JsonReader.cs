@@ -25,6 +25,7 @@ namespace Jayrock.Json
     #region Imports
 
     using System;
+    using System.Collections;
     using System.Globalization;
 
     #endregion
@@ -36,6 +37,7 @@ namespace Jayrock.Json
 
     public abstract class JsonReader
     {
+        private IJsonImporterRegistry _importers;
         public const string TrueText = "true";
         public const string FalseText = "false";
         public const string NullText = "null";
@@ -242,6 +244,35 @@ namespace Jayrock.Json
                 case JsonToken.EOF : throw new JsonException("Unexpected EOF.");
                 default : throw new JsonException(string.Format("{0} not expected.", this.Token));
             }
+        }
+
+        public IJsonImporterRegistry Importers
+        {
+            get
+            {
+                if (_importers == null)
+                    _importers = new JsonImporterRegistry();
+                
+                return _importers;
+            }
+            
+            set
+            {
+                if (value == null) 
+                    throw new ArgumentNullException("value");
+                
+                _importers = value;
+            }
+        }
+
+        public object Get(Type type)
+        {
+            IJsonImporter importer = Importers.Find(type);
+            
+            if (importer == null)
+                throw new JsonException(string.Format("Don't know how to read the type {0} from JSON.", type.FullName)); // TODO: Review the choice of exception type here.
+            
+            return importer.Import(this);
         }
 
         public override string ToString()

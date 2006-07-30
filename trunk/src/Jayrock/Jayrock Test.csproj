@@ -94,6 +94,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "FieldsToPropertiesProxyTypeDescriptor.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "IndentedTextWriter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -114,6 +119,16 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "TestUnixTime.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "UnixTime.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Configuration\DictionarySectionHandler.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -130,6 +145,11 @@
                 />
                 <File
                     RelPath = "Json\IJsonFormatter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\IJsonImporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -174,12 +194,22 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Json\JsonImporterRegistry.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\JsonParser.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
                     RelPath = "Json\JsonReader.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\JsonSerializationException.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -335,6 +365,96 @@
                 />
                 <File
                     RelPath = "Json\Formatters\TestNameValueCollectionFormatter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Importers\ArrayImporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Importers\AutoImporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Importers\BooleanImporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Importers\ComponentImporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Importers\DateTimeImporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Importers\JsonImporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Importers\JsonImporterStock.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Importers\NameValueCollectionImporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Importers\NumberImporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Importers\StringImporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Importers\TestArrayImporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Importers\TestComponentImporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Importers\TestDateTimeImporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Importers\TestJsonImporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Importers\TestJsonImporterStock.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Importers\TestNameValueCollectionImporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Importers\TestNumberImporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Importers\TestStringImporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
