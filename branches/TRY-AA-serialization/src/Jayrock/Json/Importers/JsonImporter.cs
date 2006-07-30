@@ -20,7 +20,7 @@
 //
 #endregion
 
-namespace Jayrock.Json
+namespace Jayrock.Json.Importers
 {
     #region Imports
 
@@ -28,25 +28,27 @@ namespace Jayrock.Json
 
     #endregion
 
-    public interface ITypeImporterRegistry
+    public abstract class JsonImporter : IJsonImporter
     {
-        void Register(Type type, ITypeImporter importer);
-        void RegisterFactory(Type type, ITypeImporterFactory factory);
-        ITypeImporter Find(Type type);
-    }
-    
-    public interface ITypeImporterRegistryTargetable
-    {
-        void Register(ITypeImporterRegistry registry);
-    }
+        public abstract void Register(IJsonImporterRegistry registry);
 
-    public interface ITypeImporterFactory : ITypeImporterRegistryTargetable
-    {
-        ITypeImporter Create(Type type);
-    }
+        public virtual object Import(JsonReader reader)
+        {
+            if (reader == null)
+                throw new ArgumentNullException("reader");
+            
+            if (!reader.MoveToContent())
+                throw new JsonSerializationException("Unexpected EOF.");
+            
+            object o = null;
+            
+            if (reader.Token != JsonToken.Null)
+                o = SubImport(reader);
+            
+            reader.Read();
+            return o;
+        }
 
-    public interface ITypeImporter : ITypeImporterRegistryTargetable
-    {
-        object Import(JsonReader reader);
+        protected abstract object SubImport(JsonReader reader);
     }
 }

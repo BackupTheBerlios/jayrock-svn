@@ -28,7 +28,7 @@ namespace Jayrock.Json.Importers
 
     #endregion
 
-    public sealed class BooleanImporter : TypeImporter
+    public sealed class BooleanImporter : JsonImporter
     {
         //
         // The following two statics are only used as an optimization so that we
@@ -40,7 +40,7 @@ namespace Jayrock.Json.Importers
         private readonly static object _trueObject = true;
         private readonly static object _falseObject = false;
 
-        public override void Register(ITypeImporterRegistry registry)
+        public override void Register(IJsonImporterRegistry registry)
         {
             registry.Register(typeof(bool), this);
         }

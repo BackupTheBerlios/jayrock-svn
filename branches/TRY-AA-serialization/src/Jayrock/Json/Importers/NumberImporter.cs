@@ -30,7 +30,7 @@ namespace Jayrock.Json.Importers
 
     #endregion
 
-    public sealed class NumberImporter : TypeImporter
+    public sealed class NumberImporter : JsonImporter
     {
         internal static NumberImporter Byte = new NumberImporter(typeof(byte), new Converter(ConvertToByte));
         internal static NumberImporter Int16 = new NumberImporter(typeof(short), new Converter(ConvertToInt16));
@@ -55,7 +55,7 @@ namespace Jayrock.Json.Importers
             _converter = converter;
         }
 
-        public override void Register(ITypeImporterRegistry registry)
+        public override void Register(IJsonImporterRegistry registry)
         {
             registry.Register(_type, this);
         }

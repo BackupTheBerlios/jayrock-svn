@@ -30,7 +30,7 @@ namespace Jayrock.Json.Importers
 
     #endregion
 
-    public sealed class ComponentImporter : TypeImporter
+    public sealed class ComponentImporter : JsonImporter
     {
         private readonly Type _type;
         private PropertyDescriptorCollection _properties;
@@ -49,7 +49,7 @@ namespace Jayrock.Json.Importers
                 typeDescriptor.GetProperties();
         }
 
-        public override void Register(ITypeImporterRegistry registry)
+        public override void Register(IJsonImporterRegistry registry)
         {
             registry.Register(_type, this);
         }

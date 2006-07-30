@@ -128,17 +128,17 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Json\IJsonImporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\InvalidMemberException.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
                     RelPath = "Json\IParserOutput.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Json\ITypeImporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -169,6 +169,11 @@
                 />
                 <File
                     RelPath = "Json\JsonIgnoreAttribute.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\JsonImporterRegistry.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -224,11 +229,6 @@
                 />
                 <File
                     RelPath = "Json\TextParser.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Json\TypeImporterRegistry.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -308,6 +308,16 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Json\Importers\JsonImporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Importers\JsonImporterStock.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\Importers\NameValueCollectionImporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -319,16 +329,6 @@
                 />
                 <File
                     RelPath = "Json\Importers\StringImporter.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Json\Importers\TypeImporter.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Json\Importers\TypeImporterStock.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

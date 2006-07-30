@@ -31,13 +31,13 @@ namespace Jayrock.Json.Importers
     #endregion
 
     [ TestFixture ]
-    public class TestTypeImporter
+    public class TestJsonImporter
     {
         [ Test ]
         public void NullHandling()
         {
             JsonReader reader = CreateReader("null");
-            MyTypeImporter importer = new MyTypeImporter();
+            MockedImporter importer = new MockedImporter();
             Assert.IsNull(importer.Import(reader));
             Assert.IsTrue(reader.EOF);
         }
@@ -46,7 +46,7 @@ namespace Jayrock.Json.Importers
         public void Subclassing()
         {
             JsonReader reader = CreateReader("123");
-            MyTypeImporter importer = new MyTypeImporter();
+            MockedImporter importer = new MockedImporter();
             importer.ReturnValue = new object();
             object o = importer.Import(reader);
             Assert.IsTrue(reader.EOF);
@@ -60,12 +60,12 @@ namespace Jayrock.Json.Importers
             return new JsonTextReader(new StringReader(s));
         }
         
-        private sealed class MyTypeImporter : TypeImporter
+        private sealed class MockedImporter : JsonImporter
         {
             public object ReturnValue;
             public bool Called;
 
-            public override void Register(ITypeImporterRegistry registry)
+            public override void Register(IJsonImporterRegistry registry)
             {
                 throw new NotImplementedException();
             }

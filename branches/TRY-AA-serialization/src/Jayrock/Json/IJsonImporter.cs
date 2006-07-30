@@ -20,23 +20,33 @@
 //
 #endregion
 
-namespace Jayrock.Json.Importers
+namespace Jayrock.Json
 {
+    #region Imports
+
     using System;
 
-    public sealed class AutoImporter : JsonImporter
-    {
-        public override void Register(IJsonImporterRegistry registry)
-        {
-            registry.Register(typeof(object), this);
-        }
+    #endregion
 
-        protected override object SubImport(JsonReader reader)
-        {
-            if (reader == null)
-                throw new ArgumentNullException("reader");
-            
-            return reader.DeserializeNext();
-        }
+    public interface IJsonImporterRegistry
+    {
+        void Register(Type type, IJsonImporter importer);
+        void RegisterFactory(Type type, IJsonImporterFactory factory);
+        IJsonImporter Find(Type type);
+    }
+    
+    public interface IJsonImporterRegistryTargetable
+    {
+        void Register(IJsonImporterRegistry registry);
+    }
+
+    public interface IJsonImporterFactory : IJsonImporterRegistryTargetable
+    {
+        IJsonImporter Create(Type type);
+    }
+
+    public interface IJsonImporter : IJsonImporterRegistryTargetable
+    {
+        object Import(JsonReader reader);
     }
 }

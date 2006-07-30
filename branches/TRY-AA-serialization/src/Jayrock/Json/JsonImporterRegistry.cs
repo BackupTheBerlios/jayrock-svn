@@ -30,18 +30,18 @@ namespace Jayrock.Json
 
     #endregion
 
-    public sealed class TypeImporterRegistry : ITypeImporterRegistry
+    public sealed class JsonImporterRegistry : IJsonImporterRegistry
     {
         private readonly Hashtable _importerByType = new Hashtable();
         private readonly Hashtable _factoryByType = new Hashtable();
 
-        public ITypeImporter Find(Type type)
+        public IJsonImporter Find(Type type)
         {
             //
             // First look up in the table of specific type registrations.
             //
             
-            ITypeImporter importer = (ITypeImporter) _importerByType[type];
+            IJsonImporter importer = (IJsonImporter) _importerByType[type];
             
             if (importer != null)
                 return importer;
@@ -61,7 +61,7 @@ namespace Jayrock.Json
             
                 if (wideType.IsAssignableFrom(type))
                 {
-                    ITypeImporterFactory factory = (ITypeImporterFactory) entry.Value;
+                    IJsonImporterFactory factory = (IJsonImporterFactory) entry.Value;
                     importer = factory.Create(type);
                     break;
                 }
@@ -74,7 +74,7 @@ namespace Jayrock.Json
             //
             
             if (importer == null)
-                importer = TypeImporterStock.Find(type);
+                importer = JsonImporterStock.Find(type);
             
             if (importer != null)
                 importer.Register(this);
@@ -82,7 +82,7 @@ namespace Jayrock.Json
             return importer;
         }
 
-        public void Register(Type type, ITypeImporter importer)
+        public void Register(Type type, IJsonImporter importer)
         {
             if (type == null)
                 throw new ArgumentNullException("type");
@@ -93,7 +93,7 @@ namespace Jayrock.Json
             _importerByType.Add(type, importer);
         }
 
-        public void RegisterFactory(Type type, ITypeImporterFactory factory)
+        public void RegisterFactory(Type type, IJsonImporterFactory factory)
         {
             if (type == null)
                 throw new ArgumentNullException("type");

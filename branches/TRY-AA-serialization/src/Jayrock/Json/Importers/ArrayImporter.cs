@@ -31,20 +31,20 @@ namespace Jayrock.Json.Importers
 
     #endregion
     
-    public sealed class ArrayImporterFactory : ITypeImporterFactory
+    public sealed class ArrayImporterFactory : IJsonImporterFactory
     {
-        public ITypeImporter Create(Type type)
+        public IJsonImporter Create(Type type)
         {
             return new ArrayImporter(type);
         }
 
-        public void Register(ITypeImporterRegistry registry)
+        public void Register(IJsonImporterRegistry registry)
         {
             registry.RegisterFactory(typeof(Array), this);
         }
     }
 
-    public sealed class ArrayImporter : TypeImporter
+    public sealed class ArrayImporter : JsonImporter
     {
         private readonly Type _arrayType;
 
@@ -64,7 +64,7 @@ namespace Jayrock.Json.Importers
             _arrayType = arrayType;
         }
 
-        public override void Register(ITypeImporterRegistry registry)
+        public override void Register(IJsonImporterRegistry registry)
         {
             Type elementType = _arrayType.GetElementType();
             
@@ -79,11 +79,11 @@ namespace Jayrock.Json.Importers
             // common cases.
             //
             
-            ITypeImporter importer = registry.Find(elementType);
+            IJsonImporter importer = registry.Find(elementType);
             
             if (importer == null)
             {
-                importer = TypeImporterStock.Find(elementType);
+                importer = JsonImporterStock.Find(elementType);
                 if (importer != null)
                     registry.Register(elementType, importer);
             }

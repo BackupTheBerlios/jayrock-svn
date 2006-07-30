@@ -29,9 +29,9 @@ namespace Jayrock.Json.Importers
 
     #endregion
 
-    public class NameValueCollectionImporter : TypeImporter
+    public class NameValueCollectionImporter : JsonImporter
     {
-        public override void Register(ITypeImporterRegistry registry)
+        public override void Register(IJsonImporterRegistry registry)
         {
             registry.Register(typeof(NameValueCollection), this);
         }

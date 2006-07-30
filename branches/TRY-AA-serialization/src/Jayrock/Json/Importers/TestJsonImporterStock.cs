@@ -25,30 +25,30 @@ namespace Jayrock.Json.Importers
     #region Imports
 
     using System;
+    using NUnit.Framework;
 
     #endregion
 
-    public abstract class TypeImporter : ITypeImporter
+    [ TestFixture ]
+    public class TestJsonImporterStock
     {
-        public abstract void Register(ITypeImporterRegistry registry);
-
-        public virtual object Import(JsonReader reader)
+        [ Test ]
+        public void InStock()
         {
-            if (reader == null)
-                throw new ArgumentNullException("reader");
-            
-            if (!reader.MoveToContent())
-                throw new JsonSerializationException("Unexpected EOF.");
-            
-            object o = null;
-            
-            if (reader.Token != JsonToken.Null)
-                o = SubImport(reader);
-            
-            reader.Read();
-            return o;
+            AssertInStock(typeof(byte));
+            AssertInStock(typeof(short));
+            AssertInStock(typeof(int));
+            AssertInStock(typeof(long));
+            AssertInStock(typeof(float));
+            AssertInStock(typeof(double));
+            AssertInStock(typeof(DateTime));
+            AssertInStock(typeof(string));
+            AssertInStock(typeof(object[]));
         }
 
-        protected abstract object SubImport(JsonReader reader);
+        private static void AssertInStock(Type type)
+        {
+            Assert.IsNotNull(JsonImporterStock.Find(type), type.FullName);
+        }
     }
 }

@@ -97,7 +97,7 @@ namespace Jayrock.Json.Importers
         private static NameValueCollection UncheckImport(string s)
         {
             JsonReader reader = new JsonTextReader(new StringReader(s));
-            ITypeImporter importer = new NameValueCollectionImporter();
+            IJsonImporter importer = new NameValueCollectionImporter();
             return (NameValueCollection) importer.Import(reader);
         }
 

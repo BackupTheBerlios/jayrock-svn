@@ -30,22 +30,22 @@ namespace Jayrock.Json.Importers
 
     #endregion
 
-    public sealed class TypeImporterStock
+    public sealed class JsonImporterStock
     {
-        public static ITypeImporter Byte = NumberImporter.Byte;
-        public static ITypeImporter Int16 = NumberImporter.Int16;
-        public static ITypeImporter Int32 = NumberImporter.Int32;
-        public static ITypeImporter Int64 = NumberImporter.Int64;
-        public static ITypeImporter Single = NumberImporter.Single;
-        public static ITypeImporter Double = NumberImporter.Double;
-        public static ITypeImporter Decimal = NumberImporter.Decimal;
-        public static ITypeImporter String = new StringImporter();
-        public static ITypeImporter Boolean = new BooleanImporter();
-        public static ITypeImporter DateTime = new DateTimeImporter();
-        public static ITypeImporterFactory Array = new ArrayImporterFactory();
-        public static ITypeImporter Auto = new AutoImporter();
+        public static IJsonImporter Byte = NumberImporter.Byte;
+        public static IJsonImporter Int16 = NumberImporter.Int16;
+        public static IJsonImporter Int32 = NumberImporter.Int32;
+        public static IJsonImporter Int64 = NumberImporter.Int64;
+        public static IJsonImporter Single = NumberImporter.Single;
+        public static IJsonImporter Double = NumberImporter.Double;
+        public static IJsonImporter Decimal = NumberImporter.Decimal;
+        public static IJsonImporter String = new StringImporter();
+        public static IJsonImporter Boolean = new BooleanImporter();
+        public static IJsonImporter DateTime = new DateTimeImporter();
+        public static IJsonImporterFactory Array = new ArrayImporterFactory();
+        public static IJsonImporter Auto = new AutoImporter();
         
-        private readonly static ITypeImporter[] _importers = 
+        private readonly static IJsonImporter[] _importers = 
         {
             null,    // Empty = 0     - Null reference
             null,    // Object = 1    - Instance that isn't a value
@@ -68,12 +68,12 @@ namespace Jayrock.Json.Importers
             String   // String = 18   - Unicode character string
         };  
         
-        public static ITypeImporter Get(Type type)
+        public static IJsonImporter Get(Type type)
         {
             if (type == null)
                 throw new ArgumentNullException("type");
             
-            ITypeImporter importer = Find(type);
+            IJsonImporter importer = Find(type);
             
             if (importer == null)
                 throw new JsonSerializationException(string.Format("Don't know how to import {0} values.", type.FullName)); // TODO: Replace with an appropriate exception
@@ -81,7 +81,7 @@ namespace Jayrock.Json.Importers
             return importer;
         }
         
-        public static ITypeImporter Find(Type type)
+        public static IJsonImporter Find(Type type)
         {
             if (type == null)
                 throw new ArgumentNullException("type");
@@ -90,12 +90,12 @@ namespace Jayrock.Json.Importers
                 return Array.Create(type);
             
             if (type == typeof(object))
-                return TypeImporterStock.Auto;
+                return JsonImporterStock.Auto;
             
             return Find(Type.GetTypeCode(type));
         }
 
-        private static ITypeImporter Find(TypeCode typeCode)
+        private static IJsonImporter Find(TypeCode typeCode)
         {
             int index = (int) typeCode;
             
@@ -104,7 +104,7 @@ namespace Jayrock.Json.Importers
             return _importers[index];            
         }
 
-        private TypeImporterStock()
+        private JsonImporterStock()
         {
             throw new NotSupportedException();
         }
