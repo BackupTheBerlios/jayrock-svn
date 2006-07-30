@@ -155,10 +155,10 @@ namespace Jayrock.Json.Importers
             }";
             
             JsonTextReader reader = new JsonTextReader(new StringReader(text));
-            (new ComponentImporter(typeof(YahooResponse), new FieldsToPropertiesProxyTypeDescriptor(typeof(YahooResponse)))).Register(reader.JsonImporterRegistry);
-            (new ComponentImporter(typeof(YahooResultSet), new FieldsToPropertiesProxyTypeDescriptor(typeof(YahooResultSet)))).Register(reader.JsonImporterRegistry);
-            (new ComponentImporter(typeof(YahooResult), new FieldsToPropertiesProxyTypeDescriptor(typeof(YahooResult)))).Register(reader.JsonImporterRegistry);
-            (new ComponentImporter(typeof(YahooThumbnail), new FieldsToPropertiesProxyTypeDescriptor(typeof(YahooThumbnail)))).Register(reader.JsonImporterRegistry);
+            (new ComponentImporter(typeof(YahooResponse), new FieldsToPropertiesProxyTypeDescriptor(typeof(YahooResponse)))).Register(reader.Importers);
+            (new ComponentImporter(typeof(YahooResultSet), new FieldsToPropertiesProxyTypeDescriptor(typeof(YahooResultSet)))).Register(reader.Importers);
+            (new ComponentImporter(typeof(YahooResult), new FieldsToPropertiesProxyTypeDescriptor(typeof(YahooResult)))).Register(reader.Importers);
+            (new ComponentImporter(typeof(YahooThumbnail), new FieldsToPropertiesProxyTypeDescriptor(typeof(YahooThumbnail)))).Register(reader.Importers);
             
             YahooResponse response = (YahooResponse) reader.Get(typeof(YahooResponse));
             Assert.IsNotNull(response);
@@ -215,7 +215,7 @@ namespace Jayrock.Json.Importers
         {
             Type expectedType = typeof(Person);
             JsonReader reader = CreateReader(s);
-            IJsonImporterRegistry registry = reader.JsonImporterRegistry;
+            IJsonImporterRegistry registry = reader.Importers;
             (new ComponentImporter(expectedType)).Register(registry);
             object o = reader.Get(expectedType);            
             Assert.IsNotNull(o);

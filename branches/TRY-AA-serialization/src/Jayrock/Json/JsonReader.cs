@@ -37,7 +37,7 @@ namespace Jayrock.Json
 
     public abstract class JsonReader
     {
-        private IJsonImporterRegistry _importerRegistry;
+        private IJsonImporterRegistry _importers;
         public const string TrueText = "true";
         public const string FalseText = "false";
         public const string NullText = "null";
@@ -246,14 +246,14 @@ namespace Jayrock.Json
             }
         }
 
-        public IJsonImporterRegistry JsonImporterRegistry
+        public IJsonImporterRegistry Importers
         {
             get
             {
-                if (_importerRegistry == null)
-                    _importerRegistry = new JsonImporterRegistry();
+                if (_importers == null)
+                    _importers = new JsonImporterRegistry();
                 
-                return _importerRegistry;
+                return _importers;
             }
             
             set
@@ -261,13 +261,13 @@ namespace Jayrock.Json
                 if (value == null) 
                     throw new ArgumentNullException("value");
                 
-                _importerRegistry = value;
+                _importers = value;
             }
         }
 
         public object Get(Type type)
         {
-            IJsonImporter importer = JsonImporterRegistry.Find(type);
+            IJsonImporter importer = Importers.Find(type);
             
             if (importer == null)
                 throw new JsonException(string.Format("Don't know how to read the type {0} from JSON.", type.FullName)); // TODO: Review the choice of exception type here.
