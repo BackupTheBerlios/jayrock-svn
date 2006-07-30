@@ -22,7 +22,11 @@
 
 namespace Jayrock.Json.Importers
 {
+    #region Imports
+
     using System;
+
+    #endregion
 
     public sealed class AutoImporter : JsonImporter
     {

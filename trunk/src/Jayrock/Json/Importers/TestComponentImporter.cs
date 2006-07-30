@@ -22,10 +22,14 @@
 
 namespace Jayrock.Json.Importers
 {
+    #region Imports
+
     using System;
     using System.IO;
     using NetMatters;
     using NUnit.Framework;
+
+    #endregion
 
     [ TestFixture ]
     public class TestComponentImporter
