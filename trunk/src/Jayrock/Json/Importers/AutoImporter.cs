@@ -28,17 +28,23 @@ namespace Jayrock.Json.Importers
 
     #endregion
 
-    public sealed class AutoImporter : JsonImporter
+    public sealed class AutoImporter : IJsonImporter
     {
-        public override void Register(IJsonImporterRegistry registry)
+        public void Register(IJsonImporterRegistry registry)
         {
             registry.Register(typeof(object), this);
         }
 
-        protected override object SubImport(JsonReader reader)
+        public object Import(JsonReader reader)
         {
             if (reader == null)
                 throw new ArgumentNullException("reader");
+
+            if (!reader.MoveToContent())
+                throw new JsonSerializationException("Unexpected EOF.");
+
+            if (reader.Token == JsonToken.Null)
+                return null;
             
             return reader.DeserializeNext();
         }

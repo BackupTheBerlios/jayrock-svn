@@ -140,16 +140,14 @@ namespace Jayrock.Json
 
                 case JsonToken.Object :
                 {
+                    reader.Read();
                     WriteStartObject();
-                    reader.ReadMember();
-
-                    do
+                    
+                    while (reader.Token != JsonToken.EndObject)
                     {
-                        WriteMember(reader.Text);
-                        reader.Read();
+                        WriteMember(reader.ReadMember());
                         WriteValueFromReader(reader);
                     }
-                    while (reader.Token != JsonToken.EndObject);
 
                     WriteEndObject();
                     break;

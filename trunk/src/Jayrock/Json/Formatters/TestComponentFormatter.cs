@@ -64,7 +64,7 @@ namespace Jayrock.Json.Formatters
             reader.ReadToken(JsonToken.Object);
             Assert.AreEqual("Year", reader.ReadMember());
             Assert.AreEqual(0, reader.ReadInt32());
-            reader.ReadToken(JsonToken.EndObject);
+            Assert.AreEqual(JsonToken.EndObject, reader.Token);
         }
 
         [ Test ]
@@ -167,39 +167,37 @@ namespace Jayrock.Json.Formatters
         private static void TestObject(JObject expected, JsonReader reader, string path)
         {
             reader.MoveToContent();
-            Assert.AreEqual(reader.Token, JsonToken.Object);
+            reader.ReadToken(JsonToken.Object);
             
-            while (reader.ReadToken() != JsonToken.EndObject)
+            while (reader.Token != JsonToken.EndObject)
             {
-                Assert.AreEqual(JsonToken.Member, reader.Token);
-                
-                string name = reader.Text;
+                string name = reader.ReadMember();
                 object value = expected[name];
                 expected.Remove(name);
                 TestValue(value, reader, path + "/" + name);
             }
             
             Assert.AreEqual(0, expected.Count);
+            reader.Read();
         }
 
         private static void TestArray(Array expectations, JsonReader reader, string path)
         {
             reader.MoveToContent();
-            Assert.AreEqual(reader.Token, JsonToken.Array);
+            reader.ReadToken(JsonToken.Array);
 
             for (int i = 0; i < expectations.Length; i++)
                 TestValue(expectations.GetValue(i), reader, path + "/" + i);
 
-            reader.ReadToken(JsonToken.EndArray);
+            Assert.AreEqual(JsonToken.EndArray, reader.Token);
+            reader.Read();
         }
 
         private static void TestValue(object expected, JsonReader reader, string path)
         {
-            JsonToken actualToken = reader.ReadToken();
-            
             if (JNull.LogicallyEquals(expected))
             {
-                Assert.AreEqual(JsonToken.Null, actualToken, path, actualToken);
+                Assert.AreEqual(JsonToken.Null, reader.Token, path);
             }
             else
             {
@@ -214,12 +212,10 @@ namespace Jayrock.Json.Formatters
                 }
                 else
                 {
-                    string actual = reader.Text;
-
                     switch (expectedType)
                     {
-                        case TypeCode.String : Assert.AreEqual(actualToken, JsonToken.String, path); Assert.AreEqual(expected, actual, path); break;
-                        case TypeCode.Int32  : Assert.AreEqual(actualToken, JsonToken.Number, path); Assert.AreEqual(expected, int.Parse(actual), path); break;
+                        case TypeCode.String : Assert.AreEqual(expected, reader.ReadString(), path); break;
+                        case TypeCode.Int32  : Assert.AreEqual(expected, reader.ReadInt32(), path); break;
                         default : Assert.Fail("Don't know how to handle {0} values.", expected.GetType()); break;
                     }
                 }

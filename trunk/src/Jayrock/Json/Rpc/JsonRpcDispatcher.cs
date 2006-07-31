@@ -218,13 +218,15 @@ namespace Jayrock.Json.Rpc
             IRpcMethodDescriptor method = null;
             
             reader.ReadToken(JsonToken.Object);
-            while (reader.ReadToken() != JsonToken.EndObject)
+            
+            while (reader.Token != JsonToken.EndObject)
             {
-                switch (reader.Text)
+                string memberName = reader.ReadMember();
+                
+                switch (memberName)
                 {
                     case "id" :
                     {
-                        reader.Read();
                         request["id"] = reader.DeserializeNext();
                         break;
                     }
@@ -241,23 +243,23 @@ namespace Jayrock.Json.Rpc
                         
                         if (method == null)
                         {
-                            reader.Read();
                             args = reader.DeserializeNext();
                         }
                         else
                         {
-                            reader.Read();
-
                             IRpcParameterDescriptor[] parameters = method.GetParameters();
                             
                             if (reader.Token == JsonToken.Array)
                             {
                                 reader.Read();
                                 ArrayList argList = new ArrayList(parameters.Length);
+                                
+                                // TODO: This loop could bomb when more args are supplied that parameters available.
                                                         
                                 for (int i = 0; reader.Token != JsonToken.EndArray; i++)
                                     argList.Add(reader.Get(parameters[i].ParameterType));
-                            
+                                
+                                reader.Read();
                                 args = argList.ToArray();
                             }
                             else if (reader.Token == JsonToken.Object)
@@ -267,6 +269,8 @@ namespace Jayrock.Json.Rpc
                                 
                                 while (reader.Token != JsonToken.EndObject)
                                 {
+                                    // TODO: Imporve this lookup.
+                                    
                                     IRpcParameterDescriptor matchedParameter = null;
 
                                     foreach (IRpcParameterDescriptor parameter in parameters)
@@ -279,9 +283,13 @@ namespace Jayrock.Json.Rpc
                                     }
                                     
                                     reader.Read();
+
+                                    // TODO: This could bomb when if no matching parameter is found.
+                                    
                                     argByName.Put(matchedParameter.Name, reader.Get(matchedParameter.ParameterType));
                                 }
                                 
+                                reader.Read();
                                 args = argByName;
                             }
                             else
@@ -296,6 +304,8 @@ namespace Jayrock.Json.Rpc
                     }
                 }
             }
+            
+            reader.Read();
             
             return request;
         }

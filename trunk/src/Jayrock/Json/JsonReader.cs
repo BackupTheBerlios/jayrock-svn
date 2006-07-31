@@ -61,7 +61,7 @@ namespace Jayrock.Json
 
         public bool Read()
         {
-            return ReadToken() != JsonToken.EOF;
+            return !EOF ? ReadToken() != JsonToken.EOF : false;
         }
 
         /// <summary>
@@ -75,10 +75,16 @@ namespace Jayrock.Json
         /// token. If not, an exception is thrown.
         /// </summary>
 
-        public void ReadToken(JsonToken token)
+        public string ReadToken(JsonToken token)
         {
-            if (ReadToken() != token)
-                throw new JsonException(string.Format("Found {0} where {1} was expected.", Token.ToString(), token));
+            MoveToContent();
+            
+            if (Token != token)
+                throw new JsonException(string.Format("Found {0} where {1} was expected.", Token.ToString(), token.ToString()));
+            
+            string s = Text;
+            Read();
+            return s;
         }
 
         /// <summary>
@@ -89,20 +95,17 @@ namespace Jayrock.Json
 
         public string ReadString()
         {
-            ReadToken(JsonToken.String);
-            return Text;
+            return ReadToken(JsonToken.String);
         }
         
         public bool ReadBoolean()
         {
-            ReadToken(JsonToken.Boolean);
-            return Text == JsonReader.FalseText;
+            return ReadToken(JsonToken.Boolean) == JsonReader.TrueText;
         }
 
         public string ReadNumber()
         {
-            ReadToken(JsonToken.Number);
-            return Text;
+            return ReadToken(JsonToken.Number);
         }
 
         public int ReadInt32()
@@ -137,34 +140,18 @@ namespace Jayrock.Json
 
         public string ReadMember()
         {
-            ReadToken(JsonToken.Member);
-            return Text;
+            return ReadToken(JsonToken.Member);
         }
 
-        public void SkipTo(JsonToken token)
+        public void StepOut()
         {
-            // BUGBUG: Depth check missing bug!
-            // This loop would exit prematurely if it find the sought token at
-            // a depth lower than where it started, such as in the case of
-            // nested structures.
+            int depth = Depth;
             
-            while (Read())
-            {
-                if (Token == token)
-                    return;
-            }
+            if (depth == 0)
+                throw new InvalidOperationException();
 
-            throw new JsonException(string.Format("Found EOF while attempting to skip to {0}.", token.ToString()));
-        }
-
-        public void SkipObject()
-        {
-            SkipTo(JsonToken.EndObject);
-        }
-
-        public void SkipArray()
-        {
-            SkipTo(JsonToken.EndArray);
+            while (Depth >= depth)
+                Read();
         }
 
         /// <summary>
@@ -208,36 +195,35 @@ namespace Jayrock.Json
 
             switch (Token)
             {
-                case JsonToken.String: return output.ToStringPrimitive(Text);
-                case JsonToken.Number: return output.ToNumberPrimitive(Text);
-                case JsonToken.Boolean : return Text == JsonReader.FalseText ? output.FalsePrimitive : output.TruePrimitive;
-                case JsonToken.Null : return output.NullPrimitive;
+                case JsonToken.String: return output.ToStringPrimitive(ReadString());
+                case JsonToken.Number: return output.ToNumberPrimitive(ReadNumber());
+                case JsonToken.Boolean : return ReadBoolean();
+                case JsonToken.Null : ReadNull(); return output.NullPrimitive;
 
                 case JsonToken.Array :
                 {
+                    Read();
                     output.StartArray();
-
-                    while (ReadToken() != JsonToken.EndArray)
+                    
+                    while (Token != JsonToken.EndArray)
                         output.ArrayPut(DeserializeNext(output));
-         
+                    
+                    Read();
                     return output.EndArray();
                 }
 
                 case JsonToken.Object :
                 {
+                    Read();
                     output.StartObject();
 
-                    while (ReadToken() != JsonToken.EndObject)
+                    while (Token != JsonToken.EndObject)
                     {
-                        if (Token != JsonToken.Member)
-                            throw new JsonException("Expecting member.");
-
-                        string name = Text;
-
-                        Read();
+                        string name = ReadMember();
                         output.ObjectPut(name, DeserializeNext(output));
                     }
-         
+                    
+                    Read();
                     return output.EndObject();
                 }
 

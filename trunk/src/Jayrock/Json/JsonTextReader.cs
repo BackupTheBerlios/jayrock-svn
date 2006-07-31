@@ -112,6 +112,7 @@ namespace Jayrock.Json
             if (_stack == null || _stack.Count == 0)
             {
                 _stack = null;
+                _depth = 0;
                 _token = JsonToken.EOF;
             }
             else
@@ -441,17 +442,11 @@ namespace Jayrock.Json
 
         private JsonToken Yield(JsonToken token, string text, Continuation continuation)
         {
-            switch (token)
-            {
-                case JsonToken.Object:
-                case JsonToken.Array:
-                    _depth++;
-                    break;
-                case JsonToken.EndObject:
-                case JsonToken.EndArray:
-                    _depth--;
-                    break;
-            }
+            if (Token == JsonToken.EndObject || Token == JsonToken.EndArray)
+                _depth--;
+
+            if (token == JsonToken.Object || token == JsonToken.Array)
+                _depth++;
 
             _text = text;
             _token = token;

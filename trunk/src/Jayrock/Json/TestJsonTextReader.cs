@@ -243,8 +243,9 @@ namespace Jayrock.Json
             AssertToken(JsonToken.Array);
             Assert.AreEqual(1, _reader.Depth);
             AssertToken(JsonToken.EndArray);
-            Assert.AreEqual(0, _reader.Depth);
+            Assert.AreEqual(1, _reader.Depth);
             AssertEOF();
+            Assert.AreEqual(0, _reader.Depth);
         }
 
         [ Test ]
@@ -259,12 +260,13 @@ namespace Jayrock.Json
             AssertToken(JsonToken.Object);
             Assert.AreEqual(2, _reader.Depth);
             AssertToken(JsonToken.EndObject);
-
-            Assert.AreEqual(1, _reader.Depth);
+            Assert.AreEqual(2, _reader.Depth);
+            
             AssertToken(JsonToken.EndArray);
+            Assert.AreEqual(1, _reader.Depth);
 
-            Assert.AreEqual(0, _reader.Depth);
             AssertEOF();
+            Assert.AreEqual(0, _reader.Depth);
         }
         
         [ Test ]
@@ -293,13 +295,12 @@ namespace Jayrock.Json
 
             for (int i = 0; i < maxDepth; i++)
             {
-                Assert.AreEqual(maxDepth - i, _reader.Depth);
                 AssertToken(i % 2 == 0 ? JsonToken.EndObject : JsonToken.EndArray);
-                Assert.AreEqual(maxDepth - (i + 1), _reader.Depth);
+                Assert.AreEqual(maxDepth - i, _reader.Depth);
             }
 
-            Assert.AreEqual(0, _reader.Depth);
             AssertEOF();
+            Assert.AreEqual(0, _reader.Depth);
         }
 
         [ Test, ExpectedException(typeof(JsonException)) ]
@@ -419,7 +420,10 @@ namespace Jayrock.Json
             while (reader.Read())
             {
                 if (reader.Token == JsonToken.Member && reader.Text == "servlet-name")
+                {
+                    reader.Read();
                     items.Add(reader.ReadString());
+                }
             }
 
             Assert.AreEqual(new string[] { "cofaxCDS", "cofaxEmail", "cofaxAdmin", "fileServlet", "cofaxTools" }, items.ToArray(typeof(string)));
@@ -433,25 +437,33 @@ namespace Jayrock.Json
         [ Test, ExpectedException(typeof(JsonException)) ]
         public void UnterminatedObject()
         {
-            CreateReader("{x:1,y:2").SkipObject();
+            JsonReader reader = CreateReader("{x:1,y:2");
+            reader.MoveToContent();
+            reader.StepOut();
         }
 
         [ Test, ExpectedException(typeof(JsonException)) ]
         public void UnterminatedArray()
         {
-            CreateReader("[1,2").SkipArray();
+            JsonReader reader = CreateReader("[1,2");
+            reader.MoveToContent();
+            reader.StepOut();
         }
         
         [ Test, ExpectedException(typeof(JsonException)) ]
         public void MissingObjectMember()
         {
-            CreateReader("{x:1,/*y:2*/,z:3}").SkipObject();
+            JsonReader reader = CreateReader("{x:1,/*y:2*/,z:3}");
+            reader.MoveToContent();
+            reader.StepOut();
         }
 
         [ Test, ExpectedException(typeof(JsonException)) ]
         public void MissingObjectMemberNameValueDelimiter()
         {
-            CreateReader("{x 1}").SkipObject();
+            JsonReader reader = CreateReader("{x 1}");
+            reader.MoveToContent();
+            reader.StepOut();
         }
 
         private void AssertTokenText(JsonToken token, string text)
