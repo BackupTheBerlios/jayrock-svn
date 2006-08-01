@@ -6,7 +6,7 @@
     <meta name="GENERATOR" content="Microsoft Visual Studio .NET 7.1" />
     <meta name="ProgId" content="VisualStudio.HTML" />
     <meta name="Originator" content="Microsoft Visual Studio .NET 7.1" />
-    <meta name="Description" content="Jayrock is JSON and JSON-RPC for .NET" />
+    <meta name="Description" content="Jayrock is an open source project to bring JSON and JSON-RPC to .NET" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link rel="stylesheet" type="text/css" href="Default.css" />
 </head>
@@ -36,7 +36,7 @@
             <a id="what-is" name="what-is">What is Jayrock?</a></h1>
         <p>
             <a href="http://developer.berlios.de/projects/jayrock/">Jayrock</a> is a modest and an open source 
-            (<a href="http://www.opensource.org/docs/definition.php">OSI Certified Open Source Software</a>) implementation 
+            (<a href="http://www.opensource.org/licenses/lgpl-license.php"><acronym title="GNU Lesser General Public License">LGPL</acronym></a>) implementation 
             of <a href="http://www.json.org/"><acronym title="JavaScript Object Notation">
                 JSON</acronym></a> and <a href="http://www.json-rpc.org/">JSON-RPC</a> for the
             <a href="http://msdn.microsoft.com/netframework/">Microsoft .NET Framework</a>,
@@ -47,9 +47,20 @@
             The methods can be called synchronously or asynchronously.&nbsp;</p>
         <ul>
             <li><a href="http://developer.berlios.de/project/showfiles.php?group_id=4638">Download
-                Jayrock now!</a></li>
+                Jayrock 0.9 now!</a></li>
             <li><a href="http://groups.google.com/group/jayrock">Discuss Jayrock</a></li>
         </ul>
+        <p>
+            Compatibility &amp; compliance:</p>
+        <p id="compat-logos">            
+                <a target="_blank" href="http://www.microsoft.com/windows/"><img src="images/cclogos/windows.gif" width="38" height="35" alt="Microsoft Windows" border="0" /></a>
+                <a target="_blank" href="http://www.linux.org/"><img src="images/cclogos/linux.gif" width="34" height="40" alt="Linux" border="0" /></a>
+                <a target="_blank" href="http://msdn.microsoft.com/netframework/"><img src="images/cclogos/dotnet.gif" width="68" height="35" alt="Microsoft .NET Framework" border="0" /></a>
+                <a target="_blank" href="http://www.go-mono.com/"><img src="images/cclogos/mono.gif" width="40" height="46" alt="Mono" border="0" /></a>
+                <a target="_blank" href="http://www.microsoft.com/ie/"><img src="images/cclogos/ie.gif" width="46" height="40" alt="Microsoft Internet Explorer" border="0" /></a>
+                <a target="_blank" href="http://www.getfirefox.com/"><img src="images/cclogos/ff.gif" width="50" height="44" alt="FireFox" border="0" /></a>
+                <a target="_blank" href="http://www.opensource.org/docs/definition.php"><img src="images/cclogos/osi-certified.gif" width="60" height="42" alt="Open Source (OSI) Certified" border="0" /></a>
+        </p>
         <h1>
             <a id="get-source" name="get-source">Where is the Source, Luke?</a></h1>
         <p>
@@ -161,8 +172,9 @@
                width="60" height="50" /></a>
         </div>            
         <p>
-            Jayrock is provided as open source and free software (as per <a href="http://www.opensource.org/docs/definition.php">
-                Open Source Definition</a>) for two principal reasons. First, an open source
+            Jayrock is provided as open source and free software (as per 
+            <a href="http://www.opensource.org/docs/definition.php">Open Source Definition</a> and under 
+            <a href="http://www.opensource.org/licenses/lgpl-license.php"><acronym title="GNU Lesser General Public License">LGPL</acronym></a>) for two principal reasons. First, an open source
             community provides a way for individuals and companies to collaborate on projects
             that none could achieve on their own. Second, the open source model has the technical
             advantage of turning users into potential co-developers. With source code readily
@@ -466,7 +478,7 @@ window.onload = function()
             <dt><a href="Jayrock.pdf">Jayrock Project Presentation</a></dt>
             <dd>
                 This presentation contains illustrations that briefly cover the architecture of
-                Jayrock's JSON and JSON-RPC implementations. Some of the diagrams may be a little
+                Jayrock's JSON and JSON-RPC implementations.
             </dd>
         </dl>
         <h1>
@@ -481,8 +493,7 @@ window.onload = function()
                     What's so <em>modest</em> about it? Well, modest as in plain and basic and
                     no work of genius.
             </dd>
-            <dt>What can I do with Jayrock?</dt><dd><p>
-                You can do two things with Jayrock:</p>
+            <dt>What can I do with Jayrock?</dt><dd>
                 <ol>
                     <li>You can use just the Jayrock's JSON infrastructure for manipulating JSON data and text without
                     all the JSON-RPC fuss. Whenever you see <em>Jayrock-JSON</em> mentioned, it's referring to

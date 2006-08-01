@@ -135,3 +135,13 @@ dd
     float: left;
     margin: 0 0.75em 0.75em 0;
 }
+
+#compat-logos
+{
+    padding-left: 1em;
+}
+
+#compat-logos img
+{
+    margin-left: 1em;
+}
