@@ -209,6 +209,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Json\JsonRecorder.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\JsonSerializationException.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -275,6 +280,11 @@
                 />
                 <File
                     RelPath = "Json\TestJsonReader.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\TestJsonRecorder.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
