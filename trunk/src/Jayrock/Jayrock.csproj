@@ -203,11 +203,6 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\JsonParser.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "Json\JsonReader.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
