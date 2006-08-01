@@ -44,13 +44,10 @@ namespace Jayrock.Json
     {
         private readonly TextParser _parser;
         private Stack _stack;
-        private JsonToken _token;
-        private string _text;
-        private int _depth;
 
         private const char NIL = (char) 0;
 
-        private delegate JsonToken Continuation();
+        private delegate TokenText Continuation();
 
         private Continuation _methodParse;
         private Continuation _methodParseArrayFirst;
@@ -65,69 +62,32 @@ namespace Jayrock.Json
                 throw new ArgumentNullException("reader");
 
             _parser = new TextParser(reader.ReadToEnd());
-            _token = JsonToken.BOF;
             _stack = new Stack();
             _stack.Push(ParseMethod);
-        }
-
-        /// <summary>
-        /// Gets the current token.
-        /// </summary>
-
-        public override JsonToken Token
-        {
-            get { return _token; }
-        }
-
-        /// <summary>
-        /// Gets the current token text, if applicable. Otherwise returns an 
-        /// empty string. Note that for tokens like 
-        /// <see cref="JsonToken.String"/>, an empty string return from this
-        /// property actually signifies a zero-length string.
-        /// </summary>
-
-        public override string Text
-        {
-            get { return Mask.NullString(_text); }
-        }
-
-        /// <summary>
-        /// Return the current level of nesting as the reader encounters
-        /// nested objects and arrays.
-        /// </summary>
-
-        public override int Depth
-        {
-            get { return _depth; }
         }
 
         /// <summary>
         /// Reads the next token and returns it.
         /// </summary>
 
-        public override JsonToken ReadToken()
+        protected override TokenText ReadToken()
         {
-            _text = null;
-
             if (_stack == null || _stack.Count == 0)
             {
                 _stack = null;
-                _depth = 0;
-                _token = JsonToken.EOF;
+                return new TokenText(JsonToken.EOF);
             }
             else
             {
-                ((Continuation) _stack.Pop())();
+                return ((Continuation) _stack.Pop())();
             }
-
-            return _token;
         }
 
         /// <summary>
         /// Parses the next token from the input and returns it.
         /// </summary>
 
-        private JsonToken Parse()
+        private TokenText Parse()
         {
             char ch = NextClean();
 
@@ -217,7 +177,7 @@ namespace Jayrock.Json
         /// Parses expecting an array in the source.
         /// </summary>
 
-        private JsonToken ParseArray()
+        private TokenText ParseArray()
         {
             if (NextClean() != '[')
                 throw new JsonException("An array must start with '['.");
@@ -230,7 +190,7 @@ namespace Jayrock.Json
         /// it is empty.
         /// </summary>
 
-        private JsonToken ParseArrayFirst()
+        private TokenText ParseArrayFirst()
         {
             if (NextClean() == ']')
                 return Yield(JsonToken.EndArray);
@@ -254,7 +214,7 @@ namespace Jayrock.Json
         /// Parses the next element in the array.
         /// </summary>
 
-        private JsonToken ParseArrayNext()
+        private TokenText ParseArrayNext()
         {
             switch (NextClean())
             {
@@ -294,7 +254,7 @@ namespace Jayrock.Json
         /// Parses expecting an object in the source.
         /// </summary>
 
-        private JsonToken ParseObject()
+        private TokenText ParseObject()
         {
             if (_parser.Next() == '%')
                 _parser.Restart(Unescape(_parser.Source), _parser.Index);
@@ -312,7 +272,7 @@ namespace Jayrock.Json
         /// in case of an empty object.
         /// </summary>
 
-        private JsonToken ParseObjectMember()
+        private TokenText ParseObjectMember()
         {
             char ch = NextClean();
 
@@ -323,9 +283,9 @@ namespace Jayrock.Json
                 throw new JsonException("An object must end with '}'.");
 
             _parser.Back();
-            Parse();
+            string name = Parse().Text;
             // TODO: Check return from NextObject;
-            return Yield(JsonToken.Member, Text, ParseObjectMemberValueMethod);
+            return Yield(JsonToken.Member, name, ParseObjectMemberValueMethod);
         }
 
         private Continuation ParseObjectMemberMethod
@@ -337,7 +297,7 @@ namespace Jayrock.Json
             }
         }
 
-        private JsonToken ParseObjectMemberValue()
+        private TokenText ParseObjectMemberValue()
         {
             char ch = NextClean();
 
@@ -362,7 +322,7 @@ namespace Jayrock.Json
             }
         }
 
-        private JsonToken ParseNextMember()
+        private TokenText ParseNextMember()
         {
             char ch = NextClean();
 
@@ -384,9 +344,9 @@ namespace Jayrock.Json
             }
 
             _parser.Back();
-            Parse();
+            string name = Parse().Text;
             // TODO: Check return from NextObject;
-            return Yield(JsonToken.Member, Text, ParseObjectMemberValueMethod);
+            return Yield(JsonToken.Member, name, ParseObjectMemberValueMethod);
         }
 
         private Continuation ParseNextMemberMethod
@@ -403,7 +363,7 @@ namespace Jayrock.Json
         /// reader with the new found token.
         /// </summary>
 
-        private JsonToken Yield(JsonToken token)
+        private TokenText Yield(JsonToken token)
         {
             return Yield(token, null, null);
         }
@@ -413,7 +373,7 @@ namespace Jayrock.Json
         /// reader with the new found token and its text.
         /// </summary>
 
-        private JsonToken Yield(JsonToken token, string text)
+        private TokenText Yield(JsonToken token, string text)
         {
             return Yield(token, text, null);
         }
@@ -424,7 +384,7 @@ namespace Jayrock.Json
         /// point into the reader.
         /// </summary>
 
-        private JsonToken Yield(JsonToken token, Continuation continuation)
+        private TokenText Yield(JsonToken token, Continuation continuation)
         {
             return Yield(token, null, continuation);
         }
@@ -440,21 +400,12 @@ namespace Jayrock.Json
         /// Yield's caller by way of explicit return.
         /// </remarks>
 
-        private JsonToken Yield(JsonToken token, string text, Continuation continuation)
+        private TokenText Yield(JsonToken token, string text, Continuation continuation)
         {
-            if (Token == JsonToken.EndObject || Token == JsonToken.EndArray)
-                _depth--;
-
-            if (token == JsonToken.Object || token == JsonToken.Array)
-                _depth++;
-
-            _text = text;
-            _token = token;
-
             if (continuation != null)
                 _stack.Push(continuation);
             
-            return token;
+            return new TokenText(token, text);
         }
  
         /// <summary>

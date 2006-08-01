@@ -41,22 +41,14 @@ namespace Jayrock.Json.Importers
             if (reader == null)
                 throw new ArgumentNullException("reader");
             
-            if (!reader.MoveToContent())
-                throw new JsonSerializationException("Unexpected EOF.");
-            
-            //
-            // If got a null then that's what we return without further ado.
-            //
-            
-            if (reader.Token == JsonToken.Null)
-                return null;
-            
             //
             // Reader must be sitting on an object.
             //
 
             if (reader.Token != JsonToken.Object)
                 throw new JsonSerializationException("Expecting object.");
+            
+            reader.Read();
             
             //
             // Create the NameValueCollection object being deserialized.
@@ -71,11 +63,9 @@ namespace Jayrock.Json.Importers
             // Loop through all members of the object.
             //
 
-            while (reader.ReadToken() == JsonToken.Member)
+            while (reader.Token != JsonToken.EndObject)
             {
-                string name = reader.Text;
-
-                reader.Read();
+                string name = reader.ReadMember();
                 
                 //
                 // If the value is an array, then it's a multi-value 
@@ -84,18 +74,24 @@ namespace Jayrock.Json.Importers
 
                 if (reader.Token == JsonToken.Array)
                 {
-                    while (reader.ReadToken() != JsonToken.EndArray)
+                    reader.Read();
+                    
+                    while (reader.Token != JsonToken.EndArray)
+                    {
                         collection.Add(name, GetValueAsString(reader));
+                        reader.Read();
+                    }
                 }
                 else
                 {
                     collection.Add(name, GetValueAsString(reader));    
                 }
+                
+                reader.Read(); // EndArray/String
             }
             
-            if (reader.Token != JsonToken.EndObject)
-                throw new JsonSerializationException("Expecting end of object.");
-
+            reader.Read(); // EndObject
+            
             return collection;
         }
 

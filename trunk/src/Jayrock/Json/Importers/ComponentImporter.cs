@@ -59,16 +59,13 @@ namespace Jayrock.Json.Importers
             if (reader == null)
                 throw new ArgumentNullException("reader");
 
-            if (reader.Token != JsonToken.Object)
-                throw new JsonSerializationException(string.Format("Found {0} where expecting an object.", reader.Token));
+            reader.ReadToken(JsonToken.Object);
             
-            reader.Read();
             object o = Activator.CreateInstance(_type);
             
             while (reader.Token != JsonToken.EndObject)
             {
-                string memberName = reader.Text;
-                reader.Read();
+                string memberName = reader.ReadMember();
                
                 PropertyDescriptor property = _properties[memberName];
                 

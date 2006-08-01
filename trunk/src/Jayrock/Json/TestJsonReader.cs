@@ -105,6 +105,7 @@ namespace Jayrock.Json
             Assert.IsTrue(reader.ReadBoolean());
             Assert.IsTrue(reader.EOF);
 
+            reader = new MockedJsonReader();
             reader.Begin().Boolean(false).End();
 
             Assert.IsFalse(reader.ReadBoolean());
@@ -225,151 +226,86 @@ namespace Jayrock.Json
             Assert.IsTrue(reader.EOF);
         }
 
-        /*
-        [ Test ]
-        public void ReadStringArray()
-        {
-            MockedJsonReader reader = new MockedJsonReader();
-            reader.Begin.Array().String("hello").String("world").EndArray().End();
-            reader.ReadToken(JsonToken.Array);
-            reader.Read();
-            Assert.AreEqual("hello", reader.ReadString());
-            Assert.AreEqual("world", reader.ReadString());
-            Assert.AreEqual(JsonToken.EndArray, reader.Token);
-            reader.Read();
-            Assert.IsTrue(reader.EOF);
-        }*/
-
-        private sealed class ReadData
-        {
-            public readonly JsonToken Token;
-            public readonly string Text;
-            private readonly int _depthDelta;
-
-            public ReadData(JsonToken token)
-            {
-                Token = token;
-            }
-
-            public ReadData(JsonToken token, string text)
-            {
-                Token = token;
-                Text = text;
-            }
-        }
-        
         private sealed class MockedJsonReader : JsonReader
         {
-            private ReadData _data;
             private Queue _queue = new Queue();
-            private int _depth = 0;
 
-            public override JsonToken Token
+            protected override TokenText ReadToken()
             {
-                get { return _data.Token; }
+                return (TokenText) _queue.Dequeue();
             }
 
-            public override string Text
+            private MockedJsonReader Append(TokenText token)
             {
-                get { return _data.Text; }
-            }
-
-            public override int Depth
-            {
-                get { return _depth; }
-            }
-
-            public override JsonToken ReadToken()
-            {
-                if (Token == JsonToken.EndArray || Token == JsonToken.EndObject)
-                    _depth--;
-
-                _data = (ReadData) _queue.Dequeue();
-                
-                if (Token == JsonToken.Array || Token == JsonToken.Object)
-                    _depth++;
-
-                return Token;
-            }
-
-            private MockedJsonReader Append(ReadData data)
-            {
-                _queue.Enqueue(data);
+                _queue.Enqueue(token);
                 return this;
             }
 
             public MockedJsonReader Begin()
             {
-                _data = new ReadData(JsonToken.BOF);
                 _queue.Clear();
                 return this;
             }
 
             public void End()
             {
-                Append(new ReadData(JsonToken.EOF));
+                Append(new TokenText(JsonToken.EOF));
             }
 
             public MockedJsonReader Array()
             {
-                return Append(new ReadData(JsonToken.Array));
+                return Append(new TokenText(JsonToken.Array));
             }
 
             public MockedJsonReader EndArray()
             {
-                return Append(new ReadData(JsonToken.EndArray));
+                return Append(new TokenText(JsonToken.EndArray));
             }
 
             public MockedJsonReader String(string s)
             {
-                return Append(new ReadData(JsonToken.String, s));
-            }
-
-            public MockedJsonReader String(string name, string s)
-            {
-                Append(new ReadData(JsonToken.Member, name));
-                return Append(new ReadData(JsonToken.String, s));
+                return Append(new TokenText(JsonToken.String, s));
             }
 
             public MockedJsonReader Number(int i)
             {
-                return Append(new ReadData(JsonToken.Number, i.ToString(CultureInfo.InvariantCulture)));
+                return Append(new TokenText(JsonToken.Number, i.ToString(CultureInfo.InvariantCulture)));
             }
 
             public MockedJsonReader Number(double i)
             {
-                return Append(new ReadData(JsonToken.Number, i.ToString(CultureInfo.InvariantCulture)));
+                return Append(new TokenText(JsonToken.Number, i.ToString(CultureInfo.InvariantCulture)));
             }
 
             public MockedJsonReader Number(decimal i)
             {
-                return Append(new ReadData(JsonToken.Number, i.ToString(CultureInfo.InvariantCulture)));
+                return Append(new TokenText(JsonToken.Number, i.ToString(CultureInfo.InvariantCulture)));
             }
             
             public MockedJsonReader Boolean(bool b)
             {
-                return Append(new ReadData(JsonToken.Boolean, b ? JsonReader.TrueText : JsonReader.FalseText));
+                return Append(new TokenText(JsonToken.Boolean, b ? JsonReader.TrueText : JsonReader.FalseText));
             }
 
             public MockedJsonReader Object()
             {
-                return Append(new ReadData(JsonToken.Object));
+                return Append(new TokenText(JsonToken.Object));
             }
 
             public MockedJsonReader EndObject()
             {
-                return Append(new ReadData(JsonToken.EndObject));
+                return Append(new TokenText(JsonToken.EndObject));
             }
 
             public MockedJsonReader Member(string name, string value)
             {
-                Append(new ReadData(JsonToken.Member, name));
-                return Append(new ReadData(JsonToken.String, value));
+                Append(new TokenText(JsonToken.Member, name));
+                return Append(new TokenText(JsonToken.String, value));
             }
 
             public MockedJsonReader Null()
             {
-                return Append(new ReadData(JsonToken.Null));
+                return Append(new TokenText(JsonToken.Null));
             }
         }
     }
