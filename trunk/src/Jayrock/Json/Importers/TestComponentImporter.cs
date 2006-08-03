@@ -231,41 +231,52 @@ namespace Jayrock.Json.Importers
         {
             return new JsonTextReader(new StringReader(s));
         }
+        
+        //
+        // NOTE: The default assignments on the following fields is
+        // to maily shut off the following warning from the compiler:
+        //
+        // warning CS0649: Field '...' is never assigned to, and will always have its default value
+        //
+        // This warning is harmless. Since the C# 1.x compiler does
+        // not support #pragma warning disable, we have to resort
+        // to a more brute force method.
+        //
 
         private class YahooResponse
         {
-            public YahooResultSet ResultSet;
+            public YahooResultSet ResultSet = null;
         }
 
         private class YahooResultSet
         {
-            public int totalResultsAvailable;
-            public int totalResultsReturned;
-            public int firstResultPosition;
-            public YahooResult[] Result;
+            public int totalResultsAvailable = 0;
+            public int totalResultsReturned = 0;
+            public int firstResultPosition = 0;
+            public YahooResult[] Result = null;
         }
 
         private class YahooResult
         {
-            public string Title;
-            public string Summary;
-            public string Url;
-            public string ClickUrl;
-            public string NewsSource;
-            public string NewsSourceUrl;
-            public string Language;
-            public long PublishDate;
-            public long ModificationDate;
-            public int Height;
-            public int Width;
-            public YahooThumbnail Thumbnail;
+            public string Title = null;
+            public string Summary = null;
+            public string Url = null;
+            public string ClickUrl = null;
+            public string NewsSource = null;
+            public string NewsSourceUrl = null;
+            public string Language = null;
+            public long PublishDate = 0;
+            public long ModificationDate = 0;
+            public int Height = 0;
+            public int Width = 0;
+            public YahooThumbnail Thumbnail = null;
         }
 
         private class YahooThumbnail
         {
-            public string Url;
-            public int Height;
-            public int Width;
+            public string Url = null;
+            public int Height = 0;
+            public int Width = 0;
         }
     }
 }
