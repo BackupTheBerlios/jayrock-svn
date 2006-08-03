@@ -43,7 +43,7 @@ namespace Jayrock.Json.Importers
             if (!reader.MoveToContent())
                 throw new JsonSerializationException("Unexpected EOF.");
 
-            if (reader.Token == JsonToken.Null)
+            if (reader.TokenClass == JsonTokenClass.Null)
                 return null;
             
             return reader.DeserializeNext();

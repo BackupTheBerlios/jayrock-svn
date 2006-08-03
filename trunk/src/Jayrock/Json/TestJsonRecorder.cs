@@ -39,7 +39,7 @@ namespace Jayrock.Json
         {
             JsonRecorder recorder = new JsonRecorder();
             JsonReader reader = recorder.CreatePlayer();
-            Assert.AreEqual(JsonToken.BOF, reader.Token);
+            Assert.AreEqual(JsonTokenClass.BOF, reader.TokenClass);
             Assert.IsFalse(reader.Read());
             Assert.IsTrue(reader.EOF);
         }

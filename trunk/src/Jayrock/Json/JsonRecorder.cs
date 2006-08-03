@@ -35,32 +35,6 @@ namespace Jayrock.Json
     {
         private ArrayList _entries;
 
-        [ Serializable ]
-        private sealed class Entry
-        {
-            public JsonToken Token;
-            public string Text;
-
-            public static readonly Entry BOF = new Entry(JsonToken.BOF);
-            public static readonly Entry EOF = new Entry(JsonToken.EOF);
-            public static readonly Entry Object = new Entry(JsonToken.Object);
-            public static readonly Entry EndObject = new Entry(JsonToken.EndObject);
-            public static readonly Entry Array = new Entry(JsonToken.Array);
-            public static readonly Entry EndArray = new Entry(JsonToken.EndArray);
-            public static readonly Entry Null = new Entry(JsonToken.Null, JsonReader.NullText);
-            public static readonly Entry True = new Entry(JsonToken.Boolean, JsonReader.FalseText);
-            public static readonly Entry False = new Entry(JsonToken.Boolean, JsonReader.TrueText);
-
-            public Entry(JsonToken token) :
-                this(token, null) {}
-
-            public Entry(JsonToken token, string text)
-            {
-                Token = token;
-                Text = text;
-            }
-        }
-
         private ArrayList Entries
         {
             get
@@ -72,69 +46,67 @@ namespace Jayrock.Json
             }
         }
 
-        private void Write(Entry entry)
+        private void Write(JsonToken token)
         {
-            Debug.Assert(entry != null);
-
-            Entries.Add(entry);
+            Entries.Add(token);
         }
 
         public override void WriteStartObject()
         {
-            Write(Entry.Object);
+            Write(JsonToken.Object());
         }
 
         public override void WriteEndObject()
         {
-            Write(Entry.EndObject);
+            Write(JsonToken.EndObject());
         }
 
         public override void WriteMember(string name)
         {
-            Write(new Entry(JsonToken.Member, name));
+            Write(JsonToken.Member(name));
         }
 
         public override void WriteStartArray()
         {
-            Write(Entry.Array);
+            Write(JsonToken.Array());
         }
 
         public override void WriteEndArray()
         {
-            Write(Entry.EndArray);
+            Write(JsonToken.EndArray());
         }
 
         public override void WriteString(string value)
         {
-            Write(new Entry(JsonToken.String, value));
+            Write(JsonToken.String(value));
         }
 
         public override void WriteNumber(string value)
         {
-            Write(new Entry(JsonToken.Number, value));
+            Write(JsonToken.Number(value));
         }
 
         public override void WriteBoolean(bool value)
         {
-            Write(value ? Entry.True : Entry.False);
+            Write(JsonToken.Boolean(value));
         }
 
         public override void WriteNull()
         {
-            Write(Entry.Null);
+            Write(JsonToken.Null());
         }
 
         public JsonReader CreatePlayer()
         {
             int count = _entries == null ? 0 : _entries.Count;
             
-            Entry[] entries = new Entry[count + 2];
+            JsonToken[] entries = new JsonToken[count + 2];
             
             if (count > 0)
                 _entries.CopyTo(entries, 1);
             
-            entries[0] = Entry.BOF;
-            entries[entries.Length - 1] = Entry.EOF;
+            entries[0] = JsonToken.BOF();
+            entries[entries.Length - 1] = JsonToken.EOF();
 
             return new JsonPlayer(entries);
         }
@@ -160,19 +132,18 @@ namespace Jayrock.Json
         private sealed class JsonPlayer : JsonReader
         {
             private int _index;
-            private readonly Entry[] _entries;
+            private readonly JsonToken[] _entries;
 
-            public JsonPlayer(Entry[] entries)
+            public JsonPlayer(JsonToken[] entries)
             {
                 Debug.Assert(entries != null);
                 
                 _entries = entries;
             }
 
-            protected override TokenText ReadToken()
+            protected override JsonToken ReadToken()
             {
-                Entry entry = _entries[++_index];
-                return new TokenText(entry.Token, entry.Text);
+                return _entries[++_index];
             }
         }
     }

@@ -42,11 +42,11 @@ namespace Jayrock.Json.Importers
             if (reader == null)
                 throw new ArgumentNullException("reader");
 
-            if (reader.Token == JsonToken.String)
+            if (reader.TokenClass == JsonTokenClass.String)
             {
                 return XmlConvert.ToDateTime(reader.Text);
             }
-            else if (reader.Token == JsonToken.Number)
+            else if (reader.TokenClass == JsonTokenClass.Number)
             {
                 try
                 {
@@ -63,7 +63,7 @@ namespace Jayrock.Json.Importers
             }
             else
             {
-                throw new JsonSerializationException(string.Format("Found {0} where expecting a string in ISO 8601 time format or a number expressed in Unix time.", reader.Token));
+                throw new JsonSerializationException(string.Format("Found {0} where expecting a string in ISO 8601 time format or a number expressed in Unix time.", reader.TokenClass));
             }
         }
     }

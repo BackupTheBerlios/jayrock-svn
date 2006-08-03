@@ -38,7 +38,7 @@ namespace Jayrock.Json
     public abstract class JsonReader
     {
         private IJsonImporterRegistry _importers;
-        private TokenText _token;
+        private JsonToken _token;
         private int _depth;
 
         public const string TrueText = "true";
@@ -47,28 +47,34 @@ namespace Jayrock.Json
 
         public JsonReader()
         {
-            _token = new TokenText(JsonToken.BOF);
+            _token = JsonToken.BOF();
         }
- 
+
         /// <summary>
         /// Gets the current token.
         /// </summary>
 
         public JsonToken Token
         {
-            get { return _token.Token; }
+            get { return _token; }
         }
-
+        
         /// <summary>
-        /// Gets the current token text, if applicable. Otherwise returns an 
-        /// empty string. Note that for tokens like 
-        /// <see cref="JsonToken.String"/>, an empty string return from this
-        /// property actually signifies a zero-length string.
+        /// Gets the class of the current token.
+        /// </summary>
+
+        public JsonTokenClass TokenClass
+        {
+            get { return Token.Class; }
+        }
+        
+        /// <summary>
+        /// Gets the text of the current token.
         /// </summary>
 
         public string Text
         {
-            get { return _token.Text; }
+            get { return Token.Text; }
         }
 
         /// <summary>
@@ -87,7 +93,7 @@ namespace Jayrock.Json
 
         public bool EOF
         {
-            get { return Token == JsonToken.EOF; }
+            get { return TokenClass == JsonTokenClass.EOF; }
         }
 
         /// <summary>
@@ -98,12 +104,12 @@ namespace Jayrock.Json
         {
             if (!EOF)
             {
-                if (Token == JsonToken.EndObject || Token == JsonToken.EndArray)
+                if (TokenClass == JsonTokenClass.EndObject || TokenClass == JsonTokenClass.EndArray)
                     _depth--;
 
                 _token = ReadToken();
 
-                if (Token == JsonToken.Object || Token == JsonToken.Array)
+                if (TokenClass == JsonTokenClass.Object || TokenClass == JsonTokenClass.Array)
                     _depth++;
             }
             
@@ -113,20 +119,20 @@ namespace Jayrock.Json
         /// <summary>
         /// Reads the next token and returns it.
         /// </summary>
-
-        protected abstract TokenText ReadToken();
+        
+        protected abstract JsonToken ReadToken();
 
         /// <summary>
         /// Reads the next token ensuring that it matches the specified 
         /// token. If not, an exception is thrown.
         /// </summary>
 
-        public string ReadToken(JsonToken token)
+        public string ReadToken(JsonTokenClass token)
         {
             MoveToContent();
             
-            if (Token != token)
-                throw new JsonException(string.Format("Found {0} where {1} was expected.", Token.ToString(), token.ToString()));
+            if (TokenClass != token)
+                throw new JsonException(string.Format("Found {0} where {1} was expected.", TokenClass.ToString(), token.ToString()));
             
             string s = Text;
             Read();
@@ -141,17 +147,17 @@ namespace Jayrock.Json
 
         public string ReadString()
         {
-            return ReadToken(JsonToken.String);
+            return ReadToken(JsonTokenClass.String);
         }
         
         public bool ReadBoolean()
         {
-            return ReadToken(JsonToken.Boolean) == JsonReader.TrueText;
+            return ReadToken(JsonTokenClass.Boolean) == JsonReader.TrueText;
         }
 
         public string ReadNumber()
         {
-            return ReadToken(JsonToken.Number);
+            return ReadToken(JsonTokenClass.Number);
         }
 
         public int ReadInt32()
@@ -181,12 +187,12 @@ namespace Jayrock.Json
 
         public void ReadNull()
         {
-            ReadToken(JsonToken.Null);
+            ReadToken(JsonTokenClass.Null);
         }
 
         public string ReadMember()
         {
-            return ReadToken(JsonToken.Member);
+            return ReadToken(JsonTokenClass.Member);
         }
 
         public void StepOut()
@@ -210,9 +216,9 @@ namespace Jayrock.Json
 
         public bool MoveToContent()
         {
-            JsonToken current = Token;
+            JsonTokenClass current = TokenClass;
 
-            if (current == JsonToken.BOF || current == JsonToken.EndArray || current == JsonToken.EndObject)
+            if (current == JsonTokenClass.BOF || current == JsonTokenClass.EndArray || current == JsonTokenClass.EndObject)
                 return Read();
 
             return !EOF;
@@ -239,42 +245,51 @@ namespace Jayrock.Json
 
             MoveToContent();
 
-            switch (Token)
+            if (TokenClass == JsonTokenClass.String)
             {
-                case JsonToken.String: return output.ToStringPrimitive(ReadString());
-                case JsonToken.Number: return output.ToNumberPrimitive(ReadNumber());
-                case JsonToken.Boolean : return ReadBoolean();
-                case JsonToken.Null : ReadNull(); return output.NullPrimitive;
+                return output.ToStringPrimitive(ReadString());
+            }
+            else if (TokenClass == JsonTokenClass.Number)
+            {
+                return output.ToNumberPrimitive(ReadNumber());
+            }
+            else if (TokenClass == JsonTokenClass.Boolean)
+            {
+                return ReadBoolean();
+            }
+            else if (TokenClass == JsonTokenClass.Null)
+            {
+                ReadNull(); 
+                return output.NullPrimitive;
+            }
+            else if (TokenClass == JsonTokenClass.Array)
+            {
+                Read();
+                output.StartArray();
+                
+                while (TokenClass != JsonTokenClass.EndArray)
+                    output.ArrayPut(DeserializeNext(output));
+                
+                Read();
+                return output.EndArray();
+            }
+            else if (TokenClass == JsonTokenClass.Object)
+            {
+                Read();
+                output.StartObject();
 
-                case JsonToken.Array :
+                while (TokenClass != JsonTokenClass.EndObject)
                 {
-                    Read();
-                    output.StartArray();
-                    
-                    while (Token != JsonToken.EndArray)
-                        output.ArrayPut(DeserializeNext(output));
-                    
-                    Read();
-                    return output.EndArray();
+                    string name = ReadMember();
+                    output.ObjectPut(name, DeserializeNext(output));
                 }
-
-                case JsonToken.Object :
-                {
-                    Read();
-                    output.StartObject();
-
-                    while (Token != JsonToken.EndObject)
-                    {
-                        string name = ReadMember();
-                        output.ObjectPut(name, DeserializeNext(output));
-                    }
-                    
-                    Read();
-                    return output.EndObject();
-                }
-
-                case JsonToken.EOF : throw new JsonException("Unexpected EOF.");
-                default : throw new JsonException(string.Format("{0} not expected.", this.Token));
+                
+                Read();
+                return output.EndObject();
+            }
+            else 
+            {
+                throw new JsonException(string.Format("{0} not expected.", TokenClass));
             }
         }
 
@@ -310,46 +325,6 @@ namespace Jayrock.Json
         public override string ToString()
         {
             return _token.ToString();
-        }
-
-        protected struct TokenText
-        {
-            private readonly JsonToken _token;
-            private readonly string _text;
-
-            public TokenText(JsonToken token) : 
-                this(token, null) {}
-
-            public TokenText(JsonToken token, string text)
-            {
-                _token = token;
-                _text = Mask.NullString(text);
-            }
-
-            public JsonToken Token
-            {
-                get { return _token; }
-            }
-
-            public string Text
-            {
-                get { return _text; }
-            }
-        
-            public override string ToString()
-            {
-                if (Token == JsonToken.Member ||
-                    Token == JsonToken.String ||
-                    Token == JsonToken.Number ||
-                    Token == JsonToken.Boolean)
-                {
-                    return Token.ToString() + " = " + Text;
-                }
-                else
-                {
-                    return Token.ToString();
-                }
-            }
         }
     }
 }

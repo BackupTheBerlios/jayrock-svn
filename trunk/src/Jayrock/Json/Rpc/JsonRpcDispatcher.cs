@@ -217,9 +217,9 @@ namespace Jayrock.Json.Rpc
             JObject request = new JObject();
             IRpcMethodDescriptor method = null;
             
-            reader.ReadToken(JsonToken.Object);
+            reader.ReadToken(JsonTokenClass.Object);
             
-            while (reader.Token != JsonToken.EndObject)
+            while (reader.TokenClass != JsonTokenClass.EndObject)
             {
                 string memberName = reader.ReadMember();
                 
@@ -249,25 +249,25 @@ namespace Jayrock.Json.Rpc
                         {
                             IRpcParameterDescriptor[] parameters = method.GetParameters();
                             
-                            if (reader.Token == JsonToken.Array)
+                            if (reader.TokenClass == JsonTokenClass.Array)
                             {
                                 reader.Read();
                                 ArrayList argList = new ArrayList(parameters.Length);
                                 
                                 // TODO: This loop could bomb when more args are supplied that parameters available.
                                                         
-                                for (int i = 0; reader.Token != JsonToken.EndArray; i++)
+                                for (int i = 0; reader.TokenClass != JsonTokenClass.EndArray; i++)
                                     argList.Add(reader.Get(parameters[i].ParameterType));
                                 
                                 reader.Read();
                                 args = argList.ToArray();
                             }
-                            else if (reader.Token == JsonToken.Object)
+                            else if (reader.TokenClass == JsonTokenClass.Object)
                             {
                                 reader.Read();
                                 JObject argByName = new JObject();
                                 
-                                while (reader.Token != JsonToken.EndObject)
+                                while (reader.TokenClass != JsonTokenClass.EndObject)
                                 {
                                     // TODO: Imporve this lookup.
                                     

@@ -59,11 +59,11 @@ namespace Jayrock.Json.Importers
             if (reader == null)
                 throw new ArgumentNullException("reader");
 
-            reader.ReadToken(JsonToken.Object);
+            reader.ReadToken(JsonTokenClass.Object);
             
             object o = Activator.CreateInstance(_type);
             
-            while (reader.Token != JsonToken.EndObject)
+            while (reader.TokenClass != JsonTokenClass.EndObject)
             {
                 string memberName = reader.ReadMember();
                

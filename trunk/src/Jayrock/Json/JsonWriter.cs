@@ -131,41 +131,48 @@ namespace Jayrock.Json
             if (!reader.MoveToContent())
                 return;
 
-            switch (reader.Token)
+            if (reader.TokenClass == JsonTokenClass.String)
             {
-                case JsonToken.String: WriteString(reader.Text); break;
-                case JsonToken.Number: WriteNumber(reader.Text); break;
-                case JsonToken.Boolean : WriteBoolean(reader.Text == JsonReader.FalseText); break;
-                case JsonToken.Null : WriteNull(); break;
+                WriteString(reader.Text); 
+            }
+            else if (reader.TokenClass == JsonTokenClass.Number)
+            {
+                WriteNumber(reader.Text);
+            }
+            else if (reader.TokenClass == JsonTokenClass.Boolean)
+            {
+                WriteBoolean(reader.Text == JsonReader.FalseText); 
+            }
+            else if (reader.TokenClass == JsonTokenClass.Null)
+            {
+                WriteNull();
+            }
+            else if (reader.TokenClass == JsonTokenClass.Array)
+            {
+                WriteStartArray();
+                reader.Read();
 
-                case JsonToken.Object :
-                {
-                    reader.Read();
-                    WriteStartObject();
+                while (reader.TokenClass != JsonTokenClass.EndArray)
+                    WriteValueFromReader(reader);
+
+                WriteEndArray();
+            }
+            else if (reader.TokenClass == JsonTokenClass.Object)
+            {
+                reader.Read();
+                WriteStartObject();
                     
-                    while (reader.Token != JsonToken.EndObject)
-                    {
-                        WriteMember(reader.ReadMember());
-                        WriteValueFromReader(reader);
-                    }
-
-                    WriteEndObject();
-                    break;
-                }
-            
-                case JsonToken.Array :
+                while (reader.TokenClass != JsonTokenClass.EndObject)
                 {
-                    WriteStartArray();
-                    reader.Read();
-
-                    while (reader.Token != JsonToken.EndArray)
-                        WriteValueFromReader(reader);
-
-                    WriteEndArray();
-                    break;
+                    WriteMember(reader.ReadMember());
+                    WriteValueFromReader(reader);
                 }
 
-                default : throw new JsonException(string.Format("{0} not expected.", reader.Token));
+                WriteEndObject();
+            }
+            else 
+            {
+                throw new JsonException(string.Format("{0} not expected.", reader.TokenClass));
             }
 
             reader.Read();

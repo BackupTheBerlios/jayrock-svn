@@ -96,15 +96,15 @@ namespace Jayrock.Json.Importers
             if (reader == null)
                 throw new ArgumentNullException("reader");
 
-            if (reader.Token != JsonToken.Array)
-                throw new JsonSerializationException(string.Format("Found {0} where expecting an array.", reader.Token));
+            if (reader.TokenClass != JsonTokenClass.Array)
+                throw new JsonSerializationException(string.Format("Found {0} where expecting an array.", reader.TokenClass));
 
             reader.Read();
 
             Type elementType = _arrayType.GetElementType();
             ArrayList list = new ArrayList();
 
-            while (reader.Token != JsonToken.EndArray)
+            while (reader.TokenClass != JsonTokenClass.EndArray)
                 list.Add(reader.Get(elementType));
 
             return list.ToArray(elementType);

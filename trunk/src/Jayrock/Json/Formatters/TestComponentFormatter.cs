@@ -61,10 +61,10 @@ namespace Jayrock.Json.Formatters
             Car car = new Car();
 
             JsonReader reader = FormatForReading(car);
-            reader.ReadToken(JsonToken.Object);
+            reader.ReadToken(JsonTokenClass.Object);
             Assert.AreEqual("Year", reader.ReadMember());
             Assert.AreEqual(0, reader.ReadInt32());
-            Assert.AreEqual(JsonToken.EndObject, reader.Token);
+            Assert.AreEqual(JsonTokenClass.EndObject, reader.TokenClass);
         }
 
         [ Test ]
@@ -167,9 +167,9 @@ namespace Jayrock.Json.Formatters
         private static void TestObject(JObject expected, JsonReader reader, string path)
         {
             reader.MoveToContent();
-            reader.ReadToken(JsonToken.Object);
+            reader.ReadToken(JsonTokenClass.Object);
             
-            while (reader.Token != JsonToken.EndObject)
+            while (reader.TokenClass != JsonTokenClass.EndObject)
             {
                 string name = reader.ReadMember();
                 object value = expected[name];
@@ -184,12 +184,12 @@ namespace Jayrock.Json.Formatters
         private static void TestArray(Array expectations, JsonReader reader, string path)
         {
             reader.MoveToContent();
-            reader.ReadToken(JsonToken.Array);
+            reader.ReadToken(JsonTokenClass.Array);
 
             for (int i = 0; i < expectations.Length; i++)
                 TestValue(expectations.GetValue(i), reader, path + "/" + i);
 
-            Assert.AreEqual(JsonToken.EndArray, reader.Token);
+            Assert.AreEqual(JsonTokenClass.EndArray, reader.TokenClass);
             reader.Read();
         }
 
@@ -197,7 +197,7 @@ namespace Jayrock.Json.Formatters
         {
             if (JNull.LogicallyEquals(expected))
             {
-                Assert.AreEqual(JsonToken.Null, reader.Token, path);
+                Assert.AreEqual(JsonTokenClass.Null, reader.TokenClass, path);
             }
             else
             {

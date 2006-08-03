@@ -42,7 +42,7 @@ namespace Jayrock.Json.Importers
             
             object o = null;
             
-            if (reader.Token != JsonToken.Null)
+            if (reader.TokenClass != JsonTokenClass.Null)
                 o = SubImport(reader);
             
             reader.Read();

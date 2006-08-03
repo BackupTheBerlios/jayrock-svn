@@ -40,7 +40,7 @@ namespace Jayrock.Json
             MockedJsonReader reader = new MockedJsonReader();
             reader.Begin().End();
 
-            Assert.AreEqual(JsonToken.BOF, reader.Token);
+            Assert.AreEqual(JsonTokenClass.BOF, reader.TokenClass);
             Assert.IsFalse(reader.Read());
             Assert.IsTrue(reader.EOF);
         }
@@ -51,7 +51,7 @@ namespace Jayrock.Json
             MockedJsonReader reader = new MockedJsonReader();
             reader.Begin().End();
             
-            Assert.AreEqual(JsonToken.BOF, reader.Token);
+            Assert.AreEqual(JsonTokenClass.BOF, reader.TokenClass);
             Assert.IsFalse(reader.Read());
             Assert.IsTrue(reader.EOF);
             Assert.IsFalse(reader.Read());
@@ -63,7 +63,7 @@ namespace Jayrock.Json
             MockedJsonReader reader = new MockedJsonReader();
             reader.Begin().End();
 
-            reader.ReadToken(JsonToken.Object);
+            reader.ReadToken(JsonTokenClass.Object);
         }
         
         [ Test ]
@@ -124,13 +124,13 @@ namespace Jayrock.Json
                 Number(9.99m).
             EndArray().End();
            
-            reader.ReadToken(JsonToken.Array);
+            reader.ReadToken(JsonTokenClass.Array);
             Assert.AreEqual(123, reader.ReadInt32());
             Assert.AreEqual(456L, reader.ReadInt64());
             Assert.AreEqual(2.5f, reader.ReadSingle());
             Assert.AreEqual(4.2, reader.ReadDouble());
             Assert.AreEqual(9.99m, reader.ReadDecimal());
-            Assert.AreEqual(JsonToken.EndArray, reader.Token);
+            Assert.AreEqual(JsonTokenClass.EndArray, reader.TokenClass);
             Assert.IsFalse(reader.Read());
         }
         
@@ -140,10 +140,10 @@ namespace Jayrock.Json
             MockedJsonReader reader = new MockedJsonReader();
             reader.Begin().Object().Member("mon", "Monday").EndObject().End();
            
-            reader.ReadToken(JsonToken.Object);
+            reader.ReadToken(JsonTokenClass.Object);
             Assert.AreEqual("mon", reader.ReadMember());
             Assert.AreEqual("Monday", reader.ReadString());
-            Assert.AreEqual(JsonToken.EndObject, reader.Token);
+            Assert.AreEqual(JsonTokenClass.EndObject, reader.TokenClass);
             Assert.IsFalse(reader.Read());
         }
         
@@ -164,7 +164,7 @@ namespace Jayrock.Json
             MockedJsonReader reader = new MockedJsonReader();
             reader.Begin().Array().String("one").String("two").String("three").EndArray().End();
             
-            reader.ReadToken(JsonToken.Array);
+            reader.ReadToken(JsonTokenClass.Array);
             reader.ReadString();
             reader.ReadString();
             reader.StepOut();
@@ -177,11 +177,11 @@ namespace Jayrock.Json
             MockedJsonReader reader = new MockedJsonReader();
             reader.Begin().Array().String("one").String("two").String("three").EndArray().End();
             
-            reader.ReadToken(JsonToken.Array);
+            reader.ReadToken(JsonTokenClass.Array);
             reader.ReadString();
             reader.ReadString();
             reader.ReadString();
-            Assert.AreEqual(JsonToken.EndArray, reader.Token);
+            Assert.AreEqual(JsonTokenClass.EndArray, reader.TokenClass);
             reader.StepOut();
             Assert.IsTrue(reader.EOF);
         }
@@ -200,7 +200,7 @@ namespace Jayrock.Json
                 .EndArray()
             .End();
             
-            reader.ReadToken(JsonToken.Array);
+            reader.ReadToken(JsonTokenClass.Array);
             reader.ReadString();
             reader.ReadString();
             reader.StepOut();
@@ -230,12 +230,12 @@ namespace Jayrock.Json
         {
             private Queue _queue = new Queue();
 
-            protected override TokenText ReadToken()
+            protected override JsonToken ReadToken()
             {
-                return (TokenText) _queue.Dequeue();
+                return (JsonToken) _queue.Dequeue();
             }
 
-            private MockedJsonReader Append(TokenText token)
+            private MockedJsonReader Append(JsonToken token)
             {
                 _queue.Enqueue(token);
                 return this;
@@ -249,63 +249,63 @@ namespace Jayrock.Json
 
             public void End()
             {
-                Append(new TokenText(JsonToken.EOF));
+                Append(JsonToken.EOF());
             }
 
             public MockedJsonReader Array()
             {
-                return Append(new TokenText(JsonToken.Array));
+                return Append(JsonToken.Array());
             }
 
             public MockedJsonReader EndArray()
             {
-                return Append(new TokenText(JsonToken.EndArray));
+                return Append(JsonToken.EndArray());
             }
 
             public MockedJsonReader String(string s)
             {
-                return Append(new TokenText(JsonToken.String, s));
+                return Append(JsonToken.String(s));
             }
 
             public MockedJsonReader Number(int i)
             {
-                return Append(new TokenText(JsonToken.Number, i.ToString(CultureInfo.InvariantCulture)));
+                return Append(JsonToken.Number(i.ToString(CultureInfo.InvariantCulture)));
             }
 
             public MockedJsonReader Number(double i)
             {
-                return Append(new TokenText(JsonToken.Number, i.ToString(CultureInfo.InvariantCulture)));
+                return Append(JsonToken.Number(i.ToString(CultureInfo.InvariantCulture)));
             }
 
             public MockedJsonReader Number(decimal i)
             {
-                return Append(new TokenText(JsonToken.Number, i.ToString(CultureInfo.InvariantCulture)));
+                return Append(JsonToken.Number(i.ToString(CultureInfo.InvariantCulture)));
             }
             
             public MockedJsonReader Boolean(bool b)
             {
-                return Append(new TokenText(JsonToken.Boolean, b ? JsonReader.TrueText : JsonReader.FalseText));
+                return Append(JsonToken.Boolean(b));
             }
 
             public MockedJsonReader Object()
             {
-                return Append(new TokenText(JsonToken.Object));
+                return Append(JsonToken.Object());
             }
 
             public MockedJsonReader EndObject()
             {
-                return Append(new TokenText(JsonToken.EndObject));
+                return Append(JsonToken.EndObject());
             }
 
             public MockedJsonReader Member(string name, string value)
             {
-                Append(new TokenText(JsonToken.Member, name));
-                return Append(new TokenText(JsonToken.String, value));
+                Append(JsonToken.Member(name));
+                return Append(JsonToken.String(value));
             }
 
             public MockedJsonReader Null()
             {
-                return Append(new TokenText(JsonToken.Null));
+                return Append(JsonToken.Null());
             }
         }
     }

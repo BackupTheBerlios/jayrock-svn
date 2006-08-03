@@ -45,7 +45,7 @@ namespace Jayrock.Json.Importers
             // Reader must be sitting on an object.
             //
 
-            if (reader.Token != JsonToken.Object)
+            if (reader.TokenClass != JsonTokenClass.Object)
                 throw new JsonSerializationException("Expecting object.");
             
             reader.Read();
@@ -63,7 +63,7 @@ namespace Jayrock.Json.Importers
             // Loop through all members of the object.
             //
 
-            while (reader.Token != JsonToken.EndObject)
+            while (reader.TokenClass != JsonTokenClass.EndObject)
             {
                 string name = reader.ReadMember();
                 
@@ -72,11 +72,11 @@ namespace Jayrock.Json.Importers
                 // entry otherwise a single-value one.
                 //
 
-                if (reader.Token == JsonToken.Array)
+                if (reader.TokenClass == JsonTokenClass.Array)
                 {
                     reader.Read();
                     
-                    while (reader.Token != JsonToken.EndArray)
+                    while (reader.TokenClass != JsonTokenClass.EndArray)
                     {
                         collection.Add(name, GetValueAsString(reader));
                         reader.Read();
@@ -100,18 +100,20 @@ namespace Jayrock.Json.Importers
             if (reader == null)
                 throw new ArgumentNullException("reader");
            
-            switch (reader.Token)
+            if (reader.TokenClass == JsonTokenClass.String ||
+                reader.TokenClass == JsonTokenClass.Boolean ||
+                reader.TokenClass == JsonTokenClass.Number)
             {
-                case JsonToken.String :
-                    return reader.Text;
-                case JsonToken.Boolean :
-                case JsonToken.Number :
-                    return reader.Text;
-                case JsonToken.Null :
-                    return null;
+                return reader.Text;
             }
-            
-            throw new JsonSerializationException(string.Format("Cannot deserialize a value of type {0} for storing in a NameValueCollection instance.", reader.Token));
+            else if (reader.TokenClass == JsonTokenClass.Null)
+            {
+                return null;
+            }
+            else
+            {
+                throw new JsonSerializationException(string.Format("Cannot deserialize a value of type {0} for storing in a NameValueCollection instance.", reader.TokenClass));
+            }
         }        
 
         protected virtual NameValueCollection CreateCollection()

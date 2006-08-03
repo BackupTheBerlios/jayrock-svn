@@ -53,14 +53,14 @@ namespace Jayrock.Json
         public void BOF()
         {
             JsonTextReader reader = new JsonTextReader(new StringReader(string.Empty));
-            Assert.AreEqual(JsonToken.BOF, reader.Token);
+            Assert.AreEqual(JsonTokenClass.BOF, reader.TokenClass);
         }
 
         [ Test ]
         public void String()
         {
             CreateReader("'Hello World'");
-            AssertTokenText(JsonToken.String, "Hello World");
+            AssertTokenText(JsonTokenClass.String, "Hello World");
             AssertEOF();
         }
 
@@ -68,7 +68,7 @@ namespace Jayrock.Json
         public void Number()
         {
             CreateReader("123");
-            AssertTokenText(JsonToken.Number, "123");
+            AssertTokenText(JsonTokenClass.Number, "123");
             AssertEOF();
         }
 
@@ -76,7 +76,7 @@ namespace Jayrock.Json
         public void Null()
         {
             CreateReader("null");
-            AssertTokenText(JsonToken.Null, "null");
+            AssertTokenText(JsonTokenClass.Null, "null");
             AssertEOF();
         }
 
@@ -84,7 +84,7 @@ namespace Jayrock.Json
         public void BooleanTrue()
         {
             CreateReader("true");
-            AssertTokenText(JsonToken.Boolean, "true");
+            AssertTokenText(JsonTokenClass.Boolean, "true");
             AssertEOF();
         }
         
@@ -92,7 +92,7 @@ namespace Jayrock.Json
         public void BooleanFalse()
         {
             CreateReader("false");
-            AssertTokenText(JsonToken.Boolean, "false");
+            AssertTokenText(JsonTokenClass.Boolean, "false");
             AssertEOF();
         }
 
@@ -100,8 +100,8 @@ namespace Jayrock.Json
         public void EmptyArray()
         {
             CreateReader("[]");
-            AssertToken(JsonToken.Array);
-            AssertToken(JsonToken.EndArray);
+            AssertToken(JsonTokenClass.Array);
+            AssertToken(JsonTokenClass.EndArray);
             AssertEOF();
         }
 
@@ -109,9 +109,9 @@ namespace Jayrock.Json
         public void ArrayWithOneNumber()
         {
             CreateReader("[ 123 ]");
-            AssertToken(JsonToken.Array);
-            AssertTokenText(JsonToken.Number, "123");
-            AssertToken(JsonToken.EndArray);
+            AssertToken(JsonTokenClass.Array);
+            AssertTokenText(JsonTokenClass.Number, "123");
+            AssertToken(JsonTokenClass.EndArray);
             AssertEOF();
         }
 
@@ -119,13 +119,13 @@ namespace Jayrock.Json
         public void ArrayWithPrimitives()
         {
             CreateReader("[ 123, 'string', true, false, null ]");
-            AssertToken(JsonToken.Array);
-            AssertTokenText(JsonToken.Number, "123");
-            AssertTokenText(JsonToken.String, "string");
-            AssertTokenText(JsonToken.Boolean, "true");
-            AssertTokenText(JsonToken.Boolean, "false");
-            AssertToken(JsonToken.Null);
-            AssertToken(JsonToken.EndArray);
+            AssertToken(JsonTokenClass.Array);
+            AssertTokenText(JsonTokenClass.Number, "123");
+            AssertTokenText(JsonTokenClass.String, "string");
+            AssertTokenText(JsonTokenClass.Boolean, "true");
+            AssertTokenText(JsonTokenClass.Boolean, "false");
+            AssertToken(JsonTokenClass.Null);
+            AssertToken(JsonTokenClass.EndArray);
             AssertEOF();
         }
 
@@ -133,8 +133,8 @@ namespace Jayrock.Json
         public void EmptyObject()
         {
             CreateReader("{}");
-            AssertToken(JsonToken.Object);
-            AssertToken(JsonToken.EndObject);
+            AssertToken(JsonTokenClass.Object);
+            AssertToken(JsonTokenClass.EndObject);
             AssertEOF();
         }
 
@@ -142,10 +142,10 @@ namespace Jayrock.Json
         public void ObjectWithOneMember()
         {
             CreateReader("{ 'num' : 123 }");
-            AssertToken(JsonToken.Object);
-            AssertTokenText(JsonToken.Member, "num");
-            AssertTokenText(JsonToken.Number, "123");
-            AssertToken(JsonToken.EndObject);
+            AssertToken(JsonTokenClass.Object);
+            AssertTokenText(JsonTokenClass.Member, "num");
+            AssertTokenText(JsonTokenClass.Number, "123");
+            AssertToken(JsonTokenClass.EndObject);
             AssertEOF();
         }
 
@@ -153,13 +153,13 @@ namespace Jayrock.Json
         public void ObjectWithPrimitiveMembers()
         {
             CreateReader("{ m1 : 123, m2 : 'string', m3 : true, m4 : false, m5 : null }");
-            AssertToken(JsonToken.Object);
-            AssertMember("m1", JsonToken.Number, "123");
+            AssertToken(JsonTokenClass.Object);
+            AssertMember("m1", JsonTokenClass.Number, "123");
             AssertMember("m2", "string");
-            AssertMember("m3", JsonToken.Boolean, "true");
-            AssertMember("m4", JsonToken.Boolean, "false");
-            AssertMember("m5", JsonToken.Null);
-            AssertToken(JsonToken.EndObject);
+            AssertMember("m3", JsonTokenClass.Boolean, "true");
+            AssertMember("m4", JsonTokenClass.Boolean, "false");
+            AssertMember("m5", JsonTokenClass.Null);
+            AssertToken(JsonTokenClass.EndObject);
             AssertEOF();
         }
 
@@ -183,54 +183,54 @@ namespace Jayrock.Json
                     ]
                 }}");
 
-            AssertToken(JsonToken.Object);
-            AssertMember("menu", JsonToken.Object);
+            AssertToken(JsonTokenClass.Object);
+            AssertMember("menu", JsonTokenClass.Object);
             AssertMember("header", "SVG Viewer");
-            AssertMember("items", JsonToken.Array);
+            AssertMember("items", JsonTokenClass.Array);
             
-            AssertToken(JsonToken.Object);
+            AssertToken(JsonTokenClass.Object);
             AssertMember("id", "Open");
-            AssertToken(JsonToken.EndObject);
+            AssertToken(JsonTokenClass.EndObject);
             
-            AssertToken(JsonToken.Object);
+            AssertToken(JsonTokenClass.Object);
             AssertMember("id", "OpenNew");
             AssertMember("label", "Open New");
-            AssertToken(JsonToken.EndObject);
+            AssertToken(JsonTokenClass.EndObject);
 
-            AssertToken(JsonToken.Null);
+            AssertToken(JsonTokenClass.Null);
 
-            AssertToken(JsonToken.Object);
+            AssertToken(JsonTokenClass.Object);
             AssertMember("id", "ZoomIn");
             AssertMember("label", "Zoom In");
-            AssertToken(JsonToken.EndObject);
+            AssertToken(JsonTokenClass.EndObject);
 
-            AssertToken(JsonToken.Object);
+            AssertToken(JsonTokenClass.Object);
             AssertMember("id", "ZoomOut");
             AssertMember("label", "Zoom Out");
-            AssertToken(JsonToken.EndObject);
+            AssertToken(JsonTokenClass.EndObject);
 
-            AssertToken(JsonToken.Object);
+            AssertToken(JsonTokenClass.Object);
             AssertMember("id", "OriginalView");
             AssertMember("label", "Original View");
-            AssertToken(JsonToken.EndObject);
+            AssertToken(JsonTokenClass.EndObject);
 
-            AssertToken(JsonToken.Null);
+            AssertToken(JsonTokenClass.Null);
             
-            AssertToken(JsonToken.Object);
+            AssertToken(JsonTokenClass.Object);
             AssertMember("id", "Quality");
-            AssertToken(JsonToken.EndObject);
+            AssertToken(JsonTokenClass.EndObject);
 
-            AssertToken(JsonToken.Object);
+            AssertToken(JsonTokenClass.Object);
             AssertMember("id", "Pause");
-            AssertToken(JsonToken.EndObject);
+            AssertToken(JsonTokenClass.EndObject);
 
-            AssertToken(JsonToken.Object);
+            AssertToken(JsonTokenClass.Object);
             AssertMember("id", "Mute");
-            AssertToken(JsonToken.EndObject);
+            AssertToken(JsonTokenClass.EndObject);
             
-            AssertToken(JsonToken.EndArray);
-            AssertToken(JsonToken.EndObject);
-            AssertToken(JsonToken.EndObject);
+            AssertToken(JsonTokenClass.EndArray);
+            AssertToken(JsonTokenClass.EndObject);
+            AssertToken(JsonTokenClass.EndObject);
             AssertEOF();
         }
 
@@ -240,9 +240,9 @@ namespace Jayrock.Json
          
             CreateReader("[]");
             Assert.AreEqual(0, _reader.Depth);
-            AssertToken(JsonToken.Array);
+            AssertToken(JsonTokenClass.Array);
             Assert.AreEqual(1, _reader.Depth);
-            AssertToken(JsonToken.EndArray);
+            AssertToken(JsonTokenClass.EndArray);
             Assert.AreEqual(1, _reader.Depth);
             AssertEOF();
             Assert.AreEqual(0, _reader.Depth);
@@ -254,15 +254,15 @@ namespace Jayrock.Json
             CreateReader("[{}]");
             Assert.AreEqual(0, _reader.Depth);
 
-            AssertToken(JsonToken.Array);
+            AssertToken(JsonTokenClass.Array);
             Assert.AreEqual(1, _reader.Depth);
 
-            AssertToken(JsonToken.Object);
+            AssertToken(JsonTokenClass.Object);
             Assert.AreEqual(2, _reader.Depth);
-            AssertToken(JsonToken.EndObject);
+            AssertToken(JsonTokenClass.EndObject);
             Assert.AreEqual(2, _reader.Depth);
             
-            AssertToken(JsonToken.EndArray);
+            AssertToken(JsonTokenClass.EndArray);
             Assert.AreEqual(1, _reader.Depth);
 
             AssertEOF();
@@ -281,13 +281,13 @@ namespace Jayrock.Json
                 
                 if (i % 2 == 0)
                 {
-                    AssertToken(JsonToken.Array);
+                    AssertToken(JsonTokenClass.Array);
                 }
                 else
                 {
-                    AssertToken(JsonToken.Object);
+                    AssertToken(JsonTokenClass.Object);
                     if (i < (maxDepth - 1))
-                        AssertToken(JsonToken.Member);
+                        AssertToken(JsonTokenClass.Member);
                 }
 
                 Assert.AreEqual(i + 1, _reader.Depth);
@@ -295,7 +295,7 @@ namespace Jayrock.Json
 
             for (int i = 0; i < maxDepth; i++)
             {
-                AssertToken(i % 2 == 0 ? JsonToken.EndObject : JsonToken.EndArray);
+                AssertToken(i % 2 == 0 ? JsonTokenClass.EndObject : JsonTokenClass.EndArray);
                 Assert.AreEqual(maxDepth - i, _reader.Depth);
             }
 
@@ -419,7 +419,7 @@ namespace Jayrock.Json
 
             while (reader.Read())
             {
-                if (reader.Token == JsonToken.Member && reader.Text == "servlet-name")
+                if (reader.TokenClass == JsonTokenClass.Member && reader.Text == "servlet-name")
                 {
                     reader.Read();
                     items.Add(reader.ReadString());
@@ -429,7 +429,7 @@ namespace Jayrock.Json
             Assert.AreEqual(new string[] { "cofaxCDS", "cofaxEmail", "cofaxAdmin", "fileServlet", "cofaxTools" }, items.ToArray(typeof(string)));
         }
 
-        private void AssertToken(JsonToken token)
+        private void AssertToken(JsonTokenClass token)
         {
             AssertTokenText(token, null);
         }
@@ -466,35 +466,34 @@ namespace Jayrock.Json
             reader.StepOut();
         }
 
-        private void AssertTokenText(JsonToken token, string text)
+        private void AssertTokenText(JsonTokenClass token, string text)
         {
             Assert.IsTrue(_reader.Read());
-            Assert.AreEqual(token, _reader.Token, "Found {0} (with text \x201c{1}\x201d) when expecting {2} (with text \x201c{3}\x201d).", _reader.Token, _reader.Text, token, text);
+            Assert.AreEqual(token, _reader.TokenClass, "Found {0} (with text \x201c{1}\x201d) when expecting {2} (with text \x201c{3}\x201d).", _reader.TokenClass, _reader.Text, token, text);
             if (text != null)
                 Assert.AreEqual(text, _reader.Text);
         }
 
-        private void AssertMember(string name, JsonToken valueToken)
+        private void AssertMember(string name, JsonTokenClass valueToken)
         {
             AssertMember(name, valueToken, null);
         }
 
         private void AssertMember(string name, string value)
         {
-            AssertMember(name, JsonToken.String, value);
+            AssertMember(name, JsonTokenClass.String, value);
         }
         
-        private void AssertMember(string name, JsonToken valueToken, string valueText)
+        private void AssertMember(string name, JsonTokenClass valueToken, string valueText)
         {
-            AssertTokenText(JsonToken.Member, name);
+            AssertTokenText(JsonTokenClass.Member, name);
             AssertTokenText(valueToken, valueText);
         }
 
         private void AssertEOF()
         {
             Assert.IsFalse(_reader.Read(), "Expected EOF.");
-            Assert.AreEqual(JsonToken.EOF, _reader.Token);
-            Assert.AreEqual(string.Empty, _reader.Text);
+            Assert.AreEqual(JsonTokenClass.EOF, _reader.TokenClass);
         }
 
         private JsonReader CreateReader(string s)
