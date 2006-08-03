@@ -129,6 +129,7 @@ namespace Jayrock.Json
             return recorder;
         }
 
+        [ Serializable ]
         private sealed class JsonPlayer : JsonReader
         {
             private int _index;
