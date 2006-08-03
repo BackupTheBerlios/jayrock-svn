@@ -25,7 +25,7 @@
 
     <!-- NCover (code coverage) -->
 
-    <property name="my.bin.dir.name" value="bin" />
+    <property name="my.bin.dir.name" value="..\..\bin" />
     <property name="my.bin.dir.path" value="${path::combine(nant.project.basedir, my.bin.dir.name)}" />
    
     <property name="my.output.assembly.name" value="Jayrock" />
