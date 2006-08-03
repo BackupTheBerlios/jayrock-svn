@@ -29,6 +29,11 @@ namespace Jayrock.Json
     using System.Globalization;
 
     #endregion
+    
+    /// <summary>
+    /// Represents a writer that provides a fast, non-cached, forward-only means of 
+    /// emitting JSON data.
+    /// </summary>
 
     public abstract class JsonWriter
     {

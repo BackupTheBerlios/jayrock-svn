@@ -37,7 +37,7 @@ namespace Jayrock.Json
 
     /// <summary>
     /// Represents a reader that provides fast, non-cached, forward-only 
-    /// access to JSON data over JSON text. 
+    /// access to JSON data over JSON text (RFC 4627). 
     /// </summary>
 
     public sealed class JsonTextReader : JsonReader

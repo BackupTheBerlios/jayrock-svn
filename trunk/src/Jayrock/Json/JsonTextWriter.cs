@@ -32,6 +32,11 @@ namespace Jayrock.Json
 
     #endregion
 
+    /// <summary>
+    /// Represents a writer that provides a fast, non-cached, forward-only means of 
+    /// emitting JSON data formatted as JSON text (RFC 4627).
+    /// </summary>
+
     public class JsonTextWriter : JsonWriter
     {
         private readonly TextWriter _writer;
