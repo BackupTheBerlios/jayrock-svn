@@ -433,11 +433,6 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Rpc\JsonRpcParamsAttribute.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "Json\Rpc\JsonRpcService.cs"
                     SubType = "Component"
                     BuildAction = "Compile"

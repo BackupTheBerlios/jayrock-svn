@@ -35,14 +35,14 @@ namespace JayrockWeb
 
         [ JsonRpcMethod("echoArgs")]
         [ JsonRpcHelp("Echoes back the arguments sent as input. This method demonstrates variable number of arguments.") ]
-        public object EchoArgs([ JsonRpcParams ] object[] args)
+        public object EchoArgs(params object[] args)
         {
             return args;
         }
 
         [ JsonRpcMethod("echoAsStrings")]
         [ JsonRpcHelp("Echoes back the arguments as an array of strings. This method demonstrates working with variable number of arguments.") ]
-        public object EchoAsStrings([ JsonRpcParams ] object[] args)
+        public object EchoAsStrings(params object[] args)
         {
             string[] strings = new string[args.Length];
 
@@ -217,7 +217,7 @@ namespace JayrockWeb
 
         [ JsonRpcMethod("format")]
         [ JsonRpcHelp("Formats placeholders in a format specification with supplied replacements. This method demonstrates fixed and variable arguments.") ]
-        public string Format(string format, [ JsonRpcParams ] object[] args)
+        public string Format(string format, params object[] args)
         {
             return string.Format(format, args);
         }

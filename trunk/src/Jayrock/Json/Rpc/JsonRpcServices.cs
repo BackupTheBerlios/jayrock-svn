@@ -27,6 +27,7 @@ namespace Jayrock.Json.Rpc
     using System;
     using System.Collections;
     using System.Globalization;
+    using System.Reflection;
 
     #endregion
 
@@ -232,7 +233,9 @@ namespace Jayrock.Json.Rpc
                 return false;
 
             IRpcParameterDescriptor lastParameter = parameters[parameterCount - 1];
-            return JsonRpcParamsAttribute.IsDefined(lastParameter.AttributeProvider);
+            ICustomAttributeProvider attributeProvider = lastParameter.AttributeProvider;
+            return attributeProvider != null && 
+                   CustomAttribute.IsDefined(attributeProvider, typeof(ParamArrayAttribute));
         }
 
         public static object GetResult(IDictionary response)

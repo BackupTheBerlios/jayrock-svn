@@ -148,12 +148,12 @@ namespace Jayrock.Json.Rpc
             }
 
             [ JsonRpcMethod ]
-            public void VarMethod([ JsonRpcParams ] object[] args)
+            public void VarMethod(params object[] args)
             {
             }
 
             [ JsonRpcMethod ]
-            public void FixedVarMethod(int a, int b, [ JsonRpcParams ] object[] args)
+            public void FixedVarMethod(int a, int b, params object[] args)
             {
             }
         }
