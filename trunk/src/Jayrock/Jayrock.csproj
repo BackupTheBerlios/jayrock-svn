@@ -528,6 +528,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Json\Rpc\Web\JsonRpcWebGateway.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\Rpc\Web\JsonRpcWebTraceAdapter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
