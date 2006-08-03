@@ -213,6 +213,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Json\JsonTokenClass.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\JsonWriter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
