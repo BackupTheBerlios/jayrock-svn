@@ -164,7 +164,7 @@ namespace Jayrock.Json.Rpc
 
             try
             {
-                IRpcMethodDescriptor method = _service.GetDescriptor().GetMethodByName(methodName);
+                IRpcMethod method = _service.GetClass().GetMethodByName(methodName);
                 object[] args = JsonRpcServices.MapArguments(method, request["params"]);
                 result = method.Invoke(_service, args);
             }
@@ -215,7 +215,7 @@ namespace Jayrock.Json.Rpc
                 reader = new JsonTextReader(input);
             
             JObject request = new JObject();
-            IRpcMethodDescriptor method = null;
+            IRpcMethod method = null;
             
             reader.ReadToken(JsonTokenClass.Object);
             
@@ -234,7 +234,7 @@ namespace Jayrock.Json.Rpc
                     {
                         string methodName = reader.ReadString();
                         request["method"] = methodName;
-                        method = _service.GetDescriptor().GetMethodByName(methodName);
+                        method = _service.GetClass().GetMethodByName(methodName);
                         break;
                     }
                     case "params" :
@@ -247,7 +247,7 @@ namespace Jayrock.Json.Rpc
                         }
                         else
                         {
-                            IRpcParameterDescriptor[] parameters = method.GetParameters();
+                            IRpcParameter[] parameters = method.GetParameters();
                             
                             if (reader.TokenClass == JsonTokenClass.Array)
                             {
@@ -271,9 +271,9 @@ namespace Jayrock.Json.Rpc
                                 {
                                     // TODO: Imporve this lookup.
                                     
-                                    IRpcParameterDescriptor matchedParameter = null;
+                                    IRpcParameter matchedParameter = null;
 
-                                    foreach (IRpcParameterDescriptor parameter in parameters)
+                                    foreach (IRpcParameter parameter in parameters)
                                     {
                                         if (parameter.Name.Equals(reader.Text))
                                         {

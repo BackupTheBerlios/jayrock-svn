@@ -30,12 +30,12 @@ namespace Jayrock.Json.Rpc
     #endregion
 
     [ Serializable ]
-    internal sealed class RpcParameterDescriptor : IRpcParameterDescriptor
+    internal sealed class JsonRpcParameter : IRpcParameter
     {
-        private readonly IRpcMethodDescriptor _method;
+        private readonly IRpcMethod _method;
         private readonly ParameterInfo _parameter;
 
-        public RpcParameterDescriptor(IRpcMethodDescriptor method, ParameterInfo parameter)
+        public JsonRpcParameter(IRpcMethod method, ParameterInfo parameter)
         {
             if (method == null)
                 throw new ArgumentNullException("method");
@@ -64,7 +64,7 @@ namespace Jayrock.Json.Rpc
             get { return _parameter.Position; }
         }
 
-        public IRpcMethodDescriptor MethodDescriptor
+        public IRpcMethod Method
         {
             get { return _method; }
         }

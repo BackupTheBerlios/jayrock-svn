@@ -31,9 +31,9 @@ namespace Jayrock.Json.Rpc
     #endregion
 
     [ TestFixture ]
-    public class TestRpcParameterDescriptor
+    public class TestJsonRpcParameter
     {
-        private static readonly MethodInfo _sumInfo = typeof(TestRpcParameterDescriptor).GetMethod("Sum", BindingFlags.Static | BindingFlags.NonPublic);
+        private static readonly MethodInfo _sumInfo = typeof(TestJsonRpcParameter).GetMethod("Sum", BindingFlags.Static | BindingFlags.NonPublic);
 
         [ SetUp ]
         public void Init()
@@ -48,24 +48,24 @@ namespace Jayrock.Json.Rpc
         [ Test, ExpectedException(typeof(ArgumentNullException)) ]
         public void NullMethod()
         {
-            new RpcParameterDescriptor(null, null);
+            new JsonRpcParameter(null, null);
         }
 
         [ Test, ExpectedException(typeof(ArgumentNullException)) ]
         public void NullParameter()
         {
-            new RpcParameterDescriptor(new StubMethodDescriptor(), null);
+            new JsonRpcParameter(new StubMethodDescriptor(), null);
         }
 
         [ Test ]
         public void ReflectsInfo()
         {
-            IRpcMethodDescriptor method = new StubMethodDescriptor();
+            IRpcMethod method = new StubMethodDescriptor();
             
-            RpcParameterDescriptor parameter = new RpcParameterDescriptor(method, _sumInfo.GetParameters()[0]);
+            JsonRpcParameter parameter = new JsonRpcParameter(method, _sumInfo.GetParameters()[0]);
             Assert.AreEqual("a", parameter.Name);
             Assert.AreEqual(typeof(int), parameter.ParameterType);
-            Assert.AreSame(method, parameter.MethodDescriptor);
+            Assert.AreSame(method, parameter.Method);
         }
 
         private static int Sum(int a, int b)
@@ -73,14 +73,14 @@ namespace Jayrock.Json.Rpc
             return a + b;
         }
 
-        private sealed class StubMethodDescriptor : IRpcMethodDescriptor
+        private sealed class StubMethodDescriptor : IRpcMethod
         {
             public string Name
             {
                 get { throw new NotImplementedException(); }
             }
 
-            public IRpcParameterDescriptor[] GetParameters()
+            public IRpcParameter[] GetParameters()
             {
                 throw new NotImplementedException();
             }
@@ -95,7 +95,7 @@ namespace Jayrock.Json.Rpc
                 get { throw new NotImplementedException(); }
             }
 
-            public IRpcServiceDescriptor ServiceDescriptor
+            public IRpcServiceClass ServiceClass
             {
                 get { throw new NotImplementedException(); }
             }

@@ -494,12 +494,12 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Rpc\IRpcMethodDescriptor.cs"
+                    RelPath = "Json\Rpc\IRpcMethod.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Rpc\IRpcParameterDescriptor.cs"
+                    RelPath = "Json\Rpc\IRpcParameter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -509,7 +509,7 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Rpc\IRpcServiceDescriptor.cs"
+                    RelPath = "Json\Rpc\IRpcServiceClass.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -539,6 +539,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Json\Rpc\JsonRpcMethod.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\Rpc\JsonRpcMethodAttribute.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -549,12 +554,22 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Json\Rpc\JsonRpcParameter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\Rpc\JsonRpcService.cs"
                     SubType = "Component"
                     BuildAction = "Compile"
                 />
                 <File
                     RelPath = "Json\Rpc\JsonRpcServiceAttribute.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Rpc\JsonRpcServiceClass.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -574,21 +589,6 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Rpc\RpcMethodDescriptor.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Json\Rpc\RpcParameterDescriptor.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Json\Rpc\RpcServiceDescriptor.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "Json\Rpc\SynchronousAsyncResult.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -604,22 +604,22 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Json\Rpc\TestJsonRpcMethod.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Rpc\TestJsonRpcParameter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\Rpc\TestJsonRpcService.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Rpc\TestRpcMethodDescriptor.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Json\Rpc\TestRpcParameterDescriptor.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Json\Rpc\TestRpcServiceDescriptor.cs"
+                    RelPath = "Json\Rpc\TestJsonRpcServiceClass.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

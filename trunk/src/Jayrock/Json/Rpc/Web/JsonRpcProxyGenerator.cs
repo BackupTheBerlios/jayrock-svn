@@ -51,7 +51,7 @@ namespace Jayrock.Json.Rpc.Web
                 Response.Cache.SetLastModified(LastModifiedTime);
             }
 
-            IRpcServiceDescriptor service = TargetService.GetDescriptor();
+            IRpcServiceClass service = TargetService.GetClass();
 
             Response.ContentType = "text/javascript";
             Response.AppendHeader("Content-Disposition", 
@@ -82,7 +82,7 @@ namespace Jayrock.Json.Rpc.Web
                 Version1(service, new Uri(Request.Url.GetLeftPart(UriPartial.Path)), writer);
         }
 
-        private static void Version1(IRpcServiceDescriptor service, Uri url, IndentedTextWriter writer)
+        private static void Version1(IRpcServiceClass service, Uri url, IndentedTextWriter writer)
         {
             Debug.Assert(service != null);
             Debug.Assert(url!= null);
@@ -98,12 +98,12 @@ namespace Jayrock.Json.Rpc.Web
             writer.WriteLine("{");
             writer.Indent++;
     
-            IRpcMethodDescriptor[] methods = service.GetMethods();
+            IRpcMethod[] methods = service.GetMethods();
             string[] methodNames = new string[methods.Length];
     
             for (int i = 0; i < methods.Length; i++)
             {
-                IRpcMethodDescriptor method = methods[i];
+                IRpcMethod method = methods[i];
                 methodNames[i] = method.Name;
 
                 string summary = JsonRpcHelpAttribute.GetText(method.AttributeProvider);
@@ -121,9 +121,9 @@ namespace Jayrock.Json.Rpc.Web
                 writer.Write(method.Name);
                 writer.Write("\"] = function(");
 
-                IRpcParameterDescriptor[] parameters = method.GetParameters();
+                IRpcParameter[] parameters = method.GetParameters();
                 
-                foreach (IRpcParameterDescriptor parameter in parameters)
+                foreach (IRpcParameter parameter in parameters)
                 {
                     writer.Write(parameter.Name);
                     writer.Write(", ");
@@ -137,7 +137,7 @@ namespace Jayrock.Json.Rpc.Web
                 writer.Write(method.Name);
                 writer.Write("\", [");
 
-                foreach (IRpcParameterDescriptor parameter in parameters)
+                foreach (IRpcParameter parameter in parameters)
                 {
                     if (parameter.Position > 0)
                         writer.Write(',');
@@ -225,7 +225,7 @@ namespace Jayrock.Json.Rpc.Web
             writer.WriteLine(";");
         }
 
-        private void Version2(IRpcServiceDescriptor service, Uri url, IndentedTextWriter writer)
+        private void Version2(IRpcServiceClass service, Uri url, IndentedTextWriter writer)
         {
             Debug.Assert(service != null);
             Debug.Assert(url!= null);
@@ -250,7 +250,7 @@ namespace Jayrock.Json.Rpc.Web
             writer.WriteLine();
             writer.Indent += 3;
     
-            IRpcMethodDescriptor[] methods = service.GetMethods();
+            IRpcMethod[] methods = service.GetMethods();
             
             string[] methodNames = new string[methods.Length];
             for (int i = 0; i < methods.Length; i++)
@@ -260,7 +260,7 @@ namespace Jayrock.Json.Rpc.Web
     
             for (int i = 0; i < methods.Length; i++)
             {
-                IRpcMethodDescriptor method = methods[i];
+                IRpcMethod method = methods[i];
 
                 writer.WriteLine();
 
@@ -279,9 +279,9 @@ namespace Jayrock.Json.Rpc.Web
                 writer.Write(method.Name);
                 writer.Write("\" : function(");
 
-                IRpcParameterDescriptor[] parameters = method.GetParameters();
+                IRpcParameter[] parameters = method.GetParameters();
                 
-                foreach (IRpcParameterDescriptor parameter in parameters)
+                foreach (IRpcParameter parameter in parameters)
                 {
                     writer.Write(parameter.Name);
                     writer.Write(", ");
@@ -294,7 +294,7 @@ namespace Jayrock.Json.Rpc.Web
                 writer.Write(method.Name);
                 writer.Write("\", [");
 
-                foreach (IRpcParameterDescriptor parameter in parameters)
+                foreach (IRpcParameter parameter in parameters)
                 {
                     if (parameter.Position > 0)
                         writer.Write(',');

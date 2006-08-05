@@ -35,9 +35,9 @@ namespace Jayrock.Json.Rpc.Web
     internal class JsonRpcPage : Page, IRpcServiceFeature
     {
         private IRpcService _targetService;
-        private IRpcServiceDescriptor _serviceDescriptor;
-        private IRpcMethodDescriptor[] _methods;
-        private bool _serviceDescriptorInitialized;
+        private IRpcServiceClass _serviceClass;
+        private IRpcMethod[] _methods;
+        private bool _serviceClassInitialized;
         private HtmlGenericControl _head;
         private HtmlGenericControl _body;
 
@@ -57,27 +57,27 @@ namespace Jayrock.Json.Rpc.Web
             _targetService = targetService;
         }
 
-        protected IRpcServiceDescriptor ServiceDescriptor
+        protected IRpcServiceClass ServiceClass
         {
             get
             {
-                if (!_serviceDescriptorInitialized)
+                if (!_serviceClassInitialized)
                 {
-                    _serviceDescriptorInitialized = true;
-                    _serviceDescriptor = TargetService.GetDescriptor();
+                    _serviceClassInitialized = true;
+                    _serviceClass = TargetService.GetClass();
                 }
 
-                return _serviceDescriptor;
+                return _serviceClass;
             }
         }
 
-        protected IRpcMethodDescriptor[] SortedMethods
+        protected IRpcMethod[] SortedMethods
         {
             get
             {
                 if (_methods == null)
                 {
-                    IRpcMethodDescriptor[] methods = ServiceDescriptor.GetMethods();
+                    IRpcMethod[] methods = ServiceClass.GetMethods();
                     Array.Sort(methods, new MethodNameComparer());
                     _methods = methods;
                 }
@@ -145,15 +145,15 @@ namespace Jayrock.Json.Rpc.Web
 
         protected virtual string Title
         {
-            get { return ServiceDescriptor.Name; }
+            get { return ServiceClass.Name; }
         }
 
         private sealed class MethodNameComparer : IComparer
         {
             public int Compare(object x, object y)
             {
-                IRpcMethodDescriptor methodX = (IRpcMethodDescriptor) x;
-                IRpcMethodDescriptor methodY = (IRpcMethodDescriptor) y;
+                IRpcMethod methodX = (IRpcMethod) x;
+                IRpcMethod methodY = (IRpcMethod) y;
                 return string.Compare(methodX.Name, methodY.Name, false, CultureInfo.InvariantCulture);
             }
         }

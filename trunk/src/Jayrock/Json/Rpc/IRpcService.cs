@@ -31,6 +31,6 @@ namespace Jayrock.Json.Rpc
 
     public interface IRpcService
     {
-        IRpcServiceDescriptor GetDescriptor();
+        IRpcServiceClass GetClass();
     }
 }

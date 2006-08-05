@@ -30,52 +30,42 @@ namespace Jayrock.Json.Rpc
     #endregion
 
     [ TestFixture ]
-    public class TestRpcServiceDescriptor
+    public class TestRpcServiceClass
     {
-        [ SetUp ]
-        public void Init()
-        {
-        }
-
-        [ TearDown ]
-        public void Dispose()
-        {
-        }
-
         [ Test, ExpectedException(typeof(ArgumentNullException)) ]
         public void NullType()
         {
-            RpcServiceDescriptor.GetDescriptor(null);
+            JsonRpcServiceClass.FromType(null);
         }
 
         [ Test ]
         public void ServiceNameIsTypeName()
         {
-            RpcServiceDescriptor descriptor = RpcServiceDescriptor.GetDescriptor(typeof(EmptyService));
-            Assert.AreEqual("EmptyService", descriptor.Name);
+            JsonRpcServiceClass clazz = (JsonRpcServiceClass) JsonRpcServiceClass.FromType(typeof(EmptyService));
+            Assert.AreEqual("EmptyService", clazz.Name);
         }
 
         [ Test ]
         public void UntaggedMethodsNotExported()
         {
-            RpcServiceDescriptor descriptor = RpcServiceDescriptor.GetDescriptor(typeof(EmptyService));
-            Assert.AreEqual(0, descriptor.GetMethods().Length);
+            JsonRpcServiceClass clazz = (JsonRpcServiceClass) JsonRpcServiceClass.FromType(typeof(EmptyService));
+            Assert.AreEqual(0, clazz.GetMethods().Length);
         }
 
         [ Test ]
         public void TaggedMethodsExported()
         {
-            RpcServiceDescriptor descriptor = RpcServiceDescriptor.GetDescriptor(typeof(TestService));
-            Assert.AreEqual(2, descriptor.GetMethods().Length);
+            JsonRpcServiceClass clazz = (JsonRpcServiceClass) JsonRpcServiceClass.FromType(typeof(TestService));
+            Assert.AreEqual(2, clazz.GetMethods().Length);
         }
 
         [ Test ]
         public void CustomServiceName()
         {
-            RpcServiceDescriptor descriptor = RpcServiceDescriptor.GetDescriptor(typeof(TestService));
-            Assert.AreEqual("MyService", descriptor.Name);
+            JsonRpcServiceClass clazz = (JsonRpcServiceClass) JsonRpcServiceClass.FromType(typeof(TestService));
+            Assert.AreEqual("MyService", clazz.Name);
         }
-
+        
         private sealed class EmptyService
         {
         }

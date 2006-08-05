@@ -54,7 +54,7 @@ namespace Jayrock.Json.Rpc.Web
             Control content = AddDiv(Body, null);
             content.ID = "Content";
             
-            string summary = JsonRpcHelpAttribute.GetText(ServiceDescriptor.AttributeProvider);
+            string summary = JsonRpcHelpAttribute.GetText(ServiceClass.AttributeProvider);
 
             if (summary.Length > 0)
                 AddGeneric(content, "span", "service-help", summary);
@@ -68,7 +68,7 @@ namespace Jayrock.Json.Rpc.Web
             methodSelector.ID = "Method";
             methodSelector.Attributes.Add("onchange", "return Method_onchange(this)");
 
-            foreach (IRpcMethodDescriptor method in SortedMethods)
+            foreach (IRpcMethod method in SortedMethods)
                 methodSelector.Items.Add(method.Name);
     
             selectionPara.Controls.Add(methodSelector);
@@ -219,12 +219,12 @@ namespace Jayrock.Json.Rpc.Web
             JObject info = new JObject();
             StringBuilder sb = new StringBuilder();
     
-            foreach (IRpcMethodDescriptor method in ServiceDescriptor.GetMethods())
+            foreach (IRpcMethod method in ServiceClass.GetMethods())
             {
                 sb.Length = 0;
                 sb.Append("[ ");
 
-                IRpcParameterDescriptor[] parameters = method.GetParameters();
+                IRpcParameter[] parameters = method.GetParameters();
                 
                 if (parameters.Length == 0)
                 {
@@ -232,7 +232,7 @@ namespace Jayrock.Json.Rpc.Web
                 }
                 else
                 {
-                    foreach (IRpcParameterDescriptor parameter in parameters)
+                    foreach (IRpcParameter parameter in parameters)
                     {
                         if (parameter.Position > 0) 
                             sb.Append(", ");

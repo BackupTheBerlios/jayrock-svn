@@ -31,25 +31,25 @@ namespace Jayrock.Json.Rpc
     #endregion
 
     [ Serializable ]
-    internal sealed class RpcMethodDescriptor : IRpcMethodDescriptor
+    internal sealed class JsonRpcMethod : IRpcMethod
     {
-        private readonly IRpcServiceDescriptor _serviceDescriptor;
+        private readonly JsonRpcServiceClass _serviceClass;
         private readonly MethodInfo _method;
         private readonly string _name;
-        private readonly IRpcParameterDescriptor[] _rpcParameters;
+        private readonly IRpcParameter[] _rpcParameters;
 
-        public RpcMethodDescriptor(IRpcServiceDescriptor serviceDescriptor, MethodInfo method) :
-            this(serviceDescriptor, method, null) {}
+        public JsonRpcMethod(JsonRpcServiceClass serviceClass, MethodInfo method) :
+            this(serviceClass, method, null) {}
 
-        public RpcMethodDescriptor(IRpcServiceDescriptor serviceDescriptor, MethodInfo method, JsonRpcMethodAttribute attribute)
+        public JsonRpcMethod(JsonRpcServiceClass serviceClass, MethodInfo method, JsonRpcMethodAttribute attribute)
         {
-            if (serviceDescriptor == null)
-                throw new ArgumentNullException("serviceDescriptor");
+            if (serviceClass == null)
+                throw new ArgumentNullException("serviceClass");
 
             if (method == null)
                 throw new ArgumentNullException("method");
 
-            _serviceDescriptor = serviceDescriptor;
+            _serviceClass = serviceClass;
             _method = method;
             _name = method.Name;
 
@@ -76,10 +76,10 @@ namespace Jayrock.Json.Rpc
             //
 
             ParameterInfo[] parameters = _method.GetParameters();
-            _rpcParameters = new IRpcParameterDescriptor[parameters.Length];
+            _rpcParameters = new IRpcParameter[parameters.Length];
 
             for (int i = 0; i < parameters.Length; i++)
-                _rpcParameters[i] = new RpcParameterDescriptor(this, parameters[i]);
+                _rpcParameters[i] = new JsonRpcParameter(this, parameters[i]);
         }
 
         public string Name
@@ -87,7 +87,7 @@ namespace Jayrock.Json.Rpc
             get { return _name; }
         }
 
-        public IRpcParameterDescriptor[] GetParameters()
+        public IRpcParameter[] GetParameters()
         {
             //
             // IMPORTANT! Never return the private array instance since the
@@ -95,7 +95,7 @@ namespace Jayrock.Json.Rpc
             // well as the assumptions made in this implementation.
             //
 
-            return (IRpcParameterDescriptor[]) _rpcParameters.Clone();
+            return (IRpcParameter[]) _rpcParameters.Clone();
         }
 
         public Type ResultType
@@ -108,9 +108,9 @@ namespace Jayrock.Json.Rpc
             get { return _method.ReturnTypeCustomAttributes; }
         }
 
-        public IRpcServiceDescriptor ServiceDescriptor
+        public IRpcServiceClass ServiceClass
         {
-            get { return _serviceDescriptor; }
+            get { return _serviceClass; }
         }
 
         public object Invoke(IRpcService service, object[] args)

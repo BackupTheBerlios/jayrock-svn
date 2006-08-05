@@ -48,7 +48,7 @@ namespace Jayrock.Json.Rpc.Web
             Control content = AddDiv(Body, null);
             content.ID = "Content";
             
-            string summary = JsonRpcHelpAttribute.GetText(ServiceDescriptor.AttributeProvider);
+            string summary = JsonRpcHelpAttribute.GetText(ServiceClass.AttributeProvider);
             
             if (summary.Length > 0)
                 AddPara(content, "service-help", summary);
@@ -63,13 +63,13 @@ namespace Jayrock.Json.Rpc.Web
             HtmlGenericControl methodList = new HtmlGenericControl("dl");
             content.Controls.Add(methodList);
 
-            foreach (IRpcMethodDescriptor method in SortedMethods)
+            foreach (IRpcMethod method in SortedMethods)
                 AddMethod(methodList, method);
 
             base.AddContent ();
         }
 
-        private void AddMethod(Control parent, IRpcMethodDescriptor method)
+        private void AddMethod(Control parent, IRpcMethod method)
         {
             JsonRpcObsoleteAttribute obsoleteAttribute = JsonRpcObsoleteAttribute.Get(method.AttributeProvider);
 
@@ -88,13 +88,13 @@ namespace Jayrock.Json.Rpc.Web
             }
         }
 
-        private static void AddSignature(Control parent, IRpcMethodDescriptor method)
+        private static void AddSignature(Control parent, IRpcMethod method)
         {
             Control methodSignatureSpan = AddSpan(parent, "method-sig", null);
             AddSpan(methodSignatureSpan, "method-param-open", "(");
     
-            IRpcParameterDescriptor[] parameters = method.GetParameters();
-            foreach (IRpcParameterDescriptor parameter in parameters)
+            IRpcParameter[] parameters = method.GetParameters();
+            foreach (IRpcParameter parameter in parameters)
             {
                 if (parameter.Position > 0)
                     AddSpan(methodSignatureSpan, "method-param-delim", ", ");

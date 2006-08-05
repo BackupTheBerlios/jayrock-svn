@@ -28,11 +28,11 @@ namespace Jayrock.Json.Rpc
 
     #endregion
 
-    public interface IRpcParameterDescriptor : IRpcAnnotated
+    public interface IRpcParameter : IRpcAnnotated
     {
         string Name { get; }
         Type ParameterType { get; }
         int Position { get; }
-        IRpcMethodDescriptor MethodDescriptor { get; }
+        IRpcMethod Method { get; }
     }
 }

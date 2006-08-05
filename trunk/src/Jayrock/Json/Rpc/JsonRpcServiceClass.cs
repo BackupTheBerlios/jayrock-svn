@@ -32,31 +32,31 @@ namespace Jayrock.Json.Rpc
     #endregion
 
     [ Serializable ]
-    internal sealed class RpcServiceDescriptor : IRpcServiceDescriptor
+    internal sealed class JsonRpcServiceClass : IRpcServiceClass
     {
         private readonly Type _serviceType;
         private readonly string _serviceName;
         private readonly Hashtable _nameMethodTable;
-        private readonly RpcMethodDescriptor[] _methods;
+        private readonly JsonRpcMethod[] _methods;
         private static readonly Hashtable _typeDescriptorCache = Hashtable.Synchronized(new Hashtable());
         
-        public static RpcServiceDescriptor GetDescriptor(Type type)
+        public static IRpcServiceClass FromType(Type type)
         {
             if (type == null)
                 throw new ArgumentNullException("type");
 
-            RpcServiceDescriptor descriptor = (RpcServiceDescriptor) _typeDescriptorCache[type];
+            JsonRpcServiceClass clazz = (JsonRpcServiceClass) _typeDescriptorCache[type];
 
-            if (descriptor == null)
+            if (clazz == null)
             {
-                descriptor = new RpcServiceDescriptor(type);
-                _typeDescriptorCache[type] = descriptor;
+                clazz = new JsonRpcServiceClass(type);
+                _typeDescriptorCache[type] = clazz;
             }
 
-            return descriptor;
+            return clazz;
         }
 
-        private RpcServiceDescriptor(Type type)
+        private JsonRpcServiceClass(Type type)
         {
             Debug.Assert(type != null);
 
@@ -120,10 +120,10 @@ namespace Jayrock.Json.Rpc
                 // descriptor.
                 //
 
-                _nameMethodTable.Add(externalName, new RpcMethodDescriptor(this, method));
+                _nameMethodTable.Add(externalName, new JsonRpcMethod(this, method));
             }
 
-            _methods = new RpcMethodDescriptor[_nameMethodTable.Count];
+            _methods = new JsonRpcMethod[_nameMethodTable.Count];
             _nameMethodTable.Values.CopyTo(_methods, 0);
         }
 
@@ -132,7 +132,7 @@ namespace Jayrock.Json.Rpc
             get { return _serviceName; }
         }
 
-        public RpcMethodDescriptor[] GetMethods()
+        public JsonRpcMethod[] GetMethods()
         {
             //
             // IMPORTANT! Never return the private array instance since the
@@ -140,17 +140,17 @@ namespace Jayrock.Json.Rpc
             // well as the assumptions made in this implementation.
             //
 
-            return (RpcMethodDescriptor[]) _methods.Clone();
+            return (JsonRpcMethod[]) _methods.Clone();
         }
 
-        public RpcMethodDescriptor FindMethodByName(string name)
+        public JsonRpcMethod FindMethodByName(string name)
         {
-            return (RpcMethodDescriptor) _nameMethodTable[name];
+            return (JsonRpcMethod) _nameMethodTable[name];
         }
 
-        public RpcMethodDescriptor GetMethodByName(string name)
+        public JsonRpcMethod GetMethodByName(string name)
         {
-            RpcMethodDescriptor method = FindMethodByName(name);
+            JsonRpcMethod method = FindMethodByName(name);
 
             if (method == null)
                 throw new MethodNotFoundException();
@@ -158,17 +158,17 @@ namespace Jayrock.Json.Rpc
             return method;
         }
 
-        IRpcMethodDescriptor[] IRpcServiceDescriptor.GetMethods()
+        IRpcMethod[] IRpcServiceClass.GetMethods()
         {
             return GetMethods();
         }
 
-        IRpcMethodDescriptor IRpcServiceDescriptor.FindMethodByName(string name)
+        IRpcMethod IRpcServiceClass.FindMethodByName(string name)
         {
             return FindMethodByName(name);
         }
 
-        IRpcMethodDescriptor IRpcServiceDescriptor.GetMethodByName(string name)
+        IRpcMethod IRpcServiceClass.GetMethodByName(string name)
         {
             return GetMethodByName(name);
         }

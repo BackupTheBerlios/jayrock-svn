@@ -50,15 +50,15 @@ namespace Jayrock.Json.Rpc
 
             string name = null;
     
-            IRpcServiceDescriptor descriptor = service.GetDescriptor();
+            IRpcServiceClass clazz = service.GetClass();
     
-            if (descriptor != null)
-                name = descriptor.Name;
+            if (clazz != null)
+                name = clazz.Name;
     
             return Mask.EmptyString(name, anonymousName);
         }
 
-        public static object[] MapArguments(IRpcMethodDescriptor method, object argsObject)
+        public static object[] MapArguments(IRpcMethod method, object argsObject)
         {
             object[] args;
             IDictionary argsMap = argsObject as IDictionary;
@@ -67,7 +67,7 @@ namespace Jayrock.Json.Rpc
             {
                 JObject namedArgs = new JObject(argsMap);
                 
-                IRpcParameterDescriptor[] parameters = method.GetParameters();
+                IRpcParameter[] parameters = method.GetParameters();
                 args = new object[parameters.Length];
 
                 for (int i = 0; i < parameters.Length; i++)
@@ -118,7 +118,7 @@ namespace Jayrock.Json.Rpc
                 args = CollectionHelper.ToArray((ICollection) argsObject);
             }
 
-            return JsonRpcServices.TransposeVariableArguments(method, args);
+            return TransposeVariableArguments(method, args);
         }
 
         /// <summary>
@@ -132,7 +132,7 @@ namespace Jayrock.Json.Rpc
         // TODO: Allow args to be null to represent empty arguments.
         // TODO: Allow parameter conversions
 
-        public static object[] TransposeVariableArguments(IRpcMethodDescriptor method, object[] args)
+        public static object[] TransposeVariableArguments(IRpcMethod method, object[] args)
         {
             if (method == null)
                 throw new ArgumentNullException("method");
@@ -221,18 +221,18 @@ namespace Jayrock.Json.Rpc
         /// attribute.
         /// </summary>
 
-        public static bool HasMethodVariableArguments(IRpcMethodDescriptor method)
+        public static bool HasMethodVariableArguments(IRpcMethod method)
         {
             if (method == null)
                 throw new ArgumentNullException("method");
 
-            IRpcParameterDescriptor[] parameters = method.GetParameters();
+            IRpcParameter[] parameters = method.GetParameters();
             int parameterCount = parameters.Length;
 
             if (parameterCount == 0)
                 return false;
 
-            IRpcParameterDescriptor lastParameter = parameters[parameterCount - 1];
+            IRpcParameter lastParameter = parameters[parameterCount - 1];
             ICustomAttributeProvider attributeProvider = lastParameter.AttributeProvider;
             return attributeProvider != null && 
                    CustomAttribute.IsDefined(attributeProvider, typeof(ParamArrayAttribute));

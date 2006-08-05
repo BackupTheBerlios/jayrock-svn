@@ -38,7 +38,7 @@ namespace Jayrock.Json.Rpc
             try
             {
                 TestService service = new TestService();
-                service.GetDescriptor().GetMethodByName("BadMethod").Invoke(service, null);
+                service.GetClass().GetMethodByName("BadMethod").Invoke(service, null);
                 Assert.Fail("Expecting an exception.");
             }
             catch (TargetMethodException e)
@@ -51,7 +51,7 @@ namespace Jayrock.Json.Rpc
         public void VariableArguments()
         {
             TestService service = new TestService();
-            IRpcMethodDescriptor method = service.GetDescriptor().FindMethodByName("VarMethod");
+            IRpcMethod method = service.GetClass().FindMethodByName("VarMethod");
             object[] args = new object[] { 1, 2, 3, 4 };
             object[] invokeArgs = JsonRpcServices.TransposeVariableArguments(method, args);
             Assert.AreEqual(1, invokeArgs.Length);
@@ -62,7 +62,7 @@ namespace Jayrock.Json.Rpc
         public void FixedAndVariableArguments()
         {
             TestService service = new TestService();
-            IRpcMethodDescriptor method = service.GetDescriptor().FindMethodByName("FixedVarMethod");
+            IRpcMethod method = service.GetClass().FindMethodByName("FixedVarMethod");
             object[] args = new object[] { 1, 2, 3, 4 };
             args = JsonRpcServices.TransposeVariableArguments(method, args);
             Assert.AreEqual(3, args.Length);
@@ -75,7 +75,7 @@ namespace Jayrock.Json.Rpc
         public void RetransposingYieldsTheSame()
         {
             TestService service = new TestService();
-            IRpcMethodDescriptor method = service.GetDescriptor().FindMethodByName("FixedVarMethod");
+            IRpcMethod method = service.GetClass().FindMethodByName("FixedVarMethod");
             object[] args = new object[] { 1, 2, 3, 4 };
             args = JsonRpcServices.TransposeVariableArguments(method, args);
             args = JsonRpcServices.TransposeVariableArguments(method, args);
@@ -94,7 +94,7 @@ namespace Jayrock.Json.Rpc
             //
             
             TestService service = new TestService();
-            IRpcMethodDescriptor method = service.GetDescriptor().FindMethodByName("VarMethod");
+            IRpcMethod method = service.GetClass().FindMethodByName("VarMethod");
             object[] args = new object[] { 1, 2, new int[] { 3, 4 } };
             args = JsonRpcServices.TransposeVariableArguments(method, args);
             Assert.AreEqual(1, args.Length);
@@ -114,7 +114,7 @@ namespace Jayrock.Json.Rpc
             //
             
             TestService service = new TestService();
-            IRpcMethodDescriptor method = service.GetDescriptor().FindMethodByName("FixedVarMethod");
+            IRpcMethod method = service.GetClass().FindMethodByName("FixedVarMethod");
             object[] args = new object[] { 1, 2, 
                 new int[] { 3, 4 }, 
                 new JObject(new string[] { "five", "six" }, new object[] { 5, 6 }) };
@@ -133,12 +133,12 @@ namespace Jayrock.Json.Rpc
         [ Test ]
         public void Test()
         {
-            RpcServiceDescriptor serviceDescriptor = RpcServiceDescriptor.GetDescriptor(typeof(TestService));
-            Assert.IsFalse(JsonRpcServices.HasMethodVariableArguments(serviceDescriptor.GetMethodByName("BadMethod")));
-            Assert.IsTrue(JsonRpcServices.HasMethodVariableArguments(serviceDescriptor.GetMethodByName("VarMethod")));
-            Assert.IsTrue(JsonRpcServices.HasMethodVariableArguments(serviceDescriptor.GetMethodByName("FixedVarMethod")));
+            IRpcServiceClass serviceClass = JsonRpcServiceClass.FromType(typeof(TestService));
+            Assert.IsFalse(JsonRpcServices.HasMethodVariableArguments(serviceClass.GetMethodByName("BadMethod")));
+            Assert.IsTrue(JsonRpcServices.HasMethodVariableArguments(serviceClass.GetMethodByName("VarMethod")));
+            Assert.IsTrue(JsonRpcServices.HasMethodVariableArguments(serviceClass.GetMethodByName("FixedVarMethod")));
         }
-
+        
         private sealed class TestService : JsonRpcService
         {
             [ JsonRpcMethod ]

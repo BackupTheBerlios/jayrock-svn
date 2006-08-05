@@ -33,7 +33,7 @@ namespace Jayrock.Json.Rpc
 
     /// <summary>
     /// The exception that is thrown when <see cref="IRpcService.Invoke"/>
-    /// or <see cref="IRpcMethodDescriptor.Invoke"/> fails.
+    /// or <see cref="IRpcMethod.Invoke"/> fails.
     /// </summary>
 
     [ Serializable ]

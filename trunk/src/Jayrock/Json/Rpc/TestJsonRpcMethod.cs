@@ -31,75 +31,67 @@ namespace Jayrock.Json.Rpc
     #endregion
 
     [ TestFixture ]
-    public class TestRpcMethodDescriptor
+    public class TestJsonRpcMethod
     {
+        private JsonRpcServiceClass _service;
+
         [ SetUp ]
         public void Init()
         {
-        }
-
-        [ TearDown ]
-        public void Dispose()
-        {
+            _service = (JsonRpcServiceClass) JsonRpcServiceClass.FromType(typeof(StubService));
         }
 
         [ Test, ExpectedException(typeof(ArgumentNullException)) ]
         public void NullService()
         {
-            new RpcMethodDescriptor(null, null);
+            new JsonRpcMethod(null, null);
         }
 
         [ Test, ExpectedException(typeof(ArgumentNullException)) ]
         public void NullMethod()
         {
-            new RpcMethodDescriptor(null, null);
+            new JsonRpcMethod(null, null);
         }
 
         [ Test ]
         public void DefaultNameIsMethodName()
         {
-            StubRpcServiceDescriptor service = new StubRpcServiceDescriptor();
-            RpcMethodDescriptor method = new RpcMethodDescriptor(service, StubService.FooInfo);
+            JsonRpcMethod method = new JsonRpcMethod(_service, StubService.FooInfo);
             Assert.AreEqual("Foo", method.Name);
         }
 
         [ Test ]
         public void AffliatedWithService()
         {
-            StubRpcServiceDescriptor service = new StubRpcServiceDescriptor();
-            RpcMethodDescriptor method = new RpcMethodDescriptor(service, StubService.FooInfo);
-            Assert.AreSame(service, method.ServiceDescriptor);
+            JsonRpcMethod method = new JsonRpcMethod(_service, StubService.FooInfo);
+            Assert.AreSame(_service, method.ServiceClass);
         }
 
         [ Test ]
         public void CustomNameViaAttribute()
         {
-            StubRpcServiceDescriptor service = new StubRpcServiceDescriptor();
-            RpcMethodDescriptor method = new RpcMethodDescriptor(service, StubService.FooInfo, new JsonRpcMethodAttribute("foo"));
+            JsonRpcMethod method = new JsonRpcMethod(_service, StubService.FooInfo, new JsonRpcMethodAttribute("foo"));
             Assert.AreEqual("foo", method.Name);
         }
 
         [ Test ]
         public void AttributeFromMethod()
         {
-            StubRpcServiceDescriptor service = new StubRpcServiceDescriptor();
-            RpcMethodDescriptor method = new RpcMethodDescriptor(service, StubService.BarInfo);
+            JsonRpcMethod method = new JsonRpcMethod(_service, StubService.BarInfo);
             Assert.AreEqual("bar", method.Name);
         }
 
         [ Test ]
         public void ResultTypeIsMethodReturnType()
         {
-            StubRpcServiceDescriptor service = new StubRpcServiceDescriptor();
-            RpcMethodDescriptor method = new RpcMethodDescriptor(service, StubService.SumInfo);
+            JsonRpcMethod method = new JsonRpcMethod(_service, StubService.SumInfo);
             Assert.AreEqual(typeof(int), method.ResultType);
         }
 
         [ Test ]
         public void Parameters()
         {
-            StubRpcServiceDescriptor service = new StubRpcServiceDescriptor();
-            RpcMethodDescriptor method = new RpcMethodDescriptor(service, StubService.SumInfo);
+            JsonRpcMethod method = new JsonRpcMethod(_service, StubService.SumInfo);
             Assert.AreEqual(2, method.GetParameters().Length);
             Assert.AreEqual("a", method.GetParameters()[0].Name);
             Assert.AreEqual("b", method.GetParameters()[1].Name);
@@ -108,39 +100,10 @@ namespace Jayrock.Json.Rpc
         [ Test ]
         public void Invocation()
         {
-            StubRpcServiceDescriptor service = new StubRpcServiceDescriptor();
-            RpcMethodDescriptor method = new RpcMethodDescriptor(service, StubService.SumInfo);
+            JsonRpcMethod method = new JsonRpcMethod(_service, StubService.SumInfo);
             StubService serviceInstance = new StubService();
             object result = method.Invoke(serviceInstance, new object[] { 2, 3 });
             Assert.AreEqual(5, result);
-        }
-
-        private sealed class StubRpcServiceDescriptor : IRpcServiceDescriptor
-        {
-            public string Name
-            {
-                get { throw new NotImplementedException(); }
-            }
-
-            public IRpcMethodDescriptor[] GetMethods()
-            {
-                throw new NotImplementedException();
-            }
-
-            public IRpcMethodDescriptor FindMethodByName(string name)
-            {
-                throw new NotImplementedException();
-            }
-
-            public IRpcMethodDescriptor GetMethodByName(string name)
-            {
-                throw new NotImplementedException();
-            }
-
-            public ICustomAttributeProvider AttributeProvider
-            {
-                get { throw new NotImplementedException(); }
-            }
         }
 
         private sealed class StubService : IRpcService
@@ -168,7 +131,7 @@ namespace Jayrock.Json.Rpc
                 return a + b;
             }
 
-            public IRpcServiceDescriptor GetDescriptor()
+            public IRpcServiceClass GetClass()
             {
                 throw new NotImplementedException();
             }
