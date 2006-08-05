@@ -191,7 +191,7 @@ namespace Jayrock.Json.Rpc
             SynchronousAsyncResult ar = asyncResult as SynchronousAsyncResult;
 
             if (ar == null)
-                throw new ArgumentOutOfRangeException("asyncResult", "IAsyncResult object did not come from the corresponding async method on this type.");
+                throw new ArgumentException("asyncResult", "IAsyncResult object did not come from the corresponding async method on this type.");
 
             //
             // IMPORTANT! The End method on SynchronousAsyncResult will 
