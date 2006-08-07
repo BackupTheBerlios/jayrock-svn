@@ -44,19 +44,9 @@ namespace Jayrock.Json.Rpc
 
         private static void BuildClass(JsonRpcServiceClass.Builder builder, Type type)
         {
-            /*
             //
-            // Determine the service name, allowing customization via the
-            // JsonRpcService attribute.
+            // Build via attributes.
             //
-
-            JsonRpcServiceAttribute serviceAttribute = (JsonRpcServiceAttribute) Attribute.GetCustomAttribute(type, typeof(JsonRpcServiceAttribute), true);
-
-            if (serviceAttribute != null)
-                builder.Name = serviceAttribute.Name.Trim();
-
-            builder.Name = Mask.EmptyString(builder.Name, type.Name);
-            */
 
             foreach (Attribute attribute in Attribute.GetCustomAttributes(type))
             {
@@ -65,17 +55,11 @@ namespace Jayrock.Json.Rpc
                 if (builderAttribute != null)
                     builderAttribute.BuildServiceClass(builder, type);
             }
+            
+            //
+            // Fault in the type name if still without name.
+            //
 
-            /*
-            //
-            // Get the description;
-            //
-            
-            JsonRpcHelpAttribute helpAttribute = (JsonRpcHelpAttribute) Attribute.GetCustomAttribute(type, typeof(JsonRpcHelpAttribute), true);
-            if (helpAttribute != null)  
-                builder.Description = helpAttribute.Text;
-            */
-            
             if (builder.Name.Length == 0)
                 builder.Name = type.Name;
 
@@ -105,11 +89,13 @@ namespace Jayrock.Json.Rpc
             Debug.Assert(method != null);
             Debug.Assert(builder != null);
 
-            //JsonRpcMethodAttribute attribute = (JsonRpcMethodAttribute) Attribute.GetCustomAttribute(method, typeof(JsonRpcMethodAttribute));
-               
             builder.InternalName = method.Name;
             builder.ResultType = method.ReturnType;
             builder.Dispatcher = new Dispatcher(method);
+            
+            //
+            // Build via attributes.
+            //
             
             foreach (Attribute attribute in Attribute.GetCustomAttributes(method))
             {
@@ -119,30 +105,13 @@ namespace Jayrock.Json.Rpc
                     builderAttribute.BuildMethod(builder, method);
             }
             
+            //
+            // Fault in the method name if still without name.
+            //
+            
             if (builder.Name.Length == 0)
                 builder.Name = method.Name;
 
-            /*
-            //
-            // Get the description;
-            //
-            
-            JsonRpcHelpAttribute helpAttribute = (JsonRpcHelpAttribute) Attribute.GetCustomAttribute(method, typeof(JsonRpcHelpAttribute), true);
-            if (helpAttribute != null)  
-                builder.Description = helpAttribute.Text;
-
-            //
-            // Obsoleted method?
-            //
-
-            JsonRpcObsoleteAttribute obsolete = (JsonRpcObsoleteAttribute) CustomAttribute.Get(method, typeof(JsonRpcObsoleteAttribute), true);
-            if (obsolete != null)
-            {
-                builder.IsObsolete = obsolete != null;
-                builder.ObsoletionMessage = obsolete.Message;
-            }
-            */
-            
             //
             // Build the method parameters.
             //
@@ -160,6 +129,18 @@ namespace Jayrock.Json.Rpc
             builder.ParameterType = parameter.ParameterType;
             builder.Position = parameter.Position;
             builder.IsParamArray = parameter.IsDefined(typeof(ParamArrayAttribute), true);
+
+            //
+            // Build via attributes.
+            //
+            
+            foreach (Attribute attribute in Attribute.GetCustomAttributes(parameter))
+            {
+                IBuilderAttribute builderAttribute = attribute as IBuilderAttribute;
+                
+                if (builderAttribute != null)
+                    builderAttribute.BuildParameter(builder, parameter);
+            }
         }
 
         private JsonRpcServiceReflector()
