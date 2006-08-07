@@ -28,7 +28,7 @@ namespace Jayrock.Json.Rpc
 
     #endregion
 
-    public interface IRpcServiceClass : IRpcAnnotated
+    public interface IRpcServiceClass
     {
         string Name { get; }
         IRpcMethod[] GetMethods();

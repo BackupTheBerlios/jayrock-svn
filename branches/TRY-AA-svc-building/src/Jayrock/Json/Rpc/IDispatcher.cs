@@ -25,17 +25,11 @@ namespace Jayrock.Json.Rpc
     #region Imports
 
     using System;
-    using System.Reflection;
 
     #endregion
 
-    public interface IRpcMethod : IRpcAnnotated
+    public interface IDispatcher
     {
-        string Name { get; }
-        IRpcParameter[] GetParameters();
-        Type ResultType { get; }
-        ICustomAttributeProvider ReturnTypeAttributeProvider { get; }
-        IRpcServiceClass ServiceClass { get; }
         object Invoke(IRpcService service, object[] args);
         IAsyncResult BeginInvoke(IRpcService service, object[] args, AsyncCallback callback, object asyncState);
         object EndInvoke(IAsyncResult asyncResult);

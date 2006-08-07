@@ -48,10 +48,8 @@ namespace Jayrock.Json.Rpc.Web
             Control content = AddDiv(Body, null);
             content.ID = "Content";
             
-            string summary = JsonRpcHelpAttribute.GetText(ServiceClass.AttributeProvider);
-            
-            if (summary.Length > 0)
-                AddPara(content, "service-help", summary);
+            if (ServiceClass.Description.Length > 0)
+                AddPara(content, "service-help", ServiceClass.Description);
 
             Control para = AddPara(content, "intro", null);
             AddLiteral(para, "The following ");
@@ -63,38 +61,34 @@ namespace Jayrock.Json.Rpc.Web
             HtmlGenericControl methodList = new HtmlGenericControl("dl");
             content.Controls.Add(methodList);
 
-            foreach (IRpcMethod method in SortedMethods)
+            foreach (JsonRpcMethod method in SortedMethods)
                 AddMethod(methodList, method);
 
             base.AddContent ();
         }
 
-        private void AddMethod(Control parent, IRpcMethod method)
+        private void AddMethod(Control parent, JsonRpcMethod method)
         {
-            JsonRpcObsoleteAttribute obsoleteAttribute = JsonRpcObsoleteAttribute.Get(method.AttributeProvider);
-
-            Control methodTerm = AddGeneric(parent, "dt", obsoleteAttribute == null ? "method" : "method obsolete-method");
+            Control methodTerm = AddGeneric(parent, "dt", !method.IsObsolete ? "method" : "method obsolete-method");
             AddSpan(methodTerm, "method-name", method.Name);
             AddSignature(methodTerm, method);
 
-            string summary = JsonRpcHelpAttribute.GetText(method.AttributeProvider);
-
-            if (summary.Length > 0 || obsoleteAttribute != null)
+            if (method.Description.Length > 0 || method.IsObsolete)
             {
-                AddGeneric(parent, "dd", "method-summary", summary);
+                AddGeneric(parent, "dd", "method-summary", method.Description);
 
-                if (obsoleteAttribute != null)
-                    AddSpan(parent, "obsolete-message", " This method has been obsoleted. " + obsoleteAttribute.Message);
+                if (method.IsObsolete)
+                    AddSpan(parent, "obsolete-message", " This method has been obsoleted. " + method.ObsoletionMessage);
             }
         }
 
-        private static void AddSignature(Control parent, IRpcMethod method)
+        private static void AddSignature(Control parent, JsonRpcMethod method)
         {
             Control methodSignatureSpan = AddSpan(parent, "method-sig", null);
             AddSpan(methodSignatureSpan, "method-param-open", "(");
     
-            IRpcParameter[] parameters = method.GetParameters();
-            foreach (IRpcParameter parameter in parameters)
+            JsonRpcParameter[] parameters = method.GetParameters();
+            foreach (JsonRpcParameter parameter in parameters)
             {
                 if (parameter.Position > 0)
                     AddSpan(methodSignatureSpan, "method-param-delim", ", ");

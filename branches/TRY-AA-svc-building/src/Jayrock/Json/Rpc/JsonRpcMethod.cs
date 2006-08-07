@@ -25,61 +25,46 @@ namespace Jayrock.Json.Rpc
     #region Imports
 
     using System;
+    using System.Collections;
+    using System.Diagnostics;
     using System.Globalization;
     using System.Reflection;
 
     #endregion
 
     [ Serializable ]
-    internal sealed class JsonRpcMethod : IRpcMethod
+    public sealed class JsonRpcMethod
     {
-        private readonly JsonRpcServiceClass _serviceClass;
-        private readonly MethodInfo _method;
+        private readonly JsonRpcServiceClass _class;
         private readonly string _name;
-        private readonly IRpcParameter[] _rpcParameters;
+        private readonly string _internalName;
+        private readonly Type _resultType;
+        private JsonRpcParameter[] _parameters;
+        private readonly IDispatcher _dispatcher;
+        private readonly bool _isObsolete;
+        private readonly string _obsoletionMessage;
+        private readonly string _description;
 
-        public JsonRpcMethod(JsonRpcServiceClass serviceClass, MethodInfo method) :
-            this(serviceClass, method, null) {}
-
-        public JsonRpcMethod(JsonRpcServiceClass serviceClass, MethodInfo method, JsonRpcMethodAttribute attribute)
+        internal JsonRpcMethod(Builder methodBuilder, JsonRpcServiceClass clazz)
         {
-            if (serviceClass == null)
-                throw new ArgumentNullException("serviceClass");
+            Debug.Assert(methodBuilder != null);
+            Debug.Assert(clazz != null);
+            
+            _name = methodBuilder.Name;
+            _internalName = Mask.EmptyString(methodBuilder.InternalName, methodBuilder.Name);
+            _resultType = methodBuilder.ResultType;
+            _isObsolete = methodBuilder.IsObsolete;
+            _obsoletionMessage = methodBuilder.IsObsolete ? methodBuilder.ObsoletionMessage : string.Empty;
+            _description = methodBuilder.Description;
+            _dispatcher = methodBuilder.Dispatcher;
+            _class = clazz;
+            
+            JsonRpcParameter.Builder[] parameterBuilders = methodBuilder.GetParameterBuilders();
+            _parameters = new JsonRpcParameter[parameterBuilders.Length];
+            int paramIndex = 0;
 
-            if (method == null)
-                throw new ArgumentNullException("method");
-
-            _serviceClass = serviceClass;
-            _method = method;
-            _name = method.Name;
-
-            //
-            // If an attribute was not supplied then grab one from the method.
-            //
-
-            if (attribute == null)
-                attribute = (JsonRpcMethodAttribute) Attribute.GetCustomAttribute(method, typeof(JsonRpcMethodAttribute), true);
-
-            //
-            // If an attribute was supplied then use it to apply customizations,
-            // such as the external method name.
-            //
-
-            if (attribute != null)
-            {
-                if (attribute.Name.Length > 0)
-                    _name = attribute.Name;
-            }
-
-            //
-            // Enumerate the parameters.
-            //
-
-            ParameterInfo[] parameters = _method.GetParameters();
-            _rpcParameters = new IRpcParameter[parameters.Length];
-
-            for (int i = 0; i < parameters.Length; i++)
-                _rpcParameters[i] = new JsonRpcParameter(this, parameters[i]);
+            foreach (JsonRpcParameter.Builder parameterBuilder in parameterBuilders)
+                _parameters[paramIndex++] = new JsonRpcParameter(parameterBuilder, this);
         }
 
         public string Name
@@ -87,7 +72,12 @@ namespace Jayrock.Json.Rpc
             get { return _name; }
         }
 
-        public IRpcParameter[] GetParameters()
+        public string InternalName
+        {
+            get { return _internalName; }
+        }
+        
+        public JsonRpcParameter[] GetParameters()
         {
             //
             // IMPORTANT! Never return the private array instance since the
@@ -95,22 +85,32 @@ namespace Jayrock.Json.Rpc
             // well as the assumptions made in this implementation.
             //
 
-            return (IRpcParameter[]) _rpcParameters.Clone();
+            return (JsonRpcParameter[]) _parameters.Clone();
         }
 
         public Type ResultType
         {
-            get { return _method.ReturnType; }
+            get { return _resultType; }
         }
 
-        public ICustomAttributeProvider ReturnTypeAttributeProvider
+        public bool IsObsolete
         {
-            get { return _method.ReturnTypeCustomAttributes; }
+            get { return _isObsolete; }
         }
 
-        public IRpcServiceClass ServiceClass
+        public string ObsoletionMessage
         {
-            get { return _serviceClass; }
+            get { return _obsoletionMessage; }
+        }
+
+        public string Description
+        {
+            get { return _description; }
+        }
+
+        public JsonRpcServiceClass ServiceClass
+        {
+            get { return _class; }
         }
 
         public object Invoke(IRpcService service, object[] args)
@@ -120,7 +120,7 @@ namespace Jayrock.Json.Rpc
 
             try
             {
-                return _method.Invoke(service, args);
+                return _dispatcher.Invoke(service, args);
             }
             catch (ArgumentException e)
             {
@@ -209,9 +209,126 @@ namespace Jayrock.Json.Rpc
             return ar.End("Invoke");
         }
 
-        public ICustomAttributeProvider AttributeProvider
+        /// <summary>
+        /// Determines if the method accepts variable number of arguments or
+        /// not. A method is designated as accepting variable arguments by
+        /// annotating the last parameter of the method with the JsonRpcParams
+        /// attribute.
+        /// </summary>
+
+        public bool HasParamArray
         {
-            get { return _method; }
+            get
+            {
+                return _parameters.Length > 0 && 
+                    _parameters[_parameters.Length - 1].IsParamArray;
+            }
+        }
+
+        [ Serializable ]
+        public sealed class Builder
+        {
+            private string _name;
+            private string _internalName;
+            private Type _resultType = typeof(void);
+            private ArrayList _paramBuilderList;
+            private IDispatcher _dispatcher;
+            private bool _isObsolete;
+            private string _obsoletionMessage;
+            private string _description;
+            private readonly JsonRpcServiceClass.Builder _serviceClass;
+
+            internal Builder(JsonRpcServiceClass.Builder serviceClass)
+            {
+                Debug.Assert(serviceClass != null);
+                _serviceClass = serviceClass;
+            }
+
+            public JsonRpcServiceClass.Builder ServiceClass
+            {
+                get { return _serviceClass; }
+            }
+
+            public string Name
+            {
+                get { return Mask.NullString(_name); }
+                set { _name = value; }
+            }
+
+            public string InternalName
+            {
+                get { return Mask.NullString(_internalName); }
+                set { _internalName = value; }
+            }
+
+            public Type ResultType
+            {
+                get { return _resultType; }
+                
+                set
+                {
+                    if (value == null)
+                        throw new ArgumentNullException("value");
+                    
+                    _resultType = value;
+                }
+            }
+
+            public IDispatcher Dispatcher
+            {
+                get { return _dispatcher; }
+                set { _dispatcher = value; }
+            }
+
+            public bool IsObsolete
+            {
+                get { return _isObsolete; }
+                set { _isObsolete = value; }
+            }
+
+            private ArrayList ParameterBuilders
+            {
+                get
+                {
+                    if (_paramBuilderList == null)
+                        _paramBuilderList = new ArrayList();
+                
+                    return _paramBuilderList;
+                }
+            }
+
+            public string ObsoletionMessage
+            {
+                get { return Mask.NullString(_obsoletionMessage); }
+                
+                set
+                {
+                    _obsoletionMessage = value;
+                    IsObsolete = _obsoletionMessage.Length > 0;
+                }
+            }
+
+            public string Description
+            {
+                get { return Mask.NullString(_description); }
+                set { _description = value; }
+            }
+
+            public JsonRpcParameter.Builder DefineParameter()
+            {
+                JsonRpcParameter.Builder builder = new JsonRpcParameter.Builder(this);
+                builder.Position = ParameterBuilders.Count;
+                ParameterBuilders.Add(builder);
+                return builder;
+            }
+
+            internal JsonRpcParameter.Builder[] GetParameterBuilders()
+            {
+                if (_paramBuilderList == null)
+                    return new JsonRpcParameter.Builder[0];
+            
+                return (JsonRpcParameter.Builder[]) _paramBuilderList.ToArray(typeof(JsonRpcParameter.Builder));
+            }
         }
     }
 }

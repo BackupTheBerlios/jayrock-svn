@@ -32,104 +32,78 @@ namespace Jayrock.Json.Rpc
     #endregion
 
     [ Serializable ]
-    internal sealed class JsonRpcServiceClass : IRpcServiceClass
+    public sealed class JsonRpcServiceClass
     {
-        private readonly Type _serviceType;
         private readonly string _serviceName;
-        private readonly Hashtable _nameMethodTable;
+        private readonly string _description;
+        private readonly Hashtable _methodByName;
         private readonly JsonRpcMethod[] _methods;
-        private static readonly Hashtable _typeDescriptorCache = Hashtable.Synchronized(new Hashtable());
+        private static readonly Hashtable _classByTypeCache = Hashtable.Synchronized(new Hashtable());
         
-        public static IRpcServiceClass FromType(Type type)
+        public static JsonRpcServiceClass FromType(Type type)
         {
             if (type == null)
                 throw new ArgumentNullException("type");
 
-            JsonRpcServiceClass clazz = (JsonRpcServiceClass) _typeDescriptorCache[type];
+            JsonRpcServiceClass clazz = (JsonRpcServiceClass) _classByTypeCache[type];
 
             if (clazz == null)
             {
-                clazz = new JsonRpcServiceClass(type);
-                _typeDescriptorCache[type] = clazz;
+                clazz = JsonRpcServiceReflector.FromType(type);
+                _classByTypeCache[type] = clazz;
             }
 
             return clazz;
         }
 
-        private JsonRpcServiceClass(Type type)
+        internal JsonRpcServiceClass(Builder classBuilder)
         {
-            Debug.Assert(type != null);
+            Debug.Assert(classBuilder != null);
+            
+            _serviceName = classBuilder.Name;
+            _description = classBuilder.Description;
 
-            _serviceType = type;
-
-            //
-            // Determine the service name, allowing customization via the
-            // JsonRpcService attribute.
-            //
-
-            JsonRpcServiceAttribute serviceAttribute = (JsonRpcServiceAttribute) Attribute.GetCustomAttribute(type, typeof(JsonRpcServiceAttribute), true);
-
-            if (serviceAttribute != null)
-                _serviceName = serviceAttribute.Name.Trim();
-
-            _serviceName = Mask.EmptyString(_serviceName, type.Name);
-
-            //
-            // Get all the public instance methods on the type and create a
-            // filtered table of those to expose from the service.
-            //
-
-            MethodInfo[] publicMethods = type.GetMethods(BindingFlags.Public | BindingFlags.Instance);
-            _nameMethodTable = new Hashtable(publicMethods.Length);
-
-            foreach (MethodInfo method in publicMethods)
+            if (classBuilder.HasMethods)
             {
-                if (method.IsAbstract)
-                    continue;
-
-                JsonRpcMethodAttribute methodAttribute = (JsonRpcMethodAttribute) Attribute.GetCustomAttribute(method, typeof(JsonRpcMethodAttribute));
-
-                //
-                // Only proceed with methods that are decorated with the
-                // JsonRpcMethod attribute.
-                //
+                IList methodBuilders = classBuilder.Methods;
                 
-                if (methodAttribute == null)
-                    continue;
+                _methods = new JsonRpcMethod[methodBuilders.Count];
+                _methodByName = new Hashtable(methodBuilders.Count);
+                int methodIndex = 0;
 
-                //
-                // Determine the external/public name of the method. This
-                // usually comes from the attribute, but if missing then from
-                // the actual base method name.
-                //
+                foreach (JsonRpcMethod.Builder methodBuilder in methodBuilders)
+                {
+                    JsonRpcMethod method = new JsonRpcMethod(methodBuilder, this);
 
-                string externalName = methodAttribute.Name;
+                    //
+                    // Check for duplicates.
+                    //
 
-                if (externalName.Length == 0)
-                    externalName = method.Name;
+                    if (_methodByName.ContainsKey(method.Name))
+                        throw new DuplicateMethodException(string.Format("The method '{0}' cannot be exported as '{1}' because this name has already been used by another method on the '{2}' service.", method.Name, method.InternalName, _serviceName));
 
-                //
-                // Check for duplicates.
-                //
+                    //
+                    // Add the method to the class and index it by its name.
+                    //
 
-                if (_nameMethodTable.ContainsKey(externalName))
-                    throw new DuplicateMethodException(string.Format("The method '{0}' cannot be exported as '{1}' because this name has already been used by another method on the '{2}' service.", method.Name, externalName, _serviceName));
-
-                //
-                // Finally, add the name to the table along with a method
-                // descriptor.
-                //
-
-                _nameMethodTable.Add(externalName, new JsonRpcMethod(this, method));
+                    _methods[methodIndex++] = method;
+                    _methodByName.Add(method.Name, method);
+                }
             }
-
-            _methods = new JsonRpcMethod[_nameMethodTable.Count];
-            _nameMethodTable.Values.CopyTo(_methods, 0);
+            else
+            {
+                _methods = new JsonRpcMethod[0];
+            }
         }
 
         public string Name
         {
             get { return _serviceName; }
+        }
+
+        public string Description
+        {
+            get { return _description; }
         }
 
         public JsonRpcMethod[] GetMethods()
@@ -145,7 +119,7 @@ namespace Jayrock.Json.Rpc
 
         public JsonRpcMethod FindMethodByName(string name)
         {
-            return (JsonRpcMethod) _nameMethodTable[name];
+            return (JsonRpcMethod) _methodByName[name];
         }
 
         public JsonRpcMethod GetMethodByName(string name)
@@ -158,24 +132,52 @@ namespace Jayrock.Json.Rpc
             return method;
         }
 
-        IRpcMethod[] IRpcServiceClass.GetMethods()
+        [ Serializable ]
+        public sealed class Builder
         {
-            return GetMethods();
-        }
+            private string _name;
+            private ArrayList _methodList;
+            private string _description;
 
-        IRpcMethod IRpcServiceClass.FindMethodByName(string name)
-        {
-            return FindMethodByName(name);
-        }
+            public string Name
+            {
+                get { return Mask.NullString(_name); }
+                set { _name = value; }
+            }
 
-        IRpcMethod IRpcServiceClass.GetMethodByName(string name)
-        {
-            return GetMethodByName(name);
-        }
+            public string Description
+            {
+                get { return Mask.NullString(_description); }
+                set { _description = value; }
+            }
 
-        public ICustomAttributeProvider AttributeProvider
-        {
-            get { return _serviceType; }
+            public JsonRpcServiceClass CreateClass()
+            {
+                return new JsonRpcServiceClass(this);
+            }
+
+            public JsonRpcMethod.Builder DefineMethod()
+            {
+                JsonRpcMethod.Builder builder = new JsonRpcMethod.Builder(this);
+                Methods.Add(builder);
+                return builder;
+            }
+            
+            internal bool HasMethods
+            {
+                get { return _methodList != null && _methodList.Count > 0; }
+            }
+
+            internal IList Methods
+            {
+                get
+                {
+                    if (_methodList == null)
+                        _methodList = new ArrayList();
+                
+                    return _methodList;
+                }
+            }
         }
     }
 }

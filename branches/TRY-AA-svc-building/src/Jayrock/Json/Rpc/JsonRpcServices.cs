@@ -50,7 +50,7 @@ namespace Jayrock.Json.Rpc
 
             string name = null;
     
-            IRpcServiceClass clazz = service.GetClass();
+            JsonRpcServiceClass clazz = service.GetClass();
     
             if (clazz != null)
                 name = clazz.Name;
@@ -58,7 +58,7 @@ namespace Jayrock.Json.Rpc
             return Mask.EmptyString(name, anonymousName);
         }
 
-        public static object[] MapArguments(IRpcMethod method, object argsObject)
+        public static object[] MapArguments(JsonRpcMethod method, object argsObject)
         {
             object[] args;
             IDictionary argsMap = argsObject as IDictionary;
@@ -67,7 +67,7 @@ namespace Jayrock.Json.Rpc
             {
                 JObject namedArgs = new JObject(argsMap);
                 
-                IRpcParameter[] parameters = method.GetParameters();
+                JsonRpcParameter[] parameters = method.GetParameters();
                 args = new object[parameters.Length];
 
                 for (int i = 0; i < parameters.Length; i++)
@@ -132,7 +132,7 @@ namespace Jayrock.Json.Rpc
         // TODO: Allow args to be null to represent empty arguments.
         // TODO: Allow parameter conversions
 
-        public static object[] TransposeVariableArguments(IRpcMethod method, object[] args)
+        public static object[] TransposeVariableArguments(JsonRpcMethod method, object[] args)
         {
             if (method == null)
                 throw new ArgumentNullException("method");
@@ -142,7 +142,7 @@ namespace Jayrock.Json.Rpc
             // return the arguments array verbatim.
             //
 
-            if (!HasMethodVariableArguments(method))
+            if (!method.HasParamArray)
                 return args;
 
             int parameterCount = method.GetParameters().Length;
@@ -212,30 +212,6 @@ namespace Jayrock.Json.Rpc
             Array.Copy(args, transposedArgs, parameterCount - 1);
             transposedArgs[transposedArgs.Length - 1] = varArgs;
             return transposedArgs;
-        }
-
-        /// <summary>
-        /// Determines if the method accepts variable number of arguments or
-        /// not. A method is designated as accepting variable arguments by
-        /// annotating the last parameter of the method with the JsonRpcParams
-        /// attribute.
-        /// </summary>
-
-        public static bool HasMethodVariableArguments(IRpcMethod method)
-        {
-            if (method == null)
-                throw new ArgumentNullException("method");
-
-            IRpcParameter[] parameters = method.GetParameters();
-            int parameterCount = parameters.Length;
-
-            if (parameterCount == 0)
-                return false;
-
-            IRpcParameter lastParameter = parameters[parameterCount - 1];
-            ICustomAttributeProvider attributeProvider = lastParameter.AttributeProvider;
-            return attributeProvider != null && 
-                   CustomAttribute.IsDefined(attributeProvider, typeof(ParamArrayAttribute));
         }
 
         public static object GetResult(IDictionary response)

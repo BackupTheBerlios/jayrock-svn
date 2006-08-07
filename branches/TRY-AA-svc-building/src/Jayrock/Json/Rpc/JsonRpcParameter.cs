@@ -25,53 +25,116 @@ namespace Jayrock.Json.Rpc
     #region Imports
 
     using System;
+    using System.Diagnostics;
     using System.Reflection;
 
     #endregion
 
     [ Serializable ]
-    internal sealed class JsonRpcParameter : IRpcParameter
+    public sealed class JsonRpcParameter
     {
-        private readonly IRpcMethod _method;
-        private readonly ParameterInfo _parameter;
+        private readonly string _name;
+        private readonly Type _parameterType;
+        private readonly int _position;
+        private readonly bool _isParamArray;
+        private readonly JsonRpcMethod _method;
 
-        public JsonRpcParameter(IRpcMethod method, ParameterInfo parameter)
+        internal JsonRpcParameter(Builder builder, JsonRpcMethod method)
         {
-            if (method == null)
-                throw new ArgumentNullException("method");
-
-            if (parameter == null)
-                throw new ArgumentNullException("parameter");
-
+            Debug.Assert(builder != null);
+            Debug.Assert(builder.Position >= 0);
+            Debug.Assert(method != null);
+            
+            _name = builder.Name;
+            _parameterType = builder.ParameterType;
+            _position = builder.Position;
+            _isParamArray = builder.IsParamArray;
             _method = method;
-            _parameter = parameter;
-
-            // TODO: Parameter validation, e.g. cannot be by-reference.
         }
-
+        
         public string Name
         {
-            get { return _parameter.Name; }
+            get { return _name; }
         }
 
         public Type ParameterType
         {
-            get { return _parameter.ParameterType; }
+            get { return _parameterType; }
         }
 
         public int Position
         {
-            get { return _parameter.Position; }
+            get { return _position; }
         }
 
-        public IRpcMethod Method
+        public JsonRpcMethod Method
         {
             get { return _method; }
         }
 
-        public ICustomAttributeProvider AttributeProvider
+        public bool IsParamArray
         {
-            get { return _parameter; }
+            get { return _isParamArray; }
+        }
+
+        [ Serializable ]
+        public sealed class Builder
+        {
+            private string _name;
+            private int _position;
+            private Type _parameterType = typeof(object);
+            private bool _isParamArray;
+            private JsonRpcMethod.Builder _method;
+
+            internal Builder(JsonRpcMethod.Builder method)
+            {
+                Debug.Assert(method != null);
+                
+                _method = method;
+            }
+
+            public JsonRpcMethod.Builder Method
+            {
+                get { return _method; }
+            }
+
+            public string Name
+            {
+                get { return Mask.NullString(_name); }
+                set { _name = value; }
+            }
+
+            public int Position
+            {
+                get { return _position; }
+                
+                set
+                {
+                    if (value < 0)
+                        throw new ArgumentOutOfRangeException("value");
+
+                    _position = value;
+                }
+            }
+            
+            public Type ParameterType
+            {
+                get { return _parameterType; }
+                
+                set
+                {
+                    if (value == null)
+                        throw new ArgumentNullException("value");
+                    
+                    _parameterType = value;
+                }
+            }
+
+            public bool IsParamArray
+            {
+                get { return _isParamArray; }
+                set { _isParamArray = value; }
+            }
         }
     }
 }

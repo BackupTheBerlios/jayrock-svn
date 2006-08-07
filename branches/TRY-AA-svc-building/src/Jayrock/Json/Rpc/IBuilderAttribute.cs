@@ -28,11 +28,10 @@ namespace Jayrock.Json.Rpc
 
     #endregion
 
-    public interface IRpcParameter : IRpcAnnotated
+    public interface IBuilderAttribute
     {
-        string Name { get; }
-        Type ParameterType { get; }
-        int Position { get; }
-        IRpcMethod Method { get; }
+        void BuildServiceClass(JsonRpcServiceClass.Builder builder, object attachment);
+        void BuildMethod(JsonRpcMethod.Builder builder, object attachment);
+        void BuildParameter(JsonRpcParameter.Builder builder, object attachment);
     }
 }

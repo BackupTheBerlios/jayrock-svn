@@ -35,8 +35,8 @@ namespace Jayrock.Json.Rpc.Web
     internal class JsonRpcPage : Page, IRpcServiceFeature
     {
         private IRpcService _targetService;
-        private IRpcServiceClass _serviceClass;
-        private IRpcMethod[] _methods;
+        private JsonRpcServiceClass _serviceClass;
+        private JsonRpcMethod[] _methods;
         private bool _serviceClassInitialized;
         private HtmlGenericControl _head;
         private HtmlGenericControl _body;
@@ -57,7 +57,7 @@ namespace Jayrock.Json.Rpc.Web
             _targetService = targetService;
         }
 
-        protected IRpcServiceClass ServiceClass
+        protected JsonRpcServiceClass ServiceClass
         {
             get
             {
@@ -71,13 +71,13 @@ namespace Jayrock.Json.Rpc.Web
             }
         }
 
-        protected IRpcMethod[] SortedMethods
+        protected JsonRpcMethod[] SortedMethods
         {
             get
             {
                 if (_methods == null)
                 {
-                    IRpcMethod[] methods = ServiceClass.GetMethods();
+                    JsonRpcMethod[] methods = ServiceClass.GetMethods();
                     Array.Sort(methods, new MethodNameComparer());
                     _methods = methods;
                 }
@@ -152,8 +152,8 @@ namespace Jayrock.Json.Rpc.Web
         {
             public int Compare(object x, object y)
             {
-                IRpcMethod methodX = (IRpcMethod) x;
-                IRpcMethod methodY = (IRpcMethod) y;
+                JsonRpcMethod methodX = (JsonRpcMethod) x;
+                JsonRpcMethod methodY = (JsonRpcMethod) y;
                 return string.Compare(methodX.Name, methodY.Name, false, CultureInfo.InvariantCulture);
             }
         }
