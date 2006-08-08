@@ -162,7 +162,6 @@ namespace Jayrock.Json.Rpc
             Assert.IsTrue(parameters[1].IsParamArray);
         }
         
-        /*
         [ Test ]
         public void ObsoletedMethods()
         {
@@ -186,7 +185,6 @@ namespace Jayrock.Json.Rpc
             Assert.IsFalse(method.IsObsolete);
             Assert.AreEqual(0, method.ObsoletionMessage.Length);
         }
-        */
 
         [ Test ]
         public void Invocation()
