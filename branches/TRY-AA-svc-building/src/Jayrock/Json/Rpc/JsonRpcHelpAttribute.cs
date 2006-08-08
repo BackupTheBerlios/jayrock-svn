@@ -48,23 +48,6 @@ namespace Jayrock.Json.Rpc
             set { _text = value; }
         }
 
-        public static JsonRpcHelpAttribute Get(ICustomAttributeProvider attributeProvider)
-        {
-            if (attributeProvider == null)
-                return null;
-
-            return (JsonRpcHelpAttribute) CustomAttribute.Get(attributeProvider, typeof(JsonRpcHelpAttribute));
-        }
-    
-        internal static string GetText(ICustomAttributeProvider attributeProvider)
-        {
-            if (attributeProvider == null)
-                return string.Empty;
-
-            JsonRpcHelpAttribute attribute = Get(attributeProvider);
-            return attribute != null ? attribute.Text : string.Empty;
-        }
-
         void IServiceClassBuilderAttribute.Build(JsonRpcServiceClass.Builder builder, Type type)
         {
             builder.Description = Text;

@@ -52,13 +52,5 @@ namespace Jayrock.Json.Rpc
             get { return Mask.NullString(_message); }
             set { _message = value; }
         }
-
-        public static JsonRpcObsoleteAttribute Get(ICustomAttributeProvider attributeProvider)
-        {
-            if (attributeProvider == null)
-                return null;
-
-            return (JsonRpcObsoleteAttribute) CustomAttribute.Get(attributeProvider, typeof(JsonRpcObsoleteAttribute));
-        }
     }
 }
