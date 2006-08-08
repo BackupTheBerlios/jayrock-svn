@@ -25,13 +25,14 @@ namespace Jayrock.Json.Rpc
     #region Imports
 
     using System;
+    using System.Reflection;
 
     #endregion
 
     public interface IBuilderAttribute
     {
-        void BuildServiceClass(JsonRpcServiceClass.Builder builder, object attachment);
-        void BuildMethod(JsonRpcMethod.Builder builder, object attachment);
-        void BuildParameter(JsonRpcParameter.Builder builder, object attachment);
+        void BuildServiceClass(JsonRpcServiceClass.Builder builder, Type type);
+        void BuildMethod(JsonRpcMethod.Builder builder, MethodInfo method);
+        void BuildParameter(JsonRpcParameter.Builder builder, ParameterInfo parameter);
     }
 }

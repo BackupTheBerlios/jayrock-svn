@@ -65,17 +65,17 @@ namespace Jayrock.Json.Rpc
             return attribute != null ? attribute.Text : string.Empty;
         }
 
-        void IBuilderAttribute.BuildServiceClass(JsonRpcServiceClass.Builder builder, object attachment)
+        void IBuilderAttribute.BuildServiceClass(JsonRpcServiceClass.Builder builder, Type type)
         {
             builder.Description = Text;
         }
 
-        void IBuilderAttribute.BuildMethod(JsonRpcMethod.Builder builder, object attachment)
+        void IBuilderAttribute.BuildMethod(JsonRpcMethod.Builder builder, MethodInfo method)
         {
             builder.Description = Text;
         }
 
-        void IBuilderAttribute.BuildParameter(JsonRpcParameter.Builder builder, object attachment)
+        void IBuilderAttribute.BuildParameter(JsonRpcParameter.Builder builder, ParameterInfo parameter)
         {
             throw new NotSupportedException();
         }

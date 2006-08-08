@@ -25,6 +25,7 @@ namespace Jayrock.Json.Rpc
     #region Imports
 
     using System;
+    using System.Reflection;
 
     #endregion
 
@@ -47,17 +48,17 @@ namespace Jayrock.Json.Rpc
             set { _name = value; }
         }
 
-        void IBuilderAttribute.BuildServiceClass(JsonRpcServiceClass.Builder builder, object attachment)
+        void IBuilderAttribute.BuildServiceClass(JsonRpcServiceClass.Builder builder, Type type)
         {
             throw new NotSupportedException();
         }
 
-        void IBuilderAttribute.BuildMethod(JsonRpcMethod.Builder builder, object attachment)
+        void IBuilderAttribute.BuildMethod(JsonRpcMethod.Builder builder, MethodInfo method)
         {
             builder.Name = Name;
         }
 
-        void IBuilderAttribute.BuildParameter(JsonRpcParameter.Builder builder, object attachment)
+        void IBuilderAttribute.BuildParameter(JsonRpcParameter.Builder builder, ParameterInfo parameter)
         {
             throw new NotSupportedException();
         }
