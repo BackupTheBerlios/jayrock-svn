@@ -101,6 +101,20 @@ namespace Jayrock.Json.Rpc
             IDictionary response = (IDictionary) Parse(responseString);
             Assert.AreEqual(15, JsonRpcServices.GetResult(response));
         }
+        
+        [ Test ]
+        public void Bug8320()
+        {
+            //
+            // Bug #8320: Parameter at Dispatcher without method are not handeld
+            // http://developer.berlios.de/bugs/?func=detailbug&bug_id=8320&group_id=4638
+            //
+
+            JsonRpcDispatcher server = new JsonRpcDispatcher(new TestService());
+            string responseString = server.Process("{ id : 42, params : [ [ 1, 2, 3, 4, 5 ] ], method : 'sumarr' }");
+            IDictionary response = (IDictionary) Parse(responseString);
+            Assert.AreEqual(15, JsonRpcServices.GetResult(response));
+        }
 
         private object Parse(string source)
         {
@@ -135,6 +149,19 @@ namespace Jayrock.Json.Rpc
             
             [ JsonRpcMethod("sum") ]
             public int Sum(int[] ints)
+            {
+                int sum = 0;
+                foreach (int i in ints)
+                    sum += i;
+                return sum;
+            }
+            
+            // TODO: Merge this back with Sum once JsonRpcDispatcher knows how to work 
+            // with strong types in buffering mode, where params appear before method
+            // in the call member sequence.
+
+            [ JsonRpcMethod("sumarr") ]
+            public int SumArray(IList ints)
             {
                 int sum = 0;
                 foreach (int i in ints)

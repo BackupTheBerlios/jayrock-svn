@@ -297,9 +297,9 @@ namespace Jayrock.Json.Rpc
                                 args = reader.DeserializeNext();
                             }
                             
-                            request["params"] = args;
+                           
                         }
-                        
+                        if (args != null) request["params"] = args;
                         break;
                     }
                 }
