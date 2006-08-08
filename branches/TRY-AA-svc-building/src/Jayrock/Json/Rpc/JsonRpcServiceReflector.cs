@@ -50,10 +50,10 @@ namespace Jayrock.Json.Rpc
 
             foreach (Attribute attribute in Attribute.GetCustomAttributes(type))
             {
-                IBuilderAttribute builderAttribute = attribute as IBuilderAttribute;
+                IServiceClassBuilderAttribute builderAttribute = attribute as IServiceClassBuilderAttribute;
                 
                 if (builderAttribute != null)
-                    builderAttribute.BuildServiceClass(builder, type);
+                    builderAttribute.Build(builder, type);
             }
             
             //
@@ -99,10 +99,10 @@ namespace Jayrock.Json.Rpc
             
             foreach (Attribute attribute in Attribute.GetCustomAttributes(method))
             {
-                IBuilderAttribute builderAttribute = attribute as IBuilderAttribute;
+                IMethodBuilderAttribute builderAttribute = attribute as IMethodBuilderAttribute;
                 
                 if (builderAttribute != null)
-                    builderAttribute.BuildMethod(builder, method);
+                    builderAttribute.Build(builder, method);
             }
             
             //
@@ -136,10 +136,10 @@ namespace Jayrock.Json.Rpc
             
             foreach (Attribute attribute in Attribute.GetCustomAttributes(parameter))
             {
-                IBuilderAttribute builderAttribute = attribute as IBuilderAttribute;
+                IParameterBuilderAttribute builderAttribute = attribute as IParameterBuilderAttribute;
                 
                 if (builderAttribute != null)
-                    builderAttribute.BuildParameter(builder, parameter);
+                    builderAttribute.Build(builder, parameter);
             }
         }
 

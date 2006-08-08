@@ -31,7 +31,7 @@ namespace Jayrock.Json.Rpc
 
     [ Serializable ]
     [ AttributeUsage(AttributeTargets.Method) ]
-    public sealed class JsonRpcMethodAttribute : Attribute, IBuilderAttribute
+    public sealed class JsonRpcMethodAttribute : Attribute, IMethodBuilderAttribute
     {
         private string _name;
 
@@ -48,19 +48,9 @@ namespace Jayrock.Json.Rpc
             set { _name = value; }
         }
 
-        void IBuilderAttribute.BuildServiceClass(JsonRpcServiceClass.Builder builder, Type type)
-        {
-            throw new NotSupportedException();
-        }
-
-        void IBuilderAttribute.BuildMethod(JsonRpcMethod.Builder builder, MethodInfo method)
+        void IMethodBuilderAttribute.Build(JsonRpcMethod.Builder builder, MethodInfo method)
         {
             builder.Name = Name;
-        }
-
-        void IBuilderAttribute.BuildParameter(JsonRpcParameter.Builder builder, ParameterInfo parameter)
-        {
-            throw new NotSupportedException();
         }
     }
 }

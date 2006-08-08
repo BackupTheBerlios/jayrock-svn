@@ -29,10 +29,18 @@ namespace Jayrock.Json.Rpc
 
     #endregion
 
-    public interface IBuilderAttribute
+    public interface IServiceClassBuilderAttribute
     {
-        void BuildServiceClass(JsonRpcServiceClass.Builder builder, Type type);
-        void BuildMethod(JsonRpcMethod.Builder builder, MethodInfo method);
-        void BuildParameter(JsonRpcParameter.Builder builder, ParameterInfo parameter);
+        void Build(JsonRpcServiceClass.Builder builder, Type type);
+    }
+
+    public interface IMethodBuilderAttribute
+    {
+        void Build(JsonRpcMethod.Builder builder, MethodInfo method);
+    }
+
+    public interface IParameterBuilderAttribute
+    {
+        void Build(JsonRpcParameter.Builder builder, ParameterInfo parameter);
     }
 }
