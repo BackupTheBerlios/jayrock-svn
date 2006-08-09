@@ -108,9 +108,12 @@ namespace Jayrock.Json.Rpc
 
         public Attribute FindFirstCustomAttribute(Type type)
         {
+            if (type == null)
+                throw new ArgumentNullException("type");
+            
             foreach (Attribute attribute in _attributes)
             {
-                if (type.IsAssignableFrom(attribute.GetType()))
+                if (TypesMatch(type, attribute.GetType()))
                     return (Attribute) ((ICloneable) attribute).Clone();
             }
             
@@ -381,6 +384,23 @@ namespace Jayrock.Json.Rpc
             return transposedArgs;
         }
 
+        private static bool TypesMatch(Type expected, Type actual)
+        {
+            Debug.Assert(expected != null);
+            Debug.Assert(actual != null);
+            
+            //
+            // If the expected type is sealed then use a quick check by
+            // comparing types for equality. Otherwise, use the slow
+            // approach to determine type compatibility be their
+            // relationship.
+            //
+            
+            return expected.IsSealed ? 
+                   expected.Equals(actual) : 
+                   expected.IsAssignableFrom(actual);
+        }
+
         private static Attribute[] DeepCopy(Attribute[] originals)
         {
             Attribute[] copies = new Attribute[originals.Length];
@@ -403,11 +423,11 @@ namespace Jayrock.Json.Rpc
             private string _name;
             private string _internalName;
             private Type _resultType = typeof(void);
-            private ArrayList _prameterList;
+            private ArrayList _parameters;
             private IDispatcher _dispatcher;
             private string _description;
             private readonly JsonRpcServiceClass.Builder _serviceClass;
-            private ArrayList _attributeList;
+            private ArrayList _attributes;
 
             internal Builder(JsonRpcServiceClass.Builder serviceClass)
             {
@@ -484,36 +504,41 @@ namespace Jayrock.Json.Rpc
 
             internal JsonRpcParameter.Builder[] GetParameters()
             {
-                if (_prameterList == null)
+                if (!HasParameters)
                     return new JsonRpcParameter.Builder[0];
             
-                return (JsonRpcParameter.Builder[]) _prameterList.ToArray(typeof(JsonRpcParameter.Builder));
+                return (JsonRpcParameter.Builder[]) _parameters.ToArray(typeof(JsonRpcParameter.Builder));
             }
 
             private bool HasCustomAttributes
             {
-                get { return _attributeList != null && _attributeList.Count > 0; }
+                get { return _attributes != null && _attributes.Count > 0; }
             }
 
             private ArrayList CustomAttributes
             {
                 get
                 {
-                    if (_attributeList == null)
-                        _attributeList = new ArrayList();
+                    if (_attributes == null)
+                        _attributes = new ArrayList();
                 
-                    return _attributeList;
+                    return _attributes;
                 }
+            }
+            
+            private bool HasParameters
+            {
+                get { return _parameters != null && _parameters.Count > 0; }
             }
 
             private ArrayList Parameters
             {
                 get
                 {
-                    if (_prameterList == null)
-                        _prameterList = new ArrayList();
+                    if (_parameters == null)
+                        _parameters = new ArrayList();
                 
-                    return _prameterList;
+                    return _parameters;
                 }
             }
         }

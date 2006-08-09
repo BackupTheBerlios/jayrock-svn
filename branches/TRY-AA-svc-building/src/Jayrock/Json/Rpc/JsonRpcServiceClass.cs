@@ -164,7 +164,7 @@ namespace Jayrock.Json.Rpc
                 return (JsonRpcMethod.Builder[]) Methods.ToArray(typeof(JsonRpcMethod.Builder));
             }
             
-            private bool HasMethods
+            internal bool HasMethods
             {
                 get { return _methodList != null && _methodList.Count > 0; }
             }
