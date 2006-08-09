@@ -36,7 +36,7 @@ namespace Jayrock.Json.Rpc
     /// </summary>
 
     [ AttributeUsage(AttributeTargets.Class | AttributeTargets.Method) ]
-    public sealed class JsonRpcObsoleteAttribute : Attribute, IMethodBuilderAttribute
+    public sealed class JsonRpcObsoleteAttribute : Attribute, IMethodReflector
     {
         private string _message;
 
@@ -53,7 +53,7 @@ namespace Jayrock.Json.Rpc
             set { _message = value; }
         }
 
-        void IMethodBuilderAttribute.Build(JsonRpcMethod.Builder builder, MethodInfo method)
+        void IMethodReflector.Build(JsonRpcMethod.Builder builder, MethodInfo method)
         {
             builder.IsObsolete = true;
             builder.ObsoletionMessage = Message;

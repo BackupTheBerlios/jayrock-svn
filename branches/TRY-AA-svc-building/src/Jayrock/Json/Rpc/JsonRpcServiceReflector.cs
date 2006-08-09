@@ -48,13 +48,9 @@ namespace Jayrock.Json.Rpc
             // Build via attributes.
             //
 
-            foreach (Attribute attribute in Attribute.GetCustomAttributes(type))
-            {
-                IServiceClassBuilderAttribute builderAttribute = attribute as IServiceClassBuilderAttribute;
-                
-                if (builderAttribute != null)
-                    builderAttribute.Build(builder, type);
-            }
+            object[] attributes = type.GetCustomAttributes(typeof(IServiceClassReflector), true);
+            foreach (IServiceClassReflector reflector in attributes)
+                reflector.Build(builder, type);
             
             //
             // Fault in the type name if still without name.
@@ -97,13 +93,9 @@ namespace Jayrock.Json.Rpc
             // Build via attributes.
             //
             
-            foreach (Attribute attribute in Attribute.GetCustomAttributes(method))
-            {
-                IMethodBuilderAttribute builderAttribute = attribute as IMethodBuilderAttribute;
-                
-                if (builderAttribute != null)
-                    builderAttribute.Build(builder, method);
-            }
+            object[] attributes = method.GetCustomAttributes(typeof(IMethodReflector), true);
+            foreach (IMethodReflector reflector in attributes)
+                reflector.Build(builder, method);
             
             //
             // Fault in the method name if still without name.
@@ -134,13 +126,9 @@ namespace Jayrock.Json.Rpc
             // Build via attributes.
             //
             
-            foreach (Attribute attribute in Attribute.GetCustomAttributes(parameter))
-            {
-                IParameterBuilderAttribute builderAttribute = attribute as IParameterBuilderAttribute;
-                
-                if (builderAttribute != null)
-                    builderAttribute.Build(builder, parameter);
-            }
+            object[] attributes = parameter.GetCustomAttributes(typeof(IParameterReflector), true);
+            foreach (IParameterReflector reflector in attributes)
+                reflector.Build(builder, parameter);
         }
 
         private JsonRpcServiceReflector()
