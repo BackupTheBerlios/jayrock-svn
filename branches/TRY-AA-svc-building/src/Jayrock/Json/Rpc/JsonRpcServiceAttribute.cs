@@ -48,7 +48,7 @@ namespace Jayrock.Json.Rpc
             set { _name = value; }
         }
 
-        void IServiceClassReflector.Build(JsonRpcServiceClass.Builder builder, Type type)
+        void IServiceClassReflector.Build(JsonRpcServiceClassBuilder builder, Type type)
         {
             builder.Name = Name;
         }

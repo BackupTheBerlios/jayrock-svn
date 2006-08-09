@@ -33,12 +33,12 @@ namespace Jayrock.Json.Rpc
     [ TestFixture ]
     public class TestJsonRpcServiceClassBuilder
     {
-        private JsonRpcServiceClass.Builder _builder;
+        private JsonRpcServiceClassBuilder _builder;
 
         [ SetUp ]
         public void Init()
         {
-            _builder = new JsonRpcServiceClass.Builder();
+            _builder = new JsonRpcServiceClassBuilder();
         }
 
         [ Test ] 
@@ -68,7 +68,7 @@ namespace Jayrock.Json.Rpc
             Assert.IsTrue(_builder.HasMethods);
             Assert.IsNotNull(_builder.DefineMethod());
             Assert.IsTrue(_builder.HasMethods);
-            JsonRpcMethod.Builder[] methods = _builder.GetMethods();
+            JsonRpcMethodBuilder[] methods = _builder.GetMethods();
             Assert.IsNotNull(methods);
             Assert.AreEqual(2, methods.Length);
         }

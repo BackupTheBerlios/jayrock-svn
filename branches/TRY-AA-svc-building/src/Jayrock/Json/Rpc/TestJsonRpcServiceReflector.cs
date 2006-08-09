@@ -292,7 +292,7 @@ namespace Jayrock.Json.Rpc
                 get { return _testValue; }
             }
 
-            public void Build(JsonRpcMethod.Builder builder, MethodInfo method)
+            public void Build(JsonRpcMethodBuilder builder, MethodInfo method)
             {
                 builder.AddCustomAttribute(this);
             }

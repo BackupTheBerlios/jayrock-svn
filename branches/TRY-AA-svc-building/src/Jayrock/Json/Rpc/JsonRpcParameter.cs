@@ -26,7 +26,6 @@ namespace Jayrock.Json.Rpc
 
     using System;
     using System.Diagnostics;
-    using System.Reflection;
 
     #endregion
 
@@ -39,7 +38,7 @@ namespace Jayrock.Json.Rpc
         private readonly bool _isParamArray;
         private readonly JsonRpcMethod _method;
 
-        internal JsonRpcParameter(Builder builder, JsonRpcMethod method)
+        internal JsonRpcParameter(JsonRpcParameterBuilder builder, JsonRpcMethod method)
         {
             Debug.Assert(builder != null);
             Debug.Assert(builder.Position >= 0);
@@ -75,66 +74,6 @@ namespace Jayrock.Json.Rpc
         public bool IsParamArray
         {
             get { return _isParamArray; }
-        }
-
-        [ Serializable ]
-        public sealed class Builder
-        {
-            private string _name;
-            private int _position;
-            private Type _parameterType = typeof(object);
-            private bool _isParamArray;
-            private JsonRpcMethod.Builder _method;
-
-            internal Builder(JsonRpcMethod.Builder method)
-            {
-                Debug.Assert(method != null);
-                
-                _method = method;
-            }
-
-            public JsonRpcMethod.Builder Method
-            {
-                get { return _method; }
-            }
-
-            public string Name
-            {
-                get { return Mask.NullString(_name); }
-                set { _name = value; }
-            }
-
-            public int Position
-            {
-                get { return _position; }
-                
-                set
-                {
-                    if (value < 0)
-                        throw new ArgumentOutOfRangeException("value");
-
-                    _position = value;
-                }
-            }
-            
-            public Type ParameterType
-            {
-                get { return _parameterType; }
-                
-                set
-                {
-                    if (value == null)
-                        throw new ArgumentNullException("value");
-                    
-                    _parameterType = value;
-                }
-            }
-
-            public bool IsParamArray
-            {
-                get { return _isParamArray; }
-                set { _isParamArray = value; }
-            }
         }
     }
 }

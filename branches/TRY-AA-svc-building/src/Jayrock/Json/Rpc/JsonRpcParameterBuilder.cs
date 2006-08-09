@@ -25,21 +25,29 @@ namespace Jayrock.Json.Rpc
     #region Imports
 
     using System;
-    using System.Reflection;
+    using System.Diagnostics;
 
     #endregion
 
     [ Serializable ]
-    [ AttributeUsage(AttributeTargets.Method) ]
-    public sealed class JsonRpcMethodAttribute : Attribute, IMethodReflector
+    public sealed class JsonRpcParameterBuilder
     {
         private string _name;
+        private int _position;
+        private Type _parameterType = typeof(object);
+        private bool _isParamArray;
+        private JsonRpcMethodBuilder _method;
 
-        public JsonRpcMethodAttribute() {}
-
-        public JsonRpcMethodAttribute(string name)
+        internal JsonRpcParameterBuilder(JsonRpcMethodBuilder method)
         {
-            _name = name;
+            Debug.Assert(method != null);
+                
+            _method = method;
+        }
+
+        public JsonRpcMethodBuilder Method
+        {
+            get { return _method; }
         }
 
         public string Name
@@ -48,9 +56,36 @@ namespace Jayrock.Json.Rpc
             set { _name = value; }
         }
 
-        void IMethodReflector.Build(JsonRpcMethodBuilder builder, MethodInfo method)
+        public int Position
         {
-            builder.Name = Name;
+            get { return _position; }
+                
+            set
+            {
+                if (value < 0)
+                    throw new ArgumentOutOfRangeException("value");
+
+                _position = value;
+            }
+        }
+            
+        public Type ParameterType
+        {
+            get { return _parameterType; }
+                
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+                    
+                _parameterType = value;
+            }
+        }
+
+        public bool IsParamArray
+        {
+            get { return _isParamArray; }
+            set { _isParamArray = value; }
         }
     }
 }

@@ -44,7 +44,7 @@ namespace Jayrock.Json.Rpc
         private readonly string _description;
         private readonly Attribute[] _attributes;
 
-        internal JsonRpcMethod(Builder methodBuilder, JsonRpcServiceClass clazz)
+        internal JsonRpcMethod(JsonRpcMethodBuilder methodBuilder, JsonRpcServiceClass clazz)
         {
             Debug.Assert(methodBuilder != null);
             Debug.Assert(clazz != null);
@@ -57,11 +57,11 @@ namespace Jayrock.Json.Rpc
             _attributes = DeepCopy(methodBuilder.GetCustomAttributes());
             _class = clazz;
             
-            JsonRpcParameter.Builder[] parameterBuilders = methodBuilder.GetParameters();
+            JsonRpcParameterBuilder[] parameterBuilders = methodBuilder.GetParameters();
             _parameters = new JsonRpcParameter[parameterBuilders.Length];
             int paramIndex = 0;
 
-            foreach (JsonRpcParameter.Builder parameterBuilder in parameterBuilders)
+            foreach (JsonRpcParameterBuilder parameterBuilder in parameterBuilders)
                 _parameters[paramIndex++] = new JsonRpcParameter(parameterBuilder, this);
         }
 
@@ -415,132 +415,6 @@ namespace Jayrock.Json.Rpc
                 copies[i] = (Attribute) ((ICloneable) copies[i]).Clone();
             
             return copies;
-        }
-
-        [ Serializable ]
-        public sealed class Builder
-        {
-            private string _name;
-            private string _internalName;
-            private Type _resultType = typeof(void);
-            private ArrayList _parameters;
-            private IDispatcher _dispatcher;
-            private string _description;
-            private readonly JsonRpcServiceClass.Builder _serviceClass;
-            private ArrayList _attributes;
-
-            internal Builder(JsonRpcServiceClass.Builder serviceClass)
-            {
-                Debug.Assert(serviceClass != null);
-                _serviceClass = serviceClass;
-            }
-
-            public JsonRpcServiceClass.Builder ServiceClass
-            {
-                get { return _serviceClass; }
-            }
-
-            public string Name
-            {
-                get { return Mask.NullString(_name); }
-                set { _name = value; }
-            }
-
-            public string InternalName
-            {
-                get { return Mask.NullString(_internalName); }
-                set { _internalName = value; }
-            }
-
-            public Type ResultType
-            {
-                get { return _resultType; }
-                
-                set
-                {
-                    if (value == null)
-                        throw new ArgumentNullException("value");
-                    
-                    _resultType = value;
-                }
-            }
-
-            public IDispatcher Dispatcher
-            {
-                get { return _dispatcher; }
-                set { _dispatcher = value; }
-            }
-
-
-            public void AddCustomAttribute(Attribute attribute)
-            {
-                if (attribute == null)
-                    throw new ArgumentNullException("attribute");
-                
-                CustomAttributes.Add(attribute);
-            }
-            
-            public Attribute[] GetCustomAttributes()
-            {
-                if (!HasCustomAttributes)
-                    return new Attribute[0];
-                
-                return (Attribute[]) CustomAttributes.ToArray(typeof(Attribute));
-            }
-
-            public string Description
-            {
-                get { return Mask.NullString(_description); }
-                set { _description = value; }
-            }
-
-            public JsonRpcParameter.Builder DefineParameter()
-            {
-                JsonRpcParameter.Builder builder = new JsonRpcParameter.Builder(this);
-                builder.Position = Parameters.Count;
-                Parameters.Add(builder);
-                return builder;
-            }
-
-            internal JsonRpcParameter.Builder[] GetParameters()
-            {
-                if (!HasParameters)
-                    return new JsonRpcParameter.Builder[0];
-            
-                return (JsonRpcParameter.Builder[]) _parameters.ToArray(typeof(JsonRpcParameter.Builder));
-            }
-
-            private bool HasCustomAttributes
-            {
-                get { return _attributes != null && _attributes.Count > 0; }
-            }
-
-            private ArrayList CustomAttributes
-            {
-                get
-                {
-                    if (_attributes == null)
-                        _attributes = new ArrayList();
-                
-                    return _attributes;
-                }
-            }
-            
-            private bool HasParameters
-            {
-                get { return _parameters != null && _parameters.Count > 0; }
-            }
-
-            private ArrayList Parameters
-            {
-                get
-                {
-                    if (_parameters == null)
-                        _parameters = new ArrayList();
-                
-                    return _parameters;
-                }
-            }
         }
     }
 }

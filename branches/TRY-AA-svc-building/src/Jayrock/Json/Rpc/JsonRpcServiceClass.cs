@@ -27,7 +27,6 @@ namespace Jayrock.Json.Rpc
     using System;
     using System.Collections;
     using System.Diagnostics;
-    using System.Reflection;
 
     #endregion
 
@@ -56,20 +55,20 @@ namespace Jayrock.Json.Rpc
             return clazz;
         }
 
-        internal JsonRpcServiceClass(Builder classBuilder)
+        internal JsonRpcServiceClass(JsonRpcServiceClassBuilder classBuilder)
         {
             Debug.Assert(classBuilder != null);
             
             _serviceName = classBuilder.Name;
             _description = classBuilder.Description;
 
-            JsonRpcMethod.Builder[] methodBuilders = classBuilder.GetMethods();
+            JsonRpcMethodBuilder[] methodBuilders = classBuilder.GetMethods();
             
             _methods = new JsonRpcMethod[methodBuilders.Length];
             _methodByName = new Hashtable(methodBuilders.Length);
             int methodIndex = 0;
 
-            foreach (JsonRpcMethod.Builder methodBuilder in methodBuilders)
+            foreach (JsonRpcMethodBuilder methodBuilder in methodBuilders)
             {
                 JsonRpcMethod method = new JsonRpcMethod(methodBuilder, this);
 
@@ -123,62 +122,6 @@ namespace Jayrock.Json.Rpc
                 throw new MethodNotFoundException();
 
             return method;
-        }
-
-        [ Serializable ]
-        public sealed class Builder
-        {
-            private string _name;
-            private ArrayList _methodList;
-            private string _description;
-
-            public string Name
-            {
-                get { return Mask.NullString(_name); }
-                set { _name = value; }
-            }
-
-            public string Description
-            {
-                get { return Mask.NullString(_description); }
-                set { _description = value; }
-            }
-
-            public JsonRpcServiceClass CreateClass()
-            {
-                return new JsonRpcServiceClass(this);
-            }
-
-            public JsonRpcMethod.Builder DefineMethod()
-            {
-                JsonRpcMethod.Builder builder = new JsonRpcMethod.Builder(this);
-                Methods.Add(builder);
-                return builder;
-            }
-            
-            internal JsonRpcMethod.Builder[] GetMethods()
-            {
-                if (!HasMethods)
-                    return new JsonRpcMethod.Builder[0];
-                
-                return (JsonRpcMethod.Builder[]) Methods.ToArray(typeof(JsonRpcMethod.Builder));
-            }
-            
-            internal bool HasMethods
-            {
-                get { return _methodList != null && _methodList.Count > 0; }
-            }
-
-            private ArrayList Methods
-            {
-                get
-                {
-                    if (_methodList == null)
-                        _methodList = new ArrayList();
-                
-                    return _methodList;
-                }
-            }
         }
     }
 }

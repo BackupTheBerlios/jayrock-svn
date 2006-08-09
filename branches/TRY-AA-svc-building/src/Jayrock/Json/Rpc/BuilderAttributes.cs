@@ -31,16 +31,16 @@ namespace Jayrock.Json.Rpc
 
     public interface IServiceClassReflector
     {
-        void Build(JsonRpcServiceClass.Builder builder, Type type);
+        void Build(JsonRpcServiceClassBuilder builder, Type type);
     }
 
     public interface IMethodReflector
     {
-        void Build(JsonRpcMethod.Builder builder, MethodInfo method);
+        void Build(JsonRpcMethodBuilder builder, MethodInfo method);
     }
 
     public interface IParameterReflector
     {
-        void Build(JsonRpcParameter.Builder builder, ParameterInfo parameter);
+        void Build(JsonRpcParameterBuilder builder, ParameterInfo parameter);
     }
 }

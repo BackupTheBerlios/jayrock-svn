@@ -37,12 +37,12 @@ namespace Jayrock.Json.Rpc
             if (type == null)
                 throw new ArgumentNullException("type");
             
-            JsonRpcServiceClass.Builder builder = new JsonRpcServiceClass.Builder();
+            JsonRpcServiceClassBuilder builder = new JsonRpcServiceClassBuilder();
             BuildClass(builder, type);
             return builder.CreateClass();
         }
 
-        private static void BuildClass(JsonRpcServiceClass.Builder builder, Type type)
+        private static void BuildClass(JsonRpcServiceClassBuilder builder, Type type)
         {
             //
             // Build via attributes.
@@ -80,7 +80,7 @@ namespace Jayrock.Json.Rpc
             return !method.IsAbstract && Attribute.IsDefined(method, typeof(JsonRpcMethodAttribute));
         }
 
-        private static void BuildMethod(JsonRpcMethod.Builder builder, MethodInfo method)
+        private static void BuildMethod(JsonRpcMethodBuilder builder, MethodInfo method)
         {
             Debug.Assert(method != null);
             Debug.Assert(builder != null);
@@ -112,7 +112,7 @@ namespace Jayrock.Json.Rpc
                 BuildParameter(builder.DefineParameter(), parameter);
         }
 
-        private static void BuildParameter(JsonRpcParameter.Builder builder, ParameterInfo parameter)
+        private static void BuildParameter(JsonRpcParameterBuilder builder, ParameterInfo parameter)
         {
             Debug.Assert(parameter != null);
             Debug.Assert(builder != null);
