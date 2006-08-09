@@ -225,6 +225,158 @@ namespace Jayrock.Json.Rpc
             }
         }
 
+        public object[] MapArguments(object argsObject)
+        {
+            object[] args;
+            IDictionary argsMap = argsObject as IDictionary;
+
+            if (argsMap != null)
+            {
+                JObject namedArgs = new JObject(argsMap);
+                
+                args = new object[_parameters.Length];
+
+                for (int i = 0; i < _parameters.Length; i++)
+                {
+                    args[i] = namedArgs[_parameters[i].Name];
+                    namedArgs.Remove(_parameters[i].Name);
+                }
+
+                foreach (DictionaryEntry entry in namedArgs)
+                {
+                    if (entry.Key == null)
+                        continue;
+
+                    string key = entry.Key.ToString();
+                    
+                    char ch1;
+                    char ch2;
+
+                    if (key.Length == 2)
+                    {
+                        ch1 = key[0];
+                        ch2 = key[1];
+                    }
+                    else if (key.Length == 1)
+                    {
+                        ch1 = '0';
+                        ch2 = key[0];
+                    }
+                    else
+                    {
+                        continue;
+                    }
+
+                    if (ch1 >= '0' && ch1 < '9' &&
+                        ch2 >= '0' && ch2 < '9')
+                    {
+                        int index = int.Parse(key, NumberStyles.Number, CultureInfo.InvariantCulture);
+                        
+                        if (index < _parameters.Length)
+                            args[index] = entry.Value;
+                    }
+                }
+
+                return args;
+            }
+            else
+            {
+                args = CollectionHelper.ToArray((ICollection) argsObject);
+            }
+
+            return TransposeVariableArguments(args);
+        }
+
+        /// <summary>
+        /// Takes an array of arguments that are designated for a method and
+        /// transposes them if the target method supports variable arguments (in
+        /// other words, the last parameter is annotated with the JsonRpcParams
+        /// attribute). If the method does not support variable arguments then
+        /// the input array is returned verbatim. 
+        /// </summary>
+
+        // TODO: Allow args to be null to represent empty arguments.
+        // TODO: Allow parameter conversions
+
+        public object[] TransposeVariableArguments(object[] args)
+        {
+            //
+            // If the method does not have take variable arguments then just
+            // return the arguments array verbatim.
+            //
+
+            if (!HasParamArray)
+                return args;
+
+            int parameterCount = _parameters.Length;
+
+            object[] varArgs = null;
+            
+            //
+            // The variable argument may already be setup correctly as an
+            // array. If so then the formal and actual parameter count will
+            // match here.
+            //
+            
+            if (args.Length == parameterCount)
+            {
+                object lastArg = args[args.Length - 1];
+
+                if (lastArg != null)
+                {
+                    //
+                    // Is the last argument already set up as an object 
+                    // array ready to be received as the variable arguments?
+                    //
+                    
+                    varArgs = lastArg as object[];
+                    
+                    if (varArgs == null)
+                    {
+                        //
+                        // Is the last argument an array of some sort? If so 
+                        // then we convert it into an array of objects since 
+                        // that is what we support right now for variable 
+                        // arguments.
+                        //
+                        // TODO: Allow variable arguments to be more specific type, such as array of integers.
+                        // TODO: Don't make a copy if one doesn't have to be made. 
+                        // For example if the types are compatible on the receiving end.
+                        //
+                        
+                        Array lastArrayArg = lastArg as Array;
+                        
+                        if (lastArrayArg != null && lastArrayArg.GetType().GetArrayRank() == 1)
+                        {
+                            varArgs = new object[lastArrayArg.Length];
+                            Array.Copy(lastArrayArg, varArgs, varArgs.Length);
+                        }
+                    }
+                }
+            }
+
+            //
+            // Copy out the extra arguments into a new array that represents
+            // the variable parts.
+            //
+
+            if (varArgs == null)
+            {
+                varArgs = new object[(args.Length - parameterCount) + 1];
+                Array.Copy(args, parameterCount - 1, varArgs, 0, varArgs.Length);
+            }
+
+            //
+            // Setup a new array of arguments that has a copy of the fixed
+            // arguments followed by the variable arguments array setup above.
+            //
+
+            object[] transposedArgs = new object[parameterCount];
+            Array.Copy(args, transposedArgs, parameterCount - 1);
+            transposedArgs[transposedArgs.Length - 1] = varArgs;
+            return transposedArgs;
+        }
+
         [ Serializable ]
         public sealed class Builder
         {

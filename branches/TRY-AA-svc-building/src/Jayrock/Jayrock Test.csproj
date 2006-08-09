@@ -604,17 +604,16 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Json\Rpc\TestJsonRpcMethod.cs"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\Rpc\TestJsonRpcMethodBuilder.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
                     RelPath = "Json\Rpc\TestJsonRpcParameterBuilder.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Json\Rpc\TestJsonRpcService.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

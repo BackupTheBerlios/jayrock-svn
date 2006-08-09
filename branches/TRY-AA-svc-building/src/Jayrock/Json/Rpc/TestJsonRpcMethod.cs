@@ -53,7 +53,7 @@ namespace Jayrock.Json.Rpc
             TestService service = new TestService();
             JsonRpcMethod method = service.GetClass().FindMethodByName("VarMethod");
             object[] args = new object[] { 1, 2, 3, 4 };
-            object[] invokeArgs = JsonRpcServices.TransposeVariableArguments(method, args);
+            object[] invokeArgs = method.TransposeVariableArguments(args);
             Assert.AreEqual(1, invokeArgs.Length);
             Assert.AreEqual(args, invokeArgs[0]);
         }
@@ -64,7 +64,7 @@ namespace Jayrock.Json.Rpc
             TestService service = new TestService();
             JsonRpcMethod method = service.GetClass().FindMethodByName("FixedVarMethod");
             object[] args = new object[] { 1, 2, 3, 4 };
-            args = JsonRpcServices.TransposeVariableArguments(method, args);
+            args = method.TransposeVariableArguments(args);
             Assert.AreEqual(3, args.Length);
             Assert.AreEqual(1, args[0]);
             Assert.AreEqual(2, args[1]);
@@ -77,8 +77,8 @@ namespace Jayrock.Json.Rpc
             TestService service = new TestService();
             JsonRpcMethod method = service.GetClass().FindMethodByName("FixedVarMethod");
             object[] args = new object[] { 1, 2, 3, 4 };
-            args = JsonRpcServices.TransposeVariableArguments(method, args);
-            args = JsonRpcServices.TransposeVariableArguments(method, args);
+            args = method.TransposeVariableArguments(args);
+            args = method.TransposeVariableArguments(args);
             Assert.AreEqual(3, args.Length);
             Assert.AreEqual(1, args[0]);
             Assert.AreEqual(2, args[1]);
@@ -96,7 +96,7 @@ namespace Jayrock.Json.Rpc
             TestService service = new TestService();
             JsonRpcMethod method = service.GetClass().FindMethodByName("VarMethod");
             object[] args = new object[] { 1, 2, new int[] { 3, 4 } };
-            args = JsonRpcServices.TransposeVariableArguments(method, args);
+            args = method.TransposeVariableArguments(args);
             Assert.AreEqual(1, args.Length);
             object[] varargs = (object[]) args[0];
             Assert.AreEqual(3, varargs.Length);
@@ -118,7 +118,7 @@ namespace Jayrock.Json.Rpc
             object[] args = new object[] { 1, 2, 
                 new int[] { 3, 4 }, 
                 new JObject(new string[] { "five", "six" }, new object[] { 5, 6 }) };
-            args = JsonRpcServices.TransposeVariableArguments(method, args);
+            args = method.TransposeVariableArguments(args);
             Assert.AreEqual(3, args.Length);
             Assert.AreEqual(1, args[0]);
             Assert.AreEqual(2, args[1]);

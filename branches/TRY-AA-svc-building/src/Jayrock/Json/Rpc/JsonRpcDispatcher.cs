@@ -165,7 +165,7 @@ namespace Jayrock.Json.Rpc
             try
             {
                 JsonRpcMethod method = _service.GetClass().GetMethodByName(methodName);
-                object[] args = JsonRpcServices.MapArguments(method, request["params"]);
+                object[] args = method.MapArguments(request["params"]);
                 result = method.Invoke(_service, args);
             }
             catch (MethodNotFoundException e)
