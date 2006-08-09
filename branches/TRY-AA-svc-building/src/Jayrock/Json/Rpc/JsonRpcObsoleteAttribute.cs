@@ -36,7 +36,7 @@ namespace Jayrock.Json.Rpc
     /// </summary>
 
     [ AttributeUsage(AttributeTargets.Class | AttributeTargets.Method) ]
-    public sealed class JsonRpcObsoleteAttribute : Attribute, IMethodReflector
+    public sealed class JsonRpcObsoleteAttribute : Attribute, IMethodReflector, ICloneable
     {
         private string _message;
 
@@ -55,8 +55,12 @@ namespace Jayrock.Json.Rpc
 
         void IMethodReflector.Build(JsonRpcMethod.Builder builder, MethodInfo method)
         {
-            builder.IsObsolete = true;
-            builder.ObsoletionMessage = Message;
+            builder.AddCustomAttribute(this);
+        }
+
+        public object Clone()
+        {
+            return MemberwiseClone();
         }
     }
 }

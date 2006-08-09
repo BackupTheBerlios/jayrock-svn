@@ -69,16 +69,18 @@ namespace Jayrock.Json.Rpc.Web
 
         private void AddMethod(Control parent, JsonRpcMethod method)
         {
-            Control methodTerm = AddGeneric(parent, "dt", !method.IsObsolete ? "method" : "method obsolete-method");
+            JsonRpcObsoleteAttribute obsolete = (JsonRpcObsoleteAttribute) method.FindFirstCustomAttribute(typeof(JsonRpcObsoleteAttribute));
+            
+            Control methodTerm = AddGeneric(parent, "dt", obsolete == null ? "method" : "method obsolete-method");
             AddSpan(methodTerm, "method-name", method.Name);
             AddSignature(methodTerm, method);
 
-            if (method.Description.Length > 0 || method.IsObsolete)
+            if (method.Description.Length > 0 || obsolete != null)
             {
                 AddGeneric(parent, "dd", "method-summary", method.Description);
 
-                if (method.IsObsolete)
-                    AddSpan(parent, "obsolete-message", " This method has been obsoleted. " + method.ObsoletionMessage);
+                if (obsolete != null)
+                    AddSpan(parent, "obsolete-message", " This method has been obsoleted. " + obsolete.Message);
             }
         }
 

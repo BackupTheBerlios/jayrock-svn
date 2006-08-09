@@ -170,20 +170,18 @@ namespace Jayrock.Json.Rpc
             JsonRpcMethod method;
             
             method = clazz.GetMethodByName("Foo");
-            Assert.IsFalse(method.IsObsolete);
-            Assert.AreEqual(0, method.ObsoletionMessage.Length);
+            Assert.IsNull(method.FindFirstCustomAttribute(typeof(ObsoleteAttribute)));
             
             method = clazz.GetMethodByName("Baz");
-            Assert.IsFalse(method.IsObsolete);
-            Assert.AreEqual(0, method.ObsoletionMessage.Length);
+            Assert.IsNull(method.FindFirstCustomAttribute(typeof(ObsoleteAttribute)));
 
             method = clazz.GetMethodByName("Sum");
-            Assert.IsTrue(method.IsObsolete);
-            Assert.AreEqual("Obsoleted.", clazz.GetMethodByName("Sum").ObsoletionMessage);
+            JsonRpcObsoleteAttribute attribute = (JsonRpcObsoleteAttribute) method.FindFirstCustomAttribute(typeof(JsonRpcObsoleteAttribute));
+            Assert.IsNotNull(attribute);
+            Assert.AreEqual("Obsoleted.", attribute.Message);
             
             method = clazz.GetMethodByName("Format");
-            Assert.IsFalse(method.IsObsolete);
-            Assert.AreEqual(0, method.ObsoletionMessage.Length);
+            Assert.IsNull(method.FindFirstCustomAttribute(typeof(ObsoleteAttribute)));
         }
 
         [ Test ]
@@ -211,15 +209,41 @@ namespace Jayrock.Json.Rpc
             Assert.AreEqual("A test service.", JsonRpcServiceReflector.FromType(typeof(TestService)).Description);
         }
         
-        /*public void MethodAttributeProvider()
+        [ Test ]
+        public void CustomAttributes()
         {
-            JsonRpcServiceClass clazz = JsonRpcServiceReflector.FromType(typeof(TestService));
-            Assert.AreEqual(0, clazz.GetMethodByName("Foo").Description.Length);
-            Assert.AreEqual(0, clazz.GetMethodByName("Baz").Description.Length);
-            Assert.AreEqual(0, clazz.GetMethodByName("Sum").Description.Length);
-            Assert.AreEqual("Formats a string.", clazz.GetMethodByName("Format").Description);
-        }*/
+            ArrayList expectedValues = new ArrayList(new int[] { 12, 34, 56 });
+            Attribute[] attributes = JsonRpcServiceReflector.FromType(typeof(TestService)).GetMethodByName("Foo").GetCustomAttributes();
+            Assert.AreEqual(3, attributes.Length);
+            foreach (MyAttribute attribute in attributes)
+                expectedValues.Remove(attribute.TestValue);
+            Assert.AreEqual(0, expectedValues.Count);
+        }
 
+        [ Test ]
+        public void CustomAttributesAreCopied()
+        {
+            JsonRpcMethod method = JsonRpcServiceReflector.FromType(typeof(TestService)).GetMethodByName("Foo");
+            Assert.AreNotSame(method.GetCustomAttributes()[0], method.GetCustomAttributes()[0]);
+        }
+
+        [ Test ]
+        public void FindFirstCustomAttribute()
+        {
+            ArrayList expectedValues = new ArrayList(new int[] { 12, 34, 56 });
+            JsonRpcMethod method = JsonRpcServiceReflector.FromType(typeof(TestService)).GetMethodByName("Foo");
+            MyAttribute attribute = (MyAttribute) method.FindFirstCustomAttribute(typeof(MyAttribute));
+            expectedValues.Remove(attribute.TestValue);
+            Assert.AreEqual(2, expectedValues.Count);
+        }
+
+        [ Test ]
+        public void FindFirstCustomAttributeYieldsCopy()
+        {
+            JsonRpcMethod method = JsonRpcServiceReflector.FromType(typeof(TestService)).GetMethodByName("Foo");
+            Assert.AreNotSame(method.FindFirstCustomAttribute(typeof(MyAttribute)), method.FindFirstCustomAttribute(typeof(MyAttribute)));
+        }
+        
         private sealed class EmptyService
         {
         }
@@ -229,6 +253,7 @@ namespace Jayrock.Json.Rpc
         private sealed class TestService : IRpcService
         {
             [ JsonRpcMethod ]
+            [ MyAttribute(12), MyAttribute(56), MyAttribute(34) ]
             public void Foo() { throw new NotImplementedException(); }
 
             [ JsonRpcMethod("Baz") ]
@@ -249,6 +274,32 @@ namespace Jayrock.Json.Rpc
             public JsonRpcServiceClass GetClass()
             {
                 throw new NotImplementedException();
+            }
+        }
+
+        [ AttributeUsage(AttributeTargets.All, AllowMultiple = true) ]
+        private class MyAttribute : Attribute, IMethodReflector, ICloneable
+        {
+            private int _testValue;
+
+            public MyAttribute(int testValue)
+            {
+                _testValue = testValue;
+            }
+
+            public int TestValue
+            {
+                get { return _testValue; }
+            }
+
+            public void Build(JsonRpcMethod.Builder builder, MethodInfo method)
+            {
+                builder.AddCustomAttribute(this);
+            }
+
+            public object Clone()
+            {
+                return MemberwiseClone();
             }
         }
     }

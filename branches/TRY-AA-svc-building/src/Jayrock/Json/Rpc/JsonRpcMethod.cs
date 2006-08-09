@@ -41,9 +41,8 @@ namespace Jayrock.Json.Rpc
         private readonly Type _resultType;
         private JsonRpcParameter[] _parameters;
         private readonly IDispatcher _dispatcher;
-        private readonly bool _isObsolete;
-        private readonly string _obsoletionMessage;
         private readonly string _description;
+        private readonly Attribute[] _attributes;
 
         internal JsonRpcMethod(Builder methodBuilder, JsonRpcServiceClass clazz)
         {
@@ -53,10 +52,9 @@ namespace Jayrock.Json.Rpc
             _name = methodBuilder.Name;
             _internalName = Mask.EmptyString(methodBuilder.InternalName, methodBuilder.Name);
             _resultType = methodBuilder.ResultType;
-            _isObsolete = methodBuilder.IsObsolete;
-            _obsoletionMessage = methodBuilder.IsObsolete ? methodBuilder.ObsoletionMessage : string.Empty;
             _description = methodBuilder.Description;
             _dispatcher = methodBuilder.Dispatcher;
+            _attributes = DeepCopy(methodBuilder.GetCustomAttributes());
             _class = clazz;
             
             JsonRpcParameter.Builder[] parameterBuilders = methodBuilder.GetParameterBuilders();
@@ -92,17 +90,7 @@ namespace Jayrock.Json.Rpc
         {
             get { return _resultType; }
         }
-
-        public bool IsObsolete
-        {
-            get { return _isObsolete; }
-        }
-
-        public string ObsoletionMessage
-        {
-            get { return _obsoletionMessage; }
-        }
-
+        
         public string Description
         {
             get { return _description; }
@@ -111,6 +99,22 @@ namespace Jayrock.Json.Rpc
         public JsonRpcServiceClass ServiceClass
         {
             get { return _class; }
+        }
+        
+        public Attribute[] GetCustomAttributes()
+        {
+            return DeepCopy(_attributes);
+        }
+
+        public Attribute FindFirstCustomAttribute(Type type)
+        {
+            foreach (Attribute attribute in _attributes)
+            {
+                if (type.IsAssignableFrom(attribute.GetType()))
+                    return (Attribute) ((ICloneable) attribute).Clone();
+            }
+            
+            return null;
         }
 
         public object Invoke(IRpcService service, object[] args)
@@ -377,6 +381,22 @@ namespace Jayrock.Json.Rpc
             return transposedArgs;
         }
 
+        private static Attribute[] DeepCopy(Attribute[] originals)
+        {
+            Attribute[] copies = new Attribute[originals.Length];
+            originals.CopyTo(copies, 0);
+            
+            //
+            // Deep copy each returned attribute since attributes
+            // are generally not known to be read-only.
+            //
+            
+            for (int i = 0; i < copies.Length; i++)
+                copies[i] = (Attribute) ((ICloneable) copies[i]).Clone();
+            
+            return copies;
+        }
+
         [ Serializable ]
         public sealed class Builder
         {
@@ -385,10 +405,9 @@ namespace Jayrock.Json.Rpc
             private Type _resultType = typeof(void);
             private ArrayList _paramBuilderList;
             private IDispatcher _dispatcher;
-            private bool _isObsolete;
-            private string _obsoletionMessage;
             private string _description;
             private readonly JsonRpcServiceClass.Builder _serviceClass;
+            private ArrayList _attributes;
 
             internal Builder(JsonRpcServiceClass.Builder serviceClass)
             {
@@ -432,10 +451,29 @@ namespace Jayrock.Json.Rpc
                 set { _dispatcher = value; }
             }
 
-            public bool IsObsolete
+
+            public void AddCustomAttribute(Attribute attribute)
             {
-                get { return _isObsolete; }
-                set { _isObsolete = value; }
+                if (attribute == null)
+                    throw new ArgumentNullException("attribute");
+                
+                CustomAttributes.Add(attribute);
+            }
+            
+            public Attribute[] GetCustomAttributes()
+            {
+                return (Attribute[]) CustomAttributes.ToArray(typeof(Attribute));
+            }
+
+            private ArrayList CustomAttributes
+            {
+                get
+                {
+                    if (_attributes == null)
+                        _attributes = new ArrayList();
+                
+                    return _attributes;
+                }
             }
 
             private ArrayList ParameterBuilders
@@ -446,17 +484,6 @@ namespace Jayrock.Json.Rpc
                         _paramBuilderList = new ArrayList();
                 
                     return _paramBuilderList;
-                }
-            }
-
-            public string ObsoletionMessage
-            {
-                get { return Mask.NullString(_obsoletionMessage); }
-                
-                set
-                {
-                    _obsoletionMessage = value;
-                    IsObsolete = _obsoletionMessage.Length > 0;
                 }
             }
 

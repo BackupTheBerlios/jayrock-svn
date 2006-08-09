@@ -49,9 +49,6 @@ namespace Jayrock.Json.Rpc
             Assert.IsNotNull(_builder.InternalName);
             Assert.AreSame(typeof(void), _builder.ResultType);
             Assert.IsNull(_builder.Dispatcher);
-            Assert.IsFalse(_builder.IsObsolete);
-            Assert.IsNotNull(_builder.ObsoletionMessage);
-            Assert.AreEqual(0, _builder.ObsoletionMessage.Length);
             Assert.IsNotNull(_builder.Description);
             Assert.AreEqual(0, _builder.Description.Length);
             Assert.IsNotNull(_builder.ServiceClass);
@@ -114,26 +111,22 @@ namespace Jayrock.Json.Rpc
         }
 
         [ Test ]
-        public void GetSetIsObsolete()
+        public void CustomAttributes()
         {
-            _builder.IsObsolete = true;
-            Assert.IsTrue(_builder.IsObsolete);
-        }
-
-        [ Test ]
-        public void GetSetObsoletionMessage()
-        {
-            const string message = "This is a test message.";
-            _builder.ObsoletionMessage = message;
-            Assert.AreEqual(message, _builder.ObsoletionMessage);
-        }
-        
-        [ Test ]
-        public void SettingObsoletionMessageFlagsIsObsolete()
-        {
-            Assert.IsFalse(_builder.IsObsolete);
-            _builder.ObsoletionMessage = "This is a test message.";
-            Assert.IsTrue(_builder.IsObsolete);
+            MyAttribute attribute;
+            Attribute[] attributes;
+            
+            attribute = new MyAttribute();
+            _builder.AddCustomAttribute(attribute);
+            attributes = _builder.GetCustomAttributes();
+            Assert.AreEqual(1, attributes.Length);
+            Assert.AreSame(attribute, attributes[0]);
+            
+            attribute = new MyAttribute();
+            _builder.AddCustomAttribute(attribute);
+            attributes = _builder.GetCustomAttributes();
+            Assert.AreEqual(2, attributes.Length);
+            Assert.AreSame(attribute, attributes[1]);
         }
 
         [ Test ]
@@ -167,6 +160,10 @@ namespace Jayrock.Json.Rpc
             {
                 throw new NotImplementedException();
             }
+        }
+
+        private class MyAttribute : Attribute
+        {
         }
     }
 }
