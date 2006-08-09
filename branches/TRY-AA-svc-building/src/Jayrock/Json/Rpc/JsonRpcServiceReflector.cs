@@ -165,4 +165,19 @@ namespace Jayrock.Json.Rpc
             }
         }
     }
+
+    internal interface IServiceClassReflector
+    {
+        void Build(JsonRpcServiceClassBuilder builder, Type type);
+    }
+
+    internal interface IMethodReflector
+    {
+        void Build(JsonRpcMethodBuilder builder, MethodInfo method);
+    }
+
+    internal interface IParameterReflector
+    {
+        void Build(JsonRpcParameterBuilder builder, ParameterInfo parameter);
+    }
 }
