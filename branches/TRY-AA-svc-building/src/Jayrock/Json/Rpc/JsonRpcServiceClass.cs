@@ -63,36 +63,29 @@ namespace Jayrock.Json.Rpc
             _serviceName = classBuilder.Name;
             _description = classBuilder.Description;
 
-            if (classBuilder.HasMethods)
+            JsonRpcMethod.Builder[] methodBuilders = classBuilder.GetMethods();
+            
+            _methods = new JsonRpcMethod[methodBuilders.Length];
+            _methodByName = new Hashtable(methodBuilders.Length);
+            int methodIndex = 0;
+
+            foreach (JsonRpcMethod.Builder methodBuilder in methodBuilders)
             {
-                IList methodBuilders = classBuilder.Methods;
-                
-                _methods = new JsonRpcMethod[methodBuilders.Count];
-                _methodByName = new Hashtable(methodBuilders.Count);
-                int methodIndex = 0;
+                JsonRpcMethod method = new JsonRpcMethod(methodBuilder, this);
 
-                foreach (JsonRpcMethod.Builder methodBuilder in methodBuilders)
-                {
-                    JsonRpcMethod method = new JsonRpcMethod(methodBuilder, this);
+                //
+                // Check for duplicates.
+                //
 
-                    //
-                    // Check for duplicates.
-                    //
+                if (_methodByName.ContainsKey(method.Name))
+                    throw new DuplicateMethodException(string.Format("The method '{0}' cannot be exported as '{1}' because this name has already been used by another method on the '{2}' service.", method.Name, method.InternalName, _serviceName));
 
-                    if (_methodByName.ContainsKey(method.Name))
-                        throw new DuplicateMethodException(string.Format("The method '{0}' cannot be exported as '{1}' because this name has already been used by another method on the '{2}' service.", method.Name, method.InternalName, _serviceName));
+                //
+                // Add the method to the class and index it by its name.
+                //
 
-                    //
-                    // Add the method to the class and index it by its name.
-                    //
-
-                    _methods[methodIndex++] = method;
-                    _methodByName.Add(method.Name, method);
-                }
-            }
-            else
-            {
-                _methods = new JsonRpcMethod[0];
+                _methods[methodIndex++] = method;
+                _methodByName.Add(method.Name, method);
             }
         }
 
@@ -163,12 +156,20 @@ namespace Jayrock.Json.Rpc
                 return builder;
             }
             
-            internal bool HasMethods
+            internal JsonRpcMethod.Builder[] GetMethods()
+            {
+                if (!HasMethods)
+                    return new JsonRpcMethod.Builder[0];
+                
+                return (JsonRpcMethod.Builder[]) Methods.ToArray(typeof(JsonRpcMethod.Builder));
+            }
+            
+            private bool HasMethods
             {
                 get { return _methodList != null && _methodList.Count > 0; }
             }
 
-            internal IList Methods
+            private ArrayList Methods
             {
                 get
                 {

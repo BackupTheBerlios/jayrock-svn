@@ -57,7 +57,7 @@ namespace Jayrock.Json.Rpc
             _attributes = DeepCopy(methodBuilder.GetCustomAttributes());
             _class = clazz;
             
-            JsonRpcParameter.Builder[] parameterBuilders = methodBuilder.GetParameterBuilders();
+            JsonRpcParameter.Builder[] parameterBuilders = methodBuilder.GetParameters();
             _parameters = new JsonRpcParameter[parameterBuilders.Length];
             int paramIndex = 0;
 
@@ -403,11 +403,11 @@ namespace Jayrock.Json.Rpc
             private string _name;
             private string _internalName;
             private Type _resultType = typeof(void);
-            private ArrayList _paramBuilderList;
+            private ArrayList _prameterList;
             private IDispatcher _dispatcher;
             private string _description;
             private readonly JsonRpcServiceClass.Builder _serviceClass;
-            private ArrayList _attributes;
+            private ArrayList _attributeList;
 
             internal Builder(JsonRpcServiceClass.Builder serviceClass)
             {
@@ -462,29 +462,10 @@ namespace Jayrock.Json.Rpc
             
             public Attribute[] GetCustomAttributes()
             {
+                if (!HasCustomAttributes)
+                    return new Attribute[0];
+                
                 return (Attribute[]) CustomAttributes.ToArray(typeof(Attribute));
-            }
-
-            private ArrayList CustomAttributes
-            {
-                get
-                {
-                    if (_attributes == null)
-                        _attributes = new ArrayList();
-                
-                    return _attributes;
-                }
-            }
-
-            private ArrayList ParameterBuilders
-            {
-                get
-                {
-                    if (_paramBuilderList == null)
-                        _paramBuilderList = new ArrayList();
-                
-                    return _paramBuilderList;
-                }
             }
 
             public string Description
@@ -496,17 +477,44 @@ namespace Jayrock.Json.Rpc
             public JsonRpcParameter.Builder DefineParameter()
             {
                 JsonRpcParameter.Builder builder = new JsonRpcParameter.Builder(this);
-                builder.Position = ParameterBuilders.Count;
-                ParameterBuilders.Add(builder);
+                builder.Position = Parameters.Count;
+                Parameters.Add(builder);
                 return builder;
             }
 
-            internal JsonRpcParameter.Builder[] GetParameterBuilders()
+            internal JsonRpcParameter.Builder[] GetParameters()
             {
-                if (_paramBuilderList == null)
+                if (_prameterList == null)
                     return new JsonRpcParameter.Builder[0];
             
-                return (JsonRpcParameter.Builder[]) _paramBuilderList.ToArray(typeof(JsonRpcParameter.Builder));
+                return (JsonRpcParameter.Builder[]) _prameterList.ToArray(typeof(JsonRpcParameter.Builder));
+            }
+
+            private bool HasCustomAttributes
+            {
+                get { return _attributeList != null && _attributeList.Count > 0; }
+            }
+
+            private ArrayList CustomAttributes
+            {
+                get
+                {
+                    if (_attributeList == null)
+                        _attributeList = new ArrayList();
+                
+                    return _attributeList;
+                }
+            }
+
+            private ArrayList Parameters
+            {
+                get
+                {
+                    if (_prameterList == null)
+                        _prameterList = new ArrayList();
+                
+                    return _prameterList;
+                }
             }
         }
     }
