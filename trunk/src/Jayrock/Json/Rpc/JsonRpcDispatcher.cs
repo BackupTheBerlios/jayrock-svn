@@ -340,10 +340,10 @@ namespace Jayrock.Json.Rpc
                                 
                 // TODO: This loop could bomb when more args are supplied that parameters available.
                                                         
-                for (int i = 0; reader.TokenClass != JsonTokenClass.EndArray; i++)
+                for (int i = 0; i < parameters.Length && reader.TokenClass != JsonTokenClass.EndArray; i++)
                     argList.Add(reader.Get(parameters[i].ParameterType));
-                                
-                reader.Read();
+
+                reader.StepOut();
                 return argList.ToArray();
             }
             else if (reader.TokenClass == JsonTokenClass.Object)
@@ -368,9 +368,8 @@ namespace Jayrock.Json.Rpc
                                     
                     reader.Read();
 
-                    // TODO: This could bomb when if no matching parameter is found.
-                                    
-                    argByName.Put(matchedParameter.Name, reader.Get(matchedParameter.ParameterType));
+                    if (matchedParameter != null)
+                        argByName.Put(matchedParameter.Name, reader.Get(matchedParameter.ParameterType));
                 }
                                 
                 reader.Read();

@@ -115,6 +115,24 @@ namespace Jayrock.Json.Rpc
             IDictionary response = (IDictionary) Parse(responseString);
             Assert.AreEqual(15, JsonRpcServices.GetResult(response));
         }
+        
+        [ Test ]
+        public void CallWithTooManyArgsHarmless()
+        {
+            JsonRpcDispatcher server = new JsonRpcDispatcher(new TestService());
+            string responseString = server.Process("{ id : 1, method : 'Say', params : [ 'Hello', 'World' ] }");
+            IDictionary response = (IDictionary) Parse(responseString);
+            Assert.AreEqual("Hello", response["result"]);
+        }
+
+        [ Test ]
+        public void CallWithUnknownArgsHarmless()
+        {
+            JsonRpcDispatcher server = new JsonRpcDispatcher(new TestService());
+            string responseString = server.Process("{ id : 1, method : 'Say', params : { message : 'Hello', bad : 'World' } }");
+            IDictionary response = (IDictionary) Parse(responseString);
+            Assert.AreEqual("Hello", response["result"]);
+        }
 
         private object Parse(string source)
         {
