@@ -29,6 +29,7 @@ namespace Jayrock.Json.Rpc
     using System.Collections.Specialized;
     using System.ComponentModel.Design;
     using System.Data;
+    using System.Diagnostics;
     using System.IO;
     using System.Web.UI;
     using Jayrock.Json.Formatters;
@@ -216,6 +217,8 @@ namespace Jayrock.Json.Rpc
             
             JsonObject request = new JsonObject();
             JsonRpcMethod method = null;
+            JsonReader paramsReader = null;
+            object args = null;
             
             reader.ReadToken(JsonTokenClass.Object);
             
@@ -235,77 +238,50 @@ namespace Jayrock.Json.Rpc
                         string methodName = reader.ReadString();
                         request["method"] = methodName;
                         method = _service.GetClass().GetMethodByName(methodName);
+                        
+                        if (paramsReader != null)
+                        {
+                            //
+                            // If the parameters were already read in and
+                            // buffer, then deserialize them now that we know
+                            // the method we're dealing with.
+                            //
+                            
+                            args = ReadParameters(method, paramsReader);
+                            paramsReader = null;
+                        }
+                        
                         break;
                     }
                     case "params" :
                     {
-                        object args;
+                        //
+                        // Is the method already known? If so, then we can
+                        // deserialize the parameters right away. Otherwise
+                        // we record them until hopefully the method is
+                        // encountered.
+                        //
                         
-                        if (method == null)
+                        if (method != null)
                         {
-                            args = reader.DeserializeNext();
+                            args = ReadParameters(method, reader);
                         }
                         else
                         {
-                            JsonRpcParameter[] parameters = method.GetParameters();
-                            
-                            if (reader.TokenClass == JsonTokenClass.Array)
-                            {
-                                reader.Read();
-                                ArrayList argList = new ArrayList(parameters.Length);
-                                
-                                // TODO: This loop could bomb when more args are supplied that parameters available.
-                                                        
-                                for (int i = 0; reader.TokenClass != JsonTokenClass.EndArray; i++)
-                                    argList.Add(reader.Get(parameters[i].ParameterType));
-                                
-                                reader.Read();
-                                args = argList.ToArray();
-                            }
-                            else if (reader.TokenClass == JsonTokenClass.Object)
-                            {
-                                reader.Read();
-                                JsonObject argByName = new JsonObject();
-                                
-                                while (reader.TokenClass != JsonTokenClass.EndObject)
-                                {
-                                    // TODO: Imporve this lookup.
-                                    
-                                    JsonRpcParameter matchedParameter = null;
-
-                                    foreach (JsonRpcParameter parameter in parameters)
-                                    {
-                                        if (parameter.Name.Equals(reader.Text))
-                                        {
-                                            matchedParameter = parameter;
-                                            break;
-                                        }
-                                    }
-                                    
-                                    reader.Read();
-
-                                    // TODO: This could bomb when if no matching parameter is found.
-                                    
-                                    argByName.Put(matchedParameter.Name, reader.Get(matchedParameter.ParameterType));
-                                }
-                                
-                                reader.Read();
-                                args = argByName;
-                            }
-                            else
-                            {
-                                args = reader.DeserializeNext();
-                            }
-                            
-                           
+                            JsonRecorder recorder = new JsonRecorder();
+                            recorder.WriteValueFromReader(reader);
+                            paramsReader = recorder.CreatePlayer();
                         }
-                        if (args != null) request["params"] = args;
+
                         break;
                     }
                 }
             }
             
             reader.Read();
+
+            if (args != null)
+                request["params"] = args;
             
             return request;
         }
@@ -346,6 +322,64 @@ namespace Jayrock.Json.Rpc
                 JsonRpcTrace.Error(e);
 
             return JsonRpcError.FromException(e, _localExecution);
+        }
+
+        private static object ReadParameters(JsonRpcMethod method, JsonReader reader)
+        {
+            Debug.Assert(method != null);
+            Debug.Assert(reader != null);
+            
+            reader.MoveToContent();
+            
+            JsonRpcParameter[] parameters = method.GetParameters();
+                            
+            if (reader.TokenClass == JsonTokenClass.Array)
+            {
+                reader.Read();
+                ArrayList argList = new ArrayList(parameters.Length);
+                                
+                // TODO: This loop could bomb when more args are supplied that parameters available.
+                                                        
+                for (int i = 0; reader.TokenClass != JsonTokenClass.EndArray; i++)
+                    argList.Add(reader.Get(parameters[i].ParameterType));
+                                
+                reader.Read();
+                return argList.ToArray();
+            }
+            else if (reader.TokenClass == JsonTokenClass.Object)
+            {
+                reader.Read();
+                JsonObject argByName = new JsonObject();
+                                
+                while (reader.TokenClass != JsonTokenClass.EndObject)
+                {
+                    // TODO: Imporve this lookup.
+                                    
+                    JsonRpcParameter matchedParameter = null;
+
+                    foreach (JsonRpcParameter parameter in parameters)
+                    {
+                        if (parameter.Name.Equals(reader.Text))
+                        {
+                            matchedParameter = parameter;
+                            break;
+                        }
+                    }
+                                    
+                    reader.Read();
+
+                    // TODO: This could bomb when if no matching parameter is found.
+                                    
+                    argByName.Put(matchedParameter.Name, reader.Get(matchedParameter.ParameterType));
+                }
+                                
+                reader.Read();
+                return argByName;
+            }
+            else
+            {
+                return reader.DeserializeNext();
+            }
         }
     }
 }

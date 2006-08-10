@@ -111,7 +111,7 @@ namespace Jayrock.Json.Rpc
             //
 
             JsonRpcDispatcher server = new JsonRpcDispatcher(new TestService());
-            string responseString = server.Process("{ id : 42, params : [ [ 1, 2, 3, 4, 5 ] ], method : 'sumarr' }");
+            string responseString = server.Process("{ id : 42, params : [ [ 1, 2, 3, 4, 5 ] ], method : 'sum' }");
             IDictionary response = (IDictionary) Parse(responseString);
             Assert.AreEqual(15, JsonRpcServices.GetResult(response));
         }
@@ -149,19 +149,6 @@ namespace Jayrock.Json.Rpc
             
             [ JsonRpcMethod("sum") ]
             public int Sum(int[] ints)
-            {
-                int sum = 0;
-                foreach (int i in ints)
-                    sum += i;
-                return sum;
-            }
-            
-            // TODO: Merge this back with Sum once JsonRpcDispatcher knows how to work 
-            // with strong types in buffering mode, where params appear before method
-            // in the call member sequence.
-
-            [ JsonRpcMethod("sumarr") ]
-            public int SumArray(IList ints)
             {
                 int sum = 0;
                 foreach (int i in ints)
