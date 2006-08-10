@@ -112,7 +112,7 @@ namespace Jayrock.Json.Importers
             }
             else
             {
-                throw new JsonException(string.Format("Cannot deserialize a value of type {0} for storing in a NameValueCollection instance.", reader.TokenClass));
+                throw new JsonException(string.Format("Cannot put a JSON {0} value in a NameValueCollection instance.", reader.TokenClass));
             }
         }        
 

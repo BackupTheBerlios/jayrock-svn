@@ -68,18 +68,25 @@ namespace Jayrock.Json.Importers
             if (reader.TokenClass != JsonTokenClass.Number && reader.TokenClass != JsonTokenClass.String)
                 throw new JsonException(string.Format("Found {0} where expecting a number.", reader.TokenClass));
 
+            string text = reader.Text;
+            
             try
             {
-                return _converter(reader.Text);
+                return _converter(text);
             }
             catch (FormatException e)
             {
-                throw new JsonException(null, e); // TODO: Supply an exception message.
+                throw NumberError(e, text);
             }
             catch (OverflowException e)
             {
-                throw new JsonException(null, e); // TODO: Supply an exception message.
+                throw NumberError(e, text);
             }
+        }
+
+        private Exception NumberError(Exception e, string text)
+        {
+            return new JsonException(string.Format("Error importing JSON Number {0} as {1}.", text, _type.FullName), e);
         }
 
         private static object ConvertToByte(string s) { return Convert.ToByte(s, CultureInfo.InvariantCulture); }

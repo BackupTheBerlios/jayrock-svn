@@ -88,6 +88,12 @@ namespace Jayrock.Json.Importers
             Import(new string('9', 100));
         }
 
+        [ Test, ExpectedException(typeof(JsonException)) ]
+        public void CannotImportBadIsoDate()
+        {
+            Import("'1999-12=31T23:30:59'");
+        }
+
         private static void AssertImport(DateTime expected, string input)
         {
             AssertImport(expected, input, false);

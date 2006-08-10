@@ -42,9 +42,18 @@ namespace Jayrock.Json.Importers
             if (reader == null)
                 throw new ArgumentNullException("reader");
 
+            string text = reader.Text;
+
             if (reader.TokenClass == JsonTokenClass.String)
             {
-                return XmlConvert.ToDateTime(reader.Text);
+                try
+                {
+                    return XmlConvert.ToDateTime(text);
+                }
+                catch (FormatException e)
+                {
+                    return new JsonException("Error importing JSON String as System.DateTime.", e);
+                }
             }
             else if (reader.TokenClass == JsonTokenClass.Number)
             {
@@ -52,15 +61,15 @@ namespace Jayrock.Json.Importers
 
                 try
                 {
-                    time = Convert.ToInt64(reader.Text, CultureInfo.InvariantCulture);
+                    time = Convert.ToInt64(text, CultureInfo.InvariantCulture);
                 }
                 catch (FormatException e)
                 {
-                    throw new JsonException(e.Message, e);
+                    throw NumberError(e, text);
                 }
                 catch (OverflowException e)
                 {
-                    throw new JsonException(e.Message, e);
+                    throw NumberError(e, text);
                 }
 
                 try
@@ -69,13 +78,18 @@ namespace Jayrock.Json.Importers
                 }
                 catch (ArgumentException e)
                 {
-                    throw new JsonException(e.Message, e);
+                    throw NumberError(e, text);
                 }
             }
             else
             {
-                throw new JsonException(string.Format("Found {0} where expecting a string in ISO 8601 time format or a number expressed in Unix time.", reader.TokenClass));
+                throw new JsonException(string.Format("Found {0} where expecting a JSON String in ISO 8601 time format or a JSON Number expressed in Unix time.", reader.TokenClass));
             }
+        }
+
+        private static JsonException NumberError(Exception e, string text)
+        {
+            return new JsonException(string.Format("Error importing JSON Number {0} as System.DateTime.", text), e);
         }
     }
 }
