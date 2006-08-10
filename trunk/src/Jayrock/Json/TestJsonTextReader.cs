@@ -304,15 +304,27 @@ namespace Jayrock.Json
         }
 
         [ Test, ExpectedException(typeof(JsonException)) ]
-        public void BadNumber()
+        public void UnclosedComment()
         {
-            CreateReader("123-45").Read();
+            Read(@"/* This is an unclosed comment");
         }
 
         [ Test, ExpectedException(typeof(ParseException)) ]
         public void UnterminatedString()
         {
-            CreateReader("'string").Read();
+            Read("\"Hello World'");
+        }
+
+        [ Test, ExpectedException(typeof(JsonException)) ]
+        public void EmptyInput()
+        {
+            Read(string.Empty);
+        }
+
+        [ Test, ExpectedException(typeof(JsonException)) ]
+        public void BadNumber()
+        {
+            Read("1234.S6");
         }
 
         [ Test ]
@@ -494,6 +506,11 @@ namespace Jayrock.Json
         {
             Assert.IsFalse(_reader.Read(), "Expected EOF.");
             Assert.AreEqual(JsonTokenClass.EOF, _reader.TokenClass);
+        }
+
+        private void Read(string s)
+        {
+            CreateReader(s).Read();
         }
 
         private JsonReader CreateReader(string s)

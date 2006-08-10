@@ -141,30 +141,6 @@ namespace Jayrock.Json.Importers
             Assert.AreEqual("http://www.json-rpc.org/", reference["Link"]);
         }
 
-        [ Test, ExpectedException(typeof(JsonException)) ]
-        public void ParseUnclosedComment()
-        {
-            Parse(@"/* This is an unclosed comment");
-        }
-
-        [ Test, ExpectedException(typeof(ParseException)) ]
-        public void ParseUnterminatedString()
-        {
-            Parse("\"Hello World'");
-        }
-
-        [ Test, ExpectedException(typeof(JsonException)) ]
-        public void CannotParseEmpty()
-        {
-            Parse(string.Empty);
-        }
-
-        [ Test, ExpectedException(typeof(JsonException)) ]
-        public void ParseBadNumber()
-        {
-            Parse("1234S6");
-        }
-
         private object Parse(string s)
         {
             JsonTextReader reader = new JsonTextReader(new StringReader(s));
