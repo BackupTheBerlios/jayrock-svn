@@ -25,6 +25,7 @@ namespace Jayrock.Json.Importers
     #region Imports
 
     using System;
+    using System.Globalization;
 
     #endregion
 
@@ -50,12 +51,29 @@ namespace Jayrock.Json.Importers
             if (reader == null)
                 throw new ArgumentNullException("reader");
             
-            // TODO: Allow Number and String to be converted into Boolean.
-
-            if (reader.TokenClass != JsonTokenClass.Boolean)
-                throw new JsonException(string.Format("Found {0} where expecting a JSON Boolean.", reader.TokenClass));
+            bool value;
             
-            return reader.Text == JsonReader.TrueText ? _trueObject : _falseObject;
+            if (reader.TokenClass == JsonTokenClass.Number)
+            {
+                try
+                {
+                    value = Convert.ToInt64(reader.Text, CultureInfo.InvariantCulture) != 0;
+                }
+                catch (FormatException e)
+                {
+                    throw new JsonException(string.Format("The JSON Number {0} must be an integer to be convertible to System.Boolean.", reader.Text));
+                }
+            }
+            else if (reader.TokenClass == JsonTokenClass.Boolean)
+            {
+                value = reader.Text == JsonReader.TrueText;
+            }
+            else
+            {
+                throw new JsonException(string.Format("Found {0} where expecting a JSON Boolean.", reader.TokenClass));
+            }
+            
+            return value ? _trueObject : _falseObject;
         }
     }
 }

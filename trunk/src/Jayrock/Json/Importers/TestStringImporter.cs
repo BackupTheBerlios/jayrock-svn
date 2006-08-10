@@ -50,16 +50,16 @@ namespace Jayrock.Json.Importers
             AssertImport("123", "123");
         }
 
-        [ Test, ExpectedException(typeof(JsonException)) ]
-        public void CannotImportTrue()
+        [ Test ]
+        public void ImportTrue()
         {
-            AssertImport(null, "true");
+            AssertImport("true", "true");
         }
 
-        [ Test, ExpectedException(typeof(JsonException)) ]
-        public void CannotImportFalse()
+        [ Test ]
+        public void ImportFalse()
         {
-            AssertImport(null, "false");
+            AssertImport("false", "false");
         }
 
         [ Test, ExpectedException(typeof(JsonException)) ]

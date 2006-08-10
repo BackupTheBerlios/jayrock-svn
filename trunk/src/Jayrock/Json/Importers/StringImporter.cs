@@ -40,10 +40,9 @@ namespace Jayrock.Json.Importers
             if (reader == null)
                 throw new ArgumentNullException("reader");
             
-            // TODO: Allow Boolean to be converted to String.
-
             if (reader.TokenClass != JsonTokenClass.String && 
-                reader.TokenClass != JsonTokenClass.Number)
+                reader.TokenClass != JsonTokenClass.Number &&
+                reader.TokenClass != JsonTokenClass.Boolean)
                 throw new JsonException(string.Format("Found {0} where expecting a JSON String.", reader.TokenClass));
             
             return reader.Text;
