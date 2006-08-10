@@ -164,8 +164,8 @@ namespace Jayrock.Json.Rpc
 
             try
             {
-                IRpcMethod method = _service.GetClass().GetMethodByName(methodName);
-                object[] args = JsonRpcServices.MapArguments(method, request["params"]);
+                JsonRpcMethod method = _service.GetClass().GetMethodByName(methodName);
+                object[] args = method.MapArguments(request["params"]);
                 result = method.Invoke(_service, args);
             }
             catch (MethodNotFoundException e)
@@ -215,7 +215,7 @@ namespace Jayrock.Json.Rpc
                 reader = new JsonTextReader(input);
             
             JObject request = new JObject();
-            IRpcMethod method = null;
+            JsonRpcMethod method = null;
             
             reader.ReadToken(JsonTokenClass.Object);
             
@@ -247,7 +247,7 @@ namespace Jayrock.Json.Rpc
                         }
                         else
                         {
-                            IRpcParameter[] parameters = method.GetParameters();
+                            JsonRpcParameter[] parameters = method.GetParameters();
                             
                             if (reader.TokenClass == JsonTokenClass.Array)
                             {
@@ -271,9 +271,9 @@ namespace Jayrock.Json.Rpc
                                 {
                                     // TODO: Imporve this lookup.
                                     
-                                    IRpcParameter matchedParameter = null;
+                                    JsonRpcParameter matchedParameter = null;
 
-                                    foreach (IRpcParameter parameter in parameters)
+                                    foreach (JsonRpcParameter parameter in parameters)
                                     {
                                         if (parameter.Name.Equals(reader.Text))
                                         {

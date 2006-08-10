@@ -51,7 +51,7 @@ namespace Jayrock.Json.Rpc.Web
                 Response.Cache.SetLastModified(LastModifiedTime);
             }
 
-            IRpcServiceClass service = TargetService.GetClass();
+            JsonRpcServiceClass service = TargetService.GetClass();
 
             Response.ContentType = "text/javascript";
             Response.AppendHeader("Content-Disposition", 
@@ -82,7 +82,7 @@ namespace Jayrock.Json.Rpc.Web
                 Version1(service, new Uri(Request.Url.GetLeftPart(UriPartial.Path)), writer);
         }
 
-        private static void Version1(IRpcServiceClass service, Uri url, IndentedTextWriter writer)
+        private static void Version1(JsonRpcServiceClass service, Uri url, IndentedTextWriter writer)
         {
             Debug.Assert(service != null);
             Debug.Assert(url!= null);
@@ -98,21 +98,20 @@ namespace Jayrock.Json.Rpc.Web
             writer.WriteLine("{");
             writer.Indent++;
     
-            IRpcMethod[] methods = service.GetMethods();
+            JsonRpcMethod[] methods = service.GetMethods();
             string[] methodNames = new string[methods.Length];
     
             for (int i = 0; i < methods.Length; i++)
             {
-                IRpcMethod method = methods[i];
+                JsonRpcMethod method = methods[i];
                 methodNames[i] = method.Name;
 
-                string summary = JsonRpcHelpAttribute.GetText(method.AttributeProvider);
-                if (summary.Length > 0)
+                if (method.Description.Length > 0)
                 {
                     // TODO: What to do if /* and */ appear in the summary?
 
                     writer.Write("/* ");
-                    writer.Write(summary);
+                    writer.Write(method.Description);
                     writer.WriteLine(" */");
                     writer.WriteLine();
                 }
@@ -121,9 +120,9 @@ namespace Jayrock.Json.Rpc.Web
                 writer.Write(method.Name);
                 writer.Write("\"] = function(");
 
-                IRpcParameter[] parameters = method.GetParameters();
+                JsonRpcParameter[] parameters = method.GetParameters();
                 
-                foreach (IRpcParameter parameter in parameters)
+                foreach (JsonRpcParameter parameter in parameters)
                 {
                     writer.Write(parameter.Name);
                     writer.Write(", ");
@@ -137,7 +136,7 @@ namespace Jayrock.Json.Rpc.Web
                 writer.Write(method.Name);
                 writer.Write("\", [");
 
-                foreach (IRpcParameter parameter in parameters)
+                foreach (JsonRpcParameter parameter in parameters)
                 {
                     if (parameter.Position > 0)
                         writer.Write(',');
@@ -225,7 +224,7 @@ namespace Jayrock.Json.Rpc.Web
             writer.WriteLine(";");
         }
 
-        private void Version2(IRpcServiceClass service, Uri url, IndentedTextWriter writer)
+        private void Version2(JsonRpcServiceClass service, Uri url, IndentedTextWriter writer)
         {
             Debug.Assert(service != null);
             Debug.Assert(url!= null);
@@ -250,7 +249,7 @@ namespace Jayrock.Json.Rpc.Web
             writer.WriteLine();
             writer.Indent += 3;
     
-            IRpcMethod[] methods = service.GetMethods();
+            JsonRpcMethod[] methods = service.GetMethods();
             
             string[] methodNames = new string[methods.Length];
             for (int i = 0; i < methods.Length; i++)
@@ -260,17 +259,16 @@ namespace Jayrock.Json.Rpc.Web
     
             for (int i = 0; i < methods.Length; i++)
             {
-                IRpcMethod method = methods[i];
+                JsonRpcMethod method = methods[i];
 
                 writer.WriteLine();
 
-                string summary = JsonRpcHelpAttribute.GetText(method.AttributeProvider);
-                if (summary.Length > 0)
+                if (method.Description.Length > 0)
                 {
                     // TODO: What to do if /* and */ appear in the summary?
 
                     writer.Write("/* ");
-                    writer.Write(summary);
+                    writer.Write(method.Description);
                     writer.WriteLine(" */");
                     writer.WriteLine();
                 }
@@ -279,9 +277,9 @@ namespace Jayrock.Json.Rpc.Web
                 writer.Write(method.Name);
                 writer.Write("\" : function(");
 
-                IRpcParameter[] parameters = method.GetParameters();
+                JsonRpcParameter[] parameters = method.GetParameters();
                 
-                foreach (IRpcParameter parameter in parameters)
+                foreach (JsonRpcParameter parameter in parameters)
                 {
                     writer.Write(parameter.Name);
                     writer.Write(", ");
@@ -294,7 +292,7 @@ namespace Jayrock.Json.Rpc.Web
                 writer.Write(method.Name);
                 writer.Write("\", [");
 
-                foreach (IRpcParameter parameter in parameters)
+                foreach (JsonRpcParameter parameter in parameters)
                 {
                     if (parameter.Position > 0)
                         writer.Write(',');

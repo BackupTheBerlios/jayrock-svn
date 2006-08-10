@@ -484,6 +484,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Json\Rpc\IDispatcher.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\Rpc\InvocationException.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -494,22 +499,7 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Rpc\IRpcMethod.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Json\Rpc\IRpcParameter.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "Json\Rpc\IRpcService.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Json\Rpc\IRpcServiceClass.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -549,12 +539,22 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Json\Rpc\JsonRpcMethodBuilder.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\Rpc\JsonRpcObsoleteAttribute.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
                     RelPath = "Json\Rpc\JsonRpcParameter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Rpc\JsonRpcParameterBuilder.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -570,6 +570,16 @@
                 />
                 <File
                     RelPath = "Json\Rpc\JsonRpcServiceClass.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Rpc\JsonRpcServiceClassBuilder.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Rpc\JsonRpcServiceReflector.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -605,21 +615,30 @@
                 />
                 <File
                     RelPath = "Json\Rpc\TestJsonRpcMethod.cs"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Rpc\TestJsonRpcMethodBuilder.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Rpc\TestJsonRpcParameter.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Json\Rpc\TestJsonRpcService.cs"
+                    RelPath = "Json\Rpc\TestJsonRpcParameterBuilder.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
                     RelPath = "Json\Rpc\TestJsonRpcServiceClass.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Rpc\TestJsonRpcServiceClassBuilder.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Rpc\TestJsonRpcServiceReflector.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

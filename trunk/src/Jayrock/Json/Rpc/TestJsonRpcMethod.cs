@@ -25,115 +25,127 @@ namespace Jayrock.Json.Rpc
     #region Imports
 
     using System;
-    using System.Reflection;
     using NUnit.Framework;
 
     #endregion
 
     [ TestFixture ]
-    public class TestJsonRpcMethod
+    public class TestJsonRpcService
     {
-        private JsonRpcServiceClass _service;
-
-        [ SetUp ]
-        public void Init()
+        [ Test ]
+        public void FailedMethodYieldsInvocationException()
         {
-            _service = (JsonRpcServiceClass) JsonRpcServiceClass.FromType(typeof(StubService));
-        }
-
-        [ Test, ExpectedException(typeof(ArgumentNullException)) ]
-        public void NullService()
-        {
-            new JsonRpcMethod(null, null);
-        }
-
-        [ Test, ExpectedException(typeof(ArgumentNullException)) ]
-        public void NullMethod()
-        {
-            new JsonRpcMethod(null, null);
+            try
+            {
+                TestService service = new TestService();
+                service.GetClass().GetMethodByName("BadMethod").Invoke(service, null);
+                Assert.Fail("Expecting an exception.");
+            }
+            catch (TargetMethodException e)
+            {
+                Assert.IsTrue(e.InnerException.GetType() == typeof(ApplicationException), "Unexpected inner exception ({0}).", e.InnerException.GetType().FullName);
+            }
         }
 
         [ Test ]
-        public void DefaultNameIsMethodName()
+        public void VariableArguments()
         {
-            JsonRpcMethod method = new JsonRpcMethod(_service, StubService.FooInfo);
-            Assert.AreEqual("Foo", method.Name);
+            TestService service = new TestService();
+            JsonRpcMethod method = service.GetClass().FindMethodByName("VarMethod");
+            object[] args = new object[] { 1, 2, 3, 4 };
+            object[] invokeArgs = method.TransposeVariableArguments(args);
+            Assert.AreEqual(1, invokeArgs.Length);
+            Assert.AreEqual(args, invokeArgs[0]);
         }
 
         [ Test ]
-        public void AffliatedWithService()
+        public void FixedAndVariableArguments()
         {
-            JsonRpcMethod method = new JsonRpcMethod(_service, StubService.FooInfo);
-            Assert.AreSame(_service, method.ServiceClass);
+            TestService service = new TestService();
+            JsonRpcMethod method = service.GetClass().FindMethodByName("FixedVarMethod");
+            object[] args = new object[] { 1, 2, 3, 4 };
+            args = method.TransposeVariableArguments(args);
+            Assert.AreEqual(3, args.Length);
+            Assert.AreEqual(1, args[0]);
+            Assert.AreEqual(2, args[1]);
+            Assert.AreEqual(new object[] { 3, 4 }, args[2]);
         }
 
         [ Test ]
-        public void CustomNameViaAttribute()
+        public void RetransposingYieldsTheSame()
         {
-            JsonRpcMethod method = new JsonRpcMethod(_service, StubService.FooInfo, new JsonRpcMethodAttribute("foo"));
-            Assert.AreEqual("foo", method.Name);
+            TestService service = new TestService();
+            JsonRpcMethod method = service.GetClass().FindMethodByName("FixedVarMethod");
+            object[] args = new object[] { 1, 2, 3, 4 };
+            args = method.TransposeVariableArguments(args);
+            args = method.TransposeVariableArguments(args);
+            Assert.AreEqual(3, args.Length);
+            Assert.AreEqual(1, args[0]);
+            Assert.AreEqual(2, args[1]);
+            Assert.AreEqual(new object[] { 3, 4 }, args[2]);
         }
 
         [ Test ]
-        public void AttributeFromMethod()
+        public void Bug8131()
         {
-            JsonRpcMethod method = new JsonRpcMethod(_service, StubService.BarInfo);
-            Assert.AreEqual("bar", method.Name);
+            //
+            // Bug #8131: Varargs transposition when last arg is collection
+            // http://developer.berlios.de/bugs/?func=detailbug&bug_id=8131&group_id=4638
+            //
+            
+            TestService service = new TestService();
+            JsonRpcMethod method = service.GetClass().FindMethodByName("VarMethod");
+            object[] args = new object[] { 1, 2, new int[] { 3, 4 } };
+            args = method.TransposeVariableArguments(args);
+            Assert.AreEqual(1, args.Length);
+            object[] varargs = (object[]) args[0];
+            Assert.AreEqual(3, varargs.Length);
+            Assert.AreEqual(1, varargs[0]);
+            Assert.AreEqual(2, varargs[1]);
+            Assert.AreEqual(new int[] { 3, 4 }, varargs[2]);
         }
-
-        [ Test ]
-        public void ResultTypeIsMethodReturnType()
-        {
-            JsonRpcMethod method = new JsonRpcMethod(_service, StubService.SumInfo);
-            Assert.AreEqual(typeof(int), method.ResultType);
-        }
-
-        [ Test ]
-        public void Parameters()
-        {
-            JsonRpcMethod method = new JsonRpcMethod(_service, StubService.SumInfo);
-            Assert.AreEqual(2, method.GetParameters().Length);
-            Assert.AreEqual("a", method.GetParameters()[0].Name);
-            Assert.AreEqual("b", method.GetParameters()[1].Name);
-        }
-
-        [ Test ]
-        public void Invocation()
-        {
-            JsonRpcMethod method = new JsonRpcMethod(_service, StubService.SumInfo);
-            StubService serviceInstance = new StubService();
-            object result = method.Invoke(serviceInstance, new object[] { 2, 3 });
-            Assert.AreEqual(5, result);
-        }
-
-        private sealed class StubService : IRpcService
-        {
-            public static MethodInfo FooInfo { get { return GetMethodInfo("Foo"); } }
-            public static MethodInfo BarInfo { get { return GetMethodInfo("Bar"); } }
-            public static MethodInfo SumInfo { get { return GetMethodInfo("Sum"); } }
         
-            private static MethodInfo GetMethodInfo(string name)
+        [ Test ]
+        public void Bug8148()
+        {
+            //
+            // Bug #8148: Varargs transposition drops args
+            // http://developer.berlios.de/bugs/?func=detailbug&bug_id=8148&group_id=4638
+            //
+            
+            TestService service = new TestService();
+            JsonRpcMethod method = service.GetClass().FindMethodByName("FixedVarMethod");
+            object[] args = new object[] { 1, 2, 
+                new int[] { 3, 4 }, 
+                new JObject(new string[] { "five", "six" }, new object[] { 5, 6 }) };
+            args = method.TransposeVariableArguments(args);
+            Assert.AreEqual(3, args.Length);
+            Assert.AreEqual(1, args[0]);
+            Assert.AreEqual(2, args[1]);
+            object[] varargs = (object[]) args[2];
+            Assert.AreEqual(2, varargs.Length);
+            Assert.AreEqual(new int[] { 3, 4 }, varargs[0]);
+            JObject o = (JObject) varargs[1];
+            Assert.AreEqual(5, o["five"]);
+            Assert.AreEqual(6, o["six"]);
+        }
+
+        private sealed class TestService : JsonRpcService
+        {
+            [ JsonRpcMethod ]
+            public void BadMethod()
             {
-                return typeof(StubService).GetMethod(name);
+                throw new ApplicationException();
             }
 
-            public void Foo()
+            [ JsonRpcMethod ]
+            public void VarMethod(params object[] args)
             {
             }
 
-            [ JsonRpcMethod("bar") ]
-            public void Bar()
+            [ JsonRpcMethod ]
+            public void FixedVarMethod(int a, int b, params object[] args)
             {
-            }
-
-            public int Sum(int a, int b)
-            {
-                return a + b;
-            }
-
-            public IRpcServiceClass GetClass()
-            {
-                throw new NotImplementedException();
             }
         }
     }

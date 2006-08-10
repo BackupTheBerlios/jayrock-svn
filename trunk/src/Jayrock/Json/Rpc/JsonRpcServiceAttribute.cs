@@ -25,12 +25,13 @@ namespace Jayrock.Json.Rpc
     #region Imports
 
     using System;
+    using System.Reflection;
 
     #endregion
 
     [ Serializable ]
     [ AttributeUsage(AttributeTargets.Class) ]
-    public sealed class JsonRpcServiceAttribute : Attribute
+    public sealed class JsonRpcServiceAttribute : Attribute, IServiceClassReflector
     {
         private string _name;
 
@@ -45,6 +46,11 @@ namespace Jayrock.Json.Rpc
         {
             get { return Mask.NullString(_name); }
             set { _name = value; }
+        }
+
+        void IServiceClassReflector.Build(JsonRpcServiceClassBuilder builder, Type type)
+        {
+            builder.Name = Name;
         }
     }
 }

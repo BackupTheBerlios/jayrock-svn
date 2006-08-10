@@ -28,11 +28,10 @@ namespace Jayrock.Json.Rpc
 
     #endregion
 
-    public interface IRpcParameter : IRpcAnnotated
+    public interface IDispatcher
     {
-        string Name { get; }
-        Type ParameterType { get; }
-        int Position { get; }
-        IRpcMethod Method { get; }
+        object Invoke(IRpcService service, object[] args);
+        IAsyncResult BeginInvoke(IRpcService service, object[] args, AsyncCallback callback, object asyncState);
+        object EndInvoke(IAsyncResult asyncResult);
     }
 }

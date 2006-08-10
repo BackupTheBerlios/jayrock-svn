@@ -41,28 +41,28 @@ namespace Jayrock.Json.Rpc
         [ Test ]
         public void ServiceNameIsTypeName()
         {
-            JsonRpcServiceClass clazz = (JsonRpcServiceClass) JsonRpcServiceClass.FromType(typeof(EmptyService));
+            JsonRpcServiceClass clazz = JsonRpcServiceClass.FromType(typeof(EmptyService));
             Assert.AreEqual("EmptyService", clazz.Name);
         }
 
         [ Test ]
         public void UntaggedMethodsNotExported()
         {
-            JsonRpcServiceClass clazz = (JsonRpcServiceClass) JsonRpcServiceClass.FromType(typeof(EmptyService));
+            JsonRpcServiceClass clazz = JsonRpcServiceClass.FromType(typeof(EmptyService));
             Assert.AreEqual(0, clazz.GetMethods().Length);
         }
 
         [ Test ]
         public void TaggedMethodsExported()
         {
-            JsonRpcServiceClass clazz = (JsonRpcServiceClass) JsonRpcServiceClass.FromType(typeof(TestService));
+            JsonRpcServiceClass clazz = JsonRpcServiceClass.FromType(typeof(TestService));
             Assert.AreEqual(2, clazz.GetMethods().Length);
         }
 
         [ Test ]
         public void CustomServiceName()
         {
-            JsonRpcServiceClass clazz = (JsonRpcServiceClass) JsonRpcServiceClass.FromType(typeof(TestService));
+            JsonRpcServiceClass clazz = JsonRpcServiceClass.FromType(typeof(TestService));
             Assert.AreEqual("MyService", clazz.Name);
         }
         

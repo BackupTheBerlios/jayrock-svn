@@ -25,53 +25,55 @@ namespace Jayrock.Json.Rpc
     #region Imports
 
     using System;
-    using System.Reflection;
+    using System.Diagnostics;
 
     #endregion
 
     [ Serializable ]
-    internal sealed class JsonRpcParameter : IRpcParameter
+    public sealed class JsonRpcParameter
     {
-        private readonly IRpcMethod _method;
-        private readonly ParameterInfo _parameter;
+        private readonly string _name;
+        private readonly Type _parameterType;
+        private readonly int _position;
+        private readonly bool _isParamArray;
+        private readonly JsonRpcMethod _method;
 
-        public JsonRpcParameter(IRpcMethod method, ParameterInfo parameter)
+        internal JsonRpcParameter(JsonRpcParameterBuilder builder, JsonRpcMethod method)
         {
-            if (method == null)
-                throw new ArgumentNullException("method");
-
-            if (parameter == null)
-                throw new ArgumentNullException("parameter");
-
+            Debug.Assert(builder != null);
+            Debug.Assert(builder.Position >= 0);
+            Debug.Assert(method != null);
+            
+            _name = builder.Name;
+            _parameterType = builder.ParameterType;
+            _position = builder.Position;
+            _isParamArray = builder.IsParamArray;
             _method = method;
-            _parameter = parameter;
-
-            // TODO: Parameter validation, e.g. cannot be by-reference.
         }
-
+        
         public string Name
         {
-            get { return _parameter.Name; }
+            get { return _name; }
         }
 
         public Type ParameterType
         {
-            get { return _parameter.ParameterType; }
+            get { return _parameterType; }
         }
 
         public int Position
         {
-            get { return _parameter.Position; }
+            get { return _position; }
         }
 
-        public IRpcMethod Method
+        public JsonRpcMethod Method
         {
             get { return _method; }
         }
 
-        public ICustomAttributeProvider AttributeProvider
+        public bool IsParamArray
         {
-            get { return _parameter; }
+            get { return _isParamArray; }
         }
     }
 }

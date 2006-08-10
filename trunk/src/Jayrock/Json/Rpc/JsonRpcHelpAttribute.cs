@@ -31,7 +31,7 @@ namespace Jayrock.Json.Rpc
 
     [ Serializable ]
     [ AttributeUsage(AttributeTargets.All) ]
-    public sealed class JsonRpcHelpAttribute : Attribute
+    public sealed class JsonRpcHelpAttribute : Attribute, IServiceClassReflector, IMethodReflector
     {
         private string _text;
 
@@ -48,21 +48,14 @@ namespace Jayrock.Json.Rpc
             set { _text = value; }
         }
 
-        public static JsonRpcHelpAttribute Get(ICustomAttributeProvider attributeProvider)
+        void IServiceClassReflector.Build(JsonRpcServiceClassBuilder builder, Type type)
         {
-            if (attributeProvider == null)
-                return null;
-
-            return (JsonRpcHelpAttribute) CustomAttribute.Get(attributeProvider, typeof(JsonRpcHelpAttribute));
+            builder.Description = Text;
         }
-    
-        internal static string GetText(ICustomAttributeProvider attributeProvider)
-        {
-            if (attributeProvider == null)
-                return string.Empty;
 
-            JsonRpcHelpAttribute attribute = Get(attributeProvider);
-            return attribute != null ? attribute.Text : string.Empty;
+        void IMethodReflector.Build(JsonRpcMethodBuilder builder, MethodInfo method)
+        {
+            builder.Description = Text;
         }
     }
 }
