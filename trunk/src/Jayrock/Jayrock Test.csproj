@@ -444,6 +444,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Json\Importers\TestAutoImporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\Importers\TestComponentImporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -615,6 +620,7 @@
                 />
                 <File
                     RelPath = "Json\Rpc\TestJsonRpcMethod.cs"
+                    SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File

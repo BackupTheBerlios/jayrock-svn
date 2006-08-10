@@ -156,11 +156,7 @@ namespace Jayrock.Json
             if (name == null)
                 throw new ArgumentNullException("name");
 
-            if (value != null)
-                Dictionary[name] = value;
-            else 
-                Remove(name);
-
+            Dictionary[name] = value;
             return this;
         }
 
