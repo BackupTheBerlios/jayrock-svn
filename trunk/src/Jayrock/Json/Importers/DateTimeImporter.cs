@@ -48,17 +48,28 @@ namespace Jayrock.Json.Importers
             }
             else if (reader.TokenClass == JsonTokenClass.Number)
             {
+                long time;
+
                 try
                 {
-                    return UnixTime.ToDateTime(Convert.ToInt64(reader.Text, CultureInfo.InvariantCulture));
+                    time = Convert.ToInt64(reader.Text, CultureInfo.InvariantCulture);
                 }
                 catch (FormatException e)
                 {
-                    throw new JsonException(null, e); // TODO: Supply an exception message.
+                    throw new JsonException(e.Message, e);
                 }
                 catch (OverflowException e)
                 {
-                    throw new JsonException(null, e); // TODO: Supply an exception message.
+                    throw new JsonException(e.Message, e);
+                }
+
+                try
+                {
+                    return UnixTime.ToDateTime(time);
+                }
+                catch (ArgumentException e)
+                {
+                    throw new JsonException(e.Message, e);
                 }
             }
             else

@@ -75,6 +75,18 @@ namespace Jayrock.Json.Importers
         {
             Import("{}");
         }
+        
+        [ Test, ExpectedException(typeof(JsonException)) ]
+        public void CannotImportUsingFractionalNumber()
+        {
+            Import("99.99");
+        }
+
+        [ Test, ExpectedException(typeof(JsonException)) ]
+        public void CannotImportOutOfRangeNumber()
+        {
+            Import(new string('9', 100));
+        }
 
         private static void AssertImport(DateTime expected, string input)
         {

@@ -124,6 +124,9 @@ namespace Jayrock
             //
             // Finally construct a DateTime instance in UTC from the various 
             // components and then return it adjusted to local time.
+            // Note that this could throw an ArgumentException or 
+            // ArgumentOutOfRangeException, which is fine by us and we'll
+            // let it propagate.
             //
 
             return (new DateTime(year + 1900, month, mday, hour, min, sec)).ToLocalTime();
