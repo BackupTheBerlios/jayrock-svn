@@ -97,7 +97,7 @@ namespace Jayrock.Json.Importers
                 throw new ArgumentNullException("reader");
 
             if (reader.TokenClass != JsonTokenClass.Array)
-                throw new JsonSerializationException(string.Format("Found {0} where expecting an array.", reader.TokenClass));
+                throw new JsonException(string.Format("Found {0} where expecting an array.", reader.TokenClass));
 
             reader.Read();
 

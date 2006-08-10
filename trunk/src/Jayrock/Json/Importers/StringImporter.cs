@@ -42,7 +42,7 @@ namespace Jayrock.Json.Importers
 
             if (reader.TokenClass != JsonTokenClass.String && 
                 reader.TokenClass != JsonTokenClass.Number)
-                throw new JsonSerializationException(string.Format("Found {0} where expecting a string.", reader.TokenClass));
+                throw new JsonException(string.Format("Found {0} where expecting a string.", reader.TokenClass));
             
             return reader.Text;
         }

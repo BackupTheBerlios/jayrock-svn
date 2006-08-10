@@ -209,11 +209,6 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\JsonSerializationException.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "Json\JsonString.cs"
                     SubType = "Code"
                     BuildAction = "Compile"

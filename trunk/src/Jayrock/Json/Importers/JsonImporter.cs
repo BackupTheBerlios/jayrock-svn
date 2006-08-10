@@ -38,7 +38,7 @@ namespace Jayrock.Json.Importers
                 throw new ArgumentNullException("reader");
             
             if (!reader.MoveToContent())
-                throw new JsonSerializationException("Unexpected EOF.");
+                throw new JsonException("Unexpected EOF.");
             
             object o = null;
             

@@ -88,7 +88,7 @@ namespace Jayrock.Json.Importers
             Assert.AreEqual(new string[] { "bar1", "bar2", "bar3" }, collection.GetValues("foo"));
         }
 
-        [ Test, ExpectedException(typeof(JsonSerializationException)) ]
+        [ Test, ExpectedException(typeof(JsonException)) ]
         public void CannotImportObjectValue()
         {
             Import("{\"foo\":{}}");

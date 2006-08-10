@@ -52,25 +52,25 @@ namespace Jayrock.Json.Importers
             AssertImport(new DateTime(2006, 7, 17, 10, 56, 56), "1153133816", true);
         }
 
-        [ Test, ExpectedException(typeof(JsonSerializationException)) ]
+        [ Test, ExpectedException(typeof(JsonException)) ]
         public void CannotImportTrue()
         {
             Import("true");
         }
 
-        [ Test, ExpectedException(typeof(JsonSerializationException)) ]
+        [ Test, ExpectedException(typeof(JsonException)) ]
         public void CannotImportFalse()
         {
             Import("false");
         }
 
-        [ Test, ExpectedException(typeof(JsonSerializationException)) ]
+        [ Test, ExpectedException(typeof(JsonException)) ]
         public void CannotImportArray()
         {
             Import("[]");
         }
         
-        [ Test, ExpectedException(typeof(JsonSerializationException)) ]
+        [ Test, ExpectedException(typeof(JsonException)) ]
         public void CannotImportObject()
         {
             Import("{}");

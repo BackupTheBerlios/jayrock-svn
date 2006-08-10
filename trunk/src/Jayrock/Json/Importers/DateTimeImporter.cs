@@ -54,16 +54,16 @@ namespace Jayrock.Json.Importers
                 }
                 catch (FormatException e)
                 {
-                    throw new JsonSerializationException(null, e); // TODO: Supply an exception message.
+                    throw new JsonException(null, e); // TODO: Supply an exception message.
                 }
                 catch (OverflowException e)
                 {
-                    throw new JsonSerializationException(null, e); // TODO: Supply an exception message.
+                    throw new JsonException(null, e); // TODO: Supply an exception message.
                 }
             }
             else
             {
-                throw new JsonSerializationException(string.Format("Found {0} where expecting a string in ISO 8601 time format or a number expressed in Unix time.", reader.TokenClass));
+                throw new JsonException(string.Format("Found {0} where expecting a string in ISO 8601 time format or a number expressed in Unix time.", reader.TokenClass));
             }
         }
     }

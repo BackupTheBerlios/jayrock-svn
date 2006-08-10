@@ -46,7 +46,7 @@ namespace Jayrock.Json.Importers
             //
 
             if (reader.TokenClass != JsonTokenClass.Object)
-                throw new JsonSerializationException("Expecting object.");
+                throw new JsonException("Expecting object.");
             
             reader.Read();
             
@@ -112,7 +112,7 @@ namespace Jayrock.Json.Importers
             }
             else
             {
-                throw new JsonSerializationException(string.Format("Cannot deserialize a value of type {0} for storing in a NameValueCollection instance.", reader.TokenClass));
+                throw new JsonException(string.Format("Cannot deserialize a value of type {0} for storing in a NameValueCollection instance.", reader.TokenClass));
             }
         }        
 

@@ -66,7 +66,7 @@ namespace Jayrock.Json.Importers
                 throw new ArgumentNullException("reader");
             
             if (reader.TokenClass != JsonTokenClass.Number && reader.TokenClass != JsonTokenClass.String)
-                throw new JsonSerializationException(string.Format("Found {0} where expecting a number.", reader.TokenClass));
+                throw new JsonException(string.Format("Found {0} where expecting a number.", reader.TokenClass));
 
             try
             {
@@ -74,11 +74,11 @@ namespace Jayrock.Json.Importers
             }
             catch (FormatException e)
             {
-                throw new JsonSerializationException(null, e); // TODO: Supply an exception message.
+                throw new JsonException(null, e); // TODO: Supply an exception message.
             }
             catch (OverflowException e)
             {
-                throw new JsonSerializationException(null, e); // TODO: Supply an exception message.
+                throw new JsonException(null, e); // TODO: Supply an exception message.
             }
         }
 

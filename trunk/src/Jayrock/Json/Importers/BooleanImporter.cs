@@ -51,7 +51,7 @@ namespace Jayrock.Json.Importers
                 throw new ArgumentNullException("reader");
 
             if (reader.TokenClass != JsonTokenClass.Boolean)
-                throw new JsonSerializationException(string.Format("Found {0} where expecting a string.", reader.TokenClass));
+                throw new JsonException(string.Format("Found {0} where expecting a string.", reader.TokenClass));
             
             return reader.Text == JsonReader.TrueText ? _trueObject : _falseObject;
         }

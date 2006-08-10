@@ -76,7 +76,7 @@ namespace Jayrock.Json.Importers
             IJsonImporter importer = Find(type);
             
             if (importer == null)
-                throw new JsonSerializationException(string.Format("Don't know how to import {0} values.", type.FullName)); // TODO: Replace with an appropriate exception
+                throw new JsonException(string.Format("Don't know how to import {0} values.", type.FullName)); // TODO: Replace with an appropriate exception
             
             return importer;
         }

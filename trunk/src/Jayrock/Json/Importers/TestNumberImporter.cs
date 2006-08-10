@@ -39,19 +39,19 @@ namespace Jayrock.Json.Importers
             AssertImport((byte) 123, "123");
         }
 
-        [ Test, ExpectedException(typeof(JsonSerializationException)) ]
+        [ Test, ExpectedException(typeof(JsonException)) ]
         public void CannotImportOutsideByte()
         {
             AssertImport((byte) 0, "456");
         }
 
-        [ Test, ExpectedException(typeof(JsonSerializationException)) ]
+        [ Test, ExpectedException(typeof(JsonException)) ]
         public void CannotImportObject()
         {
             AssertImport((byte) 0, "{}");
         }
 
-        [ Test, ExpectedException(typeof(JsonSerializationException)) ]
+        [ Test, ExpectedException(typeof(JsonException)) ]
         public void CannotImportArray()
         {
             AssertImport((byte) 0, "[]");
@@ -63,7 +63,7 @@ namespace Jayrock.Json.Importers
             AssertImport((short) 456, "456");
         }
 
-        [ Test, ExpectedException(typeof(JsonSerializationException)) ]
+        [ Test, ExpectedException(typeof(JsonException)) ]
         public void CannotImportOutsideInt16()
         {
             AssertImport((short) 0, "456789");
