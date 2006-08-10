@@ -146,7 +146,7 @@ namespace Jayrock.Json
         [ Test ]
         public void WriteObjectArray()
         {
-            JObject o = new JObject();
+            JsonObject o = new JsonObject();
             o.Put("one", 1);
             o.Put("two", 2);
             o.Put("three", 3);

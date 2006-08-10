@@ -69,7 +69,7 @@ namespace Jayrock.Json.Rpc
             string responseString = server.Process("{ id : 'F9A2CC85-79A2-489f-AE61-84348654008C', method : 'replicate', params : [ 'Hello', 3 ] }");
             IDictionary response = (IDictionary) Parse(responseString);
             Assert.AreEqual("F9A2CC85-79A2-489f-AE61-84348654008C", response["id"]);
-            object[] result = ((JArray) response["result"]).ToArray();
+            object[] result = ((JsonArray) response["result"]).ToArray();
             Assert.AreEqual(new string[] { "Hello", "Hello", "Hello" }, result);
         }
 
@@ -79,7 +79,7 @@ namespace Jayrock.Json.Rpc
             JsonRpcDispatcher server = new JsonRpcDispatcher(new TestService());
             string responseString = server.Process("{ id : 42, method : 'rev', params : [ [ 1, 'two', 3 ] ] }");
             IDictionary response = (IDictionary) Parse(responseString);
-            object[] result = ((JArray) response["result"]).ToArray();
+            object[] result = ((JsonArray) response["result"]).ToArray();
             Assert.AreEqual(new object[] { 3, "two", 1 }, result);
         }
 
@@ -89,7 +89,7 @@ namespace Jayrock.Json.Rpc
             JsonRpcDispatcher server = new JsonRpcDispatcher(new TestService());
             string responseString = server.Process("{ id : 42, method : 'replicate', params : { count : 3, text : 'Hello' } }");
             IDictionary response = (IDictionary) Parse(responseString);
-            object[] result = ((JArray) JsonRpcServices.GetResult(response)).ToArray();
+            object[] result = ((JsonArray) JsonRpcServices.GetResult(response)).ToArray();
             Assert.AreEqual(new string[] { "Hello", "Hello", "Hello" }, result);
         }
         

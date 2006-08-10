@@ -50,7 +50,7 @@ namespace Jayrock.Json.Formatters
             car.Year = 2000;
             car.Color = "Silver";
 
-            Test(new JObject(
+            Test(new JsonObject(
                 new string[] { "Manufacturer", "Model", "Year", "Color" },
                 new object[] { car.Manufacturer, car.Model, car.Year, car.Color }), car);
         }
@@ -79,10 +79,10 @@ namespace Jayrock.Json.Formatters
             albert.FullName = "Albert White";
             albert.Spouce = snow; // NOTE! Cyclic graphs not allowed.
 
-            Test(new JObject(
+            Test(new JsonObject(
                 new string[] { "Id", "FullName", "Spouce" },
                 new object[] { albert.Id, albert.FullName, 
-                    /* Spouce */ new JObject(
+                    /* Spouce */ new JsonObject(
                         new string[] { "Id", "FullName" },
                         new object[] { snow.Id, snow.FullName })}), albert);
         }
@@ -113,14 +113,14 @@ namespace Jayrock.Json.Formatters
             johnCars.Owner = john;
             johnCars.Cars.Add(beamer);
 
-            JObject test = new JObject(
+            JsonObject test = new JsonObject(
                 new string[] { "Owner", "Cars" }, 
                 new object[] {
-                    /* Owner */ new JObject(
+                    /* Owner */ new JsonObject(
                         new string[] { "Id", "FullName" }, 
                         new object[] { john.Id,  john.FullName }),
                     /* Cars */ new object[] {
-                        new JObject(
+                        new JsonObject(
                             new string[] { "Manufacturer", "Model", "Year", "Color" }, 
                             new object[] { beamer.Manufacturer, beamer.Model, beamer.Year, beamer.Color })
                     }
@@ -157,14 +157,14 @@ namespace Jayrock.Json.Formatters
             return new JsonTextReader(new StringReader(writer.ToString()));
         }
 
-        private static void Test(JObject expected, object actual)
+        private static void Test(JsonObject expected, object actual)
         {
             JsonReader reader = FormatForReading(actual);
             TestObject(expected, reader, "(root)");
             Assert.IsFalse(reader.Read(), "Expected EOF.");
         }
 
-        private static void TestObject(JObject expected, JsonReader reader, string path)
+        private static void TestObject(JsonObject expected, JsonReader reader, string path)
         {
             reader.MoveToContent();
             reader.ReadToken(JsonTokenClass.Object);
@@ -208,7 +208,7 @@ namespace Jayrock.Json.Formatters
                     if (expected.GetType().IsArray)
                         TestArray((Array) expected, reader, path);
                     else
-                        TestObject((JObject) expected, reader, path);
+                        TestObject((JsonObject) expected, reader, path);
                 }
                 else
                 {

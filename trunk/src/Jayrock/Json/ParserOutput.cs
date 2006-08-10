@@ -34,8 +34,8 @@ namespace Jayrock.Json
     public sealed class ParserOutput : IParserOutput
     {
         private Stack _stack;
-        private JObject _currentObject;
-        private JArray _currentArray;
+        private JsonObject _currentObject;
+        private JsonArray _currentArray;
 
         //
         // The following two statics are only used as an optimization so that we
@@ -97,7 +97,7 @@ namespace Jayrock.Json
         public void StartObject()
         {
             OnStart();
-            _currentObject = new JObject();
+            _currentObject = new JsonObject();
         }
 
         public void ObjectPut(string name, object value)
@@ -122,7 +122,7 @@ namespace Jayrock.Json
         public void StartArray()
         {
             OnStart();
-            _currentArray = new JArray();
+            _currentArray = new JsonArray();
         }
 
         public void ArrayPut(object value)
@@ -184,10 +184,10 @@ namespace Jayrock.Json
                 // assert that we've poppoed one of the two as a sanity check.
                 //
 
-                _currentObject = o as JObject;
+                _currentObject = o as JsonObject;
 
                 if (_currentObject == null)
-                    _currentArray = o as JArray;
+                    _currentArray = o as JsonArray;
 
                 Debug.Assert(_currentObject != null || _currentArray != null);
             }

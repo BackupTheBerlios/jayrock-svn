@@ -192,7 +192,7 @@ namespace Jayrock.Json.Rpc
             // Setup and return the response object.
             //
 
-            JObject response = new JObject();
+            JsonObject response = new JsonObject();
             
             response["id"] = id;
 
@@ -214,7 +214,7 @@ namespace Jayrock.Json.Rpc
             if (reader == null)
                 reader = new JsonTextReader(input);
             
-            JObject request = new JObject();
+            JsonObject request = new JsonObject();
             JsonRpcMethod method = null;
             
             reader.ReadToken(JsonTokenClass.Object);
@@ -265,7 +265,7 @@ namespace Jayrock.Json.Rpc
                             else if (reader.TokenClass == JsonTokenClass.Object)
                             {
                                 reader.Read();
-                                JObject argByName = new JObject();
+                                JsonObject argByName = new JsonObject();
                                 
                                 while (reader.TokenClass != JsonTokenClass.EndObject)
                                 {

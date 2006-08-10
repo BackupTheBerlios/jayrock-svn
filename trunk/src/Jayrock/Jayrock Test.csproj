@@ -164,17 +164,12 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\JArray.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "Json\JNull.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\JObject.cs"
+                    RelPath = "Json\JsonArray.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -195,6 +190,11 @@
                 />
                 <File
                     RelPath = "Json\JsonImporterRegistry.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\JsonObject.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -259,17 +259,17 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\TestJArray.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "Json\TestJNull.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\TestJObject.cs"
+                    RelPath = "Json\TestJsonArray.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\TestJsonObject.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

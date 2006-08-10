@@ -30,17 +30,17 @@ namespace Jayrock.Json.Rpc
 
     public sealed class JsonRpcError
     {
-        public static JObject FromException(Exception e)
+        public static JsonObject FromException(Exception e)
         {
             return FromException(e, false);
         }
 
-        public static JObject FromException(Exception e, bool includeStackTrace)
+        public static JsonObject FromException(Exception e, bool includeStackTrace)
         {
             if (e == null)
                 throw new ArgumentNullException("e");
 
-            JObject error = new JObject();
+            JsonObject error = new JsonObject();
             error.Put("message", e.GetBaseException().Message);
 
             if (includeStackTrace)

@@ -191,12 +191,12 @@ namespace JayrockWeb
 
         [ JsonRpcMethod("total")]
         [ JsonRpcHelp("Returns the total of all integers sent in an array.") ]
-        public int Total(JArray values)
+        public int Total(int[] values)
         {
             int total = 0;
             
-            foreach (object value in values)
-                total += Convert.ToInt32(value);
+            foreach (int value in values)
+                total += value;
             
             return total;
         }

@@ -44,18 +44,18 @@ namespace Jayrock.Json
     /// </remarks>
 
     [ Serializable ]
-    public class JObject : DictionaryBase, IJsonFormattable
+    public class JsonObject : DictionaryBase, IJsonFormattable
     {
         private ArrayList _nameIndexList;
         [ NonSerialized ] private IList _readOnlyNameIndexList;
 
-        public JObject() {}
+        public JsonObject() {}
 
         /// <summary>
         /// Construct a JObject from a IDictionary
         /// </summary>
 
-        public JObject(IDictionary members)
+        public JsonObject(IDictionary members)
         {
             foreach (DictionaryEntry entry in members)
             {
@@ -68,7 +68,7 @@ namespace Jayrock.Json
             _nameIndexList = new ArrayList(members.Keys);
         }
 
-        public JObject(string[] keys, object[] values)
+        public JsonObject(string[] keys, object[] values)
         {
             int keyCount = keys == null ? 0 : keys.Length;
             int valueCount = values == null ? 0 : values.Length;
@@ -115,7 +115,7 @@ namespace Jayrock.Json
         /// In contrast, the Put method replaces the previous value.
         /// </summary>
 
-        public virtual JObject Accumulate(string name, object value)
+        public virtual JsonObject Accumulate(string name, object value)
         {
             if (name == null)
                 throw new ArgumentNullException("name");
@@ -136,7 +136,7 @@ namespace Jayrock.Json
                 }
                 else
                 {
-                    values = new JArray();
+                    values = new JsonArray();
                     values.Add(current);
                     values.Add(value);
                     Put(name, values);
@@ -151,7 +151,7 @@ namespace Jayrock.Json
         /// then the key will be removed from the JObject if it is present.
         /// </summary>
 
-        public virtual JObject Put(string name, object value)
+        public virtual JsonObject Put(string name, object value)
         {
             if (name == null)
                 throw new ArgumentNullException("name");
@@ -192,9 +192,9 @@ namespace Jayrock.Json
         /// JObject.
         /// </summary>
 
-        public virtual JArray GetNamesArray()
+        public virtual JsonArray GetNamesArray()
         {
-            JArray names = new JArray();
+            JsonArray names = new JsonArray();
             ListNames(names);
             return names;
         }

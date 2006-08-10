@@ -42,11 +42,11 @@ namespace Jayrock.Json
     /// </remarks>
 
     [ Serializable ]
-    public class JArray : CollectionBase, IJsonFormattable
+    public class JsonArray : CollectionBase, IJsonFormattable
     {
-        public JArray() {}
+        public JsonArray() {}
 
-        public JArray(IEnumerable collection)
+        public JsonArray(IEnumerable collection)
         {
             foreach (object item in collection)
                 List.Add(item);
@@ -63,7 +63,7 @@ namespace Jayrock.Json
             get { return Count; }
         }
 
-        public JArray Put(object value)
+        public JsonArray Put(object value)
         {
             Add(value);
             return this;
@@ -153,14 +153,14 @@ namespace Jayrock.Json
             return value.ToString();
         }
 
-        public virtual JArray GetArray(int index)
+        public virtual JsonArray GetArray(int index)
         {
-            return (JArray) GetValue(index);
+            return (JsonArray) GetValue(index);
         }
 
-        public virtual JObject GetObject(int index)
+        public virtual JsonObject GetObject(int index)
         {
-            return (JObject) GetValue(index);
+            return (JsonObject) GetValue(index);
         }
 
         protected override void OnValidate(object value)
@@ -292,15 +292,15 @@ namespace Jayrock.Json
         /// arrays.
         /// </summary>
 
-        public JArray Concat(params object[] values)
+        public JsonArray Concat(params object[] values)
         {
-            JArray newArray = new JArray(this);
+            JsonArray newArray = new JsonArray(this);
 
             if (values != null)
             {
                 foreach (object value in values)
                 {
-                    JArray arrayValue = value as JArray;
+                    JsonArray arrayValue = value as JsonArray;
                     
                     if (arrayValue != null)
                     {
@@ -340,7 +340,7 @@ namespace Jayrock.Json
         /// list.
         /// </remarks>
 
-        public JArray Unshift(object value)
+        public JsonArray Unshift(object value)
         {
             List.Insert(0, value);
             return this;
@@ -355,7 +355,7 @@ namespace Jayrock.Json
         /// list.
         /// </remarks>
 
-        public JArray Unshift(params object[] values)
+        public JsonArray Unshift(params object[] values)
         {
             if (values != null)
             {

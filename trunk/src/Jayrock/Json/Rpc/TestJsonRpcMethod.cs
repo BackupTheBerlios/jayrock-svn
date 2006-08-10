@@ -117,7 +117,7 @@ namespace Jayrock.Json.Rpc
             JsonRpcMethod method = service.GetClass().FindMethodByName("FixedVarMethod");
             object[] args = new object[] { 1, 2, 
                 new int[] { 3, 4 }, 
-                new JObject(new string[] { "five", "six" }, new object[] { 5, 6 }) };
+                new JsonObject(new string[] { "five", "six" }, new object[] { 5, 6 }) };
             args = method.TransposeVariableArguments(args);
             Assert.AreEqual(3, args.Length);
             Assert.AreEqual(1, args[0]);
@@ -125,7 +125,7 @@ namespace Jayrock.Json.Rpc
             object[] varargs = (object[]) args[2];
             Assert.AreEqual(2, varargs.Length);
             Assert.AreEqual(new int[] { 3, 4 }, varargs[0]);
-            JObject o = (JObject) varargs[1];
+            JsonObject o = (JsonObject) varargs[1];
             Assert.AreEqual(5, o["five"]);
             Assert.AreEqual(6, o["six"]);
         }

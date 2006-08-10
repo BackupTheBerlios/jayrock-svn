@@ -239,7 +239,7 @@ namespace Jayrock.Json.Rpc
 
             if (argsMap != null)
             {
-                JObject namedArgs = new JObject(argsMap);
+                JsonObject namedArgs = new JsonObject(argsMap);
                 
                 args = new object[_parameters.Length];
 

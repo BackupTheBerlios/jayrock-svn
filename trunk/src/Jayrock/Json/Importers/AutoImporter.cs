@@ -63,7 +63,7 @@ namespace Jayrock.Json.Importers
             else if (reader.TokenClass == JsonTokenClass.Array)
             {
                 reader.Read();
-                JArray values = new JArray();
+                JsonArray values = new JsonArray();
                 
                 while (reader.TokenClass != JsonTokenClass.EndArray)
                     values.Add(Import(reader));
@@ -73,7 +73,7 @@ namespace Jayrock.Json.Importers
             else if (reader.TokenClass == JsonTokenClass.Object)
             {
                 reader.Read();
-                JObject o = new JObject();
+                JsonObject o = new JsonObject();
 
                 while (reader.TokenClass != JsonTokenClass.EndObject)
                     o.Put(reader.ReadMember(), Import(reader));

@@ -46,7 +46,7 @@ namespace Jayrock.Json
             ParserOutput output = new ParserOutput();
             output.StartObject();
             output.ObjectPut(string.Empty, string.Empty);
-            JObject o = (JObject) output.EndObject();
+            JsonObject o = (JsonObject) output.EndObject();
             Assert.AreEqual(1, o.Count);
             Assert.AreEqual(string.Empty, o[string.Empty]);
         }
@@ -82,7 +82,7 @@ namespace Jayrock.Json
         [ Test ]
         public void ParseEmptyArray()
         {
-            JArray values = (JArray) Parse("[]");
+            JsonArray values = (JsonArray) Parse("[]");
             Assert.IsNotNull(values);
             Assert.AreEqual(0, values.Length);
         }
@@ -90,7 +90,7 @@ namespace Jayrock.Json
         [ Test ]
         public void ParseArray()
         {
-            JArray values = (JArray) Parse("[123,'Hello World',true]");
+            JsonArray values = (JsonArray) Parse("[123,'Hello World',true]");
             Assert.IsNotNull(values);
             Assert.AreEqual(3, values.Length);
             Assert.AreEqual(123, values[0]);
@@ -135,7 +135,7 @@ namespace Jayrock.Json
             Assert.AreEqual("John Doe", author["Name"]);
             Assert.AreEqual("john.doe@example.com", author["E-Mail Address"]);
 
-            JArray references = (JArray) article["References"];
+            JsonArray references = (JsonArray) article["References"];
             Assert.IsNotNull(references);
             Assert.AreEqual(1, references.Length);
 

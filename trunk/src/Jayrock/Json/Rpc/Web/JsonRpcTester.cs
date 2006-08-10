@@ -212,9 +212,9 @@ namespace Jayrock.Json.Rpc.Web
             base.AddContent();
         }
 
-        private JObject BuildCallTemplatesObject()
+        private JsonObject BuildCallTemplatesObject()
         {
-            JObject info = new JObject();
+            JsonObject info = new JsonObject();
             StringBuilder sb = new StringBuilder();
     
             foreach (JsonRpcMethod method in ServiceClass.GetMethods())

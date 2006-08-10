@@ -7,12 +7,12 @@ namespace Jayrock.Json
     #endregion
 
     [ TestFixture ]
-    public class TestJArary
+    public class TestJsonArray
     {
         [ Test ]
         public void AddNullValue()
         {
-            JArray a = new JArray();
+            JsonArray a = new JsonArray();
             a.Add(null);
             Assert.AreEqual(1, a.Count);
             Assert.IsNull(a[0]);
