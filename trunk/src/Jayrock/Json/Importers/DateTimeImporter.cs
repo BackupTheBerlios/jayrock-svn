@@ -52,7 +52,7 @@ namespace Jayrock.Json.Importers
                 }
                 catch (FormatException e)
                 {
-                    return new JsonException("Error importing JSON String as System.DateTime.", e);
+                    throw new JsonException("Error importing JSON String as System.DateTime.", e);
                 }
             }
             else if (reader.TokenClass == JsonTokenClass.Number)
