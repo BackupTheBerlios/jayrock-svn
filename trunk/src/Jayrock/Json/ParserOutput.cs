@@ -37,16 +37,6 @@ namespace Jayrock.Json
         private JsonObject _currentObject;
         private JsonArray _currentArray;
 
-        //
-        // The following two statics are only used as an optimization so that we
-        // don't create a boxed Boolean each time the True and False properties
-        // are evaluated. Instead we keep returning a reference to the same
-        // immutable value. This should put much less pressure on the GC.
-        //
-
-        private readonly static object _trueObject = true;
-        private readonly static object _falseObject = false;
-
         public object NullPrimitive
         {
             get { return JNull.Value; }
@@ -54,12 +44,12 @@ namespace Jayrock.Json
 
         public object TruePrimitive
         {
-            get { return _trueObject; }
+            get { return BooleanObject.True; }
         }
 
         public object FalsePrimitive
         {
-            get { return _falseObject; }
+            get { return BooleanObject.False; }
         }
 
         public object ToStringPrimitive(string s)

@@ -31,16 +31,6 @@ namespace Jayrock.Json.Importers
 
     public sealed class BooleanImporter : JsonImporter
     {
-        //
-        // The following two statics are only used as an optimization so that we
-        // don't create a boxed Boolean each time the True and False properties
-        // are evaluated. Instead we keep returning a reference to the same
-        // immutable value. This should put much less pressure on the GC.
-        //
-               
-        private readonly static object _trueObject = true;
-        private readonly static object _falseObject = false;
-
         public override void Register(IJsonImporterRegistry registry)
         {
             registry.Register(typeof(bool), this);
@@ -61,7 +51,7 @@ namespace Jayrock.Json.Importers
                 }
                 catch (FormatException e)
                 {
-                    throw new JsonException(string.Format("The JSON Number {0} must be an integer to be convertible to System.Boolean.", reader.Text));
+                    throw new JsonException(string.Format("The JSON Number {0} must be an integer to be convertible to System.Boolean.", reader.Text), e);
                 }
             }
             else if (reader.TokenClass == JsonTokenClass.Boolean)
@@ -73,7 +63,7 @@ namespace Jayrock.Json.Importers
                 throw new JsonException(string.Format("Found {0} where expecting a JSON Boolean.", reader.TokenClass));
             }
             
-            return value ? _trueObject : _falseObject;
+            return value ? BooleanObject.True : BooleanObject.False;
         }
     }
 }
