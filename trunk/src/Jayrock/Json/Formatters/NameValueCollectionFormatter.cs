@@ -39,7 +39,7 @@ namespace Jayrock.Json.Formatters
             if (writer == null)
                 throw new ArgumentNullException("writer");
 
-            if (JNull.LogicallyEquals(enumerable))
+            if (JsonNull.LogicallyEquals(enumerable))
             {
                 writer.WriteNull();   
                 return;

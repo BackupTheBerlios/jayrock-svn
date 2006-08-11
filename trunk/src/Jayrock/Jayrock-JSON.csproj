@@ -148,11 +148,6 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\JNull.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "Json\JsonArray.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -174,6 +169,11 @@
                 />
                 <File
                     RelPath = "Json\JsonImporterRegistry.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\JsonNull.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

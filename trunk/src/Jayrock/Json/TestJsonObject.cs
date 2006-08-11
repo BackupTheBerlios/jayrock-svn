@@ -75,7 +75,7 @@ namespace Jayrock.Json
             Assert.AreEqual(3, o.Count);
             Assert.AreEqual(1, o["one"]);
             Assert.AreEqual(2, o["two"]);
-            Assert.IsTrue(JNull.LogicallyEquals(o["three"]));
+            Assert.IsTrue(JsonNull.LogicallyEquals(o["three"]));
         }
 
         [ Test ]
@@ -83,9 +83,9 @@ namespace Jayrock.Json
         {
             JsonObject o = new JsonObject(new string[] { "one", "two", "three" }, null);
             Assert.AreEqual(3, o.Count);
-            Assert.IsTrue(JNull.LogicallyEquals(o["one"]));
-            Assert.IsTrue(JNull.LogicallyEquals(o["two"]));
-            Assert.IsTrue(JNull.LogicallyEquals(o["three"]));
+            Assert.IsTrue(JsonNull.LogicallyEquals(o["one"]));
+            Assert.IsTrue(JsonNull.LogicallyEquals(o["two"]));
+            Assert.IsTrue(JsonNull.LogicallyEquals(o["three"]));
         }
 
         [ Test ]

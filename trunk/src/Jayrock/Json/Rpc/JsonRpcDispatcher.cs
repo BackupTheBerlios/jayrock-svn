@@ -136,7 +136,7 @@ namespace Jayrock.Json.Rpc
             // now, we don't support this.
             //
 
-            bool isNotification = id == null || JNull.Value.Equals(id);
+            bool isNotification = JsonNull.LogicallyEquals(id);
             
             if (isNotification)
                 throw new NotSupportedException("Notification are not yet supported.");
@@ -200,7 +200,7 @@ namespace Jayrock.Json.Rpc
             if (error != null)
                 response["error"] = error;
             else
-                response["result"] = result != null ? result : JNull.Value;
+                response["result"] = result;
 
             return response;
         }

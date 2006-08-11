@@ -39,7 +39,7 @@ namespace Jayrock.Json
 
         public object NullPrimitive
         {
-            get { return JNull.Value; }
+            get { return null; }
         }
 
         public object TruePrimitive

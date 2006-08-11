@@ -128,7 +128,7 @@ namespace Jayrock.Json
         public void WriteNullValue()
         {
             JsonTextWriter writer = new JsonTextWriter(new StringWriter());
-            writer.WriteValue(JNull.Value);
+            writer.WriteValue(JsonNull.Value);
             Assert.AreEqual("null", writer.ToString());
         }
 

@@ -71,11 +71,11 @@ namespace Jayrock.Json.Rpc
                 
                 string message = null;
 
-                if (!JNull.LogicallyEquals(error))
+                if (!JsonNull.LogicallyEquals(error))
                 {
                     object messageObject = error["message"];
                     
-                    if (!JNull.LogicallyEquals(messageObject))
+                    if (!JsonNull.LogicallyEquals(messageObject))
                         message = messageObject.ToString();
                 }
                 else

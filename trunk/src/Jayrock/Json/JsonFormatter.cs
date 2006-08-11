@@ -37,7 +37,7 @@ namespace Jayrock.Json
             if (writer == null)
                 throw new ArgumentNullException("writer");
 
-            if (JNull.LogicallyEquals(o))
+            if (JsonNull.LogicallyEquals(o))
             {
                 FormatNull(o, writer);
                 return;

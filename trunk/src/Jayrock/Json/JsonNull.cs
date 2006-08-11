@@ -35,9 +35,11 @@ namespace Jayrock.Json
     /// </summary>
 
     [ Serializable ]
-    public sealed class JNull : IObjectReference, IJsonFormattable
+    public sealed class JsonNull : IObjectReference, IJsonFormattable
     {
-        public static readonly JNull Value = new JNull();
+        public static readonly JsonNull Value = new JsonNull();
+
+        private JsonNull() {}
 
         public override string ToString()
         {
@@ -57,7 +59,7 @@ namespace Jayrock.Json
             // Equals self, of course.
             //
 
-            if (o.Equals(JNull.Value))
+            if (o.Equals(JsonNull.Value))
                 return true;
 
             //
@@ -84,12 +86,10 @@ namespace Jayrock.Json
         {
             writer.WriteNull();
         }
-
+        
         object IObjectReference.GetRealObject(StreamingContext context)
         {
-            return JNull.Value;
+            return JsonNull.Value;
         }
-
-        private JNull() {}
     }
 }

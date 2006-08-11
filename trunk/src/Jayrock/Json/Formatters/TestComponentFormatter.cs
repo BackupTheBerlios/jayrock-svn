@@ -186,7 +186,7 @@ namespace Jayrock.Json.Formatters
 
         private static void TestValue(object expected, JsonReader reader, string path)
         {
-            if (JNull.LogicallyEquals(expected))
+            if (JsonNull.LogicallyEquals(expected))
             {
                 Assert.AreEqual(JsonTokenClass.Null, reader.TokenClass, path);
             }

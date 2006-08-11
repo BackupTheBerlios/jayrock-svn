@@ -76,7 +76,7 @@ namespace Jayrock.Json
         [ Test ]
         public void ParseNull()
         {
-            Assert.AreEqual(JNull.Value, Parse("null"));
+            Assert.AreEqual(null, Parse("null"));
         }
 
         [ Test ]
@@ -127,7 +127,7 @@ namespace Jayrock.Json
             Assert.AreEqual(5, article.Count);
             Assert.AreEqual("Introduction to JSON", article["Title"]);
             Assert.AreEqual(2, article["Rating"]);
-            Assert.AreEqual(JNull.Value, article["Abstract"]);
+            Assert.AreEqual(null, article["Abstract"]);
             
             IDictionary author = (IDictionary) article["Author"];
             Assert.IsNotNull(author);

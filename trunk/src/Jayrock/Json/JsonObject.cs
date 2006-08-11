@@ -81,7 +81,7 @@ namespace Jayrock.Json
                 if (i < keyCount)
                     key = Mask.NullString(keys[i]);
 
-                Accumulate(key, i < valueCount ? values[i] : JNull.Value);
+                Accumulate(key, i < valueCount ? values[i] : null);
             }
         }
 

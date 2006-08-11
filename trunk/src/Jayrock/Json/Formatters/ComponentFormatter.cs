@@ -46,7 +46,7 @@ namespace Jayrock.Json.Formatters
             if (writer == null)
                 throw new ArgumentNullException("writer");
 
-            if (JNull.LogicallyEquals(o))
+            if (JsonNull.LogicallyEquals(o))
             {
                 FormatNull(o, writer);
                 return;
@@ -63,7 +63,7 @@ namespace Jayrock.Json.Formatters
 
                 object value = property.GetValue(o);
                 
-                if (!JNull.LogicallyEquals(value))
+                if (!JsonNull.LogicallyEquals(value))
                 {
                     writer.WriteMember(property.Name);
                     writer.WriteValue(value);
