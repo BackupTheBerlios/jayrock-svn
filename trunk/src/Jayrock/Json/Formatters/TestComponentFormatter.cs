@@ -145,16 +145,7 @@ namespace Jayrock.Json.Formatters
 
         private static JsonReader FormatForReading(object o)
         {
-            CompositeFormatter compositeFormatter = new CompositeFormatter();
-            compositeFormatter.AddFormatter(typeof(Car), new ComponentFormatter());
-            compositeFormatter.AddFormatter(typeof(Person), new ComponentFormatter());
-            compositeFormatter.AddFormatter(typeof(OwnerCars), new ComponentFormatter());
-
-            JsonTextWriter writer = new JsonTextWriter();
-            writer.ValueFormatter = compositeFormatter;
-
-            writer.WriteValue(o);
-            return new JsonTextReader(new StringReader(writer.ToString()));
+            return new JsonTextReader(new StringReader(Format(o)));
         }
 
         private static void Test(JsonObject expected, object actual)
