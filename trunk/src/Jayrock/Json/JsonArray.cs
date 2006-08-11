@@ -240,7 +240,7 @@ namespace Jayrock.Json
         /// more arrays.
         /// </remarks>
         
-        public int Push(object value)
+        public virtual int Push(object value)
         {
             Add(value);
             return Count;
@@ -259,7 +259,7 @@ namespace Jayrock.Json
         /// more arrays.
         /// </remarks>
 
-        public int Push(params object[] values)
+        public virtual int Push(params object[] values)
         {
             if (values != null)
             {
@@ -277,7 +277,7 @@ namespace Jayrock.Json
         /// If the array is empty, null is returned.
         /// </remarks>
 
-        public object Pop()
+        public virtual object Pop()
         {
             if (Count == 0)
                 return null;
@@ -292,7 +292,7 @@ namespace Jayrock.Json
         /// arrays.
         /// </summary>
 
-        public JsonArray Concat(params object[] values)
+        public virtual JsonArray Concat(params object[] values)
         {
             JsonArray newArray = new JsonArray(this);
 
@@ -321,7 +321,7 @@ namespace Jayrock.Json
         /// Removes the first element from an array and returns it.
         /// </summary>
 
-        public object Shift()
+        public virtual object Shift()
         {
             if (Count == 0)
                 return null;
@@ -340,7 +340,7 @@ namespace Jayrock.Json
         /// list.
         /// </remarks>
 
-        public JsonArray Unshift(object value)
+        public virtual JsonArray Unshift(object value)
         {
             List.Insert(0, value);
             return this;
@@ -355,7 +355,7 @@ namespace Jayrock.Json
         /// list.
         /// </remarks>
 
-        public JsonArray Unshift(params object[] values)
+        public virtual JsonArray Unshift(params object[] values)
         {
             if (values != null)
             {
