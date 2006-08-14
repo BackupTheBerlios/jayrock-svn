@@ -49,7 +49,7 @@ namespace Jayrock.Json.Importers
                 typeDescriptor.GetProperties();
         }
 
-        public override void Register(IJsonImporterRegistry registry)
+        public override void RegisterSelf(IJsonImporterRegistry registry)
         {
             registry.Register(_type, this);
         }

@@ -25,6 +25,7 @@ namespace Jayrock.Json.Importers
     #region Imports
 
     using System;
+    using System.Collections;
     using System.Collections.Specialized;
     using System.IO;
     using NUnit.Framework;
@@ -32,24 +33,24 @@ namespace Jayrock.Json.Importers
     #endregion
 
     [ TestFixture ]
-    public class TestArrayImporter
+    public class TestTypedArrayImporter
     {
         [ Test, ExpectedException(typeof(ArgumentException)) ]
-        public void InitializationTypeMustBeArray()
+        public void ElementTypeMustBeArray()
         {
-            new ArrayImporter(typeof(object));
+            new TypedArrayImporter(typeof(object));
         }
 
         [ Test, ExpectedException(typeof(ArgumentException)) ]
-        public void InitializationTypeMustBeOneDimensionArray()
+        public void ElementTypeMustBeOneDimensionArray()
         {
-            new ArrayImporter(typeof(object[,]));
+            new TypedArrayImporter(typeof(object[,]));
         }
 
         [ Test ]
         public void ImportNull()
         {
-            ArrayImporter importer = new ArrayImporter();
+            TypedArrayImporter importer = new TypedArrayImporter();
             Assert.IsNull(importer.Import(CreateReader("null")));
         }
 
@@ -78,6 +79,25 @@ namespace Jayrock.Json.Importers
             AssertImport(new DateTime[] { new DateTime(1999, 12, 31), new DateTime(2000, 1, 1),  }, "[ '1999-12-31', '2000-01-01' ]");
         }
         
+        [ Test ]
+        public void AutoElementRegistration()
+        {
+            TestRegistry registry = new TestRegistry();
+            TypedArrayImporter importer = new TypedArrayImporter(typeof(int[]));
+            importer.RegisterSelf(registry);
+            
+            Assert.AreEqual(2, registry.Types.Count);
+            
+            int i;
+            i = registry.Types.IndexOf(typeof(int));
+            Assert.AreNotEqual(-1, i);
+            Assert.AreSame(JsonImporterStock.Int32, registry.Importers[i]);
+            
+            i = registry.Types.IndexOf(typeof(int[]));
+            Assert.AreNotEqual(-1, i);
+            Assert.AreSame(importer, registry.Importers[i]);
+        }
+
         private static void AssertImport(Array expected, string s)
         {
             JsonReader reader = CreateReader(s);
@@ -93,6 +113,33 @@ namespace Jayrock.Json.Importers
         private static JsonReader CreateReader(string s)
         {
             return new JsonTextReader(new StringReader(s));
+        }
+ 
+        private sealed class TestRegistry : IJsonImporterRegistry
+        {
+            public ArrayList Types = new ArrayList();
+            public ArrayList Importers = new ArrayList();
+            
+            public void Register(Type type, IJsonImporter importer)
+            {
+                Types.Add(type);
+                Importers.Add(importer);
+            }
+
+            public void RegisterLocator(IJsonImporterLocator locator)
+            {
+                throw new NotImplementedException();
+            }
+
+            public IJsonImporter Find(Type type)
+            {
+                return null;
+            }
+
+            public void RegisterSelf(IJsonImporterRegistry registry)
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }

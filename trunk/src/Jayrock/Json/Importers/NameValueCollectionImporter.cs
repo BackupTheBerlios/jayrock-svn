@@ -31,7 +31,7 @@ namespace Jayrock.Json.Importers
 
     public class NameValueCollectionImporter : JsonImporter
     {
-        public override void Register(IJsonImporterRegistry registry)
+        public override void RegisterSelf(IJsonImporterRegistry registry)
         {
             registry.Register(typeof(NameValueCollection), this);
         }

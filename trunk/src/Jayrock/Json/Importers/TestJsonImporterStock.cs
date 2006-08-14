@@ -43,12 +43,20 @@ namespace Jayrock.Json.Importers
             AssertInStock(typeof(double));
             AssertInStock(typeof(DateTime));
             AssertInStock(typeof(string));
+            AssertInStock(typeof(bool));
+            AssertInStock(typeof(object));
             AssertInStock(typeof(object[]));
+        }
+        
+        [ Test, ExpectedException(typeof(JsonException)) ]
+        public void CannotGetUnknown()
+        {
+            JsonImporterStock.Get(typeof(Enum));
         }
 
         private static void AssertInStock(Type type)
         {
-            Assert.IsNotNull(JsonImporterStock.Find(type), type.FullName);
+            Assert.IsNotNull(JsonImporterStock.Find(type), "{0} not in stock.", type.FullName);
         }
     }
 }

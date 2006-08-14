@@ -264,6 +264,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Json\TestJsonImporterRegistry.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\TestJsonNull.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -409,6 +414,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Json\Importers\ComponentImporterAttribute.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\Importers\DateTimeImporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -435,11 +445,6 @@
                 />
                 <File
                     RelPath = "Json\Importers\StringImporter.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Json\Importers\TestArrayImporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -485,6 +490,11 @@
                 />
                 <File
                     RelPath = "Json\Importers\TestStringImporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Importers\TestTypedArrayImporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

@@ -33,7 +33,7 @@ namespace Jayrock.Json
     public sealed class JsonImporterRegistry : IJsonImporterRegistry
     {
         private readonly Hashtable _importerByType = new Hashtable();
-        private readonly Hashtable _factoryByType = new Hashtable();
+        private ArrayList _locators;
 
         public IJsonImporter Find(Type type)
         {
@@ -47,38 +47,39 @@ namespace Jayrock.Json
                 return importer;
             
             //
-            // No importer found, so look one up using the wide types, where
-            // the factory creates one on demand. For example, an array is
-            // wide type that covers a lot of specific instantiations. An
-            // array importer would be produce an importer on demand at the
-            // time the specific instantiation is demanded. If the factory
-            // creates the importer, it is registered.
+            // No importer found using an exact matching type, so we ask
+            // the set of "chained" locators to find one.
             //
             
-            foreach (DictionaryEntry entry in _factoryByType)
+            foreach (IJsonImporterLocator locator in Locators)
             {
-                Type wideType = (Type) entry.Key;
-            
-                if (wideType.IsAssignableFrom(type))
-                {
-                    IJsonImporterFactory factory = (IJsonImporterFactory) entry.Value;
-                    importer = factory.Create(type);
+                importer = locator.Find(type);
+                
+                if (importer != null)
                     break;
-                }
+            }
+            
+            if (importer == null)
+            {
+                //
+                // If still no importer found, then check for importer
+                // specification via a custom attriubte.
+                //
+
+                object[] attributes = type.GetCustomAttributes(typeof(IJsonImporterLocator), true);
+                
+                if (attributes.Length > 0)
+                    importer = ((IJsonImporterLocator) attributes[0]).Find(type);
             }
             
             //
-            // If still no importer found, then we fault in one from the
-            // stock. This allows known and common types to be 
-            // conveniently and automatically set up.
+            // If an import was found, then register it so that it we don't
+            // have to go through the same trouble of locating it again.
             //
             
-            if (importer == null)
-                importer = JsonImporterStock.Find(type);
-            
             if (importer != null)
-                importer.Register(this);
-
+                importer.RegisterSelf(this);
+            
             return importer;
         }
 
@@ -93,15 +94,45 @@ namespace Jayrock.Json
             _importerByType.Add(type, importer);
         }
 
-        public void RegisterFactory(Type type, IJsonImporterFactory factory)
+        public void RegisterLocator(IJsonImporterLocator locator)
         {
-            if (type == null)
-                throw new ArgumentNullException("type");
-
-            if (factory == null)
-                throw new ArgumentNullException("factory");
+            if (locator == null)
+                throw new ArgumentNullException("locator");
             
-            _factoryByType.Add(type, factory);
+            if (locator == this)
+                throw new ArgumentException("Locator to register cannot be the registry itself.");
+            
+            if (Locators.Contains(locator))
+                throw new ArgumentException("Locator is already registered.");
+            
+            Locators.Insert(0, locator);
+        }
+
+        public void RegisterSelf(IJsonImporterRegistry registry)
+        {
+            registry.RegisterLocator(this);
+        }
+
+        private ArrayList Locators
+        {
+            get
+            {
+                if (_locators == null)
+                {
+                    _locators = new ArrayList(4);
+
+                    //
+                    // Kindly register the stock locator so that known and 
+                    // common type importers are conveniently served. 
+                    // Otherwise, the system just appears too dumb out of
+                    // the box.
+                    //
+                
+                    JsonImporterStock.Locator.RegisterSelf(this);
+                }
+                
+                return _locators;
+            }
         }
     }
 }

@@ -28,21 +28,20 @@ namespace Jayrock.Json
 
     #endregion
 
-    public interface IJsonImporterRegistry
+    public interface IJsonImporterRegistry : IJsonImporterLocator
     {
         void Register(Type type, IJsonImporter importer);
-        void RegisterFactory(Type type, IJsonImporterFactory factory);
-        IJsonImporter Find(Type type);
+        void RegisterLocator(IJsonImporterLocator locator);
     }
     
     public interface IJsonImporterRegistryTargetable
     {
-        void Register(IJsonImporterRegistry registry);
+        void RegisterSelf(IJsonImporterRegistry registry);
     }
 
-    public interface IJsonImporterFactory : IJsonImporterRegistryTargetable
+    public interface IJsonImporterLocator : IJsonImporterRegistryTargetable
     {
-        IJsonImporter Create(Type type);
+        IJsonImporter Find(Type type);
     }
 
     public interface IJsonImporter : IJsonImporterRegistryTargetable

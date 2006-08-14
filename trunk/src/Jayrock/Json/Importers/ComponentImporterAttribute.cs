@@ -25,30 +25,35 @@ namespace Jayrock.Json.Importers
     #region Imports
 
     using System;
+    using NetMatters;
 
     #endregion
 
-    public abstract class JsonImporter : IJsonImporter
+    [ AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct) ]
+    public sealed class ComponentImporterAttribute : Attribute, IJsonImporterLocator
     {
-        public abstract void RegisterSelf(IJsonImporterRegistry registry);
-
-        public virtual object Import(JsonReader reader)
+        IJsonImporter IJsonImporterLocator.Find(Type type)
         {
-            if (reader == null)
-                throw new ArgumentNullException("reader");
-            
-            if (!reader.MoveToContent())
-                throw new JsonException("Unexpected EOF.");
-            
-            object o = null;
-            
-            if (reader.TokenClass != JsonTokenClass.Null)
-                o = SubImport(reader);
-            
-            reader.Read();
-            return o;
+            return new ComponentImporter(type);
         }
 
-        protected abstract object SubImport(JsonReader reader);
+        void IJsonImporterRegistryTargetable.RegisterSelf(IJsonImporterRegistry registry)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    [ AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct) ]
+    public sealed class FieldBasedComponentImporter : Attribute, IJsonImporterLocator
+    {
+        IJsonImporter IJsonImporterLocator.Find(Type type)
+        {
+            return new ComponentImporter(type, new FieldsToPropertiesProxyTypeDescriptor(type));
+        }
+
+        void IJsonImporterRegistryTargetable.RegisterSelf(IJsonImporterRegistry registry)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -12,145 +12,145 @@ namespace NetMatters
     #endregion
     
     internal sealed class FieldsToPropertiesProxyTypeDescriptor : ICustomTypeDescriptor
-	{
-		private readonly Type _type;
+    {
+        private readonly Type _type;
         private PropertyDescriptorCollection _cachedProperties;
         private FilterCache _filterCache;
+        
+        public FieldsToPropertiesProxyTypeDescriptor(Type type)
+        {
+            if (type == null) 
+                throw new ArgumentNullException("type");
+            
+            _type = type;
+        }
 
-		public FieldsToPropertiesProxyTypeDescriptor(Type type)
-		{
-			if (type == null) 
-			    throw new ArgumentNullException("type");
-		    
-			_type = type;
-		}
+        public object GetPropertyOwner(PropertyDescriptor property)
+        {
+            return _type;
+        }
 
-		object ICustomTypeDescriptor.GetPropertyOwner(PropertyDescriptor property)
-		{
-			return _type;
-		}
+        public AttributeCollection GetAttributes()
+        {
+            return TypeDescriptor.GetAttributes(_type, true);
+        }
 
-		AttributeCollection ICustomTypeDescriptor.GetAttributes()
-		{
-			return TypeDescriptor.GetAttributes(_type, true);
-		}
+        public string GetClassName()
+        {
+            return TypeDescriptor.GetClassName(_type, true);
+        }
 
-		string ICustomTypeDescriptor.GetClassName()
-		{
-			return TypeDescriptor.GetClassName(_type, true);
-		}
+        public string GetComponentName()
+        {
+            return TypeDescriptor.GetComponentName(_type, true);
+        }
 
-		string ICustomTypeDescriptor.GetComponentName()
-		{
-			return TypeDescriptor.GetComponentName(_type, true);
-		}
+        public TypeConverter GetConverter()
+        {
+            return TypeDescriptor.GetConverter(_type, true);
+        }
 
-		TypeConverter ICustomTypeDescriptor.GetConverter()
-		{
-			return TypeDescriptor.GetConverter(_type, true);
-		}
+        public EventDescriptor GetDefaultEvent()
+        {
+            return TypeDescriptor.GetDefaultEvent(_type, true);
+        }
 
-		EventDescriptor ICustomTypeDescriptor.GetDefaultEvent()
-		{
-			return TypeDescriptor.GetDefaultEvent(_type, true);
-		}
+        public PropertyDescriptor GetDefaultProperty()
+        {
+            return TypeDescriptor.GetDefaultProperty(_type, true);
+        }
 
-		PropertyDescriptor ICustomTypeDescriptor.GetDefaultProperty()
-		{
-			return TypeDescriptor.GetDefaultProperty(_type, true);
-		}
+        public object GetEditor(Type editorBaseType)
+        {
+            return TypeDescriptor.GetEditor(_type, editorBaseType, true);
+        }
 
-		object ICustomTypeDescriptor.GetEditor(Type editorBaseType)
-		{
-			return TypeDescriptor.GetEditor(_type, editorBaseType, true);
-		}
+        public EventDescriptorCollection GetEvents(Attribute[] attributes)
+        {
+            return TypeDescriptor.GetEvents(_type, attributes, true);
+        }
 
-		EventDescriptorCollection ICustomTypeDescriptor.GetEvents(Attribute[] attributes)
-		{
-			return TypeDescriptor.GetEvents(_type, attributes, true);
-		}
+        public EventDescriptorCollection GetEvents()
+        {
+            return TypeDescriptor.GetEvents(_type, true);
+        }
 
-		EventDescriptorCollection ICustomTypeDescriptor.GetEvents()
-		{
-			return TypeDescriptor.GetEvents(_type, true);
-		}
+        public PropertyDescriptorCollection GetProperties()
+        {
+            return GetProperties((Attribute[]) null);
+        }
 
-		PropertyDescriptorCollection ICustomTypeDescriptor.GetProperties()
-		{
-			return ((ICustomTypeDescriptor) this).GetProperties(null);
-		}
+        public PropertyDescriptorCollection GetProperties(Attribute[] attributes)
+        {
+            bool filtering = (attributes != null && attributes.Length > 0);
+            PropertyDescriptorCollection properties = _cachedProperties;
+            FilterCache cache = _filterCache;
 
-		PropertyDescriptorCollection ICustomTypeDescriptor.GetProperties(Attribute[] attributes)
-		{
-			bool filtering = (attributes != null && attributes.Length > 0);
-			PropertyDescriptorCollection properties = _cachedProperties;
-			FilterCache cache = _filterCache;
+            //
+            // Use a cached version if we can.
+            //
+            
+            if (filtering && cache != null && cache.IsValid(attributes)) 
+            {
+                return cache.FilteredProperties;
+            }
+            else if (!filtering && properties != null) 
+            {
+                return properties;
+            }
 
-			//
-		    // Use a cached version if we can.
-		    //
-		    
-			if (filtering && cache != null && cache.IsValid(attributes)) 
-			{
-				return cache.FilteredProperties;
-			}
-			else if (!filtering && properties != null) 
-			{
-				return properties;
-			}
+            //
+            // Create the property collection and filter if necessary.
+            //
+            
+            properties = new PropertyDescriptorCollection(null);
+            
+            foreach (PropertyDescriptor property in TypeDescriptor.GetProperties(_type, attributes))
+                properties.Add(property);
+            
+            foreach (FieldInfo field in _type.GetFields())
+            {
+                FieldPropertyDescriptor fieldProperty = new FieldPropertyDescriptor(field);
+                
+                if (!filtering || fieldProperty.Attributes.Contains(attributes)) 
+                    properties.Add(fieldProperty);
+            }
 
-			//
-		    // Create the property collection and filter if necessary.
-		    //
-		    
-			properties = new PropertyDescriptorCollection(null);
-			
-		    foreach (PropertyDescriptor property in TypeDescriptor.GetProperties(_type, attributes))
-				properties.Add(property);
-		    
-			foreach (FieldInfo field in _type.GetFields())
-			{
-				FieldPropertyDescriptor fieldProperty = new FieldPropertyDescriptor(field);
-			    
-				if (!filtering || fieldProperty.Attributes.Contains(attributes)) 
-				    properties.Add(fieldProperty);
-			}
+            //
+            // Store the computed properties.
+            //
+            
+            if (filtering) 
+            {
+                cache = new FilterCache();
+                cache.Attributes = attributes;
+                cache.FilteredProperties = properties;
+                _filterCache = cache;
+            } 
+            else
+            {
+                _cachedProperties = properties;
+            }
 
-		    //
-			// Store the computed properties.
-		    //
-		    
-			if (filtering) 
-			{
-				cache = new FilterCache();
-				cache.Attributes = attributes;
-				cache.FilteredProperties = properties;
-				_filterCache = cache;
-			} 
-			else
-			{
-			    _cachedProperties = properties;
-			}
+            return properties;
+        }
 
-			return properties;
-		}
-
-		private class FilterCache
-		{
-			public Attribute[] Attributes;
-			public PropertyDescriptorCollection FilteredProperties;
-			public bool IsValid(Attribute[] other)
-			{
-				if (other == null || Attributes == null) return false;
-				if (Attributes.Length != other.Length) return false;
-				for (int i = 0; i < other.Length; i++)
-				{
-					if (!Attributes[i].Match(other[i])) return false;
-				}
-				return true;
-			}
-		}
-	    
+        private class FilterCache
+        {
+            public Attribute[] Attributes;
+            public PropertyDescriptorCollection FilteredProperties;
+            public bool IsValid(Attribute[] other)
+            {
+                if (other == null || Attributes == null) return false;
+                if (Attributes.Length != other.Length) return false;
+                for (int i = 0; i < other.Length; i++)
+                {
+                    if (!Attributes[i].Match(other[i])) return false;
+                }
+                return true;
+            }
+        }
+        
         private sealed class FieldPropertyDescriptor : PropertyDescriptor
         {
             private readonly FieldInfo _field;
@@ -185,5 +185,5 @@ namespace NetMatters
                 OnValueChanged(component, EventArgs.Empty);
             }
         }
-	}
+    }
 }

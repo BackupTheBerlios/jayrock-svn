@@ -308,6 +308,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Json\Importers\ComponentImporterAttribute.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\Importers\DateTimeImporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"

@@ -32,7 +32,7 @@ namespace Jayrock.Json.Importers
 
     public sealed class AutoImporter : JsonImporter
     {
-        public override void Register(IJsonImporterRegistry registry)
+        public override void RegisterSelf(IJsonImporterRegistry registry)
         {
             registry.Register(typeof(object), this);
         }

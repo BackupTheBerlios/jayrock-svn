@@ -30,27 +30,29 @@ namespace Jayrock.Json.Importers
 
     #endregion
 
-    public sealed class JsonImporterStock
+    public sealed class JsonImporterStock : IJsonImporterLocator
     {
-        public static IJsonImporter Byte = NumberImporter.Byte;
-        public static IJsonImporter Int16 = NumberImporter.Int16;
-        public static IJsonImporter Int32 = NumberImporter.Int32;
-        public static IJsonImporter Int64 = NumberImporter.Int64;
-        public static IJsonImporter Single = NumberImporter.Single;
-        public static IJsonImporter Double = NumberImporter.Double;
-        public static IJsonImporter Decimal = NumberImporter.Decimal;
-        public static IJsonImporter String = new StringImporter();
-        public static IJsonImporter Boolean = new BooleanImporter();
-        public static IJsonImporter DateTime = new DateTimeImporter();
-        public static IJsonImporterFactory Array = new ArrayImporterFactory();
-        public static IJsonImporter Auto = new AutoImporter();
+        public readonly static IJsonImporterLocator Locator = new JsonImporterStock();
         
-        private readonly static IJsonImporter[] _importers = 
+        public static readonly IJsonImporter Byte = NumberImporter.Byte;
+        public static readonly IJsonImporter Int16 = NumberImporter.Int16;
+        public static readonly IJsonImporter Int32 = NumberImporter.Int32;
+        public static readonly IJsonImporter Int64 = NumberImporter.Int64;
+        public static readonly IJsonImporter Single = NumberImporter.Single;
+        public static readonly IJsonImporter Double = NumberImporter.Double;
+        public static readonly IJsonImporter Decimal = NumberImporter.Decimal;
+        public static readonly IJsonImporter String = new StringImporter();
+        public static readonly IJsonImporter Boolean = new BooleanImporter();
+        public static readonly IJsonImporter DateTime = new DateTimeImporter();
+        public static readonly IJsonImporterLocator Array = new ArrayImporter();
+        public static readonly IJsonImporter Auto = new AutoImporter();
+        
+        private static readonly IJsonImporter[] _importers = 
         {
             null,    // Empty = 0     - Null reference
             null,    // Object = 1    - Instance that isn't a value
             null,    // DBNull = 2    - Database null value
-            null,    // Boolean = 3   - Boolean
+            Boolean, // Boolean = 3   - Boolean
             null,    // Char = 4      - Unicode character
             null,    // SByte = 5     - Signed 8-bit integer
             Byte,    // Byte = 6      - Unsigned 8-bit integer
@@ -74,20 +76,20 @@ namespace Jayrock.Json.Importers
                 throw new ArgumentNullException("type");
             
             IJsonImporter importer = Find(type);
-            
+
             if (importer == null)
-                throw new JsonException(string.Format("Don't know how to import {0} values.", type.FullName)); // TODO: Replace with an appropriate exception
+                throw new JsonException(string.Format("There is no stock importer that can get {0} from JSON data.", type.FullName));
             
             return importer;
         }
-        
+
         public static IJsonImporter Find(Type type)
         {
             if (type == null)
                 throw new ArgumentNullException("type");
 
             if (type.IsArray)
-                return Array.Create(type);
+                return Array.Find(type);
             
             if (type == typeof(object))
                 return JsonImporterStock.Auto;
@@ -104,9 +106,19 @@ namespace Jayrock.Json.Importers
             return _importers[index];            
         }
 
-        private JsonImporterStock()
+        IJsonImporter IJsonImporterLocator.Find(Type type)
         {
-            throw new NotSupportedException();
+            return JsonImporterStock.Find(type);
         }
+
+        void IJsonImporterRegistryTargetable.RegisterSelf(IJsonImporterRegistry registry)
+        {
+            if (registry == null)
+                throw new ArgumentNullException("registry");
+            
+            registry.RegisterLocator(this);
+        }
+ 
+        private JsonImporterStock() {}
     }
 }

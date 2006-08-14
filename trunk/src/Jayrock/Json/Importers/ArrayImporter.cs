@@ -31,26 +31,27 @@ namespace Jayrock.Json.Importers
 
     #endregion
     
-    public sealed class ArrayImporterFactory : IJsonImporterFactory
+    public sealed class ArrayImporter : IJsonImporterLocator
     {
-        public IJsonImporter Create(Type type)
+        public IJsonImporter Find(Type type)
         {
-            return new ArrayImporter(type);
+            return type.IsArray && type.GetArrayRank() == 1 ? 
+                   new TypedArrayImporter(type) : null;
         }
 
-        public void Register(IJsonImporterRegistry registry)
+        public void RegisterSelf(IJsonImporterRegistry registry)
         {
-            registry.RegisterFactory(typeof(Array), this);
+            registry.RegisterLocator(this);
         }
     }
 
-    public sealed class ArrayImporter : JsonImporter
+    public sealed class TypedArrayImporter : JsonImporter
     {
         private readonly Type _arrayType;
 
-        public ArrayImporter() : this(null) {}
+        public TypedArrayImporter() : this(null) {}
 
-        public ArrayImporter(Type arrayType)
+        public TypedArrayImporter(Type arrayType)
         {
             if (arrayType == null)
                 arrayType = typeof(object[]);
@@ -64,7 +65,7 @@ namespace Jayrock.Json.Importers
             _arrayType = arrayType;
         }
 
-        public override void Register(IJsonImporterRegistry registry)
+        public override void RegisterSelf(IJsonImporterRegistry registry)
         {
             Type elementType = _arrayType.GetElementType();
             
@@ -97,7 +98,7 @@ namespace Jayrock.Json.Importers
                 throw new ArgumentNullException("reader");
 
             if (reader.TokenClass != JsonTokenClass.Array)
-                throw new JsonException(string.Format("Found {0} where expecting an array.", reader.TokenClass));
+                throw new JsonException(string.Format("Found {0} where expecting JSON Array.", reader.TokenClass));
 
             reader.Read();
 

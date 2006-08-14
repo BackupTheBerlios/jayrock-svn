@@ -25,6 +25,7 @@ namespace Jayrock.Json.Importers
     #region Imports
 
     using System;
+    using System.ComponentModel;
     using System.IO;
     using NetMatters;
     using NUnit.Framework;
@@ -69,7 +70,7 @@ namespace Jayrock.Json.Importers
         [ Test ]
         public void ImportEmptyObject()
         {
-            Person p = (Person) Import("{}");
+            Person p = (Person) ImportPerson("{}");
             Assert.AreEqual(0, p.Id);
             Assert.IsNull(p.FullName, "FullName");
             Assert.IsNull(p.Spouce, "Spouce");
@@ -78,7 +79,7 @@ namespace Jayrock.Json.Importers
         [ Test ]
         public void ImportObject()
         {
-            Person p = (Person) Import("{ Id : 42, FullName : 'Bob'}");
+            Person p = (Person) ImportPerson("{ Id : 42, FullName : 'Bob'}");
             Assert.AreEqual(42, p.Id, "Id");
             Assert.AreEqual("Bob", p.FullName, "FullName");
             Assert.IsNull(p.Spouce, "Spouce");
@@ -87,7 +88,7 @@ namespace Jayrock.Json.Importers
         [ Test ]
         public void ImportEmbeddedObjects()
         {
-            Person p = (Person) Import(@"{
+            Person p = (Person) ImportPerson(@"{
                 Id : 42,
                 FullName : 'Bob',
                 Spouce: { 
@@ -159,10 +160,10 @@ namespace Jayrock.Json.Importers
             }";
             
             JsonTextReader reader = new JsonTextReader(new StringReader(text));
-            (new ComponentImporter(typeof(YahooResponse), new FieldsToPropertiesProxyTypeDescriptor(typeof(YahooResponse)))).Register(reader.Importers);
-            (new ComponentImporter(typeof(YahooResultSet), new FieldsToPropertiesProxyTypeDescriptor(typeof(YahooResultSet)))).Register(reader.Importers);
-            (new ComponentImporter(typeof(YahooResult), new FieldsToPropertiesProxyTypeDescriptor(typeof(YahooResult)))).Register(reader.Importers);
-            (new ComponentImporter(typeof(YahooThumbnail), new FieldsToPropertiesProxyTypeDescriptor(typeof(YahooThumbnail)))).Register(reader.Importers);
+            RegisterYahooTypeImporter(typeof(YahooResponse), reader.Importers);
+            RegisterYahooTypeImporter(typeof(YahooResultSet), reader.Importers);
+            RegisterYahooTypeImporter(typeof(YahooResult), reader.Importers);
+            RegisterYahooTypeImporter(typeof(YahooThumbnail), reader.Importers);
             
             YahooResponse response = (YahooResponse) reader.Get(typeof(YahooResponse));
             Assert.IsNotNull(response);
@@ -215,12 +216,12 @@ namespace Jayrock.Json.Importers
             Assert.AreEqual(1153113674, result.ModificationDate);
         }
         
-        private static object Import(string s)
+        private static object ImportPerson(string s)
         {
             Type expectedType = typeof(Person);
             JsonReader reader = CreateReader(s);
             IJsonImporterRegistry registry = reader.Importers;
-            (new ComponentImporter(expectedType)).Register(registry);
+            (new ComponentImporter(expectedType)).RegisterSelf(registry);
             object o = reader.Get(expectedType);            
             Assert.IsNotNull(o);
             Assert.IsInstanceOfType(expectedType, o);
@@ -232,6 +233,13 @@ namespace Jayrock.Json.Importers
             return new JsonTextReader(new StringReader(s));
         }
         
+        private void RegisterYahooTypeImporter(Type type, IJsonImporterRegistry registry)
+        {
+            ICustomTypeDescriptor descriptor = new FieldsToPropertiesProxyTypeDescriptor(type);
+            ComponentImporter importer = new ComponentImporter(type, descriptor);
+            importer.RegisterSelf(registry);
+        }
+            
         //
         // NOTE: The default assignments on the following fields is
         // to maily shut off the following warning from the compiler:
@@ -242,7 +250,7 @@ namespace Jayrock.Json.Importers
         // not support #pragma warning disable, we have to resort
         // to a more brute force method.
         //
-
+        
         private class YahooResponse
         {
             public YahooResultSet ResultSet = null;
