@@ -26,14 +26,13 @@ namespace Jayrock.Json.Importers
 
     using System;
     using System.ComponentModel;
-    using System.Reflection;
 
     #endregion
 
     public sealed class ComponentImporter : JsonImporter
     {
         private readonly Type _type;
-        private PropertyDescriptorCollection _properties;
+        private readonly PropertyDescriptorCollection _properties;
 
         public ComponentImporter(Type type) :
             this(type, null) {}
@@ -69,8 +68,10 @@ namespace Jayrock.Json.Importers
                
                 PropertyDescriptor property = _properties[memberName];
                 
-                if (property != null)
+                if (property != null && !property.IsReadOnly)
                     property.SetValue(o, reader.Get(property.PropertyType));
+                else 
+                    reader.DeserializeNext();
             }
          
             return o;

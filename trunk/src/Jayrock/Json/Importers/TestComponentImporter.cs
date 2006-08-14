@@ -25,6 +25,7 @@ namespace Jayrock.Json.Importers
     #region Imports
 
     using System;
+    using System.Collections;
     using System.ComponentModel;
     using System.IO;
     using NetMatters;
@@ -42,31 +43,6 @@ namespace Jayrock.Json.Importers
             Assert.IsNull(importer.Import(CreateReader("null")));
         }
 
-        private sealed class Person
-        {
-            private int _id;
-            private string _fullName;
-            private Person _spouce;
-
-            public int Id
-            {
-                get { return _id; }
-                set { _id = value; }
-            }
-
-            public string FullName
-            {
-                get { return _fullName; }
-                set { _fullName = value; }
-            }
-
-            public Person Spouce
-            {
-                get { return _spouce; }
-                set { _spouce = value; }
-            }
-        }
-
         [ Test ]
         public void ImportEmptyObject()
         {
@@ -79,9 +55,9 @@ namespace Jayrock.Json.Importers
         [ Test ]
         public void ImportObject()
         {
-            Person p = (Person) ImportPerson("{ Id : 42, FullName : 'Bob'}");
+            Person p = (Person) ImportPerson("{ Id : 42, FullName : 'Charles Dickens' }");
             Assert.AreEqual(42, p.Id, "Id");
-            Assert.AreEqual("Bob", p.FullName, "FullName");
+            Assert.AreEqual("Charles Dickens", p.FullName, "FullName");
             Assert.IsNull(p.Spouce, "Spouce");
         }
 
@@ -216,6 +192,155 @@ namespace Jayrock.Json.Importers
             Assert.AreEqual(1153113674, result.ModificationDate);
         }
         
+        
+        [ Test ]
+        public void SkipsReadOnlyProperty()
+        {
+            Type thingType = typeof(Thing);
+            JsonTextReader reader = new JsonTextReader(new StringReader("{ Id : 42 }"));
+            TestTypeDescriptor descriptor = new TestTypeDescriptor();
+            descriptor.AddReadOnlyProperty("Id");
+            ComponentImporter importer = new ComponentImporter(thingType, descriptor);
+            importer.RegisterSelf(reader.Importers);
+            reader.Get(thingType);
+            Assert.IsFalse(descriptor.GetProperty("Id").SetValueCalled);
+        }
+
+        private sealed class Thing
+        {
+        }
+
+        private sealed class TestTypeDescriptor : ICustomTypeDescriptor
+        {
+            private static readonly PropertyDescriptorCollection _properties = new PropertyDescriptorCollection(null);
+
+            public PropertyDescriptorCollection GetProperties()
+            {
+                return _properties;
+            }
+            
+            public void AddReadOnlyProperty(string name)
+            {
+                _properties.Add(new ReadOnlyPropertyDescriptor(name));
+            }
+
+            public sealed class ReadOnlyPropertyDescriptor : PropertyDescriptor
+            {
+                public bool SetValueCalled;
+
+                public ReadOnlyPropertyDescriptor(string name) : 
+                    base(name, null) {}
+
+                public override void SetValue(object component, object value)
+                {
+                    SetValueCalled = true;
+                }
+
+                public override bool IsReadOnly
+                {
+                    get { return true; }
+                }
+
+                #region Unused members
+
+                public override bool CanResetValue(object component)
+                {
+                    throw new NotImplementedException();
+                }
+
+                public override object GetValue(object component)
+                {
+                    throw new NotImplementedException();
+                }
+
+                public override void ResetValue(object component)
+                {
+                    throw new NotImplementedException();
+                }
+
+                public override bool ShouldSerializeValue(object component)
+                {
+                    throw new NotImplementedException();
+                }
+
+                public override Type ComponentType
+                {
+                    get { throw new NotImplementedException(); }
+                }
+
+                public override Type PropertyType
+                {
+                    get { throw new NotImplementedException(); }
+                }
+
+                #endregion
+            }
+
+            #region Unused members
+
+            public AttributeCollection GetAttributes()
+            {
+                throw new NotImplementedException();
+            }
+
+            public string GetClassName()
+            {
+                throw new NotImplementedException();
+            }
+
+            public string GetComponentName()
+            {
+                throw new NotImplementedException();
+            }
+
+            public TypeConverter GetConverter()
+            {
+                throw new NotImplementedException();
+            }
+
+            public EventDescriptor GetDefaultEvent()
+            {
+                throw new NotImplementedException();
+            }
+
+            public PropertyDescriptor GetDefaultProperty()
+            {
+                throw new NotImplementedException();
+            }
+
+            public object GetEditor(Type editorBaseType)
+            {
+                throw new NotImplementedException();
+            }
+
+            public EventDescriptorCollection GetEvents()
+            {
+                throw new NotImplementedException();
+            }
+
+            public EventDescriptorCollection GetEvents(Attribute[] attributes)
+            {
+                throw new NotImplementedException();
+            }
+
+            public PropertyDescriptorCollection GetProperties(Attribute[] attributes)
+            {
+                throw new NotImplementedException();
+            }
+
+            public object GetPropertyOwner(PropertyDescriptor pd)
+            {
+                throw new NotImplementedException();
+            }
+
+            #endregion
+
+            public ReadOnlyPropertyDescriptor GetProperty(string name)
+            {
+                return (ReadOnlyPropertyDescriptor) _properties[name];
+            }
+        }
+
         private static object ImportPerson(string s)
         {
             Type expectedType = typeof(Person);
@@ -240,6 +365,31 @@ namespace Jayrock.Json.Importers
             importer.RegisterSelf(registry);
         }
             
+        private sealed class Person
+        {
+            private int _id;
+            private string _fullName;
+            private Person _spouce;
+
+            public int Id
+            {
+                get { return _id; }
+                set { _id = value; }
+            }
+
+            public string FullName
+            {
+                get { return _fullName; }
+                set { _fullName = value; }
+            }
+            
+            public Person Spouce
+            {
+                get { return _spouce; }
+                set { _spouce = value; }
+            }
+        }
+
         //
         // NOTE: The default assignments on the following fields is
         // to maily shut off the following warning from the compiler:
