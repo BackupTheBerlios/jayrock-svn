@@ -205,6 +205,26 @@ namespace Jayrock.Json
             while (Depth >= depth)
                 Read();
         }
+        
+        public void Skip()
+        {
+            if (!MoveToContent())
+                return;
+            
+            if (TokenClass == JsonTokenClass.Object || TokenClass == JsonTokenClass.Array)
+            {
+                StepOut();
+            }
+            else if (TokenClass == JsonTokenClass.Member)
+            {
+                Read(/* member */);
+                Skip(/* value */);
+            }
+            else
+            {
+                Read(/* scalar */);
+            }
+        }
 
         /// <summary>
         /// Ensures that the reader is positioned on content (a JSON value) 
