@@ -122,41 +122,7 @@ namespace Jayrock.Json.Rpc
 
         public object Invoke(IRpcService service, object[] args)
         {
-            if (service == null)
-                throw new ArgumentNullException("service");
-
-            try
-            {
-                return _dispatcher.Invoke(service, args);
-            }
-            catch (ArgumentException e)
-            {
-                //
-                // The type of the parameters parameter does not match the
-                // signature of the method or constructor reflected by this
-                // instance.                
-                //
-
-                throw new InvocationException(e);
-            }
-            catch (TargetParameterCountException e)
-            {
-                //
-                // The parameters array does not have the correct number of
-                // arguments.
-                //
-
-                throw new InvocationException(e.Message, e);
-            }
-            catch (TargetInvocationException e)
-            {
-                throw new TargetMethodException(e.InnerException);
-            }
-        }
-
-        public bool IsAsync
-        {
-            get { return false; }
+            return _dispatcher.Invoke(service, args);
         }
 
         /// <remarks>
@@ -169,51 +135,12 @@ namespace Jayrock.Json.Rpc
 
         public IAsyncResult BeginInvoke(IRpcService service, object[] args, AsyncCallback callback, object asyncState)
         {
-            if (service == null)
-                throw new ArgumentNullException("service");
-
-            SynchronousAsyncResult asyncResult;
-
-            try
-            {
-                object result = Invoke(service, args);
-                asyncResult = SynchronousAsyncResult.Success(asyncState, result);
-            }
-            catch (Exception e)
-            {
-                asyncResult = SynchronousAsyncResult.Failure(asyncState, e);
-            }
-
-            if (callback != null)
-                callback(asyncResult);
-                
-            return asyncResult;
+            return _dispatcher.BeginInvoke(service, args, callback, asyncState);
         }
 
         public object EndInvoke(IAsyncResult asyncResult)
         {
-            if (asyncResult == null)
-                throw new ArgumentException("asyncResult");
-
-            SynchronousAsyncResult ar = asyncResult as SynchronousAsyncResult;
-
-            if (ar == null)
-                throw new ArgumentException("asyncResult", "IAsyncResult object did not come from the corresponding async method on this type.");
-
-            //
-            // IMPORTANT! The End method on SynchronousAsyncResult will 
-            // throw an exception if that's what Invoke did when 
-            // BeginInvoke called it. The unforunate side effect of this is
-            // the stack trace information for the exception is lost and 
-            // reset to this point. There seems to be a basic failure in the 
-            // framework to accommodate for this case more generally. One 
-            // could handle this through a custom exception that wraps the 
-            // original exception, but this assumes that an invocation will 
-            // only throw an exception of that custom type. We need to 
-            // think more about this.
-            //
-
-            return ar.End("Invoke");
+            return _dispatcher.EndInvoke(asyncResult);
         }
 
         /// <summary>
