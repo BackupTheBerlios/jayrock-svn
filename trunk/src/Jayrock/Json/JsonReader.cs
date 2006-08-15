@@ -248,6 +248,7 @@ namespace Jayrock.Json
         /// Deserializes the next object from JSON data.
         /// </summary>
 
+        [ Obsolete ]
         public object DeserializeNext()
         {
             return DeserializeNext(null);
@@ -258,6 +259,7 @@ namespace Jayrock.Json
         /// system.
         /// </summary>
         
+        [ Obsolete ]
         public virtual object DeserializeNext(IParserOutput output)
         {
             if (output == null)
@@ -332,8 +334,16 @@ namespace Jayrock.Json
             }
         }
 
-        public object Get(Type type)
+        public object ReadValue()
         {
+            return ReadValue(null);
+        }
+        
+        public object ReadValue(Type type)
+        {
+            if (type == null)
+                type = typeof(object);
+            
             IJsonImporter importer = Importers.Find(type);
             
             if (importer == null)

@@ -112,7 +112,7 @@ namespace Jayrock.Json.Importers
         private static object Import(string input)
         {
             JsonTextReader reader = new JsonTextReader(new StringReader(input));
-            return reader.Get(typeof(DateTime));
+            return reader.ReadValue(typeof(DateTime));
         }
 
         private static string Tzd(DateTime localTime)

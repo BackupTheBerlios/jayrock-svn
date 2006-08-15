@@ -136,7 +136,7 @@ namespace Jayrock.Json.Rpc
 
         private object Parse(string source)
         {
-            return (new JsonTextReader(new StringReader(source))).DeserializeNext();
+            return (new JsonTextReader(new StringReader(source))).ReadValue();
         }
 
         private sealed class TestService : JsonRpcService

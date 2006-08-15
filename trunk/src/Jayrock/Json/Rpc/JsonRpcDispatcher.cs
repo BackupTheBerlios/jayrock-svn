@@ -230,7 +230,7 @@ namespace Jayrock.Json.Rpc
                 {
                     case "id" :
                     {
-                        request["id"] = reader.DeserializeNext();
+                        request["id"] = reader.ReadValue();
                         break;
                     }
                     case "method" :
@@ -341,7 +341,7 @@ namespace Jayrock.Json.Rpc
                 // TODO: This loop could bomb when more args are supplied that parameters available.
                                                         
                 for (int i = 0; i < parameters.Length && reader.TokenClass != JsonTokenClass.EndArray; i++)
-                    argList.Add(reader.Get(parameters[i].ParameterType));
+                    argList.Add(reader.ReadValue(parameters[i].ParameterType));
 
                 reader.StepOut();
                 return argList.ToArray();
@@ -369,7 +369,7 @@ namespace Jayrock.Json.Rpc
                     reader.Read();
 
                     if (matchedParameter != null)
-                        argByName.Put(matchedParameter.Name, reader.Get(matchedParameter.ParameterType));
+                        argByName.Put(matchedParameter.Name, reader.ReadValue(matchedParameter.ParameterType));
                 }
                                 
                 reader.Read();
@@ -377,7 +377,7 @@ namespace Jayrock.Json.Rpc
             }
             else
             {
-                return reader.DeserializeNext();
+                return reader.ReadValue();
             }
         }
     }

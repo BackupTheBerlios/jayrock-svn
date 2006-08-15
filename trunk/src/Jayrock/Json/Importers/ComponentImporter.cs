@@ -69,7 +69,7 @@ namespace Jayrock.Json.Importers
                 PropertyDescriptor property = _properties[memberName];
                 
                 if (property != null && !property.IsReadOnly)
-                    property.SetValue(o, reader.Get(property.PropertyType));
+                    property.SetValue(o, reader.ReadValue(property.PropertyType));
                 else 
                     reader.Skip();
             }

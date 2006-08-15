@@ -53,7 +53,7 @@ namespace Jayrock.Json
 
         private static string Json(string s)
         {
-            return (new JsonTextReader(new StringReader(s))).DeserializeNext().ToString();
+            return (new JsonTextReader(new StringReader(s))).ReadValue().ToString();
         }
 
         private static object ParseRowToArray(string s)

@@ -27,6 +27,7 @@ namespace Jayrock.Json
     using System;
     using System.Collections;
     using System.Globalization;
+    using Jayrock.Json.Importers;
     using NUnit.Framework;
 
     #endregion
@@ -285,7 +286,57 @@ namespace Jayrock.Json
             reader.Skip();
             Assert.AreEqual("m5", reader.ReadMember());
         }
+        
+        [ Test ]
+        public void ReadValueDefaultIsObject()
+        {
+            MockedJsonReader reader = new MockedJsonReader();
+            TestJsonImporterRegistry registry = new TestJsonImporterRegistry();
+            reader.Importers = registry;
+            reader.ReadValue();
+            Assert.IsNotNull(registry.LastFindType);
+            Assert.AreSame(typeof(object), registry.LastFindType);
+        }
+        
+        private sealed class TestJsonImporterRegistry : IJsonImporterRegistry
+        {
+            public Type LastFindType;
+            
+            public void Register(Type type, IJsonImporter importer)
+            {
+                throw new NotImplementedException();
+            }
 
+            public void RegisterLocator(IJsonImporterLocator locator)
+            {
+                throw new NotImplementedException();
+            }
+
+            public IJsonImporter Find(Type type)
+            {
+                LastFindType = type;
+                return new TestJsonImporter();
+            }
+
+            public void RegisterSelf(IJsonImporterRegistry registry)
+            {
+                throw new NotImplementedException();
+            }
+            
+            private sealed class TestJsonImporter : IJsonImporter
+            {
+                public object Import(JsonReader reader)
+                {
+                    return null;
+                }
+
+                public void RegisterSelf(IJsonImporterRegistry registry)
+                {
+                    throw new NotImplementedException();
+                }
+            }
+        }
+        
         private sealed class MockedJsonReader : JsonReader
         {
             private Queue _queue = new Queue();

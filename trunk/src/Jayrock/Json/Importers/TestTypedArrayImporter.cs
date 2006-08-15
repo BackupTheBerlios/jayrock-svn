@@ -102,7 +102,7 @@ namespace Jayrock.Json.Importers
         {
             JsonReader reader = CreateReader(s);
             
-            object o = reader.Get(expected.GetType());
+            object o = reader.ReadValue(expected.GetType());
 
             if (expected == null)
                 Assert.IsNull(o);

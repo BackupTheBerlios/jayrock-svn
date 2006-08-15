@@ -141,7 +141,7 @@ namespace Jayrock.Json.Importers
             RegisterYahooTypeImporter(typeof(YahooResult), reader.Importers);
             RegisterYahooTypeImporter(typeof(YahooThumbnail), reader.Importers);
             
-            YahooResponse response = (YahooResponse) reader.Get(typeof(YahooResponse));
+            YahooResponse response = (YahooResponse) reader.ReadValue(typeof(YahooResponse));
             Assert.IsNotNull(response);
             
             YahooResultSet resultSet = response.ResultSet;
@@ -202,7 +202,7 @@ namespace Jayrock.Json.Importers
             descriptor.AddReadOnlyProperty("Id");
             ComponentImporter importer = new ComponentImporter(thingType, descriptor);
             importer.RegisterSelf(reader.Importers);
-            reader.Get(thingType);
+            reader.ReadValue(thingType);
             Assert.IsFalse(descriptor.GetProperty("Id").SetValueCalled);
         }
 
@@ -347,7 +347,7 @@ namespace Jayrock.Json.Importers
             JsonReader reader = CreateReader(s);
             IJsonImporterRegistry registry = reader.Importers;
             (new ComponentImporter(expectedType)).RegisterSelf(registry);
-            object o = reader.Get(expectedType);            
+            object o = reader.ReadValue(expectedType);            
             Assert.IsNotNull(o);
             Assert.IsInstanceOfType(expectedType, o);
             return o;

@@ -106,7 +106,7 @@ namespace Jayrock.Json.Importers
             ArrayList list = new ArrayList();
 
             while (reader.TokenClass != JsonTokenClass.EndArray)
-                list.Add(reader.Get(elementType));
+                list.Add(reader.ReadValue(elementType));
 
             return list.ToArray(elementType);
         }

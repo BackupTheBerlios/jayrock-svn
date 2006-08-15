@@ -149,7 +149,7 @@ namespace Jayrock.Json
         private object Parse(string s)
         {
             JsonTextReader reader = new JsonTextReader(new StringReader(s));
-            return reader.DeserializeNext();
+            return reader.ReadValue();
         }
     }
 }
