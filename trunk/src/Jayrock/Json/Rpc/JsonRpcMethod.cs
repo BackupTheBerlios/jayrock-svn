@@ -28,7 +28,6 @@ namespace Jayrock.Json.Rpc
     using System.Collections;
     using System.Diagnostics;
     using System.Globalization;
-    using System.Reflection;
 
     #endregion
 
@@ -39,7 +38,9 @@ namespace Jayrock.Json.Rpc
         private readonly string _name;
         private readonly string _internalName;
         private readonly Type _resultType;
-        private JsonRpcParameter[] _parameters;
+        private readonly JsonRpcParameter[] _parameters;
+        private readonly string[] _parameterNames;              // FIXME: [ NonSerialized ]
+        private readonly JsonRpcParameter[] _sortedParameters;  // FIXME: [ NonSerialized ]
         private readonly IDispatcher _dispatcher;
         private readonly string _description;
         private readonly Attribute[] _attributes;
@@ -57,12 +58,30 @@ namespace Jayrock.Json.Rpc
             _attributes = DeepCopy(methodBuilder.GetCustomAttributes());
             _class = clazz;
             
+            //
+            // Set up parameters and their names.
+            //
+            
             JsonRpcParameterBuilder[] parameterBuilders = methodBuilder.GetParameters();
+
             _parameters = new JsonRpcParameter[parameterBuilders.Length];
-            int paramIndex = 0;
+            _parameterNames = new string[parameterBuilders.Length];
 
             foreach (JsonRpcParameterBuilder parameterBuilder in parameterBuilders)
-                _parameters[paramIndex++] = new JsonRpcParameter(parameterBuilder, this);
+            {
+                JsonRpcParameter parameter = new JsonRpcParameter(parameterBuilder, this);
+                int position = parameter.Position;
+                _parameters[position] = parameter;
+                _parameterNames[position] = parameter.Name;
+            }
+            
+            //
+            // Keep a sorted list of parameters and their names so we can
+            // do fast look ups using binary search.
+            //
+            
+            _sortedParameters = (JsonRpcParameter[]) _parameters.Clone();
+            Array.Sort(_parameterNames, _sortedParameters, Comparer.DefaultInvariant);
         }
 
         public string Name
@@ -120,9 +139,12 @@ namespace Jayrock.Json.Rpc
             return null;
         }
 
-        public object Invoke(IRpcService service, object[] args)
+        public object Invoke(IRpcService service, string[] names, object[] args)
         {
-            return _dispatcher.Invoke(service, args);
+            if (names != null)
+                args = MapArguments(names, args);
+            
+            return _dispatcher.Invoke(service, TransposeVariableArguments(args));
         }
 
         /// <remarks>
@@ -133,7 +155,7 @@ namespace Jayrock.Json.Rpc
         /// it is delayed until EndInvoke is called to retrieve the results.
         /// </remarks>
 
-        public IAsyncResult BeginInvoke(IRpcService service, object[] args, AsyncCallback callback, object asyncState)
+        public IAsyncResult BeginInvoke(IRpcService service, string[] names, object[] args, AsyncCallback callback, object asyncState)
         {
             return _dispatcher.BeginInvoke(service, args, callback, asyncState);
         }
@@ -159,66 +181,60 @@ namespace Jayrock.Json.Rpc
             }
         }
 
-        public object[] MapArguments(object argsObject)
+        private object[] MapArguments(string[] names, object[] args)
         {
-            object[] args;
-            IDictionary argsMap = argsObject as IDictionary;
+            Debug.Assert(names != null);
+            Debug.Assert(args != null);
+            Debug.Assert(names.Length == args.Length);
+            
+            object[] mapped = new object[_parameters.Length];
 
-            if (argsMap != null)
+            for (int i = 0; i < names.Length; i++)
             {
-                JsonObject namedArgs = new JsonObject(argsMap);
+                string name = names[i];
                 
-                args = new object[_parameters.Length];
-
-                for (int i = 0; i < _parameters.Length; i++)
+                if (name == null || name.Length == 0)
+                    continue;
+                
+                object arg = args[i];
+                
+                if (arg == null)
+                    continue;
+                
+                if (name.Length <= 2)
                 {
-                    args[i] = namedArgs[_parameters[i].Name];
-                    namedArgs.Remove(_parameters[i].Name);
-                }
-
-                foreach (DictionaryEntry entry in namedArgs)
-                {
-                    if (entry.Key == null)
-                        continue;
-
-                    string key = entry.Key.ToString();
-                    
                     char ch1;
                     char ch2;
 
-                    if (key.Length == 2)
+                    if (name.Length == 2)
                     {
-                        ch1 = key[0];
-                        ch2 = key[1];
-                    }
-                    else if (key.Length == 1)
-                    {
-                        ch1 = '0';
-                        ch2 = key[0];
+                        ch1 = name[0];
+                        ch2 = name[1];
                     }
                     else
                     {
-                        continue;
+                        ch1 = '0';
+                        ch2 = name[0];
                     }
 
                     if (ch1 >= '0' && ch1 < '9' &&
                         ch2 >= '0' && ch2 < '9')
                     {
-                        int index = int.Parse(key, NumberStyles.Number, CultureInfo.InvariantCulture);
-                        
-                        if (index < _parameters.Length)
-                            args[index] = entry.Value;
+                        int position = int.Parse(name, NumberStyles.Number, CultureInfo.InvariantCulture);
+                    
+                        if (position < _parameters.Length)
+                            mapped[position] = arg;
                     }
                 }
-
-                return args;
+                else
+                {
+                    int order = Array.BinarySearch(_parameterNames, name, Comparer.DefaultInvariant);
+                    if (order >= 0)
+                        mapped[_sortedParameters[order].Position] = arg;
+                }
             }
-            else
-            {
-                args = CollectionHelper.ToArray((ICollection) argsObject);
-            }
 
-            return TransposeVariableArguments(args);
+            return mapped;
         }
 
         /// <summary>

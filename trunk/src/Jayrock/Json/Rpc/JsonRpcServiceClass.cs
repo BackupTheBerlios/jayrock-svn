@@ -35,8 +35,10 @@ namespace Jayrock.Json.Rpc
     {
         private readonly string _serviceName;
         private readonly string _description;
-        private readonly Hashtable _methodByName;
         private readonly JsonRpcMethod[] _methods;
+        private readonly string[] _methodNames;             // FIXME: [ NonSerialized ]
+        private readonly JsonRpcMethod[] _sortedMethods;    // FIXME: [ NonSerialized ]
+        
         private static readonly Hashtable _classByTypeCache = Hashtable.Synchronized(new Hashtable());
         
         public static JsonRpcServiceClass FromType(Type type)
@@ -62,10 +64,14 @@ namespace Jayrock.Json.Rpc
             _serviceName = classBuilder.Name;
             _description = classBuilder.Description;
 
+            //
+            // Set up methods and their names.
+            //
+
             JsonRpcMethodBuilder[] methodBuilders = classBuilder.GetMethods();
             
             _methods = new JsonRpcMethod[methodBuilders.Length];
-            _methodByName = new Hashtable(methodBuilders.Length);
+            _methodNames = new string[methodBuilders.Length];
             int methodIndex = 0;
 
             foreach (JsonRpcMethodBuilder methodBuilder in methodBuilders)
@@ -76,16 +82,24 @@ namespace Jayrock.Json.Rpc
                 // Check for duplicates.
                 //
 
-                if (_methodByName.ContainsKey(method.Name))
+                if (Array.IndexOf(_methodNames, method.Name) >= 0)
                     throw new DuplicateMethodException(string.Format("The method '{0}' cannot be exported as '{1}' because this name has already been used by another method on the '{2}' service.", method.Name, method.InternalName, _serviceName));
 
                 //
                 // Add the method to the class and index it by its name.
                 //
 
-                _methods[methodIndex++] = method;
-                _methodByName.Add(method.Name, method);
+                _methods[methodIndex] = method;
+                _methodNames[methodIndex++] = method.Name;
             }
+
+            //
+            // Keep a sorted list of parameters and their names so we can
+            // do fast look ups using binary search.
+            //
+            
+            _sortedMethods = (JsonRpcMethod[]) _methods.Clone();
+            Array.Sort(_methodNames, _sortedMethods, Comparer.DefaultInvariant);
         }
 
         public string Name
@@ -111,7 +125,8 @@ namespace Jayrock.Json.Rpc
 
         public JsonRpcMethod FindMethodByName(string name)
         {
-            return (JsonRpcMethod) _methodByName[name];
+            int i = Array.BinarySearch(_methodNames, name, Comparer.DefaultInvariant);
+            return i >= 0 ? _sortedMethods[i] : null;
         }
 
         public JsonRpcMethod GetMethodByName(string name)

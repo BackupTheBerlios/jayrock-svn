@@ -38,7 +38,7 @@ namespace Jayrock.Json.Rpc
             try
             {
                 TestService service = new TestService();
-                service.GetClass().GetMethodByName("BadMethod").Invoke(service, null);
+                service.GetClass().GetMethodByName("BadMethod").Invoke(service, null, null);
                 Assert.Fail("Expecting an exception.");
             }
             catch (TargetMethodException e)

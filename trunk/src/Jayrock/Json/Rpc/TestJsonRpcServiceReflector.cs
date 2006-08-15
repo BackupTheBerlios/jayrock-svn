@@ -189,7 +189,7 @@ namespace Jayrock.Json.Rpc
         {
             JsonRpcServiceClass clazz = JsonRpcServiceReflector.FromType(typeof(TestService));
             TestService service = new TestService();
-            object result = clazz.GetMethodByName("Sum").Invoke(service, new object[] { 2, 3 });
+            object result = clazz.GetMethodByName("Sum").Invoke(service, null, new object[] { 2, 3 });
             Assert.AreEqual(5, result);
         }
     
