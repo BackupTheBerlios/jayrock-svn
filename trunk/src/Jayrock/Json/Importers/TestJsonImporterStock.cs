@@ -35,17 +35,18 @@ namespace Jayrock.Json.Importers
         [ Test ]
         public void InStock()
         {
-            AssertInStock(typeof(byte));
-            AssertInStock(typeof(short));
-            AssertInStock(typeof(int));
-            AssertInStock(typeof(long));
-            AssertInStock(typeof(float));
-            AssertInStock(typeof(double));
-            AssertInStock(typeof(DateTime));
-            AssertInStock(typeof(string));
-            AssertInStock(typeof(bool));
-            AssertInStock(typeof(object));
-            AssertInStock(typeof(object[]));
+            AssertInStock(typeof(NumberImporter), typeof(byte));
+            AssertInStock(typeof(NumberImporter), typeof(short));
+            AssertInStock(typeof(NumberImporter), typeof(int));
+            AssertInStock(typeof(NumberImporter), typeof(long));
+            AssertInStock(typeof(NumberImporter), typeof(float));
+            AssertInStock(typeof(NumberImporter), typeof(double));
+            AssertInStock(typeof(DateTimeImporter), typeof(DateTime));
+            AssertInStock(typeof(StringImporter), typeof(string));
+            AssertInStock(typeof(BooleanImporter), typeof(bool));
+            AssertInStock(typeof(AutoImporter), typeof(object));
+            AssertInStock(typeof(TypedArrayImporter), typeof(object[]));
+            AssertInStock(typeof(TypedEnumImporter), typeof(System.Globalization.UnicodeCategory));
         }
         
         [ Test, ExpectedException(typeof(JsonException)) ]
@@ -54,9 +55,11 @@ namespace Jayrock.Json.Importers
             JsonImporterStock.Get(typeof(Enum));
         }
 
-        private static void AssertInStock(Type type)
+        private static void AssertInStock(Type expected, Type type)
         {
-            Assert.IsNotNull(JsonImporterStock.Find(type), "{0} not in stock.", type.FullName);
+            IJsonImporter importer = JsonImporterStock.Find(type);
+            Assert.IsNotNull(importer , "{0} not in stock.", type.FullName);
+            Assert.IsInstanceOfType(expected, importer, type.FullName);
         }
     }
 }

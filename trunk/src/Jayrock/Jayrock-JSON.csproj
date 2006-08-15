@@ -104,6 +104,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "DebugString.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "FieldsToPropertiesProxyTypeDescriptor.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -324,6 +329,11 @@
                 />
                 <File
                     RelPath = "Json\Importers\DateTimeImporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Importers\EnumImporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

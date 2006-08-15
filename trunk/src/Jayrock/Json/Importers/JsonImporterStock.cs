@@ -46,6 +46,7 @@ namespace Jayrock.Json.Importers
         public static readonly IJsonImporter DateTime = new DateTimeImporter();
         public static readonly IJsonImporterLocator Array = new ArrayImporter();
         public static readonly IJsonImporter Auto = new AutoImporter();
+        public static readonly IJsonImporterLocator Enum = new EnumImporter();
         
         private static readonly IJsonImporter[] _importers = 
         {
@@ -90,6 +91,9 @@ namespace Jayrock.Json.Importers
 
             if (type.IsArray)
                 return Array.Find(type);
+            
+            if (type.IsEnum)
+                return Enum.Find(type);
             
             if (type == typeof(object))
                 return JsonImporterStock.Auto;

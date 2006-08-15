@@ -99,6 +99,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "DebugString.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "FieldsToPropertiesProxyTypeDescriptor.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -115,6 +120,11 @@
                 />
                 <File
                     RelPath = "Mask.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "TestDebugString.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -429,6 +439,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Json\Importers\EnumImporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\Importers\JsonImporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -500,6 +515,11 @@
                 />
                 <File
                     RelPath = "Json\Importers\TestTypedArrayImporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Importers\TestTypedEnumImporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
