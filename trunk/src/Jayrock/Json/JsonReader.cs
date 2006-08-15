@@ -41,10 +41,6 @@ namespace Jayrock.Json
         private JsonToken _token;
         private int _depth;
 
-        public const string TrueText = "true";
-        public const string FalseText = "false";
-        public const string NullText = "null";
-
         public JsonReader()
         {
             _token = JsonToken.BOF();
@@ -152,7 +148,7 @@ namespace Jayrock.Json
         
         public bool ReadBoolean()
         {
-            return ReadToken(JsonTokenClass.Boolean) == JsonReader.TrueText;
+            return ReadToken(JsonTokenClass.Boolean) == JsonBoolean.TrueText;
         }
 
         public string ReadNumber()

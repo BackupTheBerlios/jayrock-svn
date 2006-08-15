@@ -72,7 +72,7 @@ namespace Jayrock.Json
 
         public static JsonToken Null()
         {
-            return new JsonToken(JsonTokenClass.Null, "null");
+            return new JsonToken(JsonTokenClass.Null, JsonNull.Text);
         }
 
         public static JsonToken Array()

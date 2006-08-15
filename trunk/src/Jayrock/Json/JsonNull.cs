@@ -37,13 +37,14 @@ namespace Jayrock.Json
     [ Serializable ]
     public sealed class JsonNull : IObjectReference, IJsonFormattable
     {
+        public const string Text = "null";
         public static readonly JsonNull Value = new JsonNull();
 
         private JsonNull() {}
 
         public override string ToString()
         {
-            return "null";
+            return JsonNull.Text;
         }
 
         public static bool LogicallyEquals(object o)

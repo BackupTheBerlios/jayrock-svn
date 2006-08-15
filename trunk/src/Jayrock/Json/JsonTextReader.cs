@@ -146,10 +146,10 @@ namespace Jayrock.Json
             if (s.Length == 0)
                 throw new JsonException("Missing value.");
 
-            if (s == JsonTextReader.TrueText || s == JsonTextReader.FalseText)
-                return Yield(JsonToken.Boolean(s == JsonTextReader.TrueText));
+            if (s == JsonBoolean.TrueText || s == JsonBoolean.FalseText)
+                return Yield(JsonToken.Boolean(s == JsonBoolean.TrueText));
 
-            if (s == JsonTextReader.NullText)
+            if (s == JsonNull.Text)
                 return Yield(JsonToken.Null());
 
             if ((b >= '0' && b <= '9') || b == '.' || b == '-' || b == '+')

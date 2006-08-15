@@ -146,7 +146,7 @@ namespace Jayrock.Json
             }
             else if (reader.TokenClass == JsonTokenClass.Boolean)
             {
-                WriteBoolean(reader.Text == JsonReader.FalseText); 
+                WriteBoolean(reader.Text == JsonBoolean.TrueText); 
             }
             else if (reader.TokenClass == JsonTokenClass.Null)
             {

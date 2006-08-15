@@ -54,7 +54,7 @@ namespace Jayrock.Json.Importers
             }
             else if (reader.TokenClass == JsonTokenClass.Boolean)
             {
-                return reader.Text == JsonReader.TrueText;
+                return reader.Text == JsonBoolean.TrueText;
             }
             else if (reader.TokenClass == JsonTokenClass.Null)
             {

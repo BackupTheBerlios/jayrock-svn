@@ -116,7 +116,7 @@ namespace Jayrock.Json
 
         public override void WriteNull()
         {
-            BracketedWrite("null");
+            BracketedWrite(JsonNull.Text);
         }
 
         public override void WriteStartArray()

@@ -20,7 +20,7 @@
 //
 #endregion
 
-namespace Jayrock
+namespace Jayrock.Json
 {
     #region Imports
 
@@ -28,18 +28,12 @@ namespace Jayrock
 
     #endregion
 
-    internal sealed class BooleanObject
+    public sealed class JsonBoolean
     {
-        //
-        // The following two statics are only used as an optimization so that we
-        // don't create a boxed Boolean each time an Object is expecting somewhere.
-        // This should help put a little less pressure on the GC where possible.
-        //
-
-        public readonly static object True = true;
-        public readonly static object False = false;
+        public const string TrueText = "true";
+        public const string FalseText = "false";
         
-        private BooleanObject()
+        private JsonBoolean()
         {
             throw new NotSupportedException();
         }
