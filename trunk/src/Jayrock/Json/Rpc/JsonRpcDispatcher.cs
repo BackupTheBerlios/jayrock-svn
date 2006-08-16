@@ -114,8 +114,22 @@ namespace Jayrock.Json.Rpc
             if (output == null)
                 throw new ArgumentNullException("output");
 
-            IDictionary request = (IDictionary) ParseRequest(input);
-            IDictionary response = Invoke(request);
+            IDictionary response;
+            
+            try
+            {
+                IDictionary request = (IDictionary) ParseRequest(input);
+                response = Invoke(request);
+            }
+            catch (MethodNotFoundException e)
+            {
+                response = CreateResponse(null, null, OnError(e));
+            }
+            catch (JsonException e)
+            {
+                response = CreateResponse(null, null, OnError(e));
+            }
+            
             WriteResponse(response, output);
         }
 
@@ -211,6 +225,11 @@ namespace Jayrock.Json.Rpc
             // Setup and return the response object.
             //
 
+            return CreateResponse(id, result, error);
+        }
+
+        private static IDictionary CreateResponse(object id, object result, object error)
+        {
             JsonObject response = new JsonObject();
             
             response["id"] = id;
