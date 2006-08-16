@@ -45,7 +45,7 @@ namespace Jayrock.Json.Importers
         }
     }
 
-    public sealed class TypedArrayImporter : JsonImporter
+    public sealed class TypedArrayImporter : IJsonImporter
     {
         private readonly Type _arrayType;
 
@@ -65,7 +65,7 @@ namespace Jayrock.Json.Importers
             _arrayType = arrayType;
         }
 
-        public override void RegisterSelf(IJsonImporterRegistry registry)
+        public void RegisterSelf(IJsonImporterRegistry registry)
         {
             Type elementType = _arrayType.GetElementType();
             
@@ -92,23 +92,47 @@ namespace Jayrock.Json.Importers
             registry.Register(_arrayType, this);
         }
 
-        protected override object SubImport(JsonReader reader)
+        public object Import(JsonReader reader)
         {
             if (reader == null)
                 throw new ArgumentNullException("reader");
 
-            if (reader.TokenClass != JsonTokenClass.Array)
-                throw new JsonException(string.Format("Found {0} where expecting JSON Array.", reader.TokenClass));
-
-            reader.Read();
+            if (!reader.MoveToContent())
+                throw new JsonException("Unexpected EOF.");
+            
+            if (reader.TokenClass == JsonTokenClass.Null)
+            {
+                reader.Read();
+                return null;
+            }
 
             Type elementType = _arrayType.GetElementType();
-            ArrayList list = new ArrayList();
 
-            while (reader.TokenClass != JsonTokenClass.EndArray)
-                list.Add(reader.ReadValue(elementType));
+            if (reader.TokenClass == JsonTokenClass.Array)
+            {
+                reader.Read();
 
-            return list.ToArray(elementType);
+                ArrayList list = new ArrayList();
+
+                while (reader.TokenClass != JsonTokenClass.EndArray)
+                    list.Add(reader.ReadValue(elementType));
+
+                reader.Read();
+            
+                return list.ToArray(elementType);
+            }
+            else if (reader.TokenClass == JsonTokenClass.String ||
+                     reader.TokenClass == JsonTokenClass.Number ||
+                     reader.TokenClass == JsonTokenClass.Boolean)
+            {
+                Array array = Array.CreateInstance(elementType, 1);
+                array.SetValue(reader.ReadValue(elementType), 0);
+                return array;
+            }
+            else
+            {
+                throw new JsonException(string.Format("Found {0} where expecting JSON Array.", reader.TokenClass));
+            }
         }
     }
 }

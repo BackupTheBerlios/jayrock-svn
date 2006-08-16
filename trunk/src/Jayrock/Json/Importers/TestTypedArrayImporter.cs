@@ -97,12 +97,34 @@ namespace Jayrock.Json.Importers
             Assert.AreNotEqual(-1, i);
             Assert.AreSame(importer, registry.Importers[i]);
         }
+        
+        [ Test ]
+        public void ImportStringAsArray()
+        {
+            AssertImport(new string[] { "foobar" }, "'foobar'");
+        }
+
+        [ Test ]
+        public void ImportNumberAsArray()
+        {
+            AssertImport(new int[] { 123 }, "123");
+        }
+
+        [ Test ]
+        public void ImportBooleanAsArray()
+        {
+            AssertImport(new bool[] { true }, "true");
+            AssertImport(new bool[] { true }, "123");
+            AssertImport(new bool[] { false }, "false");
+            AssertImport(new bool[] { false }, "0");
+        }
 
         private static void AssertImport(Array expected, string s)
         {
             JsonReader reader = CreateReader(s);
             
             object o = reader.ReadValue(expected.GetType());
+            Assert.IsTrue(reader.EOF);
 
             if (expected == null)
                 Assert.IsNull(o);
