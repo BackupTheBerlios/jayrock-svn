@@ -88,6 +88,10 @@ namespace Jayrock.Json.Rpc.Web
             if (CaselessString.Equals(verb, "GET") ||
                 CaselessString.Equals(verb, "HEAD"))
             {
+                foreach (string mimeType in Context.Request.AcceptTypes)
+                    if (CaselessString.Equals(mimeType, "application/json"))
+                        return GetFeatureByName("getrpc");
+                
                 return GetFeatureByName("help");
             }
             else if (CaselessString.Equals(verb, "POST")) 
