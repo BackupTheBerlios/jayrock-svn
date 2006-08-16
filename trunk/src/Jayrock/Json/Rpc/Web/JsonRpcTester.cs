@@ -296,14 +296,13 @@ namespace Jayrock.Json.Rpc.Web
             HtmlGenericControl style = (HtmlGenericControl) AddGeneric(Head, "style", null, @"
                 body { 
                     margin: 0; 
-	                font-family: verdana;
+                    font-family: arial;
+                    font-size: small;
                 }
 
                 h1 { 
-                    color: #ffffff; 
-                    font-family: Tahoma; 
-                    font-size: 150%; 
-                    font-weight: normal; 
+                    color: #FFF; 
+                    font-size: large; 
                     padding: 0.5em;
                     background-color: #003366; 
                     margin-top: 0;
@@ -311,7 +310,6 @@ namespace Jayrock.Json.Rpc.Web
 
                 #Content {
                     margin: 1em;
-                    font-size: 0.7em;
                 }
 
                 #Request, #Response {
@@ -325,8 +323,8 @@ namespace Jayrock.Json.Rpc.Web
                 }
 
                 #Headers {
-                    font-family: Courier New, Courier, Monospace;
-                    font-size: 120%;
+                    font-family: Monospace;
+                    font-size: small;
                 }");
 
             style.Attributes["type"] = "text/css";

@@ -34,6 +34,7 @@
         </div>
         <h1 class="h1-first">
             <a id="what-is" name="what-is">What is Jayrock?</a></h1>
+        <p><em>Web services, the light-weight and simple way!</em></p>
         <p>
             <a href="http://developer.berlios.de/projects/jayrock/">Jayrock</a> is a modest and an open source 
             (<a href="http://www.opensource.org/licenses/lgpl-license.php"><acronym title="GNU Lesser General Public License">LGPL</acronym></a>) implementation 
@@ -42,7 +43,7 @@
             <a href="http://msdn.microsoft.com/netframework/">Microsoft .NET Framework</a>,
             including <a href="http://www.asp.net/">ASP.NET</a>. What can you do with Jayrock?
             In a few words, Jayrock allows clients, typically <a href="http://en.wikipedia.org/wiki/JavaScript">
-                JavaScript</a> in web pages, to be able to call into server-side ASP.NET methods
+                JavaScript</a> in web pages, to be able to call into server-side methods
             using JSON as the wire format and JSON-RPC as the procedure invocation protocol.
             The methods can be called synchronously or asynchronously.&nbsp;</p>
         <ul>

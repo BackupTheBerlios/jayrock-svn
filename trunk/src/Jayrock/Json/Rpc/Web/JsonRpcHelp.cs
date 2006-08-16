@@ -157,50 +157,50 @@ namespace Jayrock.Json.Rpc.Web
             base.AddStyleSheet();
 
             HtmlGenericControl style = (HtmlGenericControl) AddGeneric(Head, "style", null, @"
-                body { 
-                    margin: 0; 
-                    font-family: verdana;
-                }
+                @media screen {
+                    body { 
+                        margin: 0; 
+                        font-family: arial;
+                        font-size: small;
+                    }
 
-                h1 { 
-                    color: #ffffff; 
-                    font-family: Tahoma; 
-                    font-size: 150%; 
-                    font-weight: normal; 
-                    padding: 0.5em;
-                    background-color: #003366; 
-                    margin-top: 0;
-                }
+                    h1 { 
+                        color: #FFF; 
+                        font-size: large; 
+                        padding: 0.5em;
+                        background-color: #003366; 
+                        margin-top: 0;
+                    }
 
-                #Content {
-                    margin: 1em;
-                    font-size: 0.7em;
-                }
+                    #Content {
+                        margin: 1em;
+                    }
 
-                dt {
-                    margin-top: 0.5em;
-                }
+                    dt {
+                        margin-top: 0.5em;
+                    }
 
-                dd {
-                    margin-left: 2.5em;
-                }
+                    dd {
+                        margin-left: 2.5em;
+                    }
 
-                .method {
-                    font-size: 1.2em;
-                    font-family: Courier New, Courier, Monospace;
-                }
+                    .method {
+                        font-size: small;
+                        font-family: Monospace;
+                    }
 
-                .method-name {
-                    font-weight: bold;
-                    color: navy;
-                }
+                    .method-name {
+                        font-weight: bold;
+                        color: #000080;
+                    }
 
-                .method-param {
-                    color: #808080;
-                }
+                    .method-param {
+                        color: #404040;
+                    }
 
-                .obsolete-message {
-                    color: red;
+                    .obsolete-message {
+                        color: #FF0000;
+                    }
                 }");
 
             style.Attributes["type"] = "text/css";
