@@ -16,7 +16,7 @@ namespace JayrockWeb
     using Jayrock.Json.Rpc;
     using Jayrock.Json.Rpc.Web;
 
-    [ JsonRpcHelp("This is JSON-RPC service that demonstrates the basic features of the Jayrock library.") ]    
+    [ JsonRpcHelp("This is a JSON-RPC service that demonstrates the basic features of the Jayrock library.") ]    
     public class DemoService : JsonRpcHandler, IRequiresSessionState 
     {
         [ JsonRpcMethod("echo")]
