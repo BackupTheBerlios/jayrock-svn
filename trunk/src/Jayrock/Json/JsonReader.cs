@@ -244,7 +244,7 @@ namespace Jayrock.Json
         /// Deserializes the next object from JSON data.
         /// </summary>
 
-        [ Obsolete ]
+        [ Obsolete("Use JsonReader.ReadValue() instead.") ]
         public object DeserializeNext()
         {
             return DeserializeNext(null);
@@ -255,7 +255,7 @@ namespace Jayrock.Json
         /// system.
         /// </summary>
         
-        [ Obsolete ]
+        [ Obsolete("Use JsonReader.ReadValue() instead for similar functionality.") ]
         public virtual object DeserializeNext(IParserOutput output)
         {
             if (output == null)
