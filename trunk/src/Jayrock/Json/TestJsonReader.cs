@@ -298,6 +298,13 @@ namespace Jayrock.Json
             Assert.AreSame(typeof(object), registry.LastFindType);
         }
         
+        [ Test, ExpectedException(typeof(ArgumentNullException)) ]
+        public void CannotSetNullRegistry()
+        {
+            MockedJsonReader reader = new MockedJsonReader();
+            reader.Importers = null;
+        }
+        
         private sealed class TestJsonImporterRegistry : IJsonImporterRegistry
         {
             public Type LastFindType;

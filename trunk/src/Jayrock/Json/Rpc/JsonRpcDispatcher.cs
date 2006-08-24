@@ -250,8 +250,15 @@ namespace Jayrock.Json.Rpc
             JsonReader reader = (JsonReader) _serviceProvider.GetService(typeof(JsonReader));
 
             if (reader == null)
+            {
                 reader = new JsonTextReader(input);
-            
+
+                IJsonImporterRegistry importers = (IJsonImporterRegistry) _serviceProvider.GetService(typeof(IJsonImporterRegistry));
+
+                if (importers != null)
+                    reader.Importers = importers;
+            }
+
             JsonObject request = new JsonObject();
             JsonRpcMethod method = null;
             JsonReader paramsReader = null;
@@ -335,17 +342,24 @@ namespace Jayrock.Json.Rpc
             
             if (writer == null)
             {
-                CompositeFormatter formatter = new CompositeFormatter();
+                IJsonFormatter formatter = (IJsonFormatter) _serviceProvider.GetService(typeof(IJsonFormatter));
+                
+                if (formatter == null)
+                {
+                    CompositeFormatter stock = new CompositeFormatter();
 
-                formatter.AddFormatter(typeof(DateTime), new DateTimeFormatter());
-                formatter.AddFormatter(typeof(DataSet), new DataSetFormatter(), true);
-                formatter.AddFormatter(typeof(DataTable), new DataTableFormatter(), true);
-                formatter.AddFormatter(typeof(DataView), new DataViewFormatter(), true);
-                formatter.AddFormatter(typeof(DataRowView), new DataRowViewFormatter(), true);
-                formatter.AddFormatter(typeof(DataRow), new DataRowFormatter(), true);
-                formatter.AddFormatter(typeof(NameValueCollection), new NameValueCollectionFormatter(), true);
-                formatter.AddFormatter(typeof(Control), new ControlFormatter(), true);
-
+                    stock.AddFormatter(typeof(DateTime), new DateTimeFormatter());
+                    stock.AddFormatter(typeof(DataSet), new DataSetFormatter(), true);
+                    stock.AddFormatter(typeof(DataTable), new DataTableFormatter(), true);
+                    stock.AddFormatter(typeof(DataView), new DataViewFormatter(), true);
+                    stock.AddFormatter(typeof(DataRowView), new DataRowViewFormatter(), true);
+                    stock.AddFormatter(typeof(DataRow), new DataRowFormatter(), true);
+                    stock.AddFormatter(typeof(NameValueCollection), new NameValueCollectionFormatter(), true);
+                    stock.AddFormatter(typeof(Control), new ControlFormatter(), true);
+                    
+                    formatter = stock;
+                }
+                
                 writer = new JsonTextWriter(output);
                 writer.ValueFormatter = formatter;
             }

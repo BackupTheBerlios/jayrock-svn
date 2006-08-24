@@ -60,7 +60,13 @@ namespace Jayrock.Json
                 return _valueFormatter;
             }
             
-            set { _valueFormatter = value; }
+            set
+            {
+                if (value == null) 
+                    throw new ArgumentNullException("value");
+                
+                _valueFormatter = value;
+            }
         }
 
         public virtual void Flush() { }
