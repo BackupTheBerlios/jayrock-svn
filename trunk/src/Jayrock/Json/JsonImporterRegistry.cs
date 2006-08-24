@@ -34,6 +34,18 @@ namespace Jayrock.Json
     {
         private readonly Hashtable _importerByType = new Hashtable();
         private ArrayList _locators;
+        private IJsonImporterLocator _stock;
+
+        public JsonImporterRegistry() : 
+            this(null) {}
+
+        internal JsonImporterRegistry(IJsonImporterLocator stock)
+        {
+            if (stock == null)
+                stock = JsonImporterStock.StockLocator;
+            
+            _stock = stock;
+        }
 
         public IJsonImporter Find(Type type)
         {
@@ -127,8 +139,9 @@ namespace Jayrock.Json
                     // Otherwise, the system just appears too dumb out of
                     // the box.
                     //
-                
-                    JsonImporterStock.Locator.RegisterSelf(this);
+
+                    if (_stock != null)
+                        _stock.RegisterSelf(this);
                 }
                 
                 return _locators;
