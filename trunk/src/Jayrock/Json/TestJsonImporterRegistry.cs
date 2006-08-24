@@ -94,6 +94,20 @@ namespace Jayrock.Json
             _registry.Find(thingType);
             Assert.IsFalse(locator.FindCalled);
         }
+        
+        [ Test ]
+        public void LastRegistrationWins()
+        {
+            Type type = typeof(Thing);
+            
+            TestImporter importer1 = new TestImporter(type);
+            _registry.Register(type, importer1);
+            Assert.AreSame(importer1, _registry.Find(type));
+
+            TestImporter importer2 = new TestImporter(type);
+            _registry.Register(type, importer2);
+            Assert.AreSame(importer2, _registry.Find(type));
+        }
 
         private TestLocator RegisterTestLocator(Type type, TestImporter importer)
         {

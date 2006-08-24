@@ -103,7 +103,7 @@ namespace Jayrock.Json
             if (importer == null)
                 throw new ArgumentNullException("importer");
             
-            _importerByType.Add(type, importer);
+            _importerByType[type] = importer;
         }
 
         public void RegisterLocator(IJsonImporterLocator locator)
