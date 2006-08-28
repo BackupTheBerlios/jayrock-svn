@@ -214,6 +214,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Json\JsonNumber.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\JsonObject.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -285,6 +290,11 @@
                 />
                 <File
                     RelPath = "Json\TestJsonNull.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\TestJsonNumber.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

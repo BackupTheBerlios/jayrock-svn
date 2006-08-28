@@ -151,34 +151,9 @@ namespace Jayrock.Json
             return ReadToken(JsonTokenClass.Boolean) == JsonBoolean.TrueText;
         }
 
-        public string ReadNumber()
+        public JsonNumber ReadNumber()
         {
-            return ReadToken(JsonTokenClass.Number);
-        }
-
-        public int ReadInt32()
-        {
-            return int.Parse(ReadNumber(), CultureInfo.InvariantCulture);
-        }
-
-        public long ReadInt64()
-        {
-            return long.Parse(ReadNumber(), CultureInfo.InvariantCulture);
-        }
-    
-        public float ReadSingle()
-        {
-            return float.Parse(ReadNumber(), CultureInfo.InvariantCulture);
-        }
-
-        public double ReadDouble()
-        {
-            return double.Parse(ReadNumber(), CultureInfo.InvariantCulture);
-        }
-
-        public decimal ReadDecimal()
-        {
-            return decimal.Parse(ReadNumber(), CultureInfo.InvariantCulture);
+            return new JsonNumber(ReadToken(JsonTokenClass.Number));
         }
 
         public void ReadNull()
@@ -269,7 +244,7 @@ namespace Jayrock.Json
             }
             else if (TokenClass == JsonTokenClass.Number)
             {
-                return output.ToNumberPrimitive(ReadNumber());
+                return output.ToNumberPrimitive(ReadNumber().ToString());
             }
             else if (TokenClass == JsonTokenClass.Boolean)
             {

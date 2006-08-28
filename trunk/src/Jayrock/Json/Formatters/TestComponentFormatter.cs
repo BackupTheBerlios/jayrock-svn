@@ -63,7 +63,7 @@ namespace Jayrock.Json.Formatters
             JsonReader reader = FormatForReading(car);
             reader.ReadToken(JsonTokenClass.Object);
             Assert.AreEqual("Year", reader.ReadMember());
-            Assert.AreEqual(0, reader.ReadInt32());
+            Assert.AreEqual(0, (int) reader.ReadNumber());
             Assert.AreEqual(JsonTokenClass.EndObject, reader.TokenClass);
         }
 
@@ -206,7 +206,7 @@ namespace Jayrock.Json.Formatters
                     switch (expectedType)
                     {
                         case TypeCode.String : Assert.AreEqual(expected, reader.ReadString(), path); break;
-                        case TypeCode.Int32  : Assert.AreEqual(expected, reader.ReadInt32(), path); break;
+                        case TypeCode.Int32  : Assert.AreEqual(expected, (int) reader.ReadNumber(), path); break;
                         default : Assert.Fail("Don't know how to handle {0} values.", expected.GetType()); break;
                     }
                 }

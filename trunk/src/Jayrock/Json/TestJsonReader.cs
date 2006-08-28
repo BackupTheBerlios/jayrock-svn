@@ -93,7 +93,7 @@ namespace Jayrock.Json
             MockedJsonReader reader = new MockedJsonReader();
             reader.Begin().Number(123456).End();
            
-            Assert.AreEqual("123456", reader.ReadNumber());
+            Assert.AreEqual("123456", reader.ReadNumber().ToString());
             Assert.IsTrue(reader.EOF);
         }
 
@@ -126,11 +126,11 @@ namespace Jayrock.Json
             EndArray().End();
            
             reader.ReadToken(JsonTokenClass.Array);
-            Assert.AreEqual(123, reader.ReadInt32());
-            Assert.AreEqual(456L, reader.ReadInt64());
-            Assert.AreEqual(2.5f, reader.ReadSingle());
-            Assert.AreEqual(4.2, reader.ReadDouble());
-            Assert.AreEqual(9.99m, reader.ReadDecimal());
+            Assert.AreEqual(123, (int) reader.ReadNumber());
+            Assert.AreEqual(456L, (long) reader.ReadNumber());
+            Assert.AreEqual(2.5f, (float) reader.ReadNumber());
+            Assert.AreEqual(4.2, (double) reader.ReadNumber());
+            Assert.AreEqual(9.99m, (decimal) reader.ReadNumber());
             Assert.AreEqual(JsonTokenClass.EndArray, reader.TokenClass);
             Assert.IsFalse(reader.Read());
         }
