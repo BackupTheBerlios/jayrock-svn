@@ -58,7 +58,7 @@ namespace Jayrock.Json.Rpc
             JsonRpcDispatcher server = new JsonRpcDispatcher(new TestService());
             string responseString = server.Process("{ id : 1, method : 'Say', params : [ 'Hello' ] }");
             IDictionary response = (IDictionary) Parse(responseString);
-            Assert.AreEqual(1, response["id"]);
+            Assert.AreEqual(1, (int) (JsonNumber) response["id"]);
             Assert.AreEqual("Hello", response["result"]);
         }
 
@@ -80,7 +80,9 @@ namespace Jayrock.Json.Rpc
             string responseString = server.Process("{ id : 42, method : 'rev', params : [ [ 1, 'two', 3 ] ] }");
             IDictionary response = (IDictionary) Parse(responseString);
             object[] result = ((JsonArray) response["result"]).ToArray();
-            Assert.AreEqual(new object[] { 3, "two", 1 }, result);
+            Assert.AreEqual(3, (int) (JsonNumber) result[0]);
+            Assert.AreEqual("two", result[1]);
+            Assert.AreEqual(1, (int) (JsonNumber) result[2]);
         }
 
         [ Test ]
@@ -99,7 +101,7 @@ namespace Jayrock.Json.Rpc
             JsonRpcDispatcher server = new JsonRpcDispatcher(new TestService());
             string responseString = server.Process("{ id : 42, method : 'sum', params : [ [ 1, 2, 3, 4, 5 ] ] }");
             IDictionary response = (IDictionary) Parse(responseString);
-            Assert.AreEqual(15, JsonRpcServices.GetResult(response));
+            Assert.AreEqual(15, (int) (JsonNumber) JsonRpcServices.GetResult(response));
         }
         
         [ Test ]
@@ -113,7 +115,7 @@ namespace Jayrock.Json.Rpc
             JsonRpcDispatcher server = new JsonRpcDispatcher(new TestService());
             string responseString = server.Process("{ id : 42, params : [ [ 1, 2, 3, 4, 5 ] ], method : 'sum' }");
             IDictionary response = (IDictionary) Parse(responseString);
-            Assert.AreEqual(15, JsonRpcServices.GetResult(response));
+            Assert.AreEqual(15, (int) (JsonNumber) JsonRpcServices.GetResult(response));
         }
         
         [ Test ]

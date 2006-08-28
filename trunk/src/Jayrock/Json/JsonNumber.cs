@@ -42,7 +42,7 @@ namespace Jayrock.Json
     /// </remarks>
 
     [ Serializable ]
-    public struct JsonNumber : IConvertible // FIXME: Implement IJsonFormattable
+    public struct JsonNumber : IConvertible, IJsonFormattable
     {
         private readonly string _value;
 
@@ -278,6 +278,14 @@ namespace Jayrock.Json
         public static explicit operator DateTime(JsonNumber number)
         {
             return number.ToDateTime();
+        }
+
+        public void Format(JsonWriter writer)
+        {
+            if (writer == null)
+                throw new ArgumentNullException("writer");
+            
+            writer.WriteNumber(Value);
         }
     }
 }

@@ -46,7 +46,7 @@ namespace Jayrock.Json.Importers
         [ Test ]
         public void ParseNumber()
         {
-            Assert.AreEqual(123, Parse("123"));
+            Assert.AreEqual(123, (int) (JsonNumber) Parse("123"));
         }
 
         [ Test ]
@@ -87,7 +87,7 @@ namespace Jayrock.Json.Importers
             JsonArray values = (JsonArray) Parse("[123,'Hello World',true]");
             Assert.IsNotNull(values);
             Assert.AreEqual(3, values.Length);
-            Assert.AreEqual(123, values[0]);
+            Assert.AreEqual(123, (int) (JsonNumber) values[0]);
             Assert.AreEqual("Hello World", values[1]);
             Assert.AreEqual(true, values[2]);
         }
@@ -120,7 +120,7 @@ namespace Jayrock.Json.Importers
             Assert.IsNotNull(article);
             Assert.AreEqual(5, article.Count);
             Assert.AreEqual("Introduction to JSON", article["Title"]);
-            Assert.AreEqual(2, article["Rating"]);
+            Assert.AreEqual(2, (int) (JsonNumber) article["Rating"]);
             Assert.IsTrue(article.Contains("Abstract"));
             Assert.IsNull(article["Abstract"]);
             

@@ -134,16 +134,75 @@ namespace Jayrock.Json
             Assert.IsTrue(Number("123.5").LogicallyEquals(123.5m), "decimal");
         }
         
-        private static JsonNumber Number(string s)
-        {
-            return new JsonNumber(s);
-        }
-
         [ Test ]
         public void TypeCodeIsObject()
         {
             IConvertible n = new JsonNumber();
             Assert.AreEqual(TypeCode.Object, n.GetTypeCode());
+        }
+        
+        [ Test ]
+        public void JsonFormatting()
+        {
+            TestJsonWriter writer = new TestJsonWriter();
+            IJsonFormattable number = Number("123");
+            number.Format(writer);
+            Assert.AreEqual("123", writer.WrittenValue);
+        }
+
+        private static JsonNumber Number(string s)
+        {
+            return new JsonNumber(s);
+        }
+
+        private sealed class TestJsonWriter : JsonWriter
+        {
+            public string WrittenValue;
+            
+            public override void WriteStartObject()
+            {
+                throw new NotImplementedException();
+            }
+
+            public override void WriteEndObject()
+            {
+                throw new NotImplementedException();
+            }
+
+            public override void WriteMember(string name)
+            {
+                throw new NotImplementedException();
+            }
+
+            public override void WriteStartArray()
+            {
+                throw new NotImplementedException();
+            }
+
+            public override void WriteEndArray()
+            {
+                throw new NotImplementedException();
+            }
+
+            public override void WriteString(string value)
+            {
+                throw new NotImplementedException();
+            }
+
+            public override void WriteNumber(string value)
+            {
+                WrittenValue = value;
+            }
+
+            public override void WriteBoolean(bool value)
+            {
+                throw new NotImplementedException();
+            }
+
+            public override void WriteNull()
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }

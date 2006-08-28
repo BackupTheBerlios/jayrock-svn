@@ -50,7 +50,7 @@ namespace Jayrock.Json.Importers
             }
             else if (reader.TokenClass == JsonTokenClass.Number)
             {
-                return NumberFromString(reader.Text);
+                return new JsonNumber(reader.Text);
             }
             else if (reader.TokenClass == JsonTokenClass.Boolean)
             {
@@ -84,43 +84,6 @@ namespace Jayrock.Json.Importers
             {
                 throw new JsonException(string.Format("{0} not expected.", reader.TokenClass));
             }
-        }
-
-        private static object NumberFromString(string s)
-        {
-            Debug.Assert(s != null);
-
-            //
-            // Try first parsing as a 32-bit integer. If that doesn't work
-            // then try as a double. In the worst case, where it cannot
-            // fit in a double, the straight text version is returned.
-            //
-
-            try 
-            {
-                return Convert.ToInt32(s, CultureInfo.InvariantCulture);
-            } 
-            catch (FormatException) { /* ignore */ }
-            catch (OverflowException) { /* ignore */ }
-
-            try 
-            {
-                return Convert.ToInt64(s, CultureInfo.InvariantCulture);
-            } 
-            catch (FormatException) { /* ignored */ }
-            catch (OverflowException) { /* ignored */ }
-
-            try 
-            {
-                return Convert.ToDouble(s, CultureInfo.InvariantCulture);
-            } 
-            catch (FormatException e)
-            {
-                throw new JsonException(e.Message, e);
-            }
-            catch (OverflowException) { /* ignore */ }
-                
-            return s;
         }
     }
 }
