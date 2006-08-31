@@ -49,13 +49,13 @@ namespace Jayrock.Json
         public JsonArray(IEnumerable collection)
         {
             foreach (object item in collection)
-                List.Add(item);
+                InnerList.Add(item);
         }
 
         public virtual object this[int index]
         {
             get { return InnerList[index]; }
-            set { List[index] = value; }
+            set { InnerList[index] = value; }
         }
 
         public int Length
@@ -71,22 +71,22 @@ namespace Jayrock.Json
 
         public virtual void Add(object value)
         {
-            List.Add(value);
+            InnerList.Add(value);
         }
 
         public virtual void Remove(object value)
         {
-            List.Remove(value);
+            InnerList.Remove(value);
         }
 
         public virtual bool Contains(object value)
         {
-            return List.Contains(value);
+            return InnerList.Contains(value);
         }
 
         public virtual int IndexOf(object value)
         {
-            return List.IndexOf(value);
+            return InnerList.IndexOf(value);
         }
 
         public virtual bool HasValueAt(int index)
@@ -163,15 +163,6 @@ namespace Jayrock.Json
             return (JsonObject) GetValue(index);
         }
 
-        protected override void OnValidate(object value)
-        {
-            //
-            // Null values are allowed in a JSON array so don't delegate
-            // to the base class (CollectionBase) implementation since that
-            // disallows null entries by default.
-            //
-        }
-
         /// <summary>
         /// Make an JSON external form string of this JsonArray. For
         /// compactness, no unnecessary whitespace is added.
@@ -202,16 +193,24 @@ namespace Jayrock.Json
 
         public virtual void Import(JsonReader reader)
         {
-            // FIXME: Make this implementation exception-safe.
+            //
+            // IMPORTANT! A new list is created and then committed to make
+            // sure that this method is exception-safe. If something goes
+            // wrong during the import of elements then this instance 
+            // will remain largely untouched.
+            //
             
-            Clear();
+            ArrayList list = new ArrayList();
             
             reader.ReadToken(JsonTokenClass.Array);
             
             while (reader.TokenClass != JsonTokenClass.EndArray)
-                Add(reader.ReadValue());
+                list.Add(reader.ReadValue());
             
             reader.Read();
+            
+            InnerList.Clear();
+            InnerList.AddRange(list);
         }
 
         /// <summary>
@@ -356,7 +355,7 @@ namespace Jayrock.Json
 
         public virtual JsonArray Unshift(object value)
         {
-            List.Insert(0, value);
+            InnerList.Insert(0, value);
             return this;
         }
 

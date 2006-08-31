@@ -61,5 +61,24 @@ namespace Jayrock.Json
             a.Import(new JsonTextReader(new StringReader("[123]")));
             Assert.AreEqual(1, a.Length);
         }
+        
+        [ Test ]
+        public void ImportIsExceptionSafe()
+        {
+            JsonArray a = new JsonArray();
+            object o = new object();
+            a.Add(o);
+            
+            try
+            {
+                a.Import(new JsonTextReader(new StringReader("[123,456,")));
+            }
+            catch (JsonException)
+            {
+            }
+            
+            Assert.AreEqual(1, a.Count);
+            Assert.AreSame(o, a[0]);
+        }
     }
 }
