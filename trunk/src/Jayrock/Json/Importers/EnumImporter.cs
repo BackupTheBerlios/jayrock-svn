@@ -28,11 +28,11 @@ namespace Jayrock.Json.Importers
 
     #endregion
 
-    public sealed class EnumImporter : IJsonImporterLocator
+    public sealed class EnumBaseImporter : IJsonImporterLocator
     {
         public IJsonImporter Find(Type type)
         {
-            return type.IsEnum ? new TypedEnumImporter(type) : null;
+            return type.IsEnum ? new EnumImporter(type) : null;
         }
 
         public void RegisterSelf(IJsonImporterRegistry registry)
@@ -41,11 +41,11 @@ namespace Jayrock.Json.Importers
         }
     }
     
-    public sealed class TypedEnumImporter : JsonImporterBase
+    public sealed class EnumImporter : JsonImporterBase
     {
         private readonly Type _type;
 
-        public TypedEnumImporter(Type type)
+        public EnumImporter(Type type)
         {
             if (type == null)
                 throw new ArgumentNullException("type");

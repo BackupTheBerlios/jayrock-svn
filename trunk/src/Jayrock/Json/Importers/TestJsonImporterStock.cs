@@ -46,8 +46,8 @@ namespace Jayrock.Json.Importers
             AssertInStock(typeof(StringImporter), typeof(string));
             AssertInStock(typeof(BooleanImporter), typeof(bool));
             AssertInStock(typeof(AutoImporter), typeof(object));
-            AssertInStock(typeof(TypedArrayImporter), typeof(object[]));
-            AssertInStock(typeof(TypedEnumImporter), typeof(System.Globalization.UnicodeCategory));
+            AssertInStock(typeof(ArrayImporter), typeof(object[]));
+            AssertInStock(typeof(EnumImporter), typeof(System.Globalization.UnicodeCategory));
             AssertInStock(typeof(ImportableImporter), typeof(JsonObject));
             AssertInStock(typeof(ImportableImporter), typeof(IDictionary));
             AssertInStock(typeof(ImportableImporter), typeof(JsonArray));

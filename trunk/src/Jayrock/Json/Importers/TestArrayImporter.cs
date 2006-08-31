@@ -33,24 +33,24 @@ namespace Jayrock.Json.Importers
     #endregion
 
     [ TestFixture ]
-    public class TestTypedArrayImporter
+    public class TestArrayImporter
     {
         [ Test, ExpectedException(typeof(ArgumentException)) ]
         public void ElementTypeMustBeArray()
         {
-            new TypedArrayImporter(typeof(object));
+            new ArrayImporter(typeof(object));
         }
 
         [ Test, ExpectedException(typeof(ArgumentException)) ]
         public void ElementTypeMustBeOneDimensionArray()
         {
-            new TypedArrayImporter(typeof(object[,]));
+            new ArrayImporter(typeof(object[,]));
         }
 
         [ Test ]
         public void ImportNull()
         {
-            TypedArrayImporter importer = new TypedArrayImporter();
+            ArrayImporter importer = new ArrayImporter();
             Assert.IsNull(importer.Import(CreateReader("null")));
         }
 
@@ -83,7 +83,7 @@ namespace Jayrock.Json.Importers
         public void AutoElementRegistration()
         {
             TestRegistry registry = new TestRegistry();
-            TypedArrayImporter importer = new TypedArrayImporter(typeof(int[]));
+            ArrayImporter importer = new ArrayImporter(typeof(int[]));
             importer.RegisterSelf(registry);
             
             Assert.AreEqual(2, registry.Types.Count);

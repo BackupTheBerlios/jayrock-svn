@@ -31,12 +31,12 @@ namespace Jayrock.Json.Importers
 
     #endregion
     
-    public sealed class ArrayImporter : IJsonImporterLocator
+    public sealed class ArrayBaseImporter : IJsonImporterLocator
     {
         public IJsonImporter Find(Type type)
         {
             return type.IsArray && type.GetArrayRank() == 1 ? 
-                   new TypedArrayImporter(type) : null;
+                   new ArrayImporter(type) : null;
         }
 
         public void RegisterSelf(IJsonImporterRegistry registry)
@@ -45,13 +45,13 @@ namespace Jayrock.Json.Importers
         }
     }
 
-    public sealed class TypedArrayImporter : IJsonImporter
+    public sealed class ArrayImporter : IJsonImporter
     {
         private readonly Type _arrayType;
 
-        public TypedArrayImporter() : this(null) {}
+        public ArrayImporter() : this(null) {}
 
-        public TypedArrayImporter(Type arrayType)
+        public ArrayImporter(Type arrayType)
         {
             if (arrayType == null)
                 arrayType = typeof(object[]);

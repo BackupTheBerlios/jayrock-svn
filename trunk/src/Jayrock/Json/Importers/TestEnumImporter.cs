@@ -31,38 +31,38 @@ namespace Jayrock.Json.Importers
     #endregion
 
     [ TestFixture ]
-    public class TestTypedEnumImporter
+    public class TestEnumImporter
     {
         [ Test, ExpectedException(typeof(ArgumentNullException)) ]
         public void CannotInitWithNull()
         {
-            new TypedEnumImporter(null);
+            new EnumImporter(null);
         }
 
         [ Test, ExpectedException(typeof(ArgumentException)) ]
         public void ActualTypeMustBeEnum()
         {
-            new TypedEnumImporter(typeof(object));
+            new EnumImporter(typeof(object));
         }
 
         [ Test ]
         public void ImportNull()
         {
-            TypedEnumImporter importer = new TypedEnumImporter(typeof(Days));
+            EnumImporter importer = new EnumImporter(typeof(Days));
             Assert.IsNull(Import(typeof(Days), JsonNull.Text));
         }
 
         [ Test ]
         public void ImportString()
         {
-            TypedEnumImporter importer = new TypedEnumImporter(typeof(Days));
+            EnumImporter importer = new EnumImporter(typeof(Days));
             Assert.AreEqual(Days.Friday, Import(typeof(Days), "'Friday'"));
         }
 
         [ Test ]
         public void ImportStringIgnoresCase()
         {
-            TypedEnumImporter importer = new TypedEnumImporter(typeof(Days));
+            EnumImporter importer = new EnumImporter(typeof(Days));
             Assert.AreEqual(Days.Friday, Import(typeof(Days), "'FRIDAY'"));
             Assert.AreEqual(Days.Friday, Import(typeof(Days), "'friday'"));
             Assert.AreEqual(Days.Friday, Import(typeof(Days), "'FrIdAy'"));
@@ -126,12 +126,12 @@ namespace Jayrock.Json.Importers
         [ Test, ExpectedException(typeof(ArgumentException)) ]
         public void BitFieldEnumsNotSupported()
         {
-            new TypedEnumImporter(typeof(AttributeTargets));
+            new EnumImporter(typeof(AttributeTargets));
         }
 
         private static object Import(Type type, string s)
         {
-            TypedEnumImporter importer = new TypedEnumImporter(type);
+            EnumImporter importer = new EnumImporter(type);
             return importer.Import(CreateReader(s));
         }
 

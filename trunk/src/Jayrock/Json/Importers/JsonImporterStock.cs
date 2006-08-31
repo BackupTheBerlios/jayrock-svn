@@ -96,8 +96,8 @@ namespace Jayrock.Json.Importers
             Register(new ImportableImporter(typeof(IList), new ObjectCreationHandler(CreateJsonArray)));
             
             Register(new ImportableBaseImporter());
-            Array = Register(new ArrayImporter());
-            Enum = Register(new EnumImporter());
+            Array = Register(new ArrayBaseImporter());
+            Enum = Register(new EnumBaseImporter());
         }
 
         public static IJsonImporter Get(Type type)
