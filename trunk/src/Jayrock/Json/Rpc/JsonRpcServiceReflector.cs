@@ -149,7 +149,7 @@ namespace Jayrock.Json.Rpc
                 _method = method;
             }
 
-            public object Invoke(IRpcService service, object[] args)
+            public object Invoke(IService service, object[] args)
             {
                 if (service == null)
                     throw new ArgumentNullException("service");
@@ -172,7 +172,7 @@ namespace Jayrock.Json.Rpc
                 }
             }
 
-            public IAsyncResult BeginInvoke(IRpcService service, object[] args, AsyncCallback callback, object asyncState)
+            public IAsyncResult BeginInvoke(IService service, object[] args, AsyncCallback callback, object asyncState)
             {
                 if (service == null)
                     throw new ArgumentNullException("service");

@@ -33,7 +33,7 @@ namespace Jayrock.Json.Rpc
 
     public sealed class JsonRpcServices
     {
-        public static string GetServiceName(IRpcService service)
+        public static string GetServiceName(IService service)
         {
             return GetServiceName(service, "(anonymous)");
         }
@@ -43,7 +43,7 @@ namespace Jayrock.Json.Rpc
         /// not have a name.
         /// </summary>
 
-        public static string GetServiceName(IRpcService service, string anonymousName)
+        public static string GetServiceName(IService service, string anonymousName)
         {
             if (service == null)
                 throw new ArgumentNullException("service");

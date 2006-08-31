@@ -139,7 +139,7 @@ namespace Jayrock.Json.Rpc
             return null;
         }
 
-        public object Invoke(IRpcService service, string[] names, object[] args)
+        public object Invoke(IService service, string[] names, object[] args)
         {
             if (names != null)
                 args = MapArguments(names, args);
@@ -155,7 +155,7 @@ namespace Jayrock.Json.Rpc
         /// it is delayed until EndInvoke is called to retrieve the results.
         /// </remarks>
 
-        public IAsyncResult BeginInvoke(IRpcService service, string[] names, object[] args, AsyncCallback callback, object asyncState)
+        public IAsyncResult BeginInvoke(IService service, string[] names, object[] args, AsyncCallback callback, object asyncState)
         {
             return _dispatcher.BeginInvoke(service, args, callback, asyncState);
         }

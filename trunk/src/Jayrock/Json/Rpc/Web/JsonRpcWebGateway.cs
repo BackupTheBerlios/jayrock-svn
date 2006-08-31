@@ -35,11 +35,11 @@ namespace Jayrock.Json.Rpc.Web
     public class JsonRpcWebGateway
     {
         private readonly HttpContext _context;
-        private readonly IRpcService _service;
+        private readonly IService _service;
         private IDictionary _features;
         private bool _featuresInitialized;
 
-        public JsonRpcWebGateway(HttpContext context, IRpcService service)
+        public JsonRpcWebGateway(HttpContext context, IService service)
         {
             if (context == null)
                 throw new ArgumentNullException("context");
@@ -56,7 +56,7 @@ namespace Jayrock.Json.Rpc.Web
             get { return _context; }
         }
 
-        public IRpcService Service
+        public IService Service
         {
             get { return _service; }
         }

@@ -29,7 +29,7 @@ namespace Jayrock.Json.Rpc
 
     #endregion
 
-    public interface IRpcService
+    public interface IService
     {
         JsonRpcServiceClass GetClass();
     }

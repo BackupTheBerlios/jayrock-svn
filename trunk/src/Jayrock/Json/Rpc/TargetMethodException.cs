@@ -32,7 +32,7 @@ namespace Jayrock.Json.Rpc
     #endregion
 
     /// <summary>
-    /// The exception that is thrown when <see cref="IRpcService.Invoke"/>
+    /// The exception that is thrown when <see cref="IService.Invoke"/>
     /// or <see cref="IRpcMethod.Invoke"/> fails.
     /// </summary>
 

@@ -35,7 +35,7 @@ namespace Jayrock.Json.Rpc.Web
     public abstract class JsonRpcServiceFeature : IRpcServiceFeature, IHttpHandler
     {
         private HttpContext _context;
-        private IRpcService _targetService;
+        private IService _targetService;
 
         public HttpContext Context
         {
@@ -77,7 +77,7 @@ namespace Jayrock.Json.Rpc.Web
             get { return Context.User; }
         }
 
-        public virtual void Initialize(IRpcService targetService)
+        public virtual void Initialize(IService targetService)
         {
             if (_targetService != null)
                 throw new InvalidOperationException();
@@ -88,7 +88,7 @@ namespace Jayrock.Json.Rpc.Web
             _targetService = targetService;
         }
         
-        public virtual IRpcService TargetService
+        public virtual IService TargetService
         {
             get { return _targetService; }
         }

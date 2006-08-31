@@ -32,7 +32,7 @@ namespace Jayrock.Json.Rpc
 
     #endregion
 
-    public class JsonRpcService : Component, IRpcService
+    public class JsonRpcService : Component, IService
     {
         private JsonRpcServiceClass _class;
 

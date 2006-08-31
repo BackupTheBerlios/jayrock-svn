@@ -30,7 +30,7 @@ namespace Jayrock.Json.Rpc
 
     public interface IRpcServiceFeature
     {
-        void Initialize(IRpcService targetService);
-        IRpcService TargetService { get; }
+        void Initialize(IService targetService);
+        IService TargetService { get; }
     }
 }

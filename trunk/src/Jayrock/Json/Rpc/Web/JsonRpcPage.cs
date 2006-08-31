@@ -34,19 +34,19 @@ namespace Jayrock.Json.Rpc.Web
 
     internal class JsonRpcPage : Page, IRpcServiceFeature
     {
-        private IRpcService _targetService;
+        private IService _targetService;
         private JsonRpcServiceClass _serviceClass;
         private JsonRpcMethod[] _methods;
         private bool _serviceClassInitialized;
         private HtmlGenericControl _head;
         private HtmlGenericControl _body;
 
-        public IRpcService TargetService
+        public IService TargetService
         {
             get { return _targetService; }
         }
 
-        void IRpcServiceFeature.Initialize(IRpcService targetService)
+        void IRpcServiceFeature.Initialize(IService targetService)
         {
             if (_targetService != null)
                 throw new InvalidOperationException();

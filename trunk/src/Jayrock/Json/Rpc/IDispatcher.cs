@@ -30,8 +30,8 @@ namespace Jayrock.Json.Rpc
 
     public interface IDispatcher
     {
-        object Invoke(IRpcService service, object[] args);
-        IAsyncResult BeginInvoke(IRpcService service, object[] args, AsyncCallback callback, object asyncState);
+        object Invoke(IService service, object[] args);
+        IAsyncResult BeginInvoke(IService service, object[] args, AsyncCallback callback, object asyncState);
         object EndInvoke(IAsyncResult asyncResult);
     }
 }

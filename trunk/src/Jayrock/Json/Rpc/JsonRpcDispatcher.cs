@@ -45,15 +45,15 @@ namespace Jayrock.Json.Rpc
 
     public class JsonRpcDispatcher
     {
-        private readonly IRpcService _service;
+        private readonly IService _service;
         private readonly IServiceProvider _serviceProvider;
         private string _serviceName;
         private bool _localExecution;
 
-        public JsonRpcDispatcher(IRpcService service) :
+        public JsonRpcDispatcher(IService service) :
             this(service, null) {}
 
-        public JsonRpcDispatcher(IRpcService service, IServiceProvider serviceProvider)
+        public JsonRpcDispatcher(IService service, IServiceProvider serviceProvider)
         {
             if (service == null)
                 throw new ArgumentNullException("service");
