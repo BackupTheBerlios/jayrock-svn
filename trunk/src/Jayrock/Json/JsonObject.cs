@@ -221,6 +221,9 @@ namespace Jayrock.Json
 
         public virtual void Format(JsonWriter writer)
         {
+            if (writer == null)
+                throw new ArgumentNullException("writer");
+
             writer.WriteStartObject();
             
             foreach (string name in NameIndexList)
@@ -239,7 +242,12 @@ namespace Jayrock.Json
 
         public virtual void Import(JsonReader reader)
         {
-            // FIXME: Make this method exception-safe.
+            if (reader == null)
+                throw new ArgumentNullException("reader");
+
+            // FIXME: Consider making this method exception-safe.
+            // Right now this is a problem because of reliance on
+            // DictionaryBase.
             
             Clear();
             

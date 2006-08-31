@@ -166,5 +166,17 @@ namespace Jayrock.Json
             o.Import(new JsonTextReader(new StringReader("{}")));
             Assert.AreEqual(0, o.Count);
         }
+
+        [ Test, ExpectedException(typeof(ArgumentNullException)) ]
+        public void CannotUseNullArgWithImport()
+        {
+            (new JsonObject()).Import(null);
+        }
+
+        [ Test, ExpectedException(typeof(ArgumentNullException)) ]
+        public void CannotUseNullArgWithFormat()
+        {
+            (new JsonObject()).Format(null);
+        }
     }
 }

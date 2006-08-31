@@ -188,11 +188,17 @@ namespace Jayrock.Json
 
         public virtual void Format(JsonWriter writer)
         {
+            if (writer == null)
+                throw new ArgumentNullException("writer");
+
             writer.WriteArray(this);
         }
 
         public virtual void Import(JsonReader reader)
         {
+            if (reader == null)
+                throw new ArgumentNullException("reader");
+            
             //
             // IMPORTANT! A new list is created and then committed to make
             // sure that this method is exception-safe. If something goes

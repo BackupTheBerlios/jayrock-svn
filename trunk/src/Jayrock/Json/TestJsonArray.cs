@@ -24,6 +24,7 @@ namespace Jayrock.Json
 {
     #region Imports
 
+    using System;
     using System.IO;
     using NUnit.Framework;
 
@@ -79,6 +80,18 @@ namespace Jayrock.Json
             
             Assert.AreEqual(1, a.Count);
             Assert.AreSame(o, a[0]);
+        }
+        
+        [ Test, ExpectedException(typeof(ArgumentNullException)) ]
+        public void CannotUseNullArgWithImport()
+        {
+            (new JsonArray()).Import(null);
+        }
+
+        [ Test, ExpectedException(typeof(ArgumentNullException)) ]
+        public void CannotUseNullArgWithFormat()
+        {
+            (new JsonArray()).Format(null);
         }
     }
 }
