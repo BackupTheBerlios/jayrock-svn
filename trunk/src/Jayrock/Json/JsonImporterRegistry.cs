@@ -26,6 +26,7 @@ namespace Jayrock.Json
 
     using System;
     using System.Collections;
+    using System.Diagnostics;
     using Jayrock.Json.Importers;
 
     #endregion
@@ -35,6 +36,7 @@ namespace Jayrock.Json
         private readonly Hashtable _importerByType = new Hashtable();
         private ArrayList _locators;
         private IJsonImporterLocator _stock;
+        [  NonSerialized ] private IJsonImporterRegistryTargetable[] _cachedItems;
 
         public JsonImporterRegistry() : 
             this(null) {}
@@ -103,6 +105,7 @@ namespace Jayrock.Json
             if (importer == null)
                 throw new ArgumentNullException("importer");
             
+            OnRegistering();
             _importerByType[type] = importer;
         }
 
@@ -117,6 +120,7 @@ namespace Jayrock.Json
             if (Locators.Contains(locator))
                 throw new ArgumentException("Locator is already registered.");
             
+            OnRegistering();
             Locators.Insert(0, locator);
         }
 
@@ -124,7 +128,27 @@ namespace Jayrock.Json
         {
             registry.RegisterLocator(this);
         }
+        
+        //
+        // This property is weakly typed so that the caller cannot assume the
+        // actual type here. You see, we're returning a direct reference to 
+        // an internal array that could be modified by the caller if the 
+        // property was also typed as an array. With a weaker type, if the
+        // caller wants to modify the collection then a copy must first be
+        // made into a private array via ICollection.CopyTo.
+        //
+        
+        internal ICollection Items
+        {
+            get
+            {
+                if (_cachedItems == null)
+                    _cachedItems = GetItems();
 
+                return _cachedItems;
+            }
+        }
+        
         private ArrayList Locators
         {
             get
@@ -146,6 +170,50 @@ namespace Jayrock.Json
                 
                 return _locators;
             }
+        }
+
+        private void OnRegistering()
+        {
+            _cachedItems = null;
+        }
+
+        private IJsonImporterRegistryTargetable[] GetItems()
+        {
+            //
+            // Count total items and allocate an appropriately sized array.
+            //
+            
+            int count = 0;
+
+            if (_importerByType != null)
+                count += _importerByType.Count;
+
+            if (_locators != null)
+                count += _locators.Count;
+
+            IJsonImporterRegistryTargetable[] items = new IJsonImporterRegistryTargetable[count];
+            
+            //
+            // Now copy items into the array.
+            //
+
+            int index = 0;
+
+            if (_importerByType != null)
+            {
+                _importerByType.Values.CopyTo(items, index);
+                index += _importerByType.Count;
+            }
+
+            if (_locators != null)
+            {
+                _locators.CopyTo(items, index);
+                index += _locators.Count;
+            }
+
+            Debug.Assert(index == count);
+                
+            return items;
         }
     }
 }

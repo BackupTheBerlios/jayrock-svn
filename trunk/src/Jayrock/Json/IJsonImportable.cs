@@ -20,41 +20,10 @@
 //
 #endregion
 
-namespace Jayrock
+namespace Jayrock.Json
 {
-    #region Imports
-
-    using System;
-    using System.Collections;
-
-    #endregion
-
-    /// <summary>
-    /// Helper methods for collections.
-    /// </summary>
-
-    internal sealed class CollectionHelper
+    public interface IJsonImportable
     {
-        private static readonly object[] _zeroObjects = new object[0];
-
-        public static object[] ToArray(ICollection collection)
-        {
-            if (collection == null)
-                return _zeroObjects;
-
-            object[] values = new object[collection.Count];
-            collection.CopyTo(values, 0);
-            return values;
-        }
-        
-        public static IList ToList(ICollection collection)
-        {
-            return collection != null ? new ArrayList(collection) : new ArrayList();
-        }
-
-        private CollectionHelper()
-        {
-            throw new NotSupportedException();
-        }
+        void Import(JsonReader reader);
     }
 }

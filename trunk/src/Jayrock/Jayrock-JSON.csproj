@@ -123,6 +123,11 @@
                     BuildAction = "None"
                 />
                 <File
+                    RelPath = "ObjectCreationHandler.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "UnixTime.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -139,6 +144,11 @@
                 />
                 <File
                     RelPath = "Json\IJsonFormatter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\IJsonImportable.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -339,6 +349,11 @@
                 />
                 <File
                     RelPath = "Json\Importers\EnumImporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Importers\ImportableImporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

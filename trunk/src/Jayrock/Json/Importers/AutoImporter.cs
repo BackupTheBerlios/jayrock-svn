@@ -30,14 +30,14 @@ namespace Jayrock.Json.Importers
 
     #endregion
 
-    public sealed class AutoImporter : JsonImporter
+    public sealed class AutoImporter : IJsonImporter
     {
-        public override void RegisterSelf(IJsonImporterRegistry registry)
+        public void RegisterSelf(IJsonImporterRegistry registry)
         {
             registry.Register(typeof(object), this);
         }
 
-        protected override object SubImport(JsonReader reader)
+        public object Import(JsonReader reader)
         {
             if (reader == null)
                 throw new ArgumentNullException("reader");
@@ -46,38 +46,31 @@ namespace Jayrock.Json.Importers
             
             if (reader.TokenClass == JsonTokenClass.String)
             {
-                return reader.Text;
+                return reader.ReadString();
             }
             else if (reader.TokenClass == JsonTokenClass.Number)
             {
-                return new JsonNumber(reader.Text);
+                return reader.ReadNumber();
             }
             else if (reader.TokenClass == JsonTokenClass.Boolean)
             {
-                return reader.Text == JsonBoolean.TrueText;
+                return reader.ReadBoolean();
             }
             else if (reader.TokenClass == JsonTokenClass.Null)
             {
+                reader.Read();
                 return null;
             }
             else if (reader.TokenClass == JsonTokenClass.Array)
             {
-                reader.Read();
-                JsonArray values = new JsonArray();
-                
-                while (reader.TokenClass != JsonTokenClass.EndArray)
-                    values.Add(Import(reader));
-
-                return values;
+                JsonArray items = new JsonArray();
+                items.Import(reader);
+                return items;
             }
             else if (reader.TokenClass == JsonTokenClass.Object)
             {
-                reader.Read();
                 JsonObject o = new JsonObject();
-
-                while (reader.TokenClass != JsonTokenClass.EndObject)
-                    o.Put(reader.ReadMember(), Import(reader));
-                
+                o.Import(reader);
                 return o;
             }
             else 

@@ -26,6 +26,7 @@ namespace Jayrock.Json
 
     using System;
     using System.Collections;
+    using System.IO;
     using NUnit.Framework;
 
     #endregion
@@ -112,6 +113,58 @@ namespace Jayrock.Json
             Assert.AreEqual(2, values[1]);
             Assert.AreEqual(3, values[2]);
             Assert.AreEqual(4, values[3]);
+        }
+        
+        [ Test ]
+        public void Import()
+        {
+            JsonObject article = new JsonObject();
+            
+            article.Import(new JsonTextReader(new StringReader(@"
+                /* Article */ {
+                    Title : 'Introduction to JSON',
+                    Rating : 2,
+                    Abstract : null,
+                    Author : {
+                        Name : 'John Doe',
+                        'E-Mail Address' : 'john.doe@example.com' 
+                    },
+                    References : [
+                        { Title : 'JSON RPC', Link : 'http://www.json-rpc.org/' }
+                    ]
+                }")));
+
+            Assert.IsNotNull(article);
+            Assert.AreEqual(5, article.Count);
+            Assert.AreEqual("Introduction to JSON", article["Title"]);
+            Assert.AreEqual(2, (int) (JsonNumber) article["Rating"]);
+            Assert.AreEqual(null, article["Abstract"]);
+            
+            IDictionary author = (IDictionary) article["Author"];
+            Assert.IsNotNull(author);
+            Assert.AreEqual(2, author.Count);
+            Assert.AreEqual("John Doe", author["Name"]);
+            Assert.AreEqual("john.doe@example.com", author["E-Mail Address"]);
+
+            JsonArray references = (JsonArray) article["References"];
+            Assert.IsNotNull(references);
+            Assert.AreEqual(1, references.Length);
+
+            IDictionary reference = (IDictionary) references[0];
+            Assert.IsNotNull(reference);
+            Assert.AreEqual(2, reference.Count);
+            Assert.AreEqual("JSON RPC", reference["Title"]);
+            Assert.AreEqual("http://www.json-rpc.org/", reference["Link"]);
+        }
+        
+        [ Test ]
+        public void ContentsClearedBeforeImporting()
+        {
+            JsonObject o = new JsonObject();
+            o.Put("foo", "bar");
+            Assert.AreEqual(1, o.Count);
+            o.Import(new JsonTextReader(new StringReader("{}")));
+            Assert.AreEqual(0, o.Count);
         }
     }
 }

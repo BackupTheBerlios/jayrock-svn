@@ -44,7 +44,7 @@ namespace Jayrock.Json
     /// </remarks>
 
     [ Serializable ]
-    public class JsonObject : DictionaryBase, IJsonFormattable
+    public class JsonObject : DictionaryBase, IJsonFormattable, IJsonImportable
     {
         private ArrayList _nameIndexList;
         [ NonSerialized ] private IList _readOnlyNameIndexList;
@@ -84,7 +84,7 @@ namespace Jayrock.Json
                 Accumulate(key, i < valueCount ? values[i] : null);
             }
         }
-
+        
         public virtual object this[string key]
         {
             get { return InnerHashtable[key]; }
@@ -230,6 +230,25 @@ namespace Jayrock.Json
             }
 
             writer.WriteEndObject();
+        }
+        
+        /// <remarks>
+        /// This method is not exception-safe. If an error occurs while 
+        /// reading then the object may be partially imported.
+        /// </remarks>
+
+        public virtual void Import(JsonReader reader)
+        {
+            // FIXME: Make this method exception-safe.
+            
+            Clear();
+            
+            reader.ReadToken(JsonTokenClass.Object);
+            
+            while (reader.TokenClass != JsonTokenClass.EndObject)
+                Put(reader.ReadMember(), reader.ReadValue());
+            
+            reader.Read();
         }
 
         protected override void OnValidate(object key, object value)

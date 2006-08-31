@@ -24,6 +24,7 @@ namespace Jayrock.Json
 {
     #region Imports
 
+    using System.IO;
     using NUnit.Framework;
 
     #endregion
@@ -38,6 +39,27 @@ namespace Jayrock.Json
             a.Add(null);
             Assert.AreEqual(1, a.Count);
             Assert.IsNull(a[0]);
+        }
+
+        [ Test ]
+        public void Import()
+        {
+            JsonArray a = new JsonArray();
+            a.Import(new JsonTextReader(new StringReader("[123,'Hello World',true]")));
+            Assert.AreEqual(3, a.Length);
+            Assert.AreEqual(123, (int) (JsonNumber) a[0]);
+            Assert.AreEqual("Hello World", a[1]);
+            Assert.AreEqual(true, a[2]);
+        }
+
+        [ Test ]
+        public void ContentsClearedBeforeImporting()
+        {
+            JsonArray a = new JsonArray();
+            a.Add(new object());
+            Assert.AreEqual(1, a.Length);
+            a.Import(new JsonTextReader(new StringReader("[123]")));
+            Assert.AreEqual(1, a.Length);
         }
     }
 }

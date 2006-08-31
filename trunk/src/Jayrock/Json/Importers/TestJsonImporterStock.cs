@@ -25,6 +25,7 @@ namespace Jayrock.Json.Importers
     #region Imports
 
     using System;
+    using System.Collections;
     using NUnit.Framework;
 
     #endregion
@@ -47,8 +48,13 @@ namespace Jayrock.Json.Importers
             AssertInStock(typeof(AutoImporter), typeof(object));
             AssertInStock(typeof(TypedArrayImporter), typeof(object[]));
             AssertInStock(typeof(TypedEnumImporter), typeof(System.Globalization.UnicodeCategory));
+            AssertInStock(typeof(ImportableImporter), typeof(JsonObject));
+            AssertInStock(typeof(ImportableImporter), typeof(IDictionary));
+            AssertInStock(typeof(ImportableImporter), typeof(JsonArray));
+            AssertInStock(typeof(ImportableImporter), typeof(IList));
+            AssertInStock(typeof(ImportableImporter), typeof(ImportableThing));
         }
-        
+
         [ Test, ExpectedException(typeof(JsonException)) ]
         public void CannotGetUnknown()
         {
@@ -60,6 +66,14 @@ namespace Jayrock.Json.Importers
             IJsonImporter importer = JsonImporterStock.Find(type);
             Assert.IsNotNull(importer , "{0} not in stock.", type.FullName);
             Assert.IsInstanceOfType(expected, importer, type.FullName);
+        }
+
+        private sealed class ImportableThing : IJsonImportable
+        {
+            public void Import(JsonReader reader)
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }

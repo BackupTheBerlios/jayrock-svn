@@ -25,6 +25,7 @@ namespace Jayrock.Json.Importers
     #region Imports
 
     using System;
+    using System.Collections;
     using System.Diagnostics;
     using Jayrock.Json.Importers;
 
@@ -32,7 +33,8 @@ namespace Jayrock.Json.Importers
 
     public sealed class JsonImporterStock
     {
-        public readonly static IJsonImporterLocator StockLocator;
+        // TODO: Review if these are still needed.
+        // JsonImporterStock.StockLocator.Find provides the same functionality.
         
         public static readonly IJsonImporter Byte;
         public static readonly IJsonImporter Int16;
@@ -48,27 +50,56 @@ namespace Jayrock.Json.Importers
         public static readonly IJsonImporterLocator Array;
         public static readonly IJsonImporterLocator Enum;
         
+        internal static readonly IJsonImporterLocator None;
+
+        private static readonly JsonImporterRegistry _registry;
+
+        public static IJsonImporterLocator StockLocator
+        {
+            get { return _registry; }
+        }
+
         static JsonImporterStock()
         {
-            JsonImporterRegistry registry = new JsonImporterRegistry(new NullImporterLocator());
+            None = new NullLocator();
 
-            Byte = NumberImporter.Byte;         Byte.RegisterSelf(registry);
-            Int16 = NumberImporter.Int16;       Int16.RegisterSelf(registry);
-            Int32 = NumberImporter.Int32;       Int32.RegisterSelf(registry);
-            Int64 = NumberImporter.Int64;       Int64.RegisterSelf(registry);
-            Single = NumberImporter.Single;     Single.RegisterSelf(registry);
-            Double = NumberImporter.Double;     Double.RegisterSelf(registry);
-            Decimal = NumberImporter.Decimal;   Decimal.RegisterSelf(registry);
-            String = new StringImporter();      String.RegisterSelf(registry);
-            Boolean = new BooleanImporter();    Boolean.RegisterSelf(registry);
-            DateTime = new DateTimeImporter();  DateTime.RegisterSelf(registry);
-            Auto = new AutoImporter();          Auto.RegisterSelf(registry);
-            Array = new ArrayImporter();        Array.RegisterSelf(registry);
-            Enum = new EnumImporter();          Enum.RegisterSelf(registry);
+            _registry = new JsonImporterRegistry(None);
+            
+            //
+            // Register importers for primitive types.
+            //
 
-            StockLocator = registry;
+            Byte = Register(NumberImporter.Byte);
+            Int16 = Register(NumberImporter.Int16);
+            Int32 = Register(NumberImporter.Int32);
+            Int64 = Register(NumberImporter.Int64);
+            Single = Register(NumberImporter.Single);
+            Double = Register(NumberImporter.Double);
+            Decimal = Register(NumberImporter.Decimal);
+            String = Register(new StringImporter());
+            Boolean = Register(new BooleanImporter());
+            DateTime = Register(new DateTimeImporter());
+
+            //
+            // Register the auto importer that automatically imports the
+            // type based on what's coming in the JSON data.
+            //
+
+            Auto = Register(new AutoImporter());
+            
+            //
+            // Register for IDictionary and IList such that these yield
+            // to JsonObject and JsonArray, respectively.
+            //
+            
+            Register(new ImportableImporter(typeof(IDictionary), new ObjectCreationHandler(CreateJsonObject)));
+            Register(new ImportableImporter(typeof(IList), new ObjectCreationHandler(CreateJsonArray)));
+            
+            Register(new ImportableBaseImporter());
+            Array = Register(new ArrayImporter());
+            Enum = Register(new EnumImporter());
         }
-        
+
         public static IJsonImporter Get(Type type)
         {
             if (type == null)
@@ -95,8 +126,8 @@ namespace Jayrock.Json.Importers
         /// <summary>
         /// An importer locator that never finds anything!
         /// </summary>
- 
-        private sealed class NullImporterLocator : IJsonImporterLocator
+        
+        private sealed class NullLocator : IJsonImporterLocator
         {
             public IJsonImporter Find(Type type)
             {
@@ -107,6 +138,38 @@ namespace Jayrock.Json.Importers
             {
                 registry.RegisterLocator(this);
             }
+        }
+ 
+        private static IJsonImporter Register(IJsonImporter importer)
+        {
+            Debug.Assert(_registry != null);
+            Debug.Assert(importer != null);
+            
+            importer.RegisterSelf(_registry);
+            return importer;
+        }
+
+        private static IJsonImporterLocator Register(IJsonImporterLocator locator)
+        {
+            Debug.Assert(_registry != null);
+            Debug.Assert(locator != null);
+
+            locator.RegisterSelf(_registry);
+            return locator;
+        }
+
+        private static object CreateJsonObject(object[] args)
+        {
+            Debug.Assert(args == null || args.Length == 0);
+            
+            return new JsonObject();
+        }
+
+        private static object CreateJsonArray(object[] args)
+        {
+            Debug.Assert(args == null || args.Length == 0);
+
+            return new JsonArray();
         }
     }
 }

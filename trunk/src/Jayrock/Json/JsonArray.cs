@@ -42,7 +42,7 @@ namespace Jayrock.Json
     /// </remarks>
 
     [ Serializable ]
-    public class JsonArray : CollectionBase, IJsonFormattable
+    public class JsonArray : CollectionBase, IJsonFormattable, IJsonImportable
     {
         public JsonArray() {}
 
@@ -198,6 +198,20 @@ namespace Jayrock.Json
         public virtual void Format(JsonWriter writer)
         {
             writer.WriteArray(this);
+        }
+
+        public virtual void Import(JsonReader reader)
+        {
+            // FIXME: Make this implementation exception-safe.
+            
+            Clear();
+            
+            reader.ReadToken(JsonTokenClass.Array);
+            
+            while (reader.TokenClass != JsonTokenClass.EndArray)
+                Add(reader.ReadValue());
+            
+            reader.Read();
         }
 
         /// <summary>
