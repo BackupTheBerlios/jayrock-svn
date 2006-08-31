@@ -30,7 +30,7 @@ namespace Jayrock.Json.Importers
 
     #endregion
 
-    public sealed class DateTimeImporter : JsonImporter
+    public sealed class DateTimeImporter : JsonImporterBase
     {
         public override void RegisterSelf(IJsonImporterRegistry registry)
         {

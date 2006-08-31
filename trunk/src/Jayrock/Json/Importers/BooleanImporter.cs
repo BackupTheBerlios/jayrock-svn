@@ -29,7 +29,7 @@ namespace Jayrock.Json.Importers
 
     #endregion
 
-    public sealed class BooleanImporter : JsonImporter
+    public sealed class BooleanImporter : JsonImporterBase
     {
         public override void RegisterSelf(IJsonImporterRegistry registry)
         {

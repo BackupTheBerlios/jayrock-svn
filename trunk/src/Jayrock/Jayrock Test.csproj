@@ -469,7 +469,7 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Importers\JsonImporter.cs"
+                    RelPath = "Json\Importers\JsonImporterBase.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

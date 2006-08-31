@@ -28,7 +28,7 @@ namespace Jayrock.Json.Importers
 
     #endregion
 
-    public sealed class StringImporter : JsonImporter
+    public sealed class StringImporter : JsonImporterBase
     {
         public override void RegisterSelf(IJsonImporterRegistry registry)
         {

@@ -29,7 +29,7 @@ namespace Jayrock.Json.Importers
 
     #endregion
 
-    public class NameValueCollectionImporter : JsonImporter
+    public class NameValueCollectionImporter : JsonImporterBase
     {
         public override void RegisterSelf(IJsonImporterRegistry registry)
         {

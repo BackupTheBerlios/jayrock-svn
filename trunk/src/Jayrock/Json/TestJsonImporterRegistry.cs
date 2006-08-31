@@ -141,7 +141,7 @@ namespace Jayrock.Json
         {
         }
         
-        private sealed class TestImporter : JsonImporter
+        private sealed class TestImporter : JsonImporterBase
         {
             public readonly Type Type;
 

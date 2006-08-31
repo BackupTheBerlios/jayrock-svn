@@ -41,7 +41,7 @@ namespace Jayrock.Json.Importers
         }
     }
     
-    public sealed class TypedEnumImporter : JsonImporter
+    public sealed class TypedEnumImporter : JsonImporterBase
     {
         private readonly Type _type;
 

@@ -60,7 +60,7 @@ namespace Jayrock.Json.Importers
             return new JsonTextReader(new StringReader(s));
         }
         
-        private sealed class TestImporter : JsonImporter
+        private sealed class TestImporter : JsonImporterBase
         {
             public object ReturnValue;
             public bool Called;

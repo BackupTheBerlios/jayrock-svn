@@ -28,7 +28,7 @@ namespace Jayrock.Json.Importers
 
     #endregion
 
-    public abstract class JsonImporter : IJsonImporter
+    public abstract class JsonImporterBase : IJsonImporter
     {
         public abstract void RegisterSelf(IJsonImporterRegistry registry);
 

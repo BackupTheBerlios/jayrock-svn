@@ -29,7 +29,7 @@ namespace Jayrock.Json.Importers
 
     #endregion
 
-    public sealed class ComponentImporter : JsonImporter
+    public sealed class ComponentImporter : JsonImporterBase
     {
         private readonly Type _type;
         private readonly PropertyDescriptorCollection _properties;
