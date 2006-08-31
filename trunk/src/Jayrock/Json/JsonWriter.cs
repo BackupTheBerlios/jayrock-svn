@@ -188,14 +188,5 @@ namespace Jayrock.Json
 
             reader.Read();
         }
-        
-        public void WriteFromReader(JsonReader reader)
-        {
-            if (reader == null)            
-                throw new ArgumentNullException("reader");
-
-            while (!reader.EOF)
-                WriteValueFromReader(reader);
-        }
     }
 }
