@@ -145,12 +145,12 @@ namespace Jayrock.Json.Rpc
         
         private class StubDispatcher : IDispatcher
         {
-            public object Invoke(IRpcService service, object[] args)
+            public object Invoke(IService service, object[] args)
             {
                 throw new NotImplementedException();
             }
 
-            public IAsyncResult BeginInvoke(IRpcService service, object[] args, AsyncCallback callback,
+            public IAsyncResult BeginInvoke(IService service, object[] args, AsyncCallback callback,
                                             object asyncState)
             {
                 throw new NotImplementedException();

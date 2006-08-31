@@ -494,6 +494,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Json\Importers\TestArrayImporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\Importers\TestAutoImporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -510,6 +515,11 @@
                 />
                 <File
                     RelPath = "Json\Importers\TestDateTimeImporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Importers\TestEnumImporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -544,16 +554,6 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Importers\TestTypedArrayImporter.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Json\Importers\TestTypedEnumImporter.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "Json\Rpc\DuplicateMethodException.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -569,12 +569,12 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Rpc\IRpcService.cs"
+                    RelPath = "Json\Rpc\IRpcServiceFeature.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Rpc\IRpcServiceFeature.cs"
+                    RelPath = "Json\Rpc\IService.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

@@ -250,7 +250,7 @@ namespace Jayrock.Json.Rpc
 
         [ JsonRpcService("MyService") ]
         [ JsonRpcHelp("A test service.") ]
-        private sealed class TestService : IRpcService
+        private sealed class TestService : IService
         {
             [ JsonRpcMethod ]
             [ MyAttribute(12), MyAttribute(56), MyAttribute(34) ]
