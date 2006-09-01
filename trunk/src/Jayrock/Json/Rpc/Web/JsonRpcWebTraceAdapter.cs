@@ -32,8 +32,6 @@ namespace Jayrock.Json.Rpc.Web
 
     internal sealed class JsonRpcWebTraceAdapter : TraceListener
     {
-        public JsonRpcWebTraceAdapter() {}
-
         public override void Write(string message, string category)
         {
             if (IsJsonRpcCategory(category))
