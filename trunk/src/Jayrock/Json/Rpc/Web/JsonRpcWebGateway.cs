@@ -36,8 +36,8 @@ namespace Jayrock.Json.Rpc.Web
     {
         private readonly HttpContext _context;
         private readonly IService _service;
-        private IDictionary _features;
-        private bool _featuresInitialized;
+        private IDictionary _bindingByName;
+        private bool _bindingsInitialized;
 
         public JsonRpcWebGateway(HttpContext context, IService service)
         {
@@ -63,88 +63,102 @@ namespace Jayrock.Json.Rpc.Web
 
         public virtual void ProcessRequest()
         {
-            string featureName = Mask.NullString(FeatureNameFromContext());
-            featureName = featureName.ToLower(CultureInfo.InvariantCulture);
+            IServiceBinding binding = InferBinding();
 
-            IRpcServiceFeature feature = featureName.Length == 0 ? 
-                GetDefaultFeature() : GetFeatureByName(featureName);
+            if (binding == null)
+                throw new JsonRpcException("There is no service binding available for this type of request.");
 
-            if (feature == null)
-                throw new JsonRpcException(string.Format("Don't know how to handle {0} type of JSON-RPC requests.", Mask.EmptyString(featureName, "(default)")));
-
-            IHttpHandler handler = feature as IHttpHandler;
+            IHttpHandler handler = binding as IHttpHandler;
         
             if (handler == null)
-                throw new JsonRpcException(string.Format("The {0} feature does not support the HTTP protocol.", feature.GetType().FullName));
+                throw new JsonRpcException(string.Format("The {0} binding does not support HTTP.", binding.GetType().FullName));
 
-            feature.Initialize(Service);
             handler.ProcessRequest(Context);
         }
 
-        protected virtual IRpcServiceFeature GetDefaultFeature()
+        protected virtual IServiceBinding InferBinding()
         {
-            string verb = Context.Request.RequestType;
+            HttpRequest request = Context.Request;
+            string verb = request.RequestType;
 
             if (CaselessString.Equals(verb, "GET") ||
                 CaselessString.Equals(verb, "HEAD"))
             {
-                foreach (string mimeType in Context.Request.AcceptTypes)
-                    if (CaselessString.Equals(mimeType, "application/json"))
-                        return GetFeatureByName("getrpc");
+                //
+                // If there is path tail then it indicates a GET-safe RPC.
+                //
                 
-                return GetFeatureByName("help");
+                if (request.PathInfo.Length > 1)
+                    return GetBindingByName("getrpc");
+                
+                //
+                // Otherwise, get the binding name from anonymous query 
+                // string parameter.
+                //
+
+                return GetBindingByName(Mask.EmptyString(request.QueryString[null], "help"));
             }
             else if (CaselessString.Equals(verb, "POST")) 
             {
-                return GetFeatureByName("rpc");
+                //
+                // POST means RPC.
+                //
+                
+                return GetBindingByName("rpc");
             }
 
             return null;
         }
 
-        protected IDictionary Features
+        protected IDictionary Bindings
         {
             get
             {
-                if (!_featuresInitialized)
+                if (!_bindingsInitialized)
                 {
-                    _featuresInitialized = true;
-                    _features = GetFeatures();
+                    _bindingsInitialized = true;
+                    _bindingByName = GetBindings();
                 }
 
-                return _features;
+                return _bindingByName;
             }
         }
 
-        protected virtual IDictionary GetFeatures()
+        protected virtual IDictionary GetBindings()
         {
-            return (IDictionary) ConfigurationSettings.GetConfig("jayrock/json.rpc/features");
-        }
-
-        protected virtual IRpcServiceFeature GetFeatureByName(string name)
-        {
-            if (Features == null || !Features.Contains(name))
-                throw new JsonRpcException(string.Format("There is no feature registered for '{0}' type of requests.", name));
-
-            string featureTypeSpec = Mask.NullString((string) Features[name]);
+            object config = ConfigurationSettings.GetConfig("jayrock/json.rpc/bindings");
             
-            if (featureTypeSpec.Length == 0)
-                throw new JsonRpcException("Missing feature type specification.");
-
-            Type featureType = Type.GetType(featureTypeSpec, true);
-            object featureObject = Activator.CreateInstance(featureType);
-
-            IRpcServiceFeature feature = featureObject as IRpcServiceFeature;
-
-            if (feature == null)
-                throw new JsonRpcException(string.Format("{0} is not a valid type for JSON-RPC.", featureObject.GetType().FullName));
-
-            return feature;
+            if (config == null)
+            {
+                //
+                // Check an alternate path for backward compatibility.
+                //
+                
+                config = ConfigurationSettings.GetConfig("jayrock/json.rpc/features");
+            }
+            
+            return (IDictionary) config;
         }
 
-        protected virtual string FeatureNameFromContext()
+        protected virtual IServiceBinding GetBindingByName(string name)
         {
-            return Mask.NullString(Context.Request.QueryString[null]);
+            if (Bindings == null || !Bindings.Contains(name))
+                throw new JsonRpcException(string.Format("There is no binding registered for '{0}' type of requests.", name));
+
+            string bindingTypeSpec = Mask.NullString((string) Bindings[name]);
+            
+            if (bindingTypeSpec.Length == 0)
+                throw new JsonRpcException("Missing binding type specification.");
+
+            Type bindingType = Type.GetType(bindingTypeSpec, true);
+            object bindingObject = Activator.CreateInstance(bindingType, new object[] { Service });
+
+            IServiceBinding binding = bindingObject as IServiceBinding;
+
+            if (binding == null)
+                throw new JsonRpcException(string.Format("{0} is not a valid binding type.", bindingObject.GetType().FullName));
+
+            return binding;
         }
     }
 }

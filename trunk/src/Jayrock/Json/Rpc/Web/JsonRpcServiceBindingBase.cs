@@ -32,10 +32,18 @@ namespace Jayrock.Json.Rpc.Web
 
     #endregion
 
-    public abstract class JsonRpcServiceFeature : IRpcServiceFeature, IHttpHandler
+    public abstract class JsonRpcServiceBindingBase : IServiceBinding, IHttpHandler
     {
         private HttpContext _context;
-        private IService _targetService;
+        private readonly IService _service;
+
+        protected JsonRpcServiceBindingBase(IService service)
+        {
+            if (service == null)
+                throw new ArgumentNullException("service");
+            
+            _service = service;
+        }
 
         public HttpContext Context
         {
@@ -77,20 +85,9 @@ namespace Jayrock.Json.Rpc.Web
             get { return Context.User; }
         }
 
-        public virtual void Initialize(IService targetService)
+        public virtual IService Service
         {
-            if (_targetService != null)
-                throw new InvalidOperationException();
-
-            if (targetService == null)
-                throw new ArgumentNullException("targetService");
-
-            _targetService = targetService;
-        }
-        
-        public virtual IService TargetService
-        {
-            get { return _targetService; }
+            get { return _service; }
         }
 
         public virtual void ProcessRequest(HttpContext context)

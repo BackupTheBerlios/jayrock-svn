@@ -30,10 +30,13 @@ namespace Jayrock.Json.Rpc.Web
 
     #endregion
 
-    public sealed class JsonRpcGetProtocol : JsonRpcServiceFeature
+    public sealed class JsonRpcGetProtocol : JsonRpcServiceBindingBase
         // TODO: Add IHttpAsyncHandler as soon as JsonRpcWorker supports 
         //       async processing.
     {
+        public JsonRpcGetProtocol(IService service) : 
+            base(service) {}
+
         protected override void ProcessRequest()
         {
             string httpMethod = Request.RequestType;
@@ -99,10 +102,10 @@ namespace Jayrock.Json.Rpc.Web
             writer.WriteEndObject();
             
             //
-            // Delegate rest of the work to JsonRpcServer.
+            // Delegate rest of the work to JsonRpcDispatcher.
             //
 
-            JsonRpcDispatcher dispatcher = new JsonRpcDispatcher(TargetService);
+            JsonRpcDispatcher dispatcher = new JsonRpcDispatcher(Service);
             
             if (HttpRequestSecurity.IsLocal(Request))
                 dispatcher.SetLocalExecution();

@@ -28,9 +28,8 @@ namespace Jayrock.Json.Rpc
 
     #endregion
 
-    public interface IRpcServiceFeature
+    public interface IServiceBinding
     {
-        void Initialize(IService targetService);
-        IService TargetService { get; }
+        IService Service { get; }
     }
 }

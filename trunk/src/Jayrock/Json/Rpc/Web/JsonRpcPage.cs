@@ -32,29 +32,26 @@ namespace Jayrock.Json.Rpc.Web
 
     #endregion
 
-    internal class JsonRpcPage : Page, IRpcServiceFeature
+    internal abstract class JsonRpcPage : Page, IServiceBinding
     {
-        private IService _targetService;
+        private readonly IService _service;
         private JsonRpcServiceClass _serviceClass;
         private JsonRpcMethod[] _methods;
         private bool _serviceClassInitialized;
         private HtmlGenericControl _head;
         private HtmlGenericControl _body;
 
-        public IService TargetService
+        protected JsonRpcPage(IService service)
         {
-            get { return _targetService; }
+            if (service == null)
+                throw new ArgumentNullException("service");
+            
+            _service = service;
         }
 
-        void IRpcServiceFeature.Initialize(IService targetService)
+        public IService Service
         {
-            if (_targetService != null)
-                throw new InvalidOperationException();
-
-            if (targetService == null)
-                throw new ArgumentNullException("targetService");
-
-            _targetService = targetService;
+            get { return _service; }
         }
 
         protected JsonRpcServiceClass ServiceClass
@@ -64,7 +61,7 @@ namespace Jayrock.Json.Rpc.Web
                 if (!_serviceClassInitialized)
                 {
                     _serviceClassInitialized = true;
-                    _serviceClass = TargetService.GetClass();
+                    _serviceClass = Service.GetClass();
                 }
 
                 return _serviceClass;

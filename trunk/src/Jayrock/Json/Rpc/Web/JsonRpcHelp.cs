@@ -31,8 +31,11 @@ namespace Jayrock.Json.Rpc.Web
 
     #endregion
 
-    internal sealed class JsonRpcHelp : JsonRpcPage, IRpcServiceFeature
+    internal sealed class JsonRpcHelp : JsonRpcPage
     {
+        public JsonRpcHelp(IService service) : 
+            base(service) {}
+
         protected override void AddHeader()
         {
             Control header = AddDiv(Body, null);
@@ -55,7 +58,7 @@ namespace Jayrock.Json.Rpc.Web
             AddLiteral(para, "The following ");
             AddLink(para, "JSON-RPC", "http://www.json-rpc.org/");
             AddLiteral(para, " methods are supported (try these using the ");
-            AddLink(para, JsonRpcServices.GetServiceName(TargetService) + " test page", Request.FilePath + "?test");
+            AddLink(para, JsonRpcServices.GetServiceName(Service) + " test page", Request.FilePath + "?test");
             AddLiteral(para, "):");
 
             HtmlGenericControl methodList = new HtmlGenericControl("dl");

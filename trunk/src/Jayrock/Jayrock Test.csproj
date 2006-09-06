@@ -569,12 +569,12 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Rpc\IRpcServiceFeature.cs"
+                    RelPath = "Json\Rpc\IService.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Rpc\IService.cs"
+                    RelPath = "Json\Rpc\IServiceBinding.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

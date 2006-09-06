@@ -34,6 +34,9 @@ namespace Jayrock.Json.Rpc.Web
 
     internal sealed class JsonRpcTester : JsonRpcPage
     {
+        public JsonRpcTester(IService service) : 
+            base(service) {}
+
         protected override string Title
         {
             get { return "Test " + base.Title; }

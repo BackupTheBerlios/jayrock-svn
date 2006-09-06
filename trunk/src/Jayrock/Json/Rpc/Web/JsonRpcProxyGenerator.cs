@@ -32,10 +32,13 @@ namespace Jayrock.Json.Rpc.Web
 
     #endregion
 
-    public sealed class JsonRpcProxyGenerator : JsonRpcServiceFeature
+    public sealed class JsonRpcProxyGenerator : JsonRpcServiceBindingBase
     {
         private DateTime _lastModifiedTime;
         private bool _lastModifiedTimeInitialized;
+
+        public JsonRpcProxyGenerator(IService service) : 
+            base(service) {}
 
         protected override void ProcessRequest()
         {
@@ -51,7 +54,7 @@ namespace Jayrock.Json.Rpc.Web
                 Response.Cache.SetLastModified(LastModifiedTime);
             }
 
-            JsonRpcServiceClass service = TargetService.GetClass();
+            JsonRpcServiceClass service = Service.GetClass();
 
             Response.ContentType = "text/javascript";
             Response.AppendHeader("Content-Disposition", 
@@ -417,7 +420,7 @@ namespace Jayrock.Json.Rpc.Web
 
                     try
                     {
-                        Uri codeBase = new Uri(TargetService.GetType().Assembly.CodeBase);
+                        Uri codeBase = new Uri(Service.GetType().Assembly.CodeBase);
 
                         if (codeBase != null && codeBase.IsFile)
                         {
