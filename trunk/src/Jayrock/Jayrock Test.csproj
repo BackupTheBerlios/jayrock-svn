@@ -109,12 +109,22 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "ICollector.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "IndentedTextWriter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
                     RelPath = "InternetDate.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "ListCollector.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -135,6 +145,11 @@
                 />
                 <File
                     RelPath = "TestInternetDate.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "TestListCollector.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -195,6 +210,11 @@
                 />
                 <File
                     RelPath = "Json\JsonBoolean.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\JsonCodeWriter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
