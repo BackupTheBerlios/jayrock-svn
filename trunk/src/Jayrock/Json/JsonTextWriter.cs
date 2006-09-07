@@ -60,17 +60,14 @@ namespace Jayrock.Json
         }
 
         public JsonTextWriter() :
-            this(new StringWriter()) {}
+            this(null) {}
 
         public JsonTextWriter(TextWriter writer)
         {
-            if (writer == null)
-                throw new ArgumentNullException("writer");
-            
-            _writer = writer;
+            _writer = writer != null ? writer : new StringWriter();
         }
 
-        public virtual TextWriter InnerWriter
+        public TextWriter InnerWriter
         {
             get { return _writer; }
         }
