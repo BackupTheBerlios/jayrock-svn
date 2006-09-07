@@ -140,7 +140,7 @@ namespace Jayrock.Json
         protected abstract void WriteBooleanImpl(bool value);
         protected abstract void WriteNullImpl();
         
-        public virtual IJsonFormatter ValueFormatter
+        public IJsonFormatter ValueFormatter
         {
             get
             {
@@ -161,32 +161,32 @@ namespace Jayrock.Json
 
         public virtual void Flush() { }
 
-        public virtual void WriteNumber(byte value)
+        public void WriteNumber(byte value)
         {
             WriteNumber(value.ToString(CultureInfo.InvariantCulture));
         }
 
-        public virtual void WriteNumber(short value)
+        public void WriteNumber(short value)
         {
             WriteNumber(value.ToString(CultureInfo.InvariantCulture));
         }
 
-        public virtual void WriteNumber(int value)
+        public void WriteNumber(int value)
         {
             WriteNumber(value.ToString(CultureInfo.InvariantCulture));
         }
 
-        public virtual void WriteNumber(long value)
+        public void WriteNumber(long value)
         {
             WriteNumber(value.ToString(CultureInfo.InvariantCulture));
         }
         
-        public virtual void WriteNumber(decimal value)
+        public void WriteNumber(decimal value)
         {
             WriteNumber(value.ToString(CultureInfo.InvariantCulture));
         }
 
-        public virtual void WriteNumber(float value)
+        public void WriteNumber(float value)
         {
             if (float.IsNaN(value))
                 throw new ArgumentOutOfRangeException("value");
@@ -194,7 +194,7 @@ namespace Jayrock.Json
             WriteNumber(value.ToString(CultureInfo.InvariantCulture));
         }
 
-        public virtual void WriteNumber(double value)
+        public void WriteNumber(double value)
         {
             if (double.IsNaN(value))
                 throw new ArgumentOutOfRangeException("value");
@@ -202,7 +202,7 @@ namespace Jayrock.Json
             WriteNumber(value.ToString(CultureInfo.InvariantCulture));
         }
         
-        public virtual void WriteArray(IEnumerable values)
+        public void WriteArray(IEnumerable values)
         {
             if (values == null)
             {
@@ -219,7 +219,7 @@ namespace Jayrock.Json
             }
         }
 
-        public virtual void WriteValue(object value)
+        public void WriteValue(object value)
         {
             ValueFormatter.Format(value, this);
         }
