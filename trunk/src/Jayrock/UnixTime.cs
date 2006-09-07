@@ -132,6 +132,11 @@ namespace Jayrock
             return (new DateTime(year + 1900, month, mday, hour, min, sec)).ToLocalTime();
         }
 
+        public static long ToInt64(DateTime time)
+        {
+            return (long) (time.ToUniversalTime() - new DateTime(1970, 1, 1)).TotalSeconds;
+        }
+
         /// <summary>
         /// Determine if a given year, expressed as the number of years since
         /// 1900, is a leap year.

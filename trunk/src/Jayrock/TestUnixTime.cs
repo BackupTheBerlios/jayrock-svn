@@ -22,9 +22,13 @@
 
 namespace Jayrock
 {
+    #region Imports
+
     using System;
     using System.Reflection;
     using NUnit.Framework;
+
+    #endregion
 
     [ TestFixture ]
     public class TestUnixTime
@@ -34,7 +38,7 @@ namespace Jayrock
         {
             try
             {
-                Activator.CreateInstance(typeof(InternetDate), true);
+                Activator.CreateInstance(typeof(UnixTime), true);
                 Assert.Fail();
             }
             catch (TargetInvocationException e)
@@ -44,10 +48,19 @@ namespace Jayrock
         }
         
         [ Test ]
-        public void Convert()
+        public void Conversions()
         {
-            Assert.AreEqual(new DateTime(2006, 7, 17, 10, 56, 56), UnixTime.ToDateTime(1153133816).ToUniversalTime());
-            Assert.AreEqual(new DateTime(2006, 7, 17, 11, 00, 44), UnixTime.ToDateTime(1153134044).ToUniversalTime());
+            DateTime t1 = new DateTime(2006, 7, 17, 10, 56, 56);
+            const long u1 = 1153133816;
+            
+            DateTime t2 = new DateTime(2006, 7, 17, 11, 00, 44);
+            const long u2 = 1153134044;
+
+            Assert.AreEqual(t1, UnixTime.ToDateTime(u1).ToUniversalTime());
+            Assert.AreEqual(t2, UnixTime.ToDateTime(u2).ToUniversalTime());
+            
+            Assert.AreEqual(u1, UnixTime.ToInt64(t1.ToLocalTime()));
+            Assert.AreEqual(u2, UnixTime.ToInt64(t2.ToLocalTime()));
         }
     }
 }
