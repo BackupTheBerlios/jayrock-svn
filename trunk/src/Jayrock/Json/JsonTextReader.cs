@@ -70,7 +70,7 @@ namespace Jayrock.Json
         /// Reads the next token and returns it.
         /// </summary>
 
-        protected override JsonToken ReadToken()
+        protected override JsonToken ReadTokenImpl()
         {
             if (_stack == null || _stack.Count == 0)
             {

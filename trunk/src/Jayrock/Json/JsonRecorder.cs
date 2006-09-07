@@ -51,47 +51,47 @@ namespace Jayrock.Json
             Entries.Add(token);
         }
 
-        public override void WriteStartObject()
+        protected override void WriteStartObjectImpl()
         {
             Write(JsonToken.Object());
         }
 
-        public override void WriteEndObject()
+        protected override void WriteEndObjectImpl()
         {
             Write(JsonToken.EndObject());
         }
 
-        public override void WriteMember(string name)
+        protected override void WriteMemberImpl(string name)
         {
             Write(JsonToken.Member(name));
         }
 
-        public override void WriteStartArray()
+        protected override void WriteStartArrayImpl()
         {
             Write(JsonToken.Array());
         }
 
-        public override void WriteEndArray()
+        protected override void WriteEndArrayImpl()
         {
             Write(JsonToken.EndArray());
         }
 
-        public override void WriteString(string value)
+        protected override void WriteStringImpl(string value)
         {
             Write(JsonToken.String(value));
         }
 
-        public override void WriteNumber(string value)
+        protected override void WriteNumberImpl(string value)
         {
             Write(JsonToken.Number(value));
         }
 
-        public override void WriteBoolean(bool value)
+        protected override void WriteBooleanImpl(bool value)
         {
             Write(JsonToken.Boolean(value));
         }
 
-        public override void WriteNull()
+        protected override void WriteNullImpl()
         {
             Write(JsonToken.Null());
         }
@@ -142,7 +142,7 @@ namespace Jayrock.Json
                 _entries = entries;
             }
 
-            protected override JsonToken ReadToken()
+            protected override JsonToken ReadTokenImpl()
             {
                 return _entries[++_index];
             }

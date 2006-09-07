@@ -48,47 +48,47 @@ namespace Jayrock.Json
             _collector = collector;
         }
 
-        public override void WriteStartObject()
+        protected override void WriteStartObjectImpl()
         {
             Append(MethodBase.GetCurrentMethod());
         }
 
-        public override void WriteEndObject()
+        protected override void WriteEndObjectImpl()
         {
             Append(MethodBase.GetCurrentMethod());
         }
 
-        public override void WriteMember(string name)
+        protected override void WriteMemberImpl(string name)
         {
             Append(MethodBase.GetCurrentMethod(), name);
         }
 
-        public override void WriteStartArray()
+        protected override void WriteStartArrayImpl()
         {
             Append(MethodBase.GetCurrentMethod());
         }
 
-        public override void WriteEndArray()
+        protected override void WriteEndArrayImpl()
         {
             Append(MethodBase.GetCurrentMethod());
         }
 
-        public override void WriteString(string value)
+        protected override void WriteStringImpl(string value)
         {
             Append(MethodBase.GetCurrentMethod(), value);
         }
 
-        public override void WriteNumber(string value)
+        protected override void WriteNumberImpl(string value)
         {
             Append(MethodBase.GetCurrentMethod(), value);
         }
 
-        public override void WriteBoolean(bool value)
+        protected override void WriteBooleanImpl(bool value)
         {
             Append(MethodBase.GetCurrentMethod(), value);
         }
 
-        public override void WriteNull()
+        protected override void WriteNullImpl()
         {
             Append(MethodBase.GetCurrentMethod());
         }

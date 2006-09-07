@@ -159,47 +159,46 @@ namespace Jayrock.Json
         {
             public string WrittenValue;
             
-            public override void WriteStartObject()
+            protected override void WriteStartObjectImpl()
             {
                 throw new NotImplementedException();
             }
 
-            public override void WriteEndObject()
+            protected override void WriteEndObjectImpl()
             {
                 throw new NotImplementedException();
             }
 
-            public override void WriteMember(string name)
+            protected override void WriteMemberImpl(string name)
             {
                 throw new NotImplementedException();
             }
 
-            public override void WriteStartArray()
+            protected override void WriteStartArrayImpl()
+            {
+            }
+
+            protected override void WriteEndArrayImpl()
             {
                 throw new NotImplementedException();
             }
 
-            public override void WriteEndArray()
+            protected override void WriteStringImpl(string value)
             {
                 throw new NotImplementedException();
             }
 
-            public override void WriteString(string value)
-            {
-                throw new NotImplementedException();
-            }
-
-            public override void WriteNumber(string value)
+            protected override void WriteNumberImpl(string value)
             {
                 WrittenValue = value;
             }
 
-            public override void WriteBoolean(bool value)
+            protected override void WriteBooleanImpl(bool value)
             {
                 throw new NotImplementedException();
             }
 
-            public override void WriteNull()
+            protected override void WriteNullImpl()
             {
                 throw new NotImplementedException();
             }

@@ -348,7 +348,7 @@ namespace Jayrock.Json
         {
             private Queue _queue = new Queue();
 
-            protected override JsonToken ReadToken()
+            protected override JsonToken ReadTokenImpl()
             {
                 return (JsonToken) _queue.Dequeue();
             }

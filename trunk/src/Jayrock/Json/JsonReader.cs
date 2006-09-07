@@ -103,7 +103,7 @@ namespace Jayrock.Json
                 if (TokenClass == JsonTokenClass.EndObject || TokenClass == JsonTokenClass.EndArray)
                     _depth--;
 
-                _token = ReadToken();
+                _token = ReadTokenImpl();
 
                 if (TokenClass == JsonTokenClass.Object || TokenClass == JsonTokenClass.Array)
                     _depth++;
@@ -116,7 +116,7 @@ namespace Jayrock.Json
         /// Reads the next token and returns it.
         /// </summary>
         
-        protected abstract JsonToken ReadToken();
+        protected abstract JsonToken ReadTokenImpl();
 
         /// <summary>
         /// Reads the next token ensuring that it matches the specified 

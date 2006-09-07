@@ -75,7 +75,7 @@ namespace Jayrock.Json
             get { return _writer; }
         }
 
-        public override void WriteStartObject()
+        protected override void WriteStartObjectImpl()
         {
             BeforeWrite();
             EnterBracket(_newObjectBracket);
@@ -83,13 +83,13 @@ namespace Jayrock.Json
             _writer.Write('{');
         }
 
-        public override void WriteEndObject()
+        protected override void WriteEndObjectImpl()
         {
             _writer.Write('}');
             ExitBracket();
         }
 
-        public override void WriteMember(string name)
+        protected override void WriteMemberImpl(string name)
         {
             if (_currentBracket == _runningObjectBracket)
                 _writer.Write(',');
@@ -99,27 +99,27 @@ namespace Jayrock.Json
             _currentBracket = _runningObjectBracket;
         }
 
-        public override void WriteString(string value)
+        protected override void WriteStringImpl(string value)
         {
             BracketedWrite(JsonString.Enquote(value));
         }
 
-        public override void WriteNumber(string value)
+        protected override void WriteNumberImpl(string value)
         {
             BracketedWrite(value);
         }
 
-        public override void WriteBoolean(bool value)
+        protected override void WriteBooleanImpl(bool value)
         {
             BracketedWrite(value ? "true" : "false");
         }
 
-        public override void WriteNull()
+        protected override void WriteNullImpl()
         {
             BracketedWrite(JsonNull.Text);
         }
 
-        public override void WriteStartArray()
+        protected override void WriteStartArrayImpl()
         {
             BeforeWrite();
             EnterBracket(_newArrayBracket);
@@ -127,7 +127,7 @@ namespace Jayrock.Json
             _writer.Write('[');
         }
 
-        public override void WriteEndArray()
+        protected override void WriteEndArrayImpl()
         {
             _writer.Write(']');            
             ExitBracket();

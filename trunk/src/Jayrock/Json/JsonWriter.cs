@@ -26,10 +26,11 @@ namespace Jayrock.Json
 
     using System;
     using System.Collections;
+    using System.Diagnostics;
     using System.Globalization;
 
     #endregion
-    
+
     /// <summary>
     /// Represents a writer that provides a fast, non-cached, forward-only means of 
     /// emitting JSON data.
@@ -39,16 +40,105 @@ namespace Jayrock.Json
     {
         private IJsonFormatter _valueFormatter;
         private static readonly JsonFormatter _defaultFormatter = new JsonFormatter();
+        private JsonTokenClass _currentBracket;
+        private Stack _brackets;
+        
+        public JsonWriter()
+        {
+            _brackets = new Stack(4);
+            _currentBracket = JsonTokenClass.BOF;
+        }
+        
+        public int Depth
+        {
+            get { return _brackets.Count; }
+        }
 
-        public abstract void WriteStartObject();
-        public abstract void WriteEndObject();
-        public abstract void WriteMember(string name);
-        public abstract void WriteStartArray();
-        public abstract void WriteEndArray();
-        public abstract void WriteString(string value);
-        public abstract void WriteNumber(string value);
-        public abstract void WriteBoolean(bool value);
-        public abstract void WriteNull();
+        public void WriteStartObject()
+        {
+            EnsureNotEnded();
+            EnterBracket(JsonTokenClass.Object);
+            WriteStartObjectImpl();
+        }
+
+        public void WriteEndObject()
+        {
+            EnsureStructural();
+
+            if (_currentBracket != JsonTokenClass.Object)
+                throw new JsonException("JSON Object tail not expected at this time.");
+            
+            WriteEndObjectImpl();
+            ExitBracket();
+        }
+
+        public void WriteMember(string name)
+        {
+            EnsureStructural();
+            
+            if (_currentBracket != JsonTokenClass.Object)
+                throw new JsonException("A JSON Object member is not valid inside a JSON Array.");
+            
+            WriteMemberImpl(name);
+        }
+
+        public void WriteStartArray()
+        {
+            EnsureNotEnded();
+            EnterBracket(JsonTokenClass.Array);
+            WriteStartArrayImpl();
+        }
+
+        public void WriteEndArray()
+        {
+            EnsureStructural();
+
+            if (_currentBracket != JsonTokenClass.Array)
+                throw new JsonException("JSON Array tail not expected at this time.");
+            
+            WriteEndArrayImpl();
+            ExitBracket();
+        }
+
+        public void WriteString(string value)
+        {
+            EnsureStructural();
+            WriteStringImpl(value);
+        }
+
+        public void WriteNumber(string value)
+        {
+            EnsureStructural();
+            WriteNumberImpl(value);
+        }
+
+        public void WriteBoolean(bool value)
+        {
+            EnsureStructural();
+            WriteBooleanImpl(value);
+        }
+
+        public void WriteNull()
+        {
+            EnsureStructural();
+            WriteNullImpl();
+        }
+        
+        //
+        // Actual methods that need to be implemented by the subclass.
+        // These methods do not need to check for the structural 
+        // integrity since this is checked by this base implementation.
+        //
+        
+        protected abstract void WriteStartObjectImpl();
+        protected abstract void WriteEndObjectImpl();
+        protected abstract void WriteMemberImpl(string name);
+        protected abstract void WriteStartArrayImpl();
+        protected abstract void WriteEndArrayImpl();
+        protected abstract void WriteStringImpl(string value);
+        protected abstract void WriteNumberImpl(string value);
+        protected abstract void WriteBooleanImpl(bool value);
+        protected abstract void WriteNullImpl();
         
         public virtual IJsonFormatter ValueFormatter
         {
@@ -134,7 +224,7 @@ namespace Jayrock.Json
             ValueFormatter.Format(value, this);
         }
 
-        public void WriteValueFromReader(JsonReader reader)
+        public void WriteValueFromReader(JsonReader reader) // FIXME: Make virtual
         {
             if (reader == null)            
                 throw new ArgumentNullException("reader");
@@ -187,6 +277,38 @@ namespace Jayrock.Json
             }
 
             reader.Read();
+        }
+ 
+        private void EnterBracket(JsonTokenClass newBracket)
+        {
+            Debug.Assert(newBracket == JsonTokenClass.Array || newBracket == JsonTokenClass.Object);
+            
+            _brackets.Push(_currentBracket);
+            _currentBracket = newBracket;
+        }
+        
+        private void ExitBracket()
+        {
+            JsonTokenClass bracket = (JsonTokenClass) _brackets.Pop();
+
+            if (bracket == JsonTokenClass.BOF)
+                bracket = JsonTokenClass.EOF;
+            
+            _currentBracket = bracket;
+        }
+
+        private void EnsureStructural()
+        {
+            /*
+            if (Depth == 0)
+                throw new JsonException("A JSON Object or Array has not been started.");
+            */                
+        }
+ 
+        private void EnsureNotEnded()
+        {
+            if (_currentBracket == JsonTokenClass.EOF)
+                throw new JsonException("JSON text has already been ended.");
         }
     }
 }
