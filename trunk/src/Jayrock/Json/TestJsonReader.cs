@@ -308,13 +308,18 @@ namespace Jayrock.Json
         private sealed class TestJsonImporterRegistry : IJsonImporterRegistry
         {
             public Type LastFindType;
-            
+
+            public void Register(IJsonImporterRegistryItem item)
+            {
+                throw new NotImplementedException();
+            }
+
             public void Register(Type type, IJsonImporter importer)
             {
                 throw new NotImplementedException();
             }
 
-            public void RegisterLocator(IJsonImporterLocator locator)
+            public void Register(IJsonImporterLocator locator)
             {
                 throw new NotImplementedException();
             }

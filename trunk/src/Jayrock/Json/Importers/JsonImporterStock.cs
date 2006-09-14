@@ -61,45 +61,45 @@ namespace Jayrock.Json.Importers
             // Register importers for primitive types.
             //
 
-            Byte = Register(NumberImporter.Byte);
-            Int16 = Register(NumberImporter.Int16);
-            Int32 = Register(NumberImporter.Int32);
-            Int64 = Register(NumberImporter.Int64);
-            Single = Register(NumberImporter.Single);
-            Double = Register(NumberImporter.Double);
-            Decimal = Register(NumberImporter.Decimal);
-            String = Register(new StringImporter());
-            Boolean = Register(new BooleanImporter());
-            DateTime = Register(new DateTimeImporter());
-
-            //
-            // Register the auto importer that automatically imports the
-            // type based on what's coming in the JSON data.
-            //
-
-            Auto = Register(new AutoImporter());
-            
-            //
-            // Register for IDictionary and IList such that these yield
-            // to JsonObject and JsonArray, respectively.
-            //
-            
-            Register(new ImportableImporter(typeof(IDictionary), new ObjectCreationHandler(CreateJsonObject)));
-            Register(new ImportableImporter(typeof(IList), new ObjectCreationHandler(CreateJsonArray)));
-            
-            //
-            // Register importer that can handle types that implement
-            // IJsonImportable.
-            //
-            
-            Register(new ImportableBaseImporter());
-            
-            //
-            // Register importers that dynamically handle arrays and enums.
-            //
-            
-            Array = Register(new ArrayBaseImporter());
-            Enum = Register(new EnumBaseImporter());
+             Byte = NumberImporter.Byte;         _stockRegistry.Register(Byte);
+             Int16 = NumberImporter.Int16;       _stockRegistry.Register(Int16);
+             Int32 = NumberImporter.Int32;       _stockRegistry.Register(Int32);
+             Int64 = NumberImporter.Int64;       _stockRegistry.Register(Int64);
+             Single = NumberImporter.Single;     _stockRegistry.Register(Single);
+             Double = NumberImporter.Double;     _stockRegistry.Register(Double);
+             Decimal = NumberImporter.Decimal;   _stockRegistry.Register(Decimal);
+             String = new StringImporter();      _stockRegistry.Register(String);
+             Boolean = new BooleanImporter();    _stockRegistry.Register(Boolean);
+             DateTime = new DateTimeImporter();  _stockRegistry.Register(DateTime);
+ 
+             //
+             // Register the auto importer that automatically imports the
+             // type based on what's coming in the JSON data.
+             //
+ 
+             Auto = new AutoImporter(); _stockRegistry.Register(Auto);
+             
+             //
+             // Register for IDictionary and IList such that these yield
+             // to JsonObject and JsonArray, respectively.
+             //
+             
+             _stockRegistry.Register(new ImportableImporter(typeof(IDictionary), new ObjectCreationHandler(CreateJsonObject)));
+             _stockRegistry.Register(new ImportableImporter(typeof(IList), new ObjectCreationHandler(CreateJsonArray)));
+             
+             //
+             // Register importer that can handle types that implement
+             // IJsonImportable.
+             //
+             
+            _stockRegistry.Register(new ImportableBaseImporter());
+             
+             //
+             // Register importers that dynamically handle arrays and enums.
+             //
+             
+             Array = new ArrayBaseImporter(); _stockRegistry.Register(Array);
+             Enum = new EnumBaseImporter(); _stockRegistry.Register(Enum);
         }
 
         public static IJsonImporterLocator Locator
@@ -187,24 +187,6 @@ namespace Jayrock.Json.Importers
         private JsonImporterStock()
         {
             throw new NotSupportedException();
-        }
-
-        private static IJsonImporter Register(IJsonImporter importer)
-        {
-            Debug.Assert(_stockRegistry != null);
-            Debug.Assert(importer != null);
-            
-            importer.RegisterSelf(_stockRegistry);
-            return importer;
-        }
-
-        private static IJsonImporterLocator Register(IJsonImporterLocator locator)
-        {
-            Debug.Assert(_stockRegistry != null);
-            Debug.Assert(locator != null);
-
-            locator.RegisterSelf(_stockRegistry);
-            return locator;
         }
 
         private static object CreateJsonObject(object[] args)

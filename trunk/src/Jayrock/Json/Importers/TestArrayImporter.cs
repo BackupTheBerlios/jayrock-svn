@@ -141,14 +141,19 @@ namespace Jayrock.Json.Importers
         {
             public ArrayList Types = new ArrayList();
             public ArrayList Importers = new ArrayList();
-            
+
+            public void Register(IJsonImporterRegistryItem item)
+            {
+                throw new NotImplementedException();
+            }
+
             public void Register(Type type, IJsonImporter importer)
             {
                 Types.Add(type);
                 Importers.Add(importer);
             }
 
-            public void RegisterLocator(IJsonImporterLocator locator)
+            public void Register(IJsonImporterLocator locator)
             {
                 throw new NotImplementedException();
             }

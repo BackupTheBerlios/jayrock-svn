@@ -35,7 +35,7 @@ namespace Jayrock.Json
     {
         private readonly Hashtable _importerByType = new Hashtable();
         private ArrayList _locators;
-        [ NonSerialized ] private IJsonImporterRegistryTargetable[] _cachedItems;
+        [ NonSerialized ] private IJsonImporterRegistryItem[] _cachedItems;
 
         public IJsonImporter Find(Type type)
         {
@@ -85,6 +85,14 @@ namespace Jayrock.Json
             return importer;
         }
 
+        public void Register(IJsonImporterRegistryItem item)
+        {
+            if (item == null)
+                throw new ArgumentNullException("item");
+            
+            item.RegisterSelf(this);
+        }
+
         public void Register(Type type, IJsonImporter importer)
         {
             if (type == null)
@@ -98,7 +106,7 @@ namespace Jayrock.Json
             _importerByType[type] = importer;
         }
 
-        public void RegisterLocator(IJsonImporterLocator locator)
+        public void Register(IJsonImporterLocator locator)
         {
             if (locator == null)
                 throw new ArgumentNullException("locator");
@@ -115,7 +123,7 @@ namespace Jayrock.Json
 
         public void RegisterSelf(IJsonImporterRegistry registry)
         {
-            registry.RegisterLocator(this);
+            registry.Register(this);
         }
         
         //
@@ -154,7 +162,7 @@ namespace Jayrock.Json
             _cachedItems = null;
         }
 
-        private IJsonImporterRegistryTargetable[] GetItems()
+        private IJsonImporterRegistryItem[] GetItems()
         {
             //
             // Count total items and allocate an appropriately sized array.
@@ -168,7 +176,7 @@ namespace Jayrock.Json
             if (_locators != null)
                 count += _locators.Count;
 
-            IJsonImporterRegistryTargetable[] items = new IJsonImporterRegistryTargetable[count];
+            IJsonImporterRegistryItem[] items = new IJsonImporterRegistryItem[count];
             
             //
             // Now copy items into the array.

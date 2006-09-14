@@ -30,21 +30,22 @@ namespace Jayrock.Json
 
     public interface IJsonImporterRegistry : IJsonImporterLocator
     {
+        void Register(IJsonImporterRegistryItem item);
         void Register(Type type, IJsonImporter importer);
-        void RegisterLocator(IJsonImporterLocator locator);
+        void Register(IJsonImporterLocator locator);
     }
     
-    public interface IJsonImporterRegistryTargetable
+    public interface IJsonImporterRegistryItem
     {
         void RegisterSelf(IJsonImporterRegistry registry);
     }
 
-    public interface IJsonImporterLocator : IJsonImporterRegistryTargetable
+    public interface IJsonImporterLocator : IJsonImporterRegistryItem
     {
         IJsonImporter Find(Type type);
     }
 
-    public interface IJsonImporter : IJsonImporterRegistryTargetable
+    public interface IJsonImporter : IJsonImporterRegistryItem
     {
         object Import(JsonReader reader);
     }

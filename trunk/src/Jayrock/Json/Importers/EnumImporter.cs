@@ -37,7 +37,7 @@ namespace Jayrock.Json.Importers
 
         public void RegisterSelf(IJsonImporterRegistry registry)
         {
-            registry.RegisterLocator(this);
+            registry.Register(this);
         }
     }
     

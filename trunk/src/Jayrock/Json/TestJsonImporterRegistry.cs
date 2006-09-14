@@ -126,7 +126,7 @@ namespace Jayrock.Json
 
             public void RegisterSelf(IJsonImporterRegistry registry)
             {
-                registry.RegisterLocator(this);
+                registry.Register(this);
             }
         }
 
@@ -163,7 +163,7 @@ namespace Jayrock.Json
                 return new TestImporter(type);
             }
 
-            void IJsonImporterRegistryTargetable.RegisterSelf(IJsonImporterRegistry registry)
+            void IJsonImporterRegistryItem.RegisterSelf(IJsonImporterRegistry registry)
             {
                 throw new NotSupportedException();
             }
