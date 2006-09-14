@@ -43,12 +43,12 @@ namespace Jayrock.Json.Importers
             object o = null;
             
             if (reader.TokenClass != JsonTokenClass.Null)
-                o = SubImport(reader);
+                o = ImportValue(reader);
             
             reader.Read();
             return o;
         }
 
-        protected abstract object SubImport(JsonReader reader);
+        protected abstract object ImportValue(JsonReader reader);
     }
 }

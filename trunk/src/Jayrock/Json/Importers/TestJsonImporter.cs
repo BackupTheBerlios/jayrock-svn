@@ -70,7 +70,7 @@ namespace Jayrock.Json.Importers
                 throw new NotImplementedException();
             }
 
-            protected override object SubImport(JsonReader reader)
+            protected override object ImportValue(JsonReader reader)
             {
                 Called = true;
                 return ReturnValue;

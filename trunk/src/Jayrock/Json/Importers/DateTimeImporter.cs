@@ -37,7 +37,7 @@ namespace Jayrock.Json.Importers
             registry.Register(typeof(DateTime), this);
         }
 
-        protected override object SubImport(JsonReader reader)
+        protected override object ImportValue(JsonReader reader)
         {
             if (reader == null)
                 throw new ArgumentNullException("reader");

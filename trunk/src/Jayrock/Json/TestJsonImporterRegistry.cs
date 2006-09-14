@@ -149,7 +149,7 @@ namespace Jayrock.Json
                 registry.Register(Type, this);
             }
 
-            protected override object SubImport(JsonReader reader)
+            protected override object ImportValue(JsonReader reader)
             {
                 throw new NotImplementedException();
             }

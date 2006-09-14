@@ -60,7 +60,7 @@ namespace Jayrock.Json.Importers
             registry.Register(_type, this);
         }
 
-        protected override object SubImport(JsonReader reader)
+        protected override object ImportValue(JsonReader reader)
         {
             if (reader == null)
                 throw new ArgumentNullException("reader");

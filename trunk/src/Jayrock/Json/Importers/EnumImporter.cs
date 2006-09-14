@@ -64,7 +64,7 @@ namespace Jayrock.Json.Importers
             registry.Register(_type, this);
         }
 
-        protected override object SubImport(JsonReader reader)
+        protected override object ImportValue(JsonReader reader)
         {
             string s = reader.ReadString().Trim();
         
