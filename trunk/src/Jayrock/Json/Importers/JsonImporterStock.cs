@@ -34,7 +34,7 @@ namespace Jayrock.Json.Importers
     public sealed class JsonImporterStock
     {
         // TODO: Review if these are still needed.
-        // JsonImporterStock.StockLocator.Find provides the same functionality.
+        // JsonImporterStock.Locator.Find provides the same functionality.
         
         public static readonly IJsonImporter Byte;
         public static readonly IJsonImporter Int16;
@@ -50,20 +50,12 @@ namespace Jayrock.Json.Importers
         public static readonly IJsonImporterLocator Array;
         public static readonly IJsonImporterLocator Enum;
         
-        internal static readonly IJsonImporterLocator None;
-
-        private static readonly JsonImporterRegistry _registry;
-
-        public static IJsonImporterLocator StockLocator
-        {
-            get { return _registry; }
-        }
+        private static readonly JsonImporterRegistry _stockRegistry;
+        [ ThreadStatic ] private static IJsonImporterRegistry _userStockRegistry;
 
         static JsonImporterStock()
         {
-            None = new NullLocator();
-
-            _registry = new JsonImporterRegistry(None);
+            _stockRegistry = new JsonImporterRegistry();
             
             //
             // Register importers for primitive types.
@@ -95,9 +87,83 @@ namespace Jayrock.Json.Importers
             Register(new ImportableImporter(typeof(IDictionary), new ObjectCreationHandler(CreateJsonObject)));
             Register(new ImportableImporter(typeof(IList), new ObjectCreationHandler(CreateJsonArray)));
             
+            //
+            // Register importer that can handle types that implement
+            // IJsonImportable.
+            //
+            
             Register(new ImportableBaseImporter());
+            
+            //
+            // Register importers that dynamically handle arrays and enums.
+            //
+            
             Array = Register(new ArrayBaseImporter());
             Enum = Register(new EnumBaseImporter());
+        }
+
+        public static IJsonImporterLocator Locator
+        {
+            get { return _stockRegistry; }
+        }
+
+        public static event ObjectInitializationEventHandler RegistryInitializing;
+
+        public static IJsonImporterRegistry Registry
+        {
+            get
+            {
+                // FIXME: Detect re-entrancy.
+                // Re-entrancy can occur is someone tries to access this
+                // property from within the DefaultInitialization event
+                // handlers, causing the same chain of event to occur. This
+                // would happen because the new registry is not installed 
+                // until *after* the event has finished firing.
+                
+                if (_userStockRegistry == null)
+                {
+                    //
+                    // NOTE: We register the stock importers by default
+                    // so that the system does not appear completely void
+                    // of any support for most basic and commonly used types.
+                    //
+                    
+                    JsonImporterRegistry registry = new JsonImporterRegistry();
+                    Locator.RegisterSelf(registry);
+                    SetRegistry(registry, true);
+                }
+                
+                return _userStockRegistry;
+            }
+        }
+
+        /// <remarks>
+        /// This method is exception-safe.
+        /// </remarks>
+
+        public static void SetRegistry(IJsonImporterRegistry registry)
+        {
+            SetRegistry(registry, false);
+        }
+
+        /// <remarks>
+        /// This method is exception-safe.
+        /// </remarks>
+
+        public static void SetRegistry(IJsonImporterRegistry registry, bool initialize)
+        {
+            if (registry == null)
+                throw new ArgumentNullException("registry");
+                    
+            if (initialize)
+            {
+                ObjectInitializationEventHandler handler = RegistryInitializing;
+                    
+                if (handler != null)
+                    handler(typeof(JsonImporterRegistry), new ObjectInitializationEventArgs(registry));
+            }
+            
+            _userStockRegistry = registry;
         }
 
         public static IJsonImporter Get(Type type)
@@ -115,46 +181,29 @@ namespace Jayrock.Json.Importers
 
         public static IJsonImporter Find(Type type)
         {
-            return StockLocator.Find(type);
+            return Locator.Find(type);
         }
         
         private JsonImporterStock()
         {
             throw new NotSupportedException();
         }
-        
-        /// <summary>
-        /// An importer locator that never finds anything!
-        /// </summary>
-        
-        private sealed class NullLocator : IJsonImporterLocator
-        {
-            public IJsonImporter Find(Type type)
-            {
-                return null;
-            }
 
-            public void RegisterSelf(IJsonImporterRegistry registry)
-            {
-                registry.RegisterLocator(this);
-            }
-        }
- 
         private static IJsonImporter Register(IJsonImporter importer)
         {
-            Debug.Assert(_registry != null);
+            Debug.Assert(_stockRegistry != null);
             Debug.Assert(importer != null);
             
-            importer.RegisterSelf(_registry);
+            importer.RegisterSelf(_stockRegistry);
             return importer;
         }
 
         private static IJsonImporterLocator Register(IJsonImporterLocator locator)
         {
-            Debug.Assert(_registry != null);
+            Debug.Assert(_stockRegistry != null);
             Debug.Assert(locator != null);
 
-            locator.RegisterSelf(_registry);
+            locator.RegisterSelf(_stockRegistry);
             return locator;
         }
 

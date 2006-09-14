@@ -26,6 +26,7 @@ namespace Jayrock.Json.Importers
 
     using System;
     using System.Collections;
+    using System.Threading;
     using NUnit.Framework;
 
     #endregion
@@ -59,6 +60,126 @@ namespace Jayrock.Json.Importers
         public void CannotGetUnknown()
         {
             JsonImporterStock.Get(typeof(Enum));
+        }
+
+        [ Test ]
+        public void AlwaysHasRegistry()
+        {
+            Assert.IsNotNull(JsonImporterStock.Registry);
+        }
+
+        [ Test, ExpectedException(typeof(ArgumentNullException)) ]
+        public void CannotSetRegistryToNull()
+        {
+            JsonImporterStock.SetRegistry(null);
+        }
+
+        [ Test ]
+        public void SetRegistry()
+        {
+            IJsonImporterRegistry oldRegistry = JsonImporterStock.Registry;
+            
+            try
+            {
+                JsonImporterRegistry newRegistry = new JsonImporterRegistry();
+                JsonImporterStock.SetRegistry(newRegistry);
+                Assert.AreSame(newRegistry, JsonImporterStock.Registry);
+            }
+            finally
+            {
+                // 
+                // IMPORTANT! Do not remove, otherwise test elsewhere that
+                // default on the default registry could fail.
+                //
+                
+                JsonImporterStock.SetRegistry(oldRegistry);
+            }
+        }
+
+        [ Test ]
+        public void RegistryInitialization()
+        {
+            IJsonImporterRegistry oldRegistry = JsonImporterStock.Registry;
+            
+            try
+            {
+                TestEventNet net = new TestEventNet();
+                JsonImporterStock.RegistryInitializing += new ObjectInitializationEventHandler(net.ObjectInitialization);
+                JsonImporterRegistry newRegistry = new JsonImporterRegistry();
+                JsonImporterStock.SetRegistry(newRegistry, true);
+                Assert.IsTrue(net.HasEvent);
+                Assert.AreSame(typeof(JsonImporterRegistry), net.EventSender);
+                Assert.AreSame(newRegistry, ((ObjectInitializationEventArgs) net.EventArgs).Object);
+            }
+            finally
+            {
+                // 
+                // IMPORTANT! Do not remove, otherwise test elsewhere that
+                // default on the default registry could fail.
+                //
+                
+                JsonImporterStock.SetRegistry(oldRegistry);
+            }
+        }
+
+        [ Test ]
+        public void RegistryIsPerThread()
+        {
+            ThreadTester test1 = new ThreadTester();
+            test1.Run(new ThreadStart(test1.GetDefault));
+
+            ThreadTester test2 = new ThreadTester();
+            test2.Run(new ThreadStart(test2.GetDefault));
+            
+            Assert.AreNotSame(test1.Default, test2.Default);
+        }
+
+        [ Test ]
+        public void FirstRegistryAccessRaisesInitializationEvent()
+        {
+            ThreadTester tester = new ThreadTester();
+            tester.Run(new ThreadStart(tester.GetDefaultInitializationEvent));
+            Assert.IsNotNull(tester.EventNet);
+            Assert.IsTrue(tester.EventNet.HasEvent);
+        }
+
+        private class ThreadTester
+        {
+            public IJsonImporterRegistry Default;
+            public TestEventNet EventNet;
+            
+            public void GetDefault()
+            {
+                Default = JsonImporterStock.Registry;
+            }
+            
+            public void GetDefaultInitializationEvent()
+            {
+                EventNet = new TestEventNet();
+                JsonImporterStock.RegistryInitializing += new ObjectInitializationEventHandler(EventNet.ObjectInitialization);
+                GetDefault();
+            }
+            
+            public void Run(ThreadStart test)
+            {
+                Thread thread = new Thread(new ThreadStart(test));
+                thread.Start();
+                thread.Join();
+            }
+        }
+
+        private sealed class TestEventNet
+        {
+            public bool HasEvent;
+            public object EventSender;
+            public EventArgs EventArgs;
+
+            public void ObjectInitialization(object sender, ObjectInitializationEventArgs args)
+            {
+                HasEvent = true;
+                EventSender = sender;
+                EventArgs = args;
+            }
         }
 
         private static void AssertInStock(Type expected, Type type)

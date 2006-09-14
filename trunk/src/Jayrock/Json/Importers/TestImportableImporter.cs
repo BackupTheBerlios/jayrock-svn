@@ -100,7 +100,7 @@ namespace Jayrock.Json.Importers
         public void Registration()
         {
             Type type = typeof(Thing);
-            JsonImporterRegistry registry = new JsonImporterRegistry(JsonImporterStock.None);
+            JsonImporterRegistry registry = new JsonImporterRegistry();
             Assert.IsNull(registry.Find(type));
             ImportableImporter importer = new ImportableImporter(type);
             importer.RegisterSelf(registry);

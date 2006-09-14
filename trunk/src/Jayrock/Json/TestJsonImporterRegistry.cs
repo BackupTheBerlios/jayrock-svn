@@ -65,12 +65,6 @@ namespace Jayrock.Json
         }
         
         [ Test ]
-        public void StockRegisteredByDefault()
-        {
-            Assert.IsNotNull(_registry.Find(typeof(int)));
-        }
-        
-        [ Test ]
         public void LastLocatorComesFirst()
         {
             Type thingType = typeof(Thing);
@@ -117,7 +111,7 @@ namespace Jayrock.Json
             locator.RegisterSelf(_registry);
             return locator;
         }
-
+        
         private class TestLocator : IJsonImporterLocator
         {
             public Type NextFindType;

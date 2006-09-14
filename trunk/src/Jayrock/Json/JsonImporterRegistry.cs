@@ -35,19 +35,7 @@ namespace Jayrock.Json
     {
         private readonly Hashtable _importerByType = new Hashtable();
         private ArrayList _locators;
-        private IJsonImporterLocator _stock;
-        [  NonSerialized ] private IJsonImporterRegistryTargetable[] _cachedItems;
-
-        public JsonImporterRegistry() : 
-            this(null) {}
-
-        internal JsonImporterRegistry(IJsonImporterLocator stock)
-        {
-            if (stock == null)
-                stock = JsonImporterStock.StockLocator;
-            
-            _stock = stock;
-        }
+        [ NonSerialized ] private IJsonImporterRegistryTargetable[] _cachedItems;
 
         public IJsonImporter Find(Type type)
         {
@@ -106,6 +94,7 @@ namespace Jayrock.Json
                 throw new ArgumentNullException("importer");
             
             OnRegistering();
+            
             _importerByType[type] = importer;
         }
 
@@ -154,19 +143,7 @@ namespace Jayrock.Json
             get
             {
                 if (_locators == null)
-                {
                     _locators = new ArrayList(4);
-
-                    //
-                    // Kindly register the stock locator so that known and 
-                    // common type importers are conveniently served. 
-                    // Otherwise, the system just appears too dumb out of
-                    // the box.
-                    //
-
-                    if (_stock != null)
-                        _stock.RegisterSelf(this);
-                }
                 
                 return _locators;
             }

@@ -25,10 +25,8 @@ namespace Jayrock.Json.Importers
     #region Imports
 
     using System;
-    using System.Collections;
     using System.ComponentModel;
     using System.IO;
-    using NetMatters;
     using NUnit.Framework;
 
     #endregion
@@ -360,8 +358,7 @@ namespace Jayrock.Json.Importers
         
         private void RegisterYahooTypeImporter(Type type, IJsonImporterRegistry registry)
         {
-            ICustomTypeDescriptor descriptor = new FieldsToPropertiesProxyTypeDescriptor(type);
-            ComponentImporter importer = new ComponentImporter(type, descriptor);
+            ComponentImporter importer = new ComponentImporter(type);
             importer.RegisterSelf(registry);
         }
             

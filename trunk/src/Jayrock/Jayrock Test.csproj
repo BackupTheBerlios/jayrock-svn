@@ -104,11 +104,6 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "FieldsToPropertiesProxyTypeDescriptor.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "ICollector.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -135,6 +130,11 @@
                 />
                 <File
                     RelPath = "ObjectCreationHandler.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "ObjectInitialization.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -470,11 +470,6 @@
                 />
                 <File
                     RelPath = "Json\Importers\ComponentImporter.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Json\Importers\ComponentImporterAttribute.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

@@ -20,40 +20,40 @@
 //
 #endregion
 
-namespace Jayrock.Json.Importers
+namespace Jayrock
 {
     #region Imports
 
     using System;
-    using NetMatters;
 
     #endregion
+    
+    /// <summary>
+    /// Provides data for events using <see cref="ObjectInitializationEventHandler"/>.
+    /// </summary>
 
-    [ AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct) ]
-    public sealed class ComponentImporterAttribute : Attribute, IJsonImporterLocator
+    [ Serializable ]
+    public sealed class ObjectInitializationEventArgs : EventArgs
     {
-        IJsonImporter IJsonImporterLocator.Find(Type type)
+        private readonly object _obj;
+
+        public ObjectInitializationEventArgs(object obj)
         {
-            return new ComponentImporter(type);
+            if (obj == null)
+                throw new ArgumentNullException("obj");
+            
+            _obj = obj;
         }
 
-        void IJsonImporterRegistryTargetable.RegisterSelf(IJsonImporterRegistry registry)
+        public object Object
         {
-            throw new NotImplementedException();
+            get { return _obj; }
         }
     }
+    
+    /// <summary>
+    /// Represent a method that participates in object initialization.
+    /// </summary>
 
-    [ AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct) ]
-    public sealed class FieldBasedComponentImporter : Attribute, IJsonImporterLocator
-    {
-        IJsonImporter IJsonImporterLocator.Find(Type type)
-        {
-            return new ComponentImporter(type, new FieldsToPropertiesProxyTypeDescriptor(type));
-        }
-
-        void IJsonImporterRegistryTargetable.RegisterSelf(IJsonImporterRegistry registry)
-        {
-            throw new NotImplementedException();
-        }
-    }
+    public delegate void ObjectInitializationEventHandler(object sender, ObjectInitializationEventArgs args);
 }

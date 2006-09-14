@@ -25,8 +25,7 @@ namespace Jayrock.Json
     #region Imports
 
     using System;
-    using System.Collections;
-    using System.Globalization;
+    using Jayrock.Json.Importers;
 
     #endregion
     
@@ -291,7 +290,7 @@ namespace Jayrock.Json
             get
             {
                 if (_importers == null)
-                    _importers = new JsonImporterRegistry();
+                    _importers = JsonImporterStock.Registry;
                 
                 return _importers;
             }
