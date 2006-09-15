@@ -26,6 +26,7 @@ namespace Jayrock.Json.Importers
 
     using System;
     using System.ComponentModel;
+    using System.Diagnostics;
     using System.IO;
     using NUnit.Framework;
 
@@ -44,40 +45,36 @@ namespace Jayrock.Json.Importers
         [ Test ]
         public void ImportEmptyObject()
         {
-            Person p = (Person) ImportPerson("{}");
-            Assert.AreEqual(0, p.Id);
-            Assert.IsNull(p.FullName, "FullName");
-            Assert.IsNull(p.Spouce, "Spouce");
+            Marriage m = (Marriage) Import(typeof(Marriage), "{}");
+            Assert.IsNull(m.Husband, "Husband");
+            Assert.IsNull(m.Wife, "Wife");
         }
                 
         [ Test ]
         public void ImportObject()
         {
-            Person p = (Person) ImportPerson("{ Id : 42, FullName : 'Charles Dickens' }");
+            Person p = (Person) Import(typeof(Person), "{ Id : 42, FullName : 'Charles Dickens' }");
             Assert.AreEqual(42, p.Id, "Id");
             Assert.AreEqual("Charles Dickens", p.FullName, "FullName");
-            Assert.IsNull(p.Spouce, "Spouce");
         }
 
         [ Test ]
         public void ImportEmbeddedObjects()
         {
-            Person p = (Person) ImportPerson(@"{
-                Id : 42,
-                FullName : 'Bob',
-                Spouce: { 
+            Marriage m = (Marriage) Import(typeof(Marriage), @"{
+                Husband : {
+                    Id : 42,
+                    FullName : 'Bob'
+                },
+                Wife : { 
                     FullName : 'Alice', 
-                    Id       : 43,
-                    Spouce   : null 
+                    Id       : 43
                 } 
             }");
-            Assert.AreEqual(42, p.Id, "Id");
-            Assert.AreEqual("Bob", p.FullName, "FullName");
-            Assert.IsNotNull(p.Spouce, "Spouce");
-            p = p.Spouce;
-            Assert.AreEqual(43, p.Id, "Id");
-            Assert.AreEqual("Alice", p.FullName, "FullName");
-            Assert.IsNull(p.Spouce, "Spouce");
+            Assert.AreEqual(42, m.Husband.Id, "Husband.Id");
+            Assert.AreEqual("Bob", m.Husband.FullName, "Husband.FullName");
+            Assert.AreEqual(43, m.Wife.Id, "Wife.Id");
+            Assert.AreEqual("Alice", m.Wife.FullName, "Wife.FullName");
         }
         
         [ Test ]
@@ -339,13 +336,13 @@ namespace Jayrock.Json.Importers
             }
         }
 
-        private static object ImportPerson(string s)
+        private static object Import(Type expectedType, string s)
         {
-            Type expectedType = typeof(Person);
             JsonReader reader = CreateReader(s);
             IJsonImporterRegistry registry = reader.Importers;
-            (new ComponentImporter(expectedType)).RegisterSelf(registry);
-            object o = reader.ReadValue(expectedType);            
+            registry.Register(new ComponentImporter(typeof(Person)));
+            registry.Register(new ComponentImporter(typeof(Marriage)));
+            object o = reader.ReadValue(expectedType);
             Assert.IsNotNull(o);
             Assert.IsInstanceOfType(expectedType, o);
             return o;
@@ -361,12 +358,29 @@ namespace Jayrock.Json.Importers
             ComponentImporter importer = new ComponentImporter(type);
             importer.RegisterSelf(registry);
         }
+        
+        private sealed class Marriage
+        {
+            private Person _husband;
+            private Person _wife;
+
+            public Person Husband
+            {
+                get { return _husband; }
+                set { _husband = value; }
+            }
+
+            public Person Wife
+            {
+                get { return _wife; }
+                set { _wife = value; }
+            }
+        }
             
         private sealed class Person
         {
             private int _id;
             private string _fullName;
-            private Person _spouce;
 
             public int Id
             {
@@ -378,12 +392,6 @@ namespace Jayrock.Json.Importers
             {
                 get { return _fullName; }
                 set { _fullName = value; }
-            }
-            
-            public Person Spouce
-            {
-                get { return _spouce; }
-                set { _spouce = value; }
             }
         }
 

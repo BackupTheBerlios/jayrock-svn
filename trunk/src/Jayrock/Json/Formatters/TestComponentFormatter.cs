@@ -77,14 +77,30 @@ namespace Jayrock.Json.Formatters
             Person albert = new Person();
             albert.Id = 1;
             albert.FullName = "Albert White";
-            albert.Spouce = snow; // NOTE! Cyclic graphs not allowed.
+            
+            Marriage m = new Marriage();
+            m.Husband = albert;
+            m.Wife = snow;
 
+            Test(new JsonObject(
+                new string[] { "Husband", "Wife" },
+                new object[] {
+                    /* Husband */ new JsonObject(
+                        new string[] { "Id", "FullName" },
+                        new object[] { albert.Id, albert.FullName }),
+                    /* Wife */ new JsonObject(
+                        new string[] { "Id", "FullName" },
+                        new object[] { snow.Id, snow.FullName })
+                }), m);
+            
+#if false
             Test(new JsonObject(
                 new string[] { "Id", "FullName", "Spouce" },
                 new object[] { albert.Id, albert.FullName, 
                     /* Spouce */ new JsonObject(
                         new string[] { "Id", "FullName" },
                         new object[] { snow.Id, snow.FullName })}), albert);
+#endif
         }
 
         [ Test ]
@@ -132,6 +148,7 @@ namespace Jayrock.Json.Formatters
         private static string Format(object o)
         {
             CompositeFormatter compositeFormatter = new CompositeFormatter();
+            compositeFormatter.AddFormatter(typeof(Marriage), new ComponentFormatter());
             compositeFormatter.AddFormatter(typeof(Car), new ComponentFormatter());
             compositeFormatter.AddFormatter(typeof(Person), new ComponentFormatter());
             compositeFormatter.AddFormatter(typeof(OwnerCars), new ComponentFormatter());
@@ -249,7 +266,6 @@ namespace Jayrock.Json.Formatters
         {
             private int _id;
             private string _fullName;
-            private Person _spouce;
 
             public int Id
             {
@@ -262,14 +278,26 @@ namespace Jayrock.Json.Formatters
                 get { return _fullName; }
                 set { _fullName = value; }
             }
-
-            public Person Spouce
-            {
-                get { return _spouce; }
-                set { _spouce = value; }
-            }
         }
 
+        private sealed class Marriage
+        {
+            private Person _husband;
+            private Person _wife;
+
+            public Person Husband
+            {
+                get { return _husband; }
+                set { _husband = value; }
+            }
+
+            public Person Wife
+            {
+                get { return _wife; }
+                set { _wife = value; }
+            }
+        }
+            
         private sealed class OwnerCars
         {
             private Person _owner;
