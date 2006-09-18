@@ -32,11 +32,6 @@ namespace Jayrock.Json.Importers
 
     public sealed class AutoImporter : IJsonImporter
     {
-        public void RegisterSelf(IJsonImporterRegistry registry)
-        {
-            registry.Register(typeof(object), this);
-        }
-
         public object Import(JsonReader reader)
         {
             if (reader == null)
@@ -77,6 +72,11 @@ namespace Jayrock.Json.Importers
             {
                 throw new JsonException(string.Format("{0} not expected.", reader.TokenClass));
             }
+        }
+
+        void IJsonImporterRegistryItem.Register(IJsonImporterRegistrar registrar)
+        {
+            registrar.Register(typeof(object), this);
         }
     }
 }

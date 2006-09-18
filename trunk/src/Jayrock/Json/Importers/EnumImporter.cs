@@ -28,16 +28,11 @@ namespace Jayrock.Json.Importers
 
     #endregion
 
-    public sealed class EnumBaseImporter : IJsonImporterLocator
+    public sealed class EnumImporterSet : JsonImporterSetBase
     {
-        public IJsonImporter Find(Type type)
+        public override IJsonImporter Lookup(Type type, IJsonImporterLookup site)
         {
             return type.IsEnum ? new EnumImporter(type) : null;
-        }
-
-        public void RegisterSelf(IJsonImporterRegistry registry)
-        {
-            registry.Register(this);
         }
     }
     
@@ -59,9 +54,9 @@ namespace Jayrock.Json.Importers
             _type = type;
         }
 
-        public override void RegisterSelf(IJsonImporterRegistry registry)
+        protected override void OnRegister(IJsonImporterRegistrar registrar)
         {
-            registry.Register(_type, this);
+            registrar.Register(_type, this);
         }
 
         protected override object ImportValue(JsonReader reader)

@@ -84,7 +84,7 @@ namespace Jayrock.Json.Importers
         {
             TestRegistry registry = new TestRegistry();
             ArrayImporter importer = new ArrayImporter(typeof(int[]));
-            importer.RegisterSelf(registry);
+            registry.Register(importer);
             
             Assert.AreEqual(2, registry.Types.Count);
             
@@ -137,14 +137,14 @@ namespace Jayrock.Json.Importers
             return new JsonTextReader(new StringReader(s));
         }
  
-        private sealed class TestRegistry : IJsonImporterRegistry
+        private sealed class TestRegistry : IJsonImporterRegistry, IJsonImporterRegistrar
         {
             public ArrayList Types = new ArrayList();
             public ArrayList Importers = new ArrayList();
 
             public void Register(IJsonImporterRegistryItem item)
             {
-                throw new NotImplementedException();
+                item.Register(this);
             }
 
             public void Register(Type type, IJsonImporter importer)
@@ -153,19 +153,14 @@ namespace Jayrock.Json.Importers
                 Importers.Add(importer);
             }
 
-            public void Register(IJsonImporterLocator locator)
+            public void Register(IJsonImporterSet set)
             {
                 throw new NotImplementedException();
             }
 
-            public IJsonImporter Find(Type type)
+            public IJsonImporter Lookup(Type type)
             {
                 return null;
-            }
-
-            public void RegisterSelf(IJsonImporterRegistry registry)
-            {
-                throw new NotImplementedException();
             }
         }
     }

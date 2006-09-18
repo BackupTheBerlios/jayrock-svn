@@ -294,8 +294,8 @@ namespace Jayrock.Json
             TestJsonImporterRegistry registry = new TestJsonImporterRegistry();
             reader.Importers = registry;
             reader.ReadValue();
-            Assert.IsNotNull(registry.LastFindType);
-            Assert.AreSame(typeof(object), registry.LastFindType);
+            Assert.IsNotNull(registry.LastLookupType);
+            Assert.AreSame(typeof(object), registry.LastLookupType);
         }
         
         [ Test, ExpectedException(typeof(ArgumentNullException)) ]
@@ -307,9 +307,14 @@ namespace Jayrock.Json
         
         private sealed class TestJsonImporterRegistry : IJsonImporterRegistry
         {
-            public Type LastFindType;
+            public Type LastLookupType;
 
             public void Register(IJsonImporterRegistryItem item)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void Register(IJsonImporter importer)
             {
                 throw new NotImplementedException();
             }
@@ -319,22 +324,12 @@ namespace Jayrock.Json
                 throw new NotImplementedException();
             }
 
-            public void Register(IJsonImporterLocator locator)
+            public IJsonImporter Lookup(Type type)
             {
-                throw new NotImplementedException();
-            }
-
-            public IJsonImporter Find(Type type)
-            {
-                LastFindType = type;
+                LastLookupType = type;
                 return new TestJsonImporter();
             }
 
-            public void RegisterSelf(IJsonImporterRegistry registry)
-            {
-                throw new NotImplementedException();
-            }
-            
             private sealed class TestJsonImporter : IJsonImporter
             {
                 public object Import(JsonReader reader)
@@ -342,7 +337,7 @@ namespace Jayrock.Json
                     return null;
                 }
 
-                public void RegisterSelf(IJsonImporterRegistry registry)
+                public void Register(IJsonImporterRegistrar registrar)
                 {
                     throw new NotImplementedException();
                 }

@@ -65,7 +65,7 @@ namespace Jayrock.Json.Importers
             public object ReturnValue;
             public bool Called;
 
-            public override void RegisterSelf(IJsonImporterRegistry registry)
+            protected override void OnRegister(IJsonImporterRegistrar registrar)
             {
                 throw new NotImplementedException();
             }

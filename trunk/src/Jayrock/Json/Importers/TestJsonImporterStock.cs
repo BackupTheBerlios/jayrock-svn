@@ -34,6 +34,20 @@ namespace Jayrock.Json.Importers
     [ TestFixture ]
     public class TestJsonImporterStock
     {
+        private IJsonImporterRegistry _oldStockRegistry;
+
+        [ SetUp ]
+        public void Init()
+        {
+            _oldStockRegistry = JsonImporterStock.Registry;
+        }
+
+        [ TearDown ]
+        public void Dispose()
+        {
+            JsonImporterStock.SetRegistry(_oldStockRegistry);
+        }
+
         [ Test ]
         public void InStock()
         {
@@ -77,48 +91,31 @@ namespace Jayrock.Json.Importers
         [ Test ]
         public void SetRegistry()
         {
-            IJsonImporterRegistry oldRegistry = JsonImporterStock.Registry;
-            
+            JsonImporterRegistry newRegistry = new JsonImporterRegistry();
+            JsonImporterStock.SetRegistry(newRegistry);
+            Assert.AreSame(newRegistry, JsonImporterStock.Registry);
+        }
+
+        [ Test ]
+        public void RegistryChangingEventFireOnSettingRegistry()
+        {
+            TestEventRecorder recorder = new TestEventRecorder();
+            ValueChangingEventHandler handler = new ValueChangingEventHandler(recorder.ValueChanging);
+            JsonImporterStock.RegistryChanging += handler;
+
             try
             {
                 JsonImporterRegistry newRegistry = new JsonImporterRegistry();
                 JsonImporterStock.SetRegistry(newRegistry);
-                Assert.AreSame(newRegistry, JsonImporterStock.Registry);
+                Assert.AreSame(newRegistry, ((ValueChangingEventArgs) recorder.AssertRecording(typeof(JsonImporterStock))).NewValue);
             }
             finally
             {
                 // 
-                // IMPORTANT! Do not remove, otherwise test elsewhere that
-                // default on the default registry could fail.
+                // DOT NOT REMOVE! Otherwise tests elsewhere can fail.
                 //
                 
-                JsonImporterStock.SetRegistry(oldRegistry);
-            }
-        }
-
-        [ Test ]
-        public void RegistryInitialization()
-        {
-            IJsonImporterRegistry oldRegistry = JsonImporterStock.Registry;
-            
-            try
-            {
-                TestEventNet net = new TestEventNet();
-                JsonImporterStock.RegistryInitializing += new ObjectInitializationEventHandler(net.ObjectInitialization);
-                JsonImporterRegistry newRegistry = new JsonImporterRegistry();
-                JsonImporterStock.SetRegistry(newRegistry, true);
-                Assert.IsTrue(net.HasEvent);
-                Assert.AreSame(typeof(JsonImporterRegistry), net.EventSender);
-                Assert.AreSame(newRegistry, ((ObjectInitializationEventArgs) net.EventArgs).Object);
-            }
-            finally
-            {
-                // 
-                // IMPORTANT! Do not remove, otherwise test elsewhere that
-                // default on the default registry could fail.
-                //
-                
-                JsonImporterStock.SetRegistry(oldRegistry);
+                JsonImporterStock.RegistryChanging -= handler;
             }
         }
 
@@ -139,14 +136,14 @@ namespace Jayrock.Json.Importers
         {
             ThreadTester tester = new ThreadTester();
             tester.Run(new ThreadStart(tester.GetDefaultInitializationEvent));
-            Assert.IsNotNull(tester.EventNet);
-            Assert.IsTrue(tester.EventNet.HasEvent);
+            Assert.IsNotNull(tester.EventRecorder);
+            tester.EventRecorder.AssertUsed();
         }
 
         private class ThreadTester
         {
             public IJsonImporterRegistry Default;
-            public TestEventNet EventNet;
+            public TestEventRecorder EventRecorder;
             
             public void GetDefault()
             {
@@ -155,36 +152,31 @@ namespace Jayrock.Json.Importers
             
             public void GetDefaultInitializationEvent()
             {
-                EventNet = new TestEventNet();
-                JsonImporterStock.RegistryInitializing += new ObjectInitializationEventHandler(EventNet.ObjectInitialization);
-                GetDefault();
+                EventRecorder = new TestEventRecorder();
+                ValueChangingEventHandler handler = new ValueChangingEventHandler(EventRecorder.ValueChanging);
+                JsonImporterStock.RegistryChanging += handler;
+                try
+                {
+                    GetDefault();
+                }
+                finally
+                {
+                    JsonImporterStock.RegistryChanging -= handler;
+                }
             }
             
             public void Run(ThreadStart test)
             {
-                Thread thread = new Thread(new ThreadStart(test));
+                Thread thread = new Thread(test);
+                thread.Name = GetType().Name;
                 thread.Start();
                 thread.Join();
             }
         }
 
-        private sealed class TestEventNet
-        {
-            public bool HasEvent;
-            public object EventSender;
-            public EventArgs EventArgs;
-
-            public void ObjectInitialization(object sender, ObjectInitializationEventArgs args)
-            {
-                HasEvent = true;
-                EventSender = sender;
-                EventArgs = args;
-            }
-        }
-
         private static void AssertInStock(Type expected, Type type)
         {
-            IJsonImporter importer = JsonImporterStock.Find(type);
+            IJsonImporter importer = JsonImporterStock.Lookup(type);
             Assert.IsNotNull(importer , "{0} not in stock.", type.FullName);
             Assert.IsInstanceOfType(expected, importer, type.FullName);
         }

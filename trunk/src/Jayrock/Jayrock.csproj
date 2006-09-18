@@ -153,12 +153,12 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "ObjectInitialization.cs"
+                    RelPath = "UnixTime.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "UnixTime.cs"
+                    RelPath = "ValueChange.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -394,6 +394,11 @@
                 />
                 <File
                     RelPath = "Json\Importers\JsonImporterBase.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Importers\JsonImporterSetBase.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

@@ -55,9 +55,9 @@ namespace Jayrock.Json.Importers
             _converter = converter;
         }
 
-        public override void RegisterSelf(IJsonImporterRegistry registry)
+        protected override void OnRegister(IJsonImporterRegistrar registrar)
         {
-            registry.Register(_type, this);
+            registrar.Register(_type, this);
         }
 
         protected override object ImportValue(JsonReader reader)

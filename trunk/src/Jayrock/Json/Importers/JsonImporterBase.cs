@@ -30,8 +30,6 @@ namespace Jayrock.Json.Importers
 
     public abstract class JsonImporterBase : IJsonImporter
     {
-        public abstract void RegisterSelf(IJsonImporterRegistry registry);
-
         public virtual object Import(JsonReader reader)
         {
             if (reader == null)
@@ -49,6 +47,13 @@ namespace Jayrock.Json.Importers
             return o;
         }
 
+        protected abstract void OnRegister(IJsonImporterRegistrar registrar);
+
         protected abstract object ImportValue(JsonReader reader);
+        
+        void IJsonImporterRegistryItem.Register(IJsonImporterRegistrar registrar)
+        {
+            OnRegister(registrar);
+        }
     }
 }

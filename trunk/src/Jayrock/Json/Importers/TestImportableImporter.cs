@@ -33,35 +33,35 @@ namespace Jayrock.Json.Importers
     [ TestFixture ]
     public class TestImportableImporter
     {
-        private ImportableBaseImporter _importer;
+        private ImportableImporterSet _importerSet;
         
         [ SetUp ]
         public void Init()
         {
-            _importer = new ImportableBaseImporter();
+            _importerSet = new ImportableImporterSet();
         }
 
         [ Test ]
         public void FindNonImportableType()
         {
-            Assert.IsNull(_importer.Find(typeof(object)));
+            Assert.IsNull(_importerSet.Lookup(typeof(object), null));
         }
 
         [ Test ]
         public void FindImportableType()
         {
-            IJsonImporter importer = _importer.Find(typeof(Thing));
+            IJsonImporter importer = _importerSet.Lookup(typeof(Thing), null);
             Assert.IsInstanceOfType(typeof(ImportableImporter), importer);
             Assert.IsNotNull(importer);
         }
         
         [ Test ]
-        public void LocatorRegistration()
+        public void SetRegistration()
         {
             JsonImporterRegistry registry = new JsonImporterRegistry();
-            Assert.IsFalse(CollectionHelper.ToList(registry.Items).Contains(_importer));
-            _importer.RegisterSelf(registry);
-            Assert.IsTrue(CollectionHelper.ToList(registry.Items).Contains(_importer));
+            Assert.IsFalse(CollectionHelper.ToList(registry.Items).Contains(_importerSet));
+            registry.Register(_importerSet);
+            Assert.IsTrue(CollectionHelper.ToList(registry.Items).Contains(_importerSet));
         }
         
         [ Test ]
@@ -101,10 +101,10 @@ namespace Jayrock.Json.Importers
         {
             Type type = typeof(Thing);
             JsonImporterRegistry registry = new JsonImporterRegistry();
-            Assert.IsNull(registry.Find(type));
+            Assert.IsNull(registry.Lookup(type));
             ImportableImporter importer = new ImportableImporter(type);
-            importer.RegisterSelf(registry);
-            Assert.AreSame(importer, registry.Find(type));
+            registry.Register(importer);
+            Assert.AreSame(importer, registry.Lookup(type));
         }
 
         private sealed class Thing : IJsonImportable

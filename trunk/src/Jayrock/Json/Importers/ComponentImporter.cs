@@ -50,11 +50,6 @@ namespace Jayrock.Json.Importers
             _properties = typeDescriptor.GetProperties();
         }
 
-        public override void RegisterSelf(IJsonImporterRegistry registry)
-        {
-            registry.Register(_type, this);
-        }
-
         protected override object ImportValue(JsonReader reader)
         {
             if (reader == null)
@@ -77,6 +72,11 @@ namespace Jayrock.Json.Importers
             }
          
             return o;
+        }
+
+        protected override void OnRegister(IJsonImporterRegistrar registrar)
+        {
+            registrar.Register(_type, this);
         }
 
         private sealed class DefaultTypeDescriptor : ICustomTypeDescriptor

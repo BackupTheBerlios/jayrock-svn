@@ -30,14 +30,14 @@ namespace Jayrock.Json
     using Jayrock.Json.Importers;
 
     #endregion
-
-    public sealed class JsonImporterRegistry : IJsonImporterRegistry
-    {
+    
+    public sealed class JsonImporterRegistry : IJsonImporterRegistry, IJsonImporterRegistrar, IJsonImporterSet
+    {        
         private readonly Hashtable _importerByType = new Hashtable();
-        private ArrayList _locators;
+        private ArrayList _importerSetList;
         [ NonSerialized ] private IJsonImporterRegistryItem[] _cachedItems;
-
-        public IJsonImporter Find(Type type)
+        
+        public IJsonImporter Lookup(Type type)
         {
             //
             // First look up in the table of specific type registrations.
@@ -47,31 +47,18 @@ namespace Jayrock.Json
             
             if (importer != null)
                 return importer;
-            
+
             //
             // No importer found using an exact matching type, so we ask
             // the set of "chained" locators to find one.
             //
-            
-            foreach (IJsonImporterLocator locator in Locators)
+        
+            foreach (IJsonImporterSet importerSet in ImporterSets)
             {
-                importer = locator.Find(type);
-                
+                importer = importerSet.Lookup(type, this);
+            
                 if (importer != null)
                     break;
-            }
-            
-            if (importer == null)
-            {
-                //
-                // If still no importer found, then check for importer
-                // specification via a custom attriubte.
-                //
-
-                object[] attributes = type.GetCustomAttributes(typeof(IJsonImporterLocator), true);
-                
-                if (attributes.Length > 0)
-                    importer = ((IJsonImporterLocator) attributes[0]).Find(type);
             }
             
             //
@@ -80,20 +67,18 @@ namespace Jayrock.Json
             //
             
             if (importer != null)
-                importer.RegisterSelf(this);
+                Register(importer);
             
             return importer;
         }
 
         public void Register(IJsonImporterRegistryItem item)
         {
-            if (item == null)
-                throw new ArgumentNullException("item");
-            
-            item.RegisterSelf(this);
+            OnRegistering();
+            item.Register(this);
         }
 
-        public void Register(Type type, IJsonImporter importer)
+        void IJsonImporterRegistrar.Register(Type type, IJsonImporter importer)
         {
             if (type == null)
                 throw new ArgumentNullException("type");
@@ -101,31 +86,17 @@ namespace Jayrock.Json
             if (importer == null)
                 throw new ArgumentNullException("importer");
             
-            OnRegistering();
-            
             _importerByType[type] = importer;
         }
 
-        public void Register(IJsonImporterLocator locator)
+        void IJsonImporterRegistrar.Register(IJsonImporterSet set)
         {
-            if (locator == null)
-                throw new ArgumentNullException("locator");
+            if (set == null)
+                throw new ArgumentNullException("set");
             
-            if (locator == this)
-                throw new ArgumentException("Locator to register cannot be the registry itself.");
-            
-            if (Locators.Contains(locator))
-                throw new ArgumentException("Locator is already registered.");
-            
-            OnRegistering();
-            Locators.Insert(0, locator);
+            ImporterSets.Insert(0, set);
         }
 
-        public void RegisterSelf(IJsonImporterRegistry registry)
-        {
-            registry.Register(this);
-        }
-        
         //
         // This property is weakly typed so that the caller cannot assume the
         // actual type here. You see, we're returning a direct reference to 
@@ -146,14 +117,14 @@ namespace Jayrock.Json
             }
         }
         
-        private ArrayList Locators
+        private ArrayList ImporterSets
         {
             get
             {
-                if (_locators == null)
-                    _locators = new ArrayList(4);
+                if (_importerSetList == null)
+                    _importerSetList = new ArrayList(4);
                 
-                return _locators;
+                return _importerSetList;
             }
         }
 
@@ -173,8 +144,8 @@ namespace Jayrock.Json
             if (_importerByType != null)
                 count += _importerByType.Count;
 
-            if (_locators != null)
-                count += _locators.Count;
+            if (_importerSetList != null)
+                count += _importerSetList.Count;
 
             IJsonImporterRegistryItem[] items = new IJsonImporterRegistryItem[count];
             
@@ -190,15 +161,25 @@ namespace Jayrock.Json
                 index += _importerByType.Count;
             }
 
-            if (_locators != null)
+            if (_importerSetList != null)
             {
-                _locators.CopyTo(items, index);
-                index += _locators.Count;
+                _importerSetList.CopyTo(items, index);
+                index += _importerSetList.Count;
             }
 
             Debug.Assert(index == count);
                 
             return items;
+        }
+
+        IJsonImporter IJsonImporterSet.Lookup(Type type, IJsonImporterLookup site)
+        {
+            return Lookup(type);
+        }
+
+        void IJsonImporterRegistryItem.Register(IJsonImporterRegistrar registrar)
+        {
+            registrar.Register(this);
         }
     }
 }

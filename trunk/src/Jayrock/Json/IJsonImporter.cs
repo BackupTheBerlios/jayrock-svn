@@ -28,25 +28,34 @@ namespace Jayrock.Json
 
     #endregion
 
-    public interface IJsonImporterRegistry : IJsonImporterLocator
+    public interface IJsonImporterLookup
     {
-        void Register(IJsonImporterRegistryItem item);
-        void Register(Type type, IJsonImporter importer);
-        void Register(IJsonImporterLocator locator);
+        IJsonImporter Lookup(Type type);
     }
-    
+
+    public interface IJsonImporterRegistrar : IJsonImporterLookup
+    {
+        void Register(Type type, IJsonImporter importer);
+        void Register(IJsonImporterSet set);
+    }
+
     public interface IJsonImporterRegistryItem
     {
-        void RegisterSelf(IJsonImporterRegistry registry);
+        void Register(IJsonImporterRegistrar registrar);
     }
 
-    public interface IJsonImporterLocator : IJsonImporterRegistryItem
+    public interface IJsonImporterRegistry : IJsonImporterLookup
     {
-        IJsonImporter Find(Type type);
+        void Register(IJsonImporterRegistryItem item);
     }
-
+     
     public interface IJsonImporter : IJsonImporterRegistryItem
     {
         object Import(JsonReader reader);
+    }
+
+    public interface IJsonImporterSet : IJsonImporterRegistryItem
+    {
+        IJsonImporter Lookup(Type type, IJsonImporterLookup site);
     }
 }

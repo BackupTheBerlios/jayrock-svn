@@ -196,7 +196,7 @@ namespace Jayrock.Json.Importers
             TestTypeDescriptor descriptor = new TestTypeDescriptor();
             descriptor.AddReadOnlyProperty("Id");
             ComponentImporter importer = new ComponentImporter(thingType, descriptor);
-            importer.RegisterSelf(reader.Importers);
+            reader.Importers.Register(importer);
             reader.ReadValue(thingType);
             Assert.IsFalse(descriptor.GetProperty("Id").SetValueCalled);
         }
@@ -355,8 +355,7 @@ namespace Jayrock.Json.Importers
         
         private void RegisterYahooTypeImporter(Type type, IJsonImporterRegistry registry)
         {
-            ComponentImporter importer = new ComponentImporter(type);
-            importer.RegisterSelf(registry);
+            registry.Register(new ComponentImporter(type));
         }
         
         private sealed class Marriage

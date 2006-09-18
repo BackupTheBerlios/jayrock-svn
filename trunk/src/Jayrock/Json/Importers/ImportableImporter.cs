@@ -28,17 +28,12 @@ namespace Jayrock.Json.Importers
 
     #endregion
 
-    public sealed class ImportableBaseImporter : IJsonImporterLocator
+    public sealed class ImportableImporterSet : JsonImporterSetBase
     {
-        public IJsonImporter Find(Type type)
+        public override IJsonImporter Lookup(Type type, IJsonImporterLookup site)
         {
             return typeof(IJsonImportable).IsAssignableFrom(type) ? 
                 new ImportableImporter(type) : null;
-        }
-
-        public void RegisterSelf(IJsonImporterRegistry registry)
-        {
-            registry.Register(this);
         }
     }
 
@@ -59,11 +54,6 @@ namespace Jayrock.Json.Importers
             _creator = creator;
         }
         
-        public void RegisterSelf(IJsonImporterRegistry registry)
-        {
-            registry.Register(_type, this);
-        }
-
         public object Import(JsonReader reader)
         {
             if (reader == null) 
@@ -77,6 +67,11 @@ namespace Jayrock.Json.Importers
             IJsonImportable o = (IJsonImportable) CreateObject();
             o.Import(reader);
             return o;
+        }
+
+        void IJsonImporterRegistryItem.Register(IJsonImporterRegistrar registrar)
+        {
+            registrar.Register(_type, this);
         }
 
         private object CreateObject()

@@ -20,40 +20,24 @@
 //
 #endregion
 
-namespace Jayrock
+namespace Jayrock.Json.Importers
 {
     #region Imports
 
     using System;
 
     #endregion
-    
-    /// <summary>
-    /// Provides data for events using <see cref="ObjectInitializationEventHandler"/>.
-    /// </summary>
 
-    [ Serializable ]
-    public sealed class ObjectInitializationEventArgs : EventArgs
+    public abstract class JsonImporterSetBase : IJsonImporterSet
     {
-        private readonly object _obj;
+        public abstract IJsonImporter Lookup(Type type, IJsonImporterLookup site);
 
-        public ObjectInitializationEventArgs(object obj)
+        void IJsonImporterRegistryItem.Register(IJsonImporterRegistrar registrar)
         {
-            if (obj == null)
-                throw new ArgumentNullException("obj");
+            if (registrar == null)
+                throw new ArgumentNullException("registrar");
             
-            _obj = obj;
-        }
-
-        public object Object
-        {
-            get { return _obj; }
+            registrar.Register(this);
         }
     }
-    
-    /// <summary>
-    /// Represent a method that participates in object initialization.
-    /// </summary>
-
-    public delegate void ObjectInitializationEventHandler(object sender, ObjectInitializationEventArgs args);
 }

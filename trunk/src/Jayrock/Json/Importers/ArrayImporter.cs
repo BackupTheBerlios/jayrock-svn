@@ -31,17 +31,12 @@ namespace Jayrock.Json.Importers
 
     #endregion
     
-    public sealed class ArrayBaseImporter : IJsonImporterLocator
+    public sealed class ArrayImporterSet : JsonImporterSetBase
     {
-        public IJsonImporter Find(Type type)
+        public override IJsonImporter Lookup(Type type, IJsonImporterLookup site)
         {
             return type.IsArray && type.GetArrayRank() == 1 ? 
-                   new ArrayImporter(type) : null;
-        }
-
-        public void RegisterSelf(IJsonImporterRegistry registry)
-        {
-            registry.Register(this);
+                new ArrayImporter(type) : null;
         }
     }
 
@@ -63,33 +58,6 @@ namespace Jayrock.Json.Importers
                 throw new ArgumentException(string.Format("{0} is not one-dimension array. Multi-dimensional arrays are not supported.", arrayType.FullName), "arrayType");
 
             _arrayType = arrayType;
-        }
-
-        public void RegisterSelf(IJsonImporterRegistry registry)
-        {
-            Type elementType = _arrayType.GetElementType();
-            
-            //
-            // For sake of convenience, if the element type does not have an
-            // importer already registered then we'll check if the stock has
-            // one. If yes, then we'll auto-register it here at the same time
-            // as registering the importer for the array type. This allows 
-            // simple types like array of integers to be handles without
-            // requiring the user to register the element type and
-            // then the array, which can seem like extra steps for the most
-            // common cases.
-            //
-            
-            IJsonImporter importer = registry.Find(elementType);
-            
-            if (importer == null)
-            {
-                importer = JsonImporterStock.Find(elementType);
-                if (importer != null)
-                    registry.Register(elementType, importer);
-            }
-
-            registry.Register(_arrayType, this);
         }
 
         public object Import(JsonReader reader)
@@ -133,6 +101,33 @@ namespace Jayrock.Json.Importers
             {
                 throw new JsonException(string.Format("Found {0} where expecting JSON Array.", reader.TokenClass));
             }
+        }
+ 
+        void IJsonImporterRegistryItem.Register(IJsonImporterRegistrar registrar)
+        {
+            Type elementType = _arrayType.GetElementType();
+            
+            //
+            // For sake of convenience, if the element type does not have an
+            // importer already registered then we'll check if the stock has
+            // one. If yes, then we'll auto-register it here at the same time
+            // as registering the importer for the array type. This allows 
+            // simple types like array of integers to be handles without
+            // requiring the user to register the element type and
+            // then the array, which can seem like extra steps for the most
+            // common cases.
+            //
+            
+            IJsonImporter importer = registrar.Lookup(elementType);
+            
+            if (importer == null)
+            {
+                importer = JsonImporterStock.Lookup(elementType);
+                if (importer != null)
+                    registrar.Register(elementType, importer);
+            }
+
+            registrar.Register(_arrayType, this);
         }
     }
 }

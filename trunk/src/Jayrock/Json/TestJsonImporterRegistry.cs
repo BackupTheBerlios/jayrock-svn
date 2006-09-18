@@ -25,6 +25,7 @@ namespace Jayrock.Json
     #region Imports
 
     using System;
+    using System.Collections;
     using Jayrock.Json.Importers;
     using NUnit.Framework;
 
@@ -34,7 +35,8 @@ namespace Jayrock.Json
     public class TestJsonImporterRegistry
     {
         private JsonImporterRegistry _registry;
-        
+        private readonly Type _thingType = typeof(Thing);
+
         [ SetUp ]
         public void Init()
         {
@@ -42,95 +44,27 @@ namespace Jayrock.Json
         }
 
         [ Test ]
-        public void RegistrationViaAttribute()
+        public void Registration()
         {
-            IJsonImporter importer = _registry.Find(typeof(Thing));
-            Assert.IsNotNull(importer);
-            Assert.IsInstanceOfType(typeof(TestImporter), importer);
-            Assert.AreSame(typeof(Thing), ((TestImporter) importer).Type);
+            TestImporter importer = new TestImporter(_thingType);
+            _registry.Register(importer);
+            Assert.AreSame(importer, _registry.Lookup(_thingType));
         }
 
-        [ Test, ExpectedException(typeof(ArgumentException)) ]
-        public void CannotRegisterSelfAsLocator()
-        {
-            _registry.RegisterSelf(_registry);
-        }
-
-        [ Test, ExpectedException(typeof(ArgumentException)) ]
-        public void CannotRegisterLocatorMoreThanOnce()
-        {
-            IJsonImporterLocator locator = new TestLocator();
-            locator.RegisterSelf(_registry);
-            locator.RegisterSelf(_registry);
-        }
-        
-        [ Test ]
-        public void LastLocatorComesFirst()
-        {
-            Type thingType = typeof(Thing);
-            RegisterTestLocator(thingType, new TestImporter(thingType));
-
-            TestImporter expected = new TestImporter(thingType);
-            RegisterTestLocator(thingType, expected);
-            
-            Assert.AreSame(expected, _registry.Find(thingType));
-        }
-        
-        [ Test ]
-        public void LocatorNotCalledOnceFound()
-        {
-            Type thingType = typeof(Thing);
-            TestLocator locator = RegisterTestLocator(thingType, new TestImporter(thingType));
-            Assert.IsFalse(locator.FindCalled);
-            _registry.Find(thingType);
-            Assert.IsTrue(locator.FindCalled);
-            locator.FindCalled = false;
-            _registry.Find(thingType);
-            Assert.IsFalse(locator.FindCalled);
-        }
-        
         [ Test ]
         public void LastRegistrationWins()
         {
-            Type type = typeof(Thing);
+            Type type = _thingType;
             
             TestImporter importer1 = new TestImporter(type);
-            _registry.Register(type, importer1);
-            Assert.AreSame(importer1, _registry.Find(type));
+            _registry.Register(importer1);
+            Assert.AreSame(importer1, _registry.Lookup(type));
 
             TestImporter importer2 = new TestImporter(type);
-            _registry.Register(type, importer2);
-            Assert.AreSame(importer2, _registry.Find(type));
+            _registry.Register(importer2);
+            Assert.AreSame(importer2, _registry.Lookup(type));
         }
 
-        private TestLocator RegisterTestLocator(Type type, TestImporter importer)
-        {
-            TestLocator locator = new TestLocator();
-            locator.NextFindType = type;
-            locator.NextImporter = importer;
-            locator.RegisterSelf(_registry);
-            return locator;
-        }
-        
-        private class TestLocator : IJsonImporterLocator
-        {
-            public Type NextFindType;
-            public IJsonImporter NextImporter;
-            public bool FindCalled;
-            
-            public IJsonImporter Find(Type type)
-            {
-                FindCalled = true;
-                return type == NextFindType ? NextImporter : null;
-            }
-
-            public void RegisterSelf(IJsonImporterRegistry registry)
-            {
-                registry.Register(this);
-            }
-        }
-
-        [ TestImporter ]
         private sealed class Thing
         {
         }
@@ -144,28 +78,14 @@ namespace Jayrock.Json
                 Type = type;
             }
 
-            public override void RegisterSelf(IJsonImporterRegistry registry)
+            protected override void OnRegister(IJsonImporterRegistrar registrar)
             {
-                registry.Register(Type, this);
+                registrar.Register(Type, this);
             }
 
             protected override object ImportValue(JsonReader reader)
             {
                 throw new NotImplementedException();
-            }
-        }
-
-        [ AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct) ]
-        private sealed class TestImporterAttribute : Attribute, IJsonImporterLocator
-        {
-            IJsonImporter IJsonImporterLocator.Find(Type type)
-            {
-                return new TestImporter(type);
-            }
-
-            void IJsonImporterRegistryItem.RegisterSelf(IJsonImporterRegistry registry)
-            {
-                throw new NotSupportedException();
             }
         }
     }

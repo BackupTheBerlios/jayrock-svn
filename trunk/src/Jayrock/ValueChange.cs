@@ -20,32 +20,40 @@
 //
 #endregion
 
-namespace Jayrock.Json.Importers
+namespace Jayrock
 {
     #region Imports
 
     using System;
 
     #endregion
+    
+    /// <summary>
+    /// Provides data for events using <see cref="ValueChangingEventHandler"/>.
+    /// </summary>
 
-    public sealed class StringImporter : JsonImporterBase
+    [ Serializable ]
+    public sealed class ValueChangingEventArgs : EventArgs
     {
-        protected override void OnRegister(IJsonImporterRegistrar registrar)
+        private readonly object _newValue;
+
+        public ValueChangingEventArgs(object newValue)
         {
-            registrar.Register(typeof(string), this);
+            if (newValue == null)
+                throw new ArgumentNullException("newValue");
+            
+            _newValue = newValue;
         }
 
-        protected override object ImportValue(JsonReader reader)
+        public object NewValue
         {
-            if (reader == null)
-                throw new ArgumentNullException("reader");
-            
-            if (reader.TokenClass != JsonTokenClass.String && 
-                reader.TokenClass != JsonTokenClass.Number &&
-                reader.TokenClass != JsonTokenClass.Boolean)
-                throw new JsonException(string.Format("Found {0} where expecting a JSON String.", reader.TokenClass));
-            
-            return reader.Text;
+            get { return _newValue; }
         }
     }
+    
+    /// <summary>
+    /// Represent a method that participates in changing of a value.
+    /// </summary>
+
+    public delegate void ValueChangingEventHandler(object sender, ValueChangingEventArgs args);
 }

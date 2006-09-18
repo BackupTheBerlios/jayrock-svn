@@ -134,12 +134,12 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "ObjectInitialization.cs"
+                    RelPath = "TestDebugString.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "TestDebugString.cs"
+                    RelPath = "TestEventRecorder.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -160,6 +160,11 @@
                 />
                 <File
                     RelPath = "UnixTime.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "ValueChange.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -490,6 +495,11 @@
                 />
                 <File
                     RelPath = "Json\Importers\JsonImporterBase.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Importers\JsonImporterSetBase.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
