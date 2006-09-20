@@ -124,7 +124,7 @@ namespace Jayrock.Json.Rpc
             JsonRpcDispatcher server = new JsonRpcDispatcher(new TestService());
             string responseString = server.Process("{ id : 1, method : 'Say', params : [ 'Hello', 'World' ] }");
             IDictionary response = (IDictionary) Parse(responseString);
-            Assert.AreEqual("Hello", response["result"]);
+            Assert.AreEqual("Hello", JsonRpcServices.GetResult(response));
         }
 
         [ Test ]
@@ -133,7 +133,34 @@ namespace Jayrock.Json.Rpc
             JsonRpcDispatcher server = new JsonRpcDispatcher(new TestService());
             string responseString = server.Process("{ id : 1, method : 'Say', params : { message : 'Hello', bad : 'World' } }");
             IDictionary response = (IDictionary) Parse(responseString);
-            Assert.AreEqual("Hello", response["result"]);
+            Assert.AreEqual("Hello", JsonRpcServices.GetResult(response));
+        }
+
+        [ Test ]
+        public void ArgWithOneOrTwoCharNameDroppedBug()
+        {
+            JsonRpcDispatcher server = new JsonRpcDispatcher(new TestService2());
+            string responseString = server.Process("{ id : 1, method : 'Echo', params : { o : 123 } }");
+            IDictionary response = (IDictionary) Parse(responseString);
+            Assert.AreEqual(123, Convert.ToInt32(JsonRpcServices.GetResult(response)));
+        }
+
+        [ Test ]
+        public void PositionNineArgDroppedBug()
+        {
+            JsonRpcDispatcher server = new JsonRpcDispatcher(new TestService2());
+            string responseString = server.Process("{ id : 1, method : 'Echo', params : { o : 123 } }");
+            IDictionary response = (IDictionary) Parse(responseString);
+            Assert.AreEqual(123, Convert.ToInt32(JsonRpcServices.GetResult(response)));
+        }
+
+        [ Test ]
+        public void CallWithPositionalArgs()
+        {
+            JsonRpcDispatcher server = new JsonRpcDispatcher(new TestService2());
+            string responseString = server.Process("{ id : 1, method : 'EchoMany', params : { 0:11,1:12,2:13,3:14,4:15,5:16,6:17,7:18,8:19,9:20,10:21,11:22,12:23,13:24,14:25,15:26,16:27,17:28,18:29,19:30,20:31,21:32,22:33,23:34,24:35,25:36 } }");
+            IDictionary response = (IDictionary) Parse(responseString);
+            Assert.AreEqual(new int[] { 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36 }, JsonRpcServices.GetResult(response, typeof(int[])));
         }
 
         private object Parse(string source)
@@ -174,6 +201,26 @@ namespace Jayrock.Json.Rpc
                 foreach (int i in ints)
                     sum += i;
                 return sum;
+            }
+        }
+
+        private class TestService2 : IService
+        {
+            public JsonRpcServiceClass GetClass()
+            {
+                return JsonRpcServiceClass.FromType(GetType());
+            }
+            
+            [ JsonRpcMethod ]
+            public object Echo(object o)
+            {                
+                return o;
+            }
+
+            [ JsonRpcMethod ] // FIXME: CallWithPositionalArgs test breaks when parameters are int.
+            public object[] EchoMany(object a, object b, object c, object d, object e, object f, object g, object h, object i, object j, object k, object l, object m, object n, object o, object p, object q, object r, object s, object t, object u, object v, object w, object x, object y, object z)
+            {                
+                return new object[] { a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z };
             }
         }
     }

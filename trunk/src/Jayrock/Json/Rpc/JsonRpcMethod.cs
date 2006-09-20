@@ -201,6 +201,8 @@ namespace Jayrock.Json.Rpc
                 if (arg == null)
                     continue;
                 
+                int position = -1;
+                
                 if (name.Length <= 2)
                 {
                     char ch1;
@@ -217,21 +219,25 @@ namespace Jayrock.Json.Rpc
                         ch2 = name[0];
                     }
 
-                    if (ch1 >= '0' && ch1 < '9' &&
-                        ch2 >= '0' && ch2 < '9')
+                    if (ch1 >= '0' && ch1 <= '9' &&
+                        ch2 >= '0' && ch2 <= '9')
                     {
-                        int position = int.Parse(name, NumberStyles.Number, CultureInfo.InvariantCulture);
+                        position = int.Parse(name, NumberStyles.Number, CultureInfo.InvariantCulture);
                     
                         if (position < _parameters.Length)
                             mapped[position] = arg;
                     }
                 }
-                else
+                
+                if (position < 0)
                 {
                     int order = Array.BinarySearch(_parameterNames, name, Comparer.DefaultInvariant);
                     if (order >= 0)
-                        mapped[_sortedParameters[order].Position] = arg;
+                        position = _sortedParameters[order].Position;
                 }
+                
+                if (position >= 0)
+                    mapped[position] = arg;
             }
 
             return mapped;

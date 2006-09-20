@@ -405,22 +405,21 @@ namespace Jayrock.Json.Rpc
                 while (reader.TokenClass != JsonTokenClass.EndObject)
                 {
                     // TODO: Imporve this lookup.
+                    // FIXME: Does not work when argument is positional.
                                     
-                    JsonRpcParameter matchedParameter = null;
+                    Type parameterType = null;
+                    string name = reader.ReadMember();
 
                     foreach (JsonRpcParameter parameter in parameters)
                     {
-                        if (parameter.Name.Equals(reader.Text))
+                        if (parameter.Name.Equals(name))
                         {
-                            matchedParameter = parameter;
+                            parameterType = parameter.ParameterType;
                             break;
                         }
                     }
                                     
-                    reader.Read();
-
-                    if (matchedParameter != null)
-                        argByName.Put(matchedParameter.Name, reader.ReadValue(matchedParameter.ParameterType));
+                    argByName.Put(name, reader.ReadValue(parameterType));
                 }
                                 
                 reader.Read();

@@ -60,6 +60,11 @@ namespace Jayrock.Json.Rpc
 
         public static object GetResult(IDictionary response)
         {
+            return GetResult(response, null);
+        }
+        
+        public static object GetResult(IDictionary response, Type resultType)
+        {
             if (response == null)
                 throw new ArgumentNullException("response");
 
@@ -87,7 +92,14 @@ namespace Jayrock.Json.Rpc
             if (!response.Contains("result"))
                 throw new ArgumentException("Response object is not valid because it does not contain the expected 'result' member.");
 
-            return response["result"];
+            object result = response["result"];
+
+            if (resultType == null)
+                return result;
+            
+            JsonRecorder recorder = new JsonRecorder();
+            recorder.WriteValue(result);
+            return recorder.CreatePlayer().ReadValue(resultType);
         }
 
         private JsonRpcServices()
