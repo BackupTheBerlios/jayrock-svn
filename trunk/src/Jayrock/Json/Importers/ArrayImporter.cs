@@ -31,9 +31,9 @@ namespace Jayrock.Json.Importers
 
     #endregion
     
-    public sealed class ArrayImporterSet : JsonImporterSetBase
+    public sealed class ArrayImporterSet : IJsonImporterSet
     {
-        public override IJsonImporter Page(Type type)
+        public IJsonImporter Page(Type type)
         {
             return type.IsArray && type.GetArrayRank() == 1 ? 
                 new ArrayImporter(type) : null;

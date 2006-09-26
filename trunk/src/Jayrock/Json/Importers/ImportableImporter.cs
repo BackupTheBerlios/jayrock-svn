@@ -28,9 +28,9 @@ namespace Jayrock.Json.Importers
 
     #endregion
 
-    public sealed class ImportableImporterSet : JsonImporterSetBase
+    public sealed class ImportableImporterSet : IJsonImporterSet
     {
-        public override IJsonImporter Page(Type type)
+        public IJsonImporter Page(Type type)
         {
             return typeof(IJsonImportable).IsAssignableFrom(type) ? 
                 new ImportableImporter(type) : null;
