@@ -30,31 +30,27 @@ namespace Jayrock.Json.Importers
 
     public sealed class ImportableImporterSet : JsonImporterSetBase
     {
-        public override IJsonImporter Lookup(Type type, IJsonImporterLookup site)
+        public override IJsonImporter Page(Type type)
         {
             return typeof(IJsonImportable).IsAssignableFrom(type) ? 
                 new ImportableImporter(type) : null;
         }
     }
 
-    public sealed class ImportableImporter : IJsonImporter
+    public sealed class ImportableImporter : JsonImporterBase
     {
-        private readonly Type _type;
         private readonly ObjectCreationHandler _creator;
         
         public ImportableImporter(Type type) : 
             this(type, null) {}
 
-        public ImportableImporter(Type type, ObjectCreationHandler creator)
+        public ImportableImporter(Type type, ObjectCreationHandler creator) :
+            base(type)
         {
-            if (type == null) 
-                throw new ArgumentNullException("type");
-
-            _type = type;
             _creator = creator;
         }
         
-        public object Import(JsonReader reader)
+        public override object Import(JsonReader reader)
         {
             if (reader == null) 
                 throw new ArgumentNullException("reader");
@@ -69,15 +65,10 @@ namespace Jayrock.Json.Importers
             return o;
         }
 
-        void IJsonImporterRegistryItem.Register(IJsonImporterRegistrar registrar)
-        {
-            registrar.Register(_type, this);
-        }
-
         private object CreateObject()
         {
             return _creator == null ? 
-                   Activator.CreateInstance(_type) : _creator(null);
+                   Activator.CreateInstance(OutputType) : _creator(null);
         }
     }
 }

@@ -164,7 +164,7 @@ namespace Jayrock.Json.Importers
 
         public static IJsonImporter Lookup(Type type)
         {
-            return _stockRegistry.Lookup(type);
+            return _stockRegistry.Find(type);
         }
         
         private JsonImporterStock()

@@ -32,21 +32,17 @@ namespace Jayrock.Json.Importers
 
     public sealed class ComponentImporter : JsonImporterBase
     {
-        private readonly Type _type;
         private readonly PropertyDescriptorCollection _properties;
 
         public ComponentImporter(Type type) :
             this(type, null) {}
 
-        public ComponentImporter(Type type, ICustomTypeDescriptor typeDescriptor)
+        public ComponentImporter(Type type, ICustomTypeDescriptor typeDescriptor) :
+            base(type)
         {
-            if (type == null)
-                throw new ArgumentNullException("type");
-            
             if (typeDescriptor == null)
                 typeDescriptor = new DefaultTypeDescriptor(type);
             
-            _type = type;
             _properties = typeDescriptor.GetProperties();
         }
 
@@ -57,7 +53,7 @@ namespace Jayrock.Json.Importers
 
             reader.ReadToken(JsonTokenClass.Object);
             
-            object o = Activator.CreateInstance(_type);
+            object o = Activator.CreateInstance(OutputType);
             
             while (reader.TokenClass != JsonTokenClass.EndObject)
             {
@@ -72,11 +68,6 @@ namespace Jayrock.Json.Importers
             }
          
             return o;
-        }
-
-        protected override void OnRegister(IJsonImporterRegistrar registrar)
-        {
-            registrar.Register(_type, this);
         }
 
         private sealed class DefaultTypeDescriptor : ICustomTypeDescriptor

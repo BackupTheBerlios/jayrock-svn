@@ -30,7 +30,7 @@ namespace Jayrock.Json.Importers
 
     public sealed class EnumImporterSet : JsonImporterSetBase
     {
-        public override IJsonImporter Lookup(Type type, IJsonImporterLookup site)
+        public override IJsonImporter Page(Type type)
         {
             return type.IsEnum ? new EnumImporter(type) : null;
         }
@@ -38,25 +38,14 @@ namespace Jayrock.Json.Importers
     
     public sealed class EnumImporter : JsonImporterBase
     {
-        private readonly Type _type;
-
-        public EnumImporter(Type type)
+        public EnumImporter(Type type) :
+            base(type)
         {
-            if (type == null)
-                throw new ArgumentNullException("type");
-            
             if (!type.IsEnum)
                 throw new ArgumentException(string.Format("{0} does not inherit from System.Enum.", type));
             
             if (type.IsDefined(typeof(FlagsAttribute), true))
                 throw new ArgumentException(string.Format("{0} is a bit field, which are not currently supported.", type));
-            
-            _type = type;
-        }
-
-        protected override void OnRegister(IJsonImporterRegistrar registrar)
-        {
-            registrar.Register(_type, this);
         }
 
         protected override object ImportValue(JsonReader reader)
@@ -73,7 +62,7 @@ namespace Jayrock.Json.Importers
 
             try
             {
-                return Enum.Parse(_type, s, true);
+                return Enum.Parse(OutputType, s, true);
             }
             catch (ArgumentException e)
             {
@@ -89,7 +78,7 @@ namespace Jayrock.Json.Importers
 
         private JsonException Error(string s, Exception e)
         {
-            return new JsonException(string.Format("The value '{0}' cannot be imported as {1}.", DebugString.Format(s), _type.FullName), e);
+            return new JsonException(string.Format("The value '{0}' cannot be imported as {1}.", DebugString.Format(s), OutputType.FullName), e);
         }
     }
 }

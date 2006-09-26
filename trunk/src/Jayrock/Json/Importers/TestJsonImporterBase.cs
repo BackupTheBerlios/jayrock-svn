@@ -31,8 +31,15 @@ namespace Jayrock.Json.Importers
     #endregion
 
     [ TestFixture ]
-    public class TestJsonImporter
+    public class TestJsonImporterBase
     {
+        [ Test ]
+        public void OutputTypeInitialization()
+        {
+            TestImporter importer = new TestImporter();
+            Assert.AreSame(typeof(object), importer.OutputType);
+        }
+        
         [ Test ]
         public void NullHandling()
         {
@@ -65,10 +72,8 @@ namespace Jayrock.Json.Importers
             public object ReturnValue;
             public bool Called;
 
-            protected override void OnRegister(IJsonImporterRegistrar registrar)
-            {
-                throw new NotImplementedException();
-            }
+            public TestImporter() : 
+                base(typeof(object)) {}
 
             protected override object ImportValue(JsonReader reader)
             {

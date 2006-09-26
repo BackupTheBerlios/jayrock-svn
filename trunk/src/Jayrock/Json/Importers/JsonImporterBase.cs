@@ -30,6 +30,21 @@ namespace Jayrock.Json.Importers
 
     public abstract class JsonImporterBase : IJsonImporter
     {
+        private readonly Type _outputType;
+
+        protected JsonImporterBase(Type outputType)
+        {
+            if (outputType == null)
+                throw new ArgumentNullException("outputType");
+            
+            _outputType = outputType;
+        }
+
+        public Type OutputType
+        {
+            get { return _outputType; }
+        }
+
         public virtual object Import(JsonReader reader)
         {
             if (reader == null)
@@ -47,13 +62,9 @@ namespace Jayrock.Json.Importers
             return o;
         }
 
-        protected abstract void OnRegister(IJsonImporterRegistrar registrar);
-
-        protected abstract object ImportValue(JsonReader reader);
-        
-        void IJsonImporterRegistryItem.Register(IJsonImporterRegistrar registrar)
+        protected virtual object ImportValue(JsonReader reader)
         {
-            OnRegister(registrar);
+            throw new NotImplementedException();
         }
     }
 }

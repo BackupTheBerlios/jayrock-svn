@@ -30,9 +30,12 @@ namespace Jayrock.Json.Importers
 
     #endregion
 
-    public sealed class AutoImporter : IJsonImporter
+    public sealed class AutoImporter : JsonImporterBase
     {
-        public object Import(JsonReader reader)
+        public AutoImporter() : 
+            base(typeof(object)) {}
+
+        public override object Import(JsonReader reader)
         {
             if (reader == null)
                 throw new ArgumentNullException("reader");
@@ -72,11 +75,6 @@ namespace Jayrock.Json.Importers
             {
                 throw new JsonException(string.Format("{0} not expected.", reader.TokenClass));
             }
-        }
-
-        void IJsonImporterRegistryItem.Register(IJsonImporterRegistrar registrar)
-        {
-            registrar.Register(typeof(object), this);
         }
     }
 }

@@ -44,24 +44,15 @@ namespace Jayrock.Json.Importers
         [ Test ]
         public void FindNonImportableType()
         {
-            Assert.IsNull(_importerSet.Lookup(typeof(object), null));
+            Assert.IsNull(_importerSet.Page(typeof(object)));
         }
 
         [ Test ]
         public void FindImportableType()
         {
-            IJsonImporter importer = _importerSet.Lookup(typeof(Thing), null);
+            IJsonImporter importer = _importerSet.Page(typeof(Thing));
             Assert.IsInstanceOfType(typeof(ImportableImporter), importer);
             Assert.IsNotNull(importer);
-        }
-        
-        [ Test ]
-        public void SetRegistration()
-        {
-            JsonImporterRegistry registry = new JsonImporterRegistry();
-            Assert.IsFalse(CollectionHelper.ToList(registry.Items).Contains(_importerSet));
-            registry.Register(_importerSet);
-            Assert.IsTrue(CollectionHelper.ToList(registry.Items).Contains(_importerSet));
         }
         
         [ Test ]
@@ -101,10 +92,10 @@ namespace Jayrock.Json.Importers
         {
             Type type = typeof(Thing);
             JsonImporterRegistry registry = new JsonImporterRegistry();
-            Assert.IsNull(registry.Lookup(type));
+            Assert.IsNull(registry.Find(type));
             ImportableImporter importer = new ImportableImporter(type);
             registry.Register(importer);
-            Assert.AreSame(importer, registry.Lookup(type));
+            Assert.AreSame(importer, registry.Find(type));
         }
 
         private sealed class Thing : IJsonImportable

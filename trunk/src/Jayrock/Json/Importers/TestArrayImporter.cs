@@ -79,6 +79,7 @@ namespace Jayrock.Json.Importers
             AssertImport(new DateTime[] { new DateTime(1999, 12, 31), new DateTime(2000, 1, 1),  }, "[ '1999-12-31', '2000-01-01' ]");
         }
         
+        /* REMOVE:
         [ Test ]
         public void AutoElementRegistration()
         {
@@ -97,6 +98,7 @@ namespace Jayrock.Json.Importers
             Assert.AreNotEqual(-1, i);
             Assert.AreSame(importer, registry.Importers[i]);
         }
+        */
         
         [ Test ]
         public void ImportStringAsArray()
@@ -136,20 +138,16 @@ namespace Jayrock.Json.Importers
         {
             return new JsonTextReader(new StringReader(s));
         }
- 
-        private sealed class TestRegistry : IJsonImporterRegistry, IJsonImporterRegistrar
+
+        /* REMOVE
+        private sealed class TestRegistry : IJsonImporterRegistry
         {
             public ArrayList Types = new ArrayList();
             public ArrayList Importers = new ArrayList();
 
-            public void Register(IJsonImporterRegistryItem item)
+            public void Register(IJsonImporter importer)
             {
-                item.Register(this);
-            }
-
-            public void Register(Type type, IJsonImporter importer)
-            {
-                Types.Add(type);
+                Types.Add(importer.ImportType);
                 Importers.Add(importer);
             }
 
@@ -162,6 +160,6 @@ namespace Jayrock.Json.Importers
             {
                 return null;
             }
-        }
+        }*/
     }
 }

@@ -43,21 +43,15 @@ namespace Jayrock.Json.Importers
         private delegate object Converter(string s);
         
         private readonly Converter _converter;
-        private readonly Type _type;
 
-        private NumberImporter(Type type, Converter converter)
+        private NumberImporter(Type type, Converter converter) :
+            base(type)
         {
             Debug.Assert(type != null);
             Debug.Assert(type.IsValueType);
             Debug.Assert(converter != null);
 
-            _type = type;
             _converter = converter;
-        }
-
-        protected override void OnRegister(IJsonImporterRegistrar registrar)
-        {
-            registrar.Register(_type, this);
         }
 
         protected override object ImportValue(JsonReader reader)
@@ -86,7 +80,7 @@ namespace Jayrock.Json.Importers
 
         private Exception NumberError(Exception e, string text)
         {
-            return new JsonException(string.Format("Error importing JSON Number {0} as {1}.", text, _type.FullName), e);
+            return new JsonException(string.Format("Error importing JSON Number {0} as {1}.", text, OutputType.FullName), e);
         }
 
         private static object ConvertToByte(string s) { return Convert.ToByte(s, CultureInfo.InvariantCulture); }

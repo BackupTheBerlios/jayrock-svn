@@ -33,34 +33,35 @@ namespace Jayrock.Json.Importers
     
     public sealed class ArrayImporterSet : JsonImporterSetBase
     {
-        public override IJsonImporter Lookup(Type type, IJsonImporterLookup site)
+        public override IJsonImporter Page(Type type)
         {
             return type.IsArray && type.GetArrayRank() == 1 ? 
                 new ArrayImporter(type) : null;
         }
     }
 
-    public sealed class ArrayImporter : IJsonImporter
+    public sealed class ArrayImporter : JsonImporterBase
     {
-        private readonly Type _arrayType;
-
         public ArrayImporter() : this(null) {}
 
-        public ArrayImporter(Type arrayType)
-        {
-            if (arrayType == null)
-                arrayType = typeof(object[]);
-            
-            if (!arrayType.IsArray)
-                throw new ArgumentException(string.Format("{0} is not an array.", arrayType.FullName), "arrayType");
-            
-            if (arrayType.GetArrayRank() != 1)
-                throw new ArgumentException(string.Format("{0} is not one-dimension array. Multi-dimensional arrays are not supported.", arrayType.FullName), "arrayType");
+        public ArrayImporter(Type arrayType) : 
+            base(AssertArrayType(arrayType)) {}
 
-            _arrayType = arrayType;
+        private static Type AssertArrayType(Type type)
+        {
+            if (type == null)
+                return typeof(object[]);
+            
+            if (!type.IsArray)
+                throw new ArgumentException(string.Format("{0} is not an array.", type.FullName), "arrayType");
+            
+            if (type.GetArrayRank() != 1)
+                throw new ArgumentException(string.Format("{0} is not one-dimension array. Multi-dimensional arrays are not supported.", type.FullName), "arrayType");
+            
+            return type;
         }
 
-        public object Import(JsonReader reader)
+        public override object Import(JsonReader reader)
         {
             if (reader == null)
                 throw new ArgumentNullException("reader");
@@ -74,7 +75,7 @@ namespace Jayrock.Json.Importers
                 return null;
             }
 
-            Type elementType = _arrayType.GetElementType();
+            Type elementType = OutputType.GetElementType();
 
             if (reader.TokenClass == JsonTokenClass.Array)
             {
@@ -102,10 +103,12 @@ namespace Jayrock.Json.Importers
                 throw new JsonException(string.Format("Found {0} where expecting JSON Array.", reader.TokenClass));
             }
         }
- 
-        void IJsonImporterRegistryItem.Register(IJsonImporterRegistrar registrar)
+
+        // FIXME: Re-instate auto-element registration through registration callback?
+        /*
+        protected override void OnRegister(IJsonImporterRegistrar registry)
         {
-            Type elementType = _arrayType.GetElementType();
+            Type elementType = ImportType.GetElementType();
             
             //
             // For sake of convenience, if the element type does not have an
@@ -118,16 +121,17 @@ namespace Jayrock.Json.Importers
             // common cases.
             //
             
-            IJsonImporter importer = registrar.Lookup(elementType);
+            IJsonImporter importer = registry.Lookup(elementType);
             
             if (importer == null)
             {
                 importer = JsonImporterStock.Lookup(elementType);
                 if (importer != null)
-                    registrar.Register(elementType, importer);
+                    registry.Register(elementType, importer);
             }
 
-            registrar.Register(_arrayType, this);
+            base.OnRegister(registry);
         }
+        */
     }
 }

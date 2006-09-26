@@ -32,10 +32,8 @@ namespace Jayrock.Json.Importers
 
     public sealed class DateTimeImporter : JsonImporterBase
     {
-        protected override void OnRegister(IJsonImporterRegistrar registrar)
-        {
-            registrar.Register(typeof(DateTime), this);
-        }
+        public DateTimeImporter() : 
+            base(typeof(DateTime)) {}
 
         protected override object ImportValue(JsonReader reader)
         {

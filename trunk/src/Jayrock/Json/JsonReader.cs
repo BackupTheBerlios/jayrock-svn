@@ -314,7 +314,7 @@ namespace Jayrock.Json
             if (type == null)
                 type = typeof(object);
             
-            IJsonImporter importer = Importers.Lookup(type);
+            IJsonImporter importer = Importers.Find(type);
             
             if (importer == null)
                 throw new JsonException(string.Format("Don't know how to read the type {0} from JSON.", type.FullName)); // TODO: Review the choice of exception type here.

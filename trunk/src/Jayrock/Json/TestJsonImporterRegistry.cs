@@ -48,7 +48,7 @@ namespace Jayrock.Json
         {
             TestImporter importer = new TestImporter(_thingType);
             _registry.Register(importer);
-            Assert.AreSame(importer, _registry.Lookup(_thingType));
+            Assert.AreSame(importer, _registry.Find(_thingType));
         }
 
         [ Test ]
@@ -58,11 +58,11 @@ namespace Jayrock.Json
             
             TestImporter importer1 = new TestImporter(type);
             _registry.Register(importer1);
-            Assert.AreSame(importer1, _registry.Lookup(type));
+            Assert.AreSame(importer1, _registry.Find(type));
 
             TestImporter importer2 = new TestImporter(type);
             _registry.Register(importer2);
-            Assert.AreSame(importer2, _registry.Lookup(type));
+            Assert.AreSame(importer2, _registry.Find(type));
         }
 
         private sealed class Thing
@@ -71,22 +71,8 @@ namespace Jayrock.Json
         
         private sealed class TestImporter : JsonImporterBase
         {
-            public readonly Type Type;
-
-            public TestImporter(Type type)
-            {
-                Type = type;
-            }
-
-            protected override void OnRegister(IJsonImporterRegistrar registrar)
-            {
-                registrar.Register(Type, this);
-            }
-
-            protected override object ImportValue(JsonReader reader)
-            {
-                throw new NotImplementedException();
-            }
+            public TestImporter(Type type) : 
+                base(type) {}
         }
     }
 }

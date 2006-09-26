@@ -30,14 +30,6 @@ namespace Jayrock.Json.Importers
 
     public abstract class JsonImporterSetBase : IJsonImporterSet
     {
-        public abstract IJsonImporter Lookup(Type type, IJsonImporterLookup site);
-
-        void IJsonImporterRegistryItem.Register(IJsonImporterRegistrar registrar)
-        {
-            if (registrar == null)
-                throw new ArgumentNullException("registrar");
-            
-            registrar.Register(this);
-        }
+        public abstract IJsonImporter Page(Type type);
     }
 }

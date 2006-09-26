@@ -309,22 +309,17 @@ namespace Jayrock.Json
         {
             public Type LastLookupType;
 
-            public void Register(IJsonImporterRegistryItem item)
-            {
-                throw new NotImplementedException();
-            }
-
             public void Register(IJsonImporter importer)
             {
                 throw new NotImplementedException();
             }
 
-            public void Register(Type type, IJsonImporter importer)
+            public void Register(IJsonImporterSet set)
             {
                 throw new NotImplementedException();
             }
 
-            public IJsonImporter Lookup(Type type)
+            public IJsonImporter Find(Type type)
             {
                 LastLookupType = type;
                 return new TestJsonImporter();
@@ -332,14 +327,14 @@ namespace Jayrock.Json
 
             private sealed class TestJsonImporter : IJsonImporter
             {
+                public Type OutputType
+                {
+                    get { throw new NotImplementedException(); }
+                }
+
                 public object Import(JsonReader reader)
                 {
                     return null;
-                }
-
-                public void Register(IJsonImporterRegistrar registrar)
-                {
-                    throw new NotImplementedException();
                 }
             }
         }

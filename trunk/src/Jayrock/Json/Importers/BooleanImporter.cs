@@ -31,6 +31,9 @@ namespace Jayrock.Json.Importers
 
     public sealed class BooleanImporter : JsonImporterBase
     {
+        public BooleanImporter() : 
+            base(typeof(bool)) { }
+
         protected override object ImportValue(JsonReader reader)
         {
             if (reader == null)
@@ -59,11 +62,6 @@ namespace Jayrock.Json.Importers
             }
             
             return value ? BooleanObject.True : BooleanObject.False;
-        }
- 
-        protected override void OnRegister(IJsonImporterRegistrar registrar)
-        {
-            registrar.Register(typeof(bool), this);
         }
     }
 }

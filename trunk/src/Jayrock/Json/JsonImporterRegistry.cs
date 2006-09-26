@@ -31,13 +31,12 @@ namespace Jayrock.Json
 
     #endregion
     
-    public sealed class JsonImporterRegistry : IJsonImporterRegistry, IJsonImporterRegistrar, IJsonImporterSet
+    public sealed class JsonImporterRegistry : IJsonImporterRegistry, IJsonImporterSet
     {        
         private readonly Hashtable _importerByType = new Hashtable();
         private ArrayList _importerSetList;
-        [ NonSerialized ] private IJsonImporterRegistryItem[] _cachedItems;
         
-        public IJsonImporter Lookup(Type type)
+        public IJsonImporter Find(Type type)
         {
             //
             // First look up in the table of specific type registrations.
@@ -55,7 +54,7 @@ namespace Jayrock.Json
         
             foreach (IJsonImporterSet importerSet in ImporterSets)
             {
-                importer = importerSet.Lookup(type, this);
+                importer = importerSet.Page(type);
             
                 if (importer != null)
                     break;
@@ -72,24 +71,15 @@ namespace Jayrock.Json
             return importer;
         }
 
-        public void Register(IJsonImporterRegistryItem item)
+        public void Register(IJsonImporter importer)
         {
-            OnRegistering();
-            item.Register(this);
-        }
-
-        void IJsonImporterRegistrar.Register(Type type, IJsonImporter importer)
-        {
-            if (type == null)
-                throw new ArgumentNullException("type");
-
             if (importer == null)
                 throw new ArgumentNullException("importer");
             
-            _importerByType[type] = importer;
+            _importerByType[importer.OutputType] = importer;
         }
 
-        void IJsonImporterRegistrar.Register(IJsonImporterSet set)
+        public void Register(IJsonImporterSet set)
         {
             if (set == null)
                 throw new ArgumentNullException("set");
@@ -97,26 +87,6 @@ namespace Jayrock.Json
             ImporterSets.Insert(0, set);
         }
 
-        //
-        // This property is weakly typed so that the caller cannot assume the
-        // actual type here. You see, we're returning a direct reference to 
-        // an internal array that could be modified by the caller if the 
-        // property was also typed as an array. With a weaker type, if the
-        // caller wants to modify the collection then a copy must first be
-        // made into a private array via ICollection.CopyTo.
-        //
-        
-        internal ICollection Items
-        {
-            get
-            {
-                if (_cachedItems == null)
-                    _cachedItems = GetItems();
-
-                return _cachedItems;
-            }
-        }
-        
         private ArrayList ImporterSets
         {
             get
@@ -128,58 +98,9 @@ namespace Jayrock.Json
             }
         }
 
-        private void OnRegistering()
+        IJsonImporter IJsonImporterSet.Page(Type type)
         {
-            _cachedItems = null;
-        }
-
-        private IJsonImporterRegistryItem[] GetItems()
-        {
-            //
-            // Count total items and allocate an appropriately sized array.
-            //
-            
-            int count = 0;
-
-            if (_importerByType != null)
-                count += _importerByType.Count;
-
-            if (_importerSetList != null)
-                count += _importerSetList.Count;
-
-            IJsonImporterRegistryItem[] items = new IJsonImporterRegistryItem[count];
-            
-            //
-            // Now copy items into the array.
-            //
-
-            int index = 0;
-
-            if (_importerByType != null)
-            {
-                _importerByType.Values.CopyTo(items, index);
-                index += _importerByType.Count;
-            }
-
-            if (_importerSetList != null)
-            {
-                _importerSetList.CopyTo(items, index);
-                index += _importerSetList.Count;
-            }
-
-            Debug.Assert(index == count);
-                
-            return items;
-        }
-
-        IJsonImporter IJsonImporterSet.Lookup(Type type, IJsonImporterLookup site)
-        {
-            return Lookup(type);
-        }
-
-        void IJsonImporterRegistryItem.Register(IJsonImporterRegistrar registrar)
-        {
-            registrar.Register(this);
+            return Find(type);
         }
     }
 }
