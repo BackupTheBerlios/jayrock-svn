@@ -286,6 +286,18 @@ namespace Jayrock.Json
             reader.Skip();
             Assert.AreEqual("m5", reader.ReadMember());
         }
+
+        [ Test ]
+        public void SkipAdjacentObjects()
+        {
+            MockedJsonReader reader = new MockedJsonReader();
+            reader.Begin().Array().Object().EndObject().Object().EndObject().EndArray().End();
+            reader.ReadToken(JsonTokenClass.Array);
+            reader.Skip();
+            Assert.AreEqual(JsonTokenClass.Object, reader.TokenClass);
+            reader.Skip();
+            Assert.AreEqual(JsonTokenClass.EndArray, reader.TokenClass);
+        }
         
         [ Test ]
         public void ReadValueDefaultIsObject()

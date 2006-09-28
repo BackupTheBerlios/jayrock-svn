@@ -172,8 +172,10 @@ namespace Jayrock.Json
             if (depth == 0)
                 throw new InvalidOperationException();
 
-            while (Depth >= depth)
+            while (Depth > depth || (TokenClass != JsonTokenClass.EndObject && TokenClass != JsonTokenClass.EndArray))
                 Read();
+            
+            Read(/* past tail */);
         }
         
         public void Skip()
