@@ -46,6 +46,8 @@ namespace Jayrock.Json.Importers
         public static readonly IJsonImporter String;
         public static readonly IJsonImporter Boolean;
         public static readonly IJsonImporter DateTime;
+        public static readonly IJsonImporter IList;
+        public static readonly IJsonImporter IDictionary;
         public static readonly IJsonImporter Auto;
         public static readonly ArrayImporterSet Array;
         public static readonly EnumImporterSet Enum;
@@ -55,51 +57,25 @@ namespace Jayrock.Json.Importers
 
         static JsonImporterStock()
         {
-            _stockRegistry = new JsonImporterRegistry();
-
-            //
-            // Register importers for primitive types.
-            //
-
-            Byte = NumberImporter.Byte;         _stockRegistry.Register(Byte);
-            Int16 = NumberImporter.Int16;       _stockRegistry.Register(Int16);
-            Int32 = NumberImporter.Int32;       _stockRegistry.Register(Int32);
-            Int64 = NumberImporter.Int64;       _stockRegistry.Register(Int64);
-            Single = NumberImporter.Single;     _stockRegistry.Register(Single);
-            Double = NumberImporter.Double;     _stockRegistry.Register(Double);
-            Decimal = NumberImporter.Decimal;   _stockRegistry.Register(Decimal);
-            String = new StringImporter();      _stockRegistry.Register(String);
-            Boolean = new BooleanImporter();    _stockRegistry.Register(Boolean);
-            DateTime = new DateTimeImporter();  _stockRegistry.Register(DateTime);
-
-            //
-            // Register the auto importer that automatically imports the
-            // type based on what's coming in the JSON data.
-            //
-
-            Auto = new AutoImporter(); _stockRegistry.Register(Auto);
-
-            //
-            // Register for IDictionary and IList such that these yield
-            // to JsonObject and JsonArray, respectively.
-            //
-
-            _stockRegistry.Register(new ImportableImporter(typeof(IDictionary), new ObjectCreationHandler(CreateJsonObject)));
-            _stockRegistry.Register(new ImportableImporter(typeof(IList), new ObjectCreationHandler(CreateJsonArray)));
-
-            //
-            // Register importer that can handle types that implement
-            // IJsonImportable.
-            //
-
-            _stockRegistry.Register(new ImportableImporterSet());
-
-            //
-            // Register importers that dynamically handle arrays and enums.
-            //
-
-            Array = new ArrayImporterSet(); _stockRegistry.Register(Array);
-            Enum = new EnumImporterSet(); _stockRegistry.Register(Enum);
+            Byte = NumberImporter.Byte;         
+            Int16 = NumberImporter.Int16;       
+            Int32 = NumberImporter.Int32;       
+            Int64 = NumberImporter.Int64;       
+            Single = NumberImporter.Single;     
+            Double = NumberImporter.Double;     
+            Decimal = NumberImporter.Decimal;   
+            String = new StringImporter();      
+            Boolean = new BooleanImporter();    
+            DateTime = new DateTimeImporter();
+            IDictionary = new ImportableImporter(typeof(IDictionary), new ObjectCreationHandler(CreateJsonObject));
+            IList = new ImportableImporter(typeof(IList), new ObjectCreationHandler(CreateJsonArray));
+            Auto = new AutoImporter(); 
+            Array = new ArrayImporterSet(); 
+            Enum = new EnumImporterSet();
+                        
+            JsonImporterRegistry registry = new JsonImporterRegistry();
+            Register(registry);
+            _stockRegistry = registry;
         }
 
         public static event ValueChangingEventHandler RegistryChanging;
@@ -124,7 +100,7 @@ namespace Jayrock.Json.Importers
                     //
                     
                     JsonImporterRegistry registry = new JsonImporterRegistry();
-                    registry.Register(_stockRegistry);
+                    Register(registry);
                     SetRegistry(registry);
                 }
                 
@@ -149,6 +125,30 @@ namespace Jayrock.Json.Importers
             _userRegistry = registry;
         }
 
+        public static void Register(IJsonImporterRegistry registry)
+        {
+            if (registry == null)
+                throw new ArgumentNullException("registry");
+            
+            registry.Register(Byte);
+            registry.Register(Int16);
+            registry.Register(Int32);
+            registry.Register(Int64);
+            registry.Register(Single);
+            registry.Register(Double);
+            registry.Register(Decimal);
+            registry.Register(String);
+            registry.Register(Boolean);
+            registry.Register(DateTime);
+            registry.Register(Auto);
+            registry.Register(IDictionary);
+            registry.Register(IList);
+            
+            registry.Register(new ImportableImporterSet());
+            registry.Register(Array);
+            registry.Register(Enum);
+        }
+
         public static IJsonImporter Get(Type type)
         {
             if (type == null)
@@ -167,11 +167,6 @@ namespace Jayrock.Json.Importers
             return _stockRegistry.Find(type);
         }
         
-        private JsonImporterStock()
-        {
-            throw new NotSupportedException();
-        }
-
         private static object CreateJsonObject(object[] args)
         {
             Debug.Assert(args == null || args.Length == 0);
@@ -184,6 +179,11 @@ namespace Jayrock.Json.Importers
             Debug.Assert(args == null || args.Length == 0);
 
             return new JsonArray();
+        }
+
+        private JsonImporterStock()
+        {
+            throw new NotSupportedException();
         }
     }
 }

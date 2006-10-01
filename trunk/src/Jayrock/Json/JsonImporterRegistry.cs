@@ -31,7 +31,7 @@ namespace Jayrock.Json
 
     #endregion
     
-    public sealed class JsonImporterRegistry : IJsonImporterRegistry, IJsonImporterSet
+    public sealed class JsonImporterRegistry : IJsonImporterRegistry
     {        
         private readonly Hashtable _importerByType = new Hashtable();
         private ArrayList _importerSetList;
@@ -84,9 +84,9 @@ namespace Jayrock.Json
             if (set == null)
                 throw new ArgumentNullException("set");
             
-            ImporterSets.Insert(0, set);
+            ImporterSets.Add(set);
         }
-
+        
         private ArrayList ImporterSets
         {
             get
@@ -96,11 +96,6 @@ namespace Jayrock.Json
                 
                 return _importerSetList;
             }
-        }
-
-        IJsonImporter IJsonImporterSet.Page(Type type)
-        {
-            return Find(type);
         }
     }
 }
