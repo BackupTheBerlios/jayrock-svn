@@ -154,7 +154,7 @@ namespace Jayrock.Json.Importers
             if (type == null)
                 throw new ArgumentNullException("type");
             
-            IJsonImporter importer = Lookup(type);
+            IJsonImporter importer = Find(type);
 
             if (importer == null)
                 throw new JsonException(string.Format("There is no stock importer that can get {0} from JSON data.", type.FullName));
@@ -162,7 +162,7 @@ namespace Jayrock.Json.Importers
             return importer;
         }
 
-        public static IJsonImporter Lookup(Type type)
+        public static IJsonImporter Find(Type type)
         {
             return _stockRegistry.Find(type);
         }

@@ -176,7 +176,7 @@ namespace Jayrock.Json.Importers
 
         private static void AssertInStock(Type expected, Type type)
         {
-            IJsonImporter importer = JsonImporterStock.Lookup(type);
+            IJsonImporter importer = JsonImporterStock.Find(type);
             Assert.IsNotNull(importer , "{0} not in stock.", type.FullName);
             Assert.IsInstanceOfType(expected, importer, type.FullName);
         }
