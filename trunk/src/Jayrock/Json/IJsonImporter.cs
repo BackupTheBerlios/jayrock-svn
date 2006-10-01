@@ -44,6 +44,6 @@ namespace Jayrock.Json
     {
         IJsonImporter Find(Type type);
         void Register(IJsonImporter importer);
-        void Register(IJsonImporterSet set);
+        void Register(IJsonImporterSet importerSet);
     }
 }

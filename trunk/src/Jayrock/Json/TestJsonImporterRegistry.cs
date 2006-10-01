@@ -186,6 +186,22 @@ namespace Jayrock.Json
             Assert.AreEqual(new object[] { _thing1Importer, _thing2Importer }, CollectionHelper.ToArray(_registry));
         }
 
+        [ Test, ExpectedException(typeof(ArgumentNullException)) ]
+        public void CannotFindNullType()
+        {
+            _registry.Find(null);
+        }
+
+        [ Test ]
+        public void SyncRootIsNotSelf()
+        {
+            ICollection registry = _registry;
+            object syncRoot = registry.SyncRoot;
+            Assert.IsNotNull(syncRoot);
+            Assert.AreNotSame(registry, registry.SyncRoot);
+            Assert.AreSame(syncRoot,registry.SyncRoot);
+        }
+
         private sealed class Thing1
         {
         }

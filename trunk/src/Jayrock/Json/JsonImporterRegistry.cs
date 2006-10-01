@@ -31,17 +31,22 @@ namespace Jayrock.Json
 
     #endregion
     
+    [ Serializable ]
     public sealed class JsonImporterRegistry : IJsonImporterRegistry
     {        
         private readonly Hashtable _importerByType = new Hashtable();
-        private readonly Hashtable _importerByTypeCache = new Hashtable();
         private ArrayList _importerSetList;
-        private object[] _cachedRegistrations;
-        
+        [ NonSerialized ] private readonly Hashtable _importerByTypeCache = new Hashtable();
+        [ NonSerialized ] private object[] _cachedRegistrations;
+        [ NonSerialized ] private object _syncRoot;
+
         public IJsonImporter Find(Type type)
         {
+            if (type == null)
+                throw new ArgumentNullException("type");
+            
             //
-            // First look up the cache.
+            // First look up a previously served requests.
             //
             
             IJsonImporter importer = (IJsonImporter) _importerByTypeCache[type];
@@ -50,7 +55,7 @@ namespace Jayrock.Json
                 return importer;
 
             //
-            // Now look up explicit type registrations.
+            // Next, look up explicit type registrations.
             //
             
             importer = (IJsonImporter) _importerByType[type];
@@ -58,8 +63,9 @@ namespace Jayrock.Json
             if (importer == null)
             {
                 //
-                // No importer found using an exact matching type, so we ask
-                // the set of "chained" sets to page one.
+                // No importer found using an exact matching type so we ask
+                // the set of "chained" sets to page one. The first one to
+                // respond concludes the search.
                 //
             
                 foreach (IJsonImporterSet importerSet in ImporterSets)
@@ -72,8 +78,9 @@ namespace Jayrock.Json
             }
             
             //
-            // If an import was found, then register it so that it we don't
-            // have to go through the same trouble of locating it again.
+            // If an import was found, then cache the mapping so that we 
+            // don't have to go through the same trouble of locating it 
+            // again.
             //
             
             if (importer != null)
@@ -87,20 +94,20 @@ namespace Jayrock.Json
             if (importer == null)
                 throw new ArgumentNullException("importer");
             
-            InvalidateCache();
+            InvalidateCaches();
             _importerByType[importer.OutputType] = importer;
         }
 
-        public void Register(IJsonImporterSet set)
+        public void Register(IJsonImporterSet importerSet)
         {
-            if (set == null)
+            if (importerSet == null)
                 throw new ArgumentNullException("set");
             
-            InvalidateCache();
-            ImporterSets.Add(set);
+            InvalidateCaches();
+            ImporterSets.Add(importerSet);
         }
 
-        private void InvalidateCache()
+        private void InvalidateCaches()
         {
             _importerByTypeCache.Clear();
             _cachedRegistrations = null;
@@ -139,6 +146,12 @@ namespace Jayrock.Json
         
         private object[] GetRegistrations()
         {
+            //
+            // If registrations have been previously requested then a cache
+            // is already available and used. Otherwise it is built on
+            // first request for all registrations.
+            //
+            
             if (_cachedRegistrations == null)
             {
                 object[] registrations = new object[Count];
@@ -157,7 +170,13 @@ namespace Jayrock.Json
 
         object ICollection.SyncRoot
         {
-            get { throw new NotImplementedException(); }
+            get 
+            {
+                if (_syncRoot == null)
+                    System.Threading.Interlocked.CompareExchange(ref _syncRoot, new object(), null);
+
+                return _syncRoot; 
+            }
         }
 
         bool ICollection.IsSynchronized

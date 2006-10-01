@@ -326,7 +326,7 @@ namespace Jayrock.Json
                 throw new NotImplementedException();
             }
 
-            public void Register(IJsonImporterSet set)
+            public void Register(IJsonImporterSet importerSet)
             {
                 throw new NotImplementedException();
             }
