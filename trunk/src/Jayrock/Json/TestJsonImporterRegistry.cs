@@ -35,44 +35,186 @@ namespace Jayrock.Json
     public class TestJsonImporterRegistry
     {
         private JsonImporterRegistry _registry;
-        private readonly Type _thingType = typeof(Thing);
+        private readonly Type _thing1Type = typeof(Thing1);
+        private readonly Type _thing2Type = typeof(Thing2);
+        private TestImporter _thing1Importer;
+        private TestImporter _thing2Importer;
 
         [ SetUp ]
         public void Init()
         {
             _registry = new JsonImporterRegistry();
+            _thing1Importer = new TestImporter(_thing1Type);
+            _thing2Importer = new TestImporter(_thing2Type);
         }
 
         [ Test ]
         public void Registration()
         {
-            TestImporter importer = new TestImporter(_thingType);
-            _registry.Register(importer);
-            Assert.AreSame(importer, _registry.Find(_thingType));
+            _registry.Register(_thing1Importer);
+            Assert.AreSame(_thing1Importer, _registry.Find(_thing1Type));
         }
 
         [ Test ]
-        public void LastRegistrationWins()
+        public void LastImporterRegistrationWins()
         {
-            Type type = _thingType;
-            
-            TestImporter importer1 = new TestImporter(type);
-            _registry.Register(importer1);
-            Assert.AreSame(importer1, _registry.Find(type));
-
-            TestImporter importer2 = new TestImporter(type);
-            _registry.Register(importer2);
-            Assert.AreSame(importer2, _registry.Find(type));
+            _registry.Register(_thing1Importer);
+            Assert.AreSame(_thing1Importer, _registry.Find(_thing1Type));
+            TestImporter anotherThing1Importer = new TestImporter(_thing1Type);
+            _registry.Register(anotherThing1Importer);
+            Assert.AreSame(anotherThing1Importer, _registry.Find(_thing1Type));
         }
 
-        private sealed class Thing
+        [ Test ]
+        public void FirstImporterSetRegistrationWins()
+        {
+            _registry.Register(new TestImporterSet(_thing1Importer));
+            _registry.Register(new TestImporterSet(_thing1Importer));
+            Assert.AreSame(_thing1Importer, _registry.Find(_thing1Type));
+        }
+
+        [ Test ]
+        public void InitialCountIsZero()
+        {
+            Assert.AreEqual(0, _registry.Count);
+        }
+
+        [ Test ]
+        public void CountImporters()
+        {
+            _registry.Register(_thing1Importer);
+            Assert.AreEqual(1, _registry.Count);
+
+            _registry.Register(_thing2Importer);
+            Assert.AreEqual(2, _registry.Count);
+        }
+
+        [ Test ]
+        public void CountImpoterSets()
+        {
+            _registry.Register(new TestImporterSet(_thing1Importer));
+            Assert.AreEqual(1, _registry.Count);
+        }
+
+        [ Test ]
+        public void EnumerateWhenEmpty()
+        {
+            Assert.AreEqual(0, EnumeratorHelper.List(_registry).Count);
+        }
+
+        [ Test ]
+        public void EnumerateImporters()
+        {
+            _registry.Register(_thing1Importer);
+            _registry.Register(_thing2Importer);
+            IList list = EnumeratorHelper.List(_registry);
+            Assert.AreEqual(2, list.Count);
+            list.Remove(_thing1Importer);
+            list.Remove(_thing2Importer);
+            Assert.AreEqual(0, list.Count);
+        }
+
+        [ Test ]
+        public void EnumerateImporterSets()
+        {
+            TestImporterSet set1 = new TestImporterSet();
+            _registry.Register(set1);
+            
+            TestImporterSet set2 = new TestImporterSet();
+            _registry.Register(set2);
+
+            Assert.AreEqual(new object[] { set1, set2 }, CollectionHelper.ToArray(EnumeratorHelper.List(_registry)));
+        }
+
+        [ Test ]
+        public void EnumerateRegistrations()
+        {
+            _registry.Register(_thing1Importer);
+
+            TestImporterSet importerSet = new TestImporterSet(_thing1Importer);
+            _registry.Register(importerSet);
+
+            Assert.AreEqual(new object[] { _thing1Importer, importerSet }, CollectionHelper.ToArray(EnumeratorHelper.List(_registry)));
+        }
+
+        [ Test ]
+        public void CopyItemsToArray()
+        {
+            _registry.Register(_thing1Importer);
+
+            TestImporterSet importerSet = new TestImporterSet(_thing2Importer);
+            _registry.Register(importerSet);
+            
+            object[] items = new object[_registry.Count];
+            _registry.CopyTo(items, 0);
+            Assert.AreEqual(new object[] { _thing1Importer, importerSet }, items);
+        }
+        
+        [ Test ]
+        public void CopyItemsToArrayAtNonZeroIndex()
+        {
+            _registry.Register(_thing1Importer);
+
+            TestImporterSet importerSet = new TestImporterSet(_thing2Importer);
+            _registry.Register(importerSet);
+            
+            object[] items = new object[2 + _registry.Count];
+            _registry.CopyTo(items, 2);
+            Assert.AreEqual(new object[] { null, null, _thing1Importer, importerSet }, items);
+        }
+        
+        [ Test ]
+        public void CollectionNotSynchronized()
+        {
+            Assert.IsFalse(((ICollection) _registry).IsSynchronized);
+        }
+
+        [ Test ]
+        public void CountNotAffectedByCaching()
+        {
+            _registry.Register(new TestImporterSet(new TestImporter(_thing1Type)));
+            _registry.Find(_thing1Type);
+            Assert.AreEqual(1, _registry.Count);
+        }
+
+        [ Test ]
+        public void RegistrationCacheInvaidatedWhenNewImporterRegistered()
+        {
+            _registry.Register(_thing1Importer);
+            Assert.AreEqual(new object[] { _thing1Importer }, CollectionHelper.ToArray(_registry));
+            _registry.Register(_thing2Importer);
+            Assert.AreEqual(new object[] { _thing1Importer, _thing2Importer }, CollectionHelper.ToArray(_registry));
+        }
+
+        private sealed class Thing1
         {
         }
         
+        private sealed class Thing2
+        {
+        }
+
         private sealed class TestImporter : JsonImporterBase
         {
             public TestImporter(Type type) : 
                 base(type) {}
+        }
+
+        private class TestImporterSet : IJsonImporterSet
+        {
+            private readonly IJsonImporter _importer;
+
+            public TestImporterSet() {}
+            
+            public TestImporterSet(IJsonImporter importer)
+            {
+                _importer = importer;
+            }
+
+            public IJsonImporter Page(Type type)
+            {
+                return _importer != null  && _importer.OutputType == type ? _importer : null;
+            }
         }
     }
 }

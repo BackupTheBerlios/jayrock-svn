@@ -20,30 +20,36 @@
 //
 #endregion
 
-namespace Jayrock.Json
+namespace Jayrock
 {
-    #region Imports
-
     using System;
     using System.Collections;
 
-    #endregion
-
-    public interface IJsonImporter
+    /// <summary>
+    /// Helper methods for enumerators.
+    /// </summary>
+    
+    internal sealed class EnumeratorHelper
     {
-        Type OutputType { get; }
-        object Import(JsonReader reader);
-    }
+        public static IList List(IEnumerable source)
+        {
+            ArrayList list = new ArrayList();
+            CollectToList(source, list);
+            return list;
+        }
 
-    public interface IJsonImporterSet
-    {
-        IJsonImporter Page(Type type);
-    }
-
-    public interface IJsonImporterRegistry : ICollection
-    {
-        IJsonImporter Find(Type type);
-        void Register(IJsonImporter importer);
-        void Register(IJsonImporterSet set);
+        public static void CollectToList(IEnumerable source, IList target)
+        {
+            if (source == null)
+                return;
+            
+            foreach (object o in source)
+                target.Add(o);
+        }
+        
+        private EnumeratorHelper()
+        {
+            throw new NotSupportedException();
+        }
     }
 }
