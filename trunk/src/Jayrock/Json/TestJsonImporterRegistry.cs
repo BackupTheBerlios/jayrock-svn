@@ -68,8 +68,8 @@ namespace Jayrock.Json
         [ Test ]
         public void FirstImporterSetRegistrationWins()
         {
-            _registry.Register(new TestImporterSet(_thing1Importer));
-            _registry.Register(new TestImporterSet(_thing1Importer));
+            _registry.Register(new TestImporterFamily(_thing1Importer));
+            _registry.Register(new TestImporterFamily(_thing1Importer));
             Assert.AreSame(_thing1Importer, _registry.Find(_thing1Type));
         }
 
@@ -92,7 +92,7 @@ namespace Jayrock.Json
         [ Test ]
         public void CountImpoterSets()
         {
-            _registry.Register(new TestImporterSet(_thing1Importer));
+            _registry.Register(new TestImporterFamily(_thing1Importer));
             Assert.AreEqual(1, _registry.Count);
         }
 
@@ -117,10 +117,10 @@ namespace Jayrock.Json
         [ Test ]
         public void EnumerateImporterSets()
         {
-            TestImporterSet set1 = new TestImporterSet();
+            TestImporterFamily set1 = new TestImporterFamily();
             _registry.Register(set1);
             
-            TestImporterSet set2 = new TestImporterSet();
+            TestImporterFamily set2 = new TestImporterFamily();
             _registry.Register(set2);
 
             Assert.AreEqual(new object[] { set1, set2 }, CollectionHelper.ToArray(EnumeratorHelper.List(_registry)));
@@ -131,10 +131,10 @@ namespace Jayrock.Json
         {
             _registry.Register(_thing1Importer);
 
-            TestImporterSet importerSet = new TestImporterSet(_thing1Importer);
-            _registry.Register(importerSet);
+            TestImporterFamily importerFamily = new TestImporterFamily(_thing1Importer);
+            _registry.Register(importerFamily);
 
-            Assert.AreEqual(new object[] { _thing1Importer, importerSet }, CollectionHelper.ToArray(EnumeratorHelper.List(_registry)));
+            Assert.AreEqual(new object[] { _thing1Importer, importerFamily }, CollectionHelper.ToArray(EnumeratorHelper.List(_registry)));
         }
 
         [ Test ]
@@ -142,12 +142,12 @@ namespace Jayrock.Json
         {
             _registry.Register(_thing1Importer);
 
-            TestImporterSet importerSet = new TestImporterSet(_thing2Importer);
-            _registry.Register(importerSet);
+            TestImporterFamily importerFamily = new TestImporterFamily(_thing2Importer);
+            _registry.Register(importerFamily);
             
             object[] items = new object[_registry.Count];
             _registry.CopyTo(items, 0);
-            Assert.AreEqual(new object[] { _thing1Importer, importerSet }, items);
+            Assert.AreEqual(new object[] { _thing1Importer, importerFamily }, items);
         }
         
         [ Test ]
@@ -155,12 +155,12 @@ namespace Jayrock.Json
         {
             _registry.Register(_thing1Importer);
 
-            TestImporterSet importerSet = new TestImporterSet(_thing2Importer);
-            _registry.Register(importerSet);
+            TestImporterFamily importerFamily = new TestImporterFamily(_thing2Importer);
+            _registry.Register(importerFamily);
             
             object[] items = new object[2 + _registry.Count];
             _registry.CopyTo(items, 2);
-            Assert.AreEqual(new object[] { null, null, _thing1Importer, importerSet }, items);
+            Assert.AreEqual(new object[] { null, null, _thing1Importer, importerFamily }, items);
         }
         
         [ Test ]
@@ -172,7 +172,7 @@ namespace Jayrock.Json
         [ Test ]
         public void CountNotAffectedByCaching()
         {
-            _registry.Register(new TestImporterSet(new TestImporter(_thing1Type)));
+            _registry.Register(new TestImporterFamily(new TestImporter(_thing1Type)));
             _registry.Find(_thing1Type);
             Assert.AreEqual(1, _registry.Count);
         }
@@ -216,13 +216,13 @@ namespace Jayrock.Json
                 base(type) {}
         }
 
-        private class TestImporterSet : IJsonImporterSet
+        private class TestImporterFamily : IJsonImporterFamily
         {
             private readonly IJsonImporter _importer;
 
-            public TestImporterSet() {}
+            public TestImporterFamily() {}
             
-            public TestImporterSet(IJsonImporter importer)
+            public TestImporterFamily(IJsonImporter importer)
             {
                 _importer = importer;
             }

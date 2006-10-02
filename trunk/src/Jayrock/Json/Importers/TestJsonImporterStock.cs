@@ -70,12 +70,6 @@ namespace Jayrock.Json.Importers
             AssertInStock(typeof(ImportableImporter), typeof(ImportableThing));
         }
 
-        [ Test, ExpectedException(typeof(JsonException)) ]
-        public void CannotGetUnknown()
-        {
-            JsonImporterStock.Get(typeof(Enum));
-        }
-
         [ Test ]
         public void AlwaysHasRegistry()
         {
@@ -176,7 +170,9 @@ namespace Jayrock.Json.Importers
 
         private static void AssertInStock(Type expected, Type type)
         {
-            IJsonImporter importer = JsonImporterStock.Find(type);
+            JsonImporterRegistry registry = new JsonImporterRegistry();
+            JsonImporterStock.Register(registry);
+            IJsonImporter importer = registry.Find(type);
             Assert.IsNotNull(importer , "{0} not in stock.", type.FullName);
             Assert.IsInstanceOfType(expected, importer, type.FullName);
         }

@@ -28,7 +28,7 @@ namespace Jayrock.Json.Importers
 
     #endregion
 
-    public sealed class EnumImporterSet : IJsonImporterSet
+    public sealed class EnumImporterFamily : IJsonImporterFamily
     {
         public IJsonImporter Page(Type type)
         {

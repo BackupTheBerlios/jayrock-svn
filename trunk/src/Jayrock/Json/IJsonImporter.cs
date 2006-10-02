@@ -35,7 +35,7 @@ namespace Jayrock.Json
         object Import(JsonReader reader);
     }
 
-    public interface IJsonImporterSet
+    public interface IJsonImporterFamily
     {
         IJsonImporter Page(Type type);
     }
@@ -44,6 +44,6 @@ namespace Jayrock.Json
     {
         IJsonImporter Find(Type type);
         void Register(IJsonImporter importer);
-        void Register(IJsonImporterSet importerSet);
+        void Register(IJsonImporterFamily importerFamily);
     }
 }

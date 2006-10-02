@@ -49,11 +49,12 @@ namespace Jayrock.Json.Importers
         public static readonly IJsonImporter IList;
         public static readonly IJsonImporter IDictionary;
         public static readonly IJsonImporter Auto;
-        public static readonly ArrayImporterSet Array;
-        public static readonly EnumImporterSet Enum;
         
-        private static readonly JsonImporterRegistry _stockRegistry;
-        [ ThreadStatic ] private static IJsonImporterRegistry _userRegistry;
+        public static readonly IJsonImporterFamily ImportAwareFamily;
+        public static readonly IJsonImporterFamily ArrayFamily;
+        public static readonly IJsonImporterFamily EnumFamily;
+        
+        [ ThreadStatic ] private static IJsonImporterRegistry _registry;
 
         static JsonImporterStock()
         {
@@ -70,12 +71,10 @@ namespace Jayrock.Json.Importers
             IDictionary = new ImportableImporter(typeof(IDictionary), new ObjectCreationHandler(CreateJsonObject));
             IList = new ImportableImporter(typeof(IList), new ObjectCreationHandler(CreateJsonArray));
             Auto = new AutoImporter(); 
-            Array = new ArrayImporterSet(); 
-            Enum = new EnumImporterSet();
-                        
-            JsonImporterRegistry registry = new JsonImporterRegistry();
-            Register(registry);
-            _stockRegistry = registry;
+
+            ImportAwareFamily = new ImportAwareImporterFamily();
+            ArrayFamily = new ArrayImporterFamily(); 
+            EnumFamily = new EnumImporterFamily();
         }
 
         public static event ValueChangingEventHandler RegistryChanging;
@@ -91,7 +90,7 @@ namespace Jayrock.Json.Importers
                 // would happen because the new registry is not installed 
                 // until *after* the event has finished firing.
                 
-                if (_userRegistry == null)
+                if (_registry == null)
                 {
                     //
                     // NOTE: We register the stock importers by default
@@ -104,7 +103,7 @@ namespace Jayrock.Json.Importers
                     SetRegistry(registry);
                 }
                 
-                return _userRegistry;
+                return _registry;
             }
         }
 
@@ -122,7 +121,7 @@ namespace Jayrock.Json.Importers
             if (handler != null)
                 handler(typeof(JsonImporterStock), new ValueChangingEventArgs(registry));
             
-            _userRegistry = registry;
+            _registry = registry;
         }
 
         public static void Register(IJsonImporterRegistry registry)
@@ -143,30 +142,12 @@ namespace Jayrock.Json.Importers
             registry.Register(Auto);
             registry.Register(IDictionary);
             registry.Register(IList);
-            
-            registry.Register(new ImportableImporterSet());
-            registry.Register(Array);
-            registry.Register(Enum);
+
+            registry.Register(ImportAwareFamily);
+            registry.Register(ArrayFamily);
+            registry.Register(EnumFamily);
         }
 
-        public static IJsonImporter Get(Type type)
-        {
-            if (type == null)
-                throw new ArgumentNullException("type");
-            
-            IJsonImporter importer = Find(type);
-
-            if (importer == null)
-                throw new JsonException(string.Format("There is no stock importer that can get {0} from JSON data.", type.FullName));
-            
-            return importer;
-        }
-
-        public static IJsonImporter Find(Type type)
-        {
-            return _stockRegistry.Find(type);
-        }
-        
         private static object CreateJsonObject(object[] args)
         {
             Debug.Assert(args == null || args.Length == 0);

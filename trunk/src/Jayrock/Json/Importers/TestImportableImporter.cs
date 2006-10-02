@@ -33,24 +33,24 @@ namespace Jayrock.Json.Importers
     [ TestFixture ]
     public class TestImportableImporter
     {
-        private ImportableImporterSet _importerSet;
+        private ImportAwareImporterFamily _importerFamily;
         
         [ SetUp ]
         public void Init()
         {
-            _importerSet = new ImportableImporterSet();
+            _importerFamily = new ImportAwareImporterFamily();
         }
 
         [ Test ]
         public void FindNonImportableType()
         {
-            Assert.IsNull(_importerSet.Page(typeof(object)));
+            Assert.IsNull(_importerFamily.Page(typeof(object)));
         }
 
         [ Test ]
         public void FindImportableType()
         {
-            IJsonImporter importer = _importerSet.Page(typeof(Thing));
+            IJsonImporter importer = _importerFamily.Page(typeof(Thing));
             Assert.IsInstanceOfType(typeof(ImportableImporter), importer);
             Assert.IsNotNull(importer);
         }

@@ -35,7 +35,7 @@ namespace Jayrock.Json
     public sealed class JsonImporterRegistry : IJsonImporterRegistry
     {        
         private readonly Hashtable _importerByType = new Hashtable();
-        private ArrayList _importerSetList;
+        private ArrayList _importerFamilyList;
         [ NonSerialized ] private readonly Hashtable _importerByTypeCache = new Hashtable();
         [ NonSerialized ] private object[] _cachedRegistrations;
         [ NonSerialized ] private object _syncRoot;
@@ -64,13 +64,13 @@ namespace Jayrock.Json
             {
                 //
                 // No importer found using an exact matching type so we ask
-                // the set of "chained" sets to page one. The first one to
-                // respond concludes the search.
+                // the set of "chained" families to page one. The first one 
+                // to respond concludes the search.
                 //
             
-                foreach (IJsonImporterSet importerSet in ImporterSets)
+                foreach (IJsonImporterFamily importerFamily in ImporterFamilies)
                 {
-                    importer = importerSet.Page(type);
+                    importer = importerFamily.Page(type);
                 
                     if (importer != null)
                         break;
@@ -98,13 +98,13 @@ namespace Jayrock.Json
             _importerByType[importer.OutputType] = importer;
         }
 
-        public void Register(IJsonImporterSet importerSet)
+        public void Register(IJsonImporterFamily importerFamily)
         {
-            if (importerSet == null)
-                throw new ArgumentNullException("set");
+            if (importerFamily == null)
+                throw new ArgumentNullException("importerFamily");
             
             InvalidateCaches();
-            ImporterSets.Add(importerSet);
+            ImporterFamilies.Add(importerFamily);
         }
 
         private void InvalidateCaches()
@@ -115,23 +115,23 @@ namespace Jayrock.Json
 
         private bool HasImporterSets
         {
-            get { return _importerSetList != null && _importerSetList.Count > 0; }
+            get { return _importerFamilyList != null && _importerFamilyList.Count > 0; }
         }
 
-        private ArrayList ImporterSets
+        private ArrayList ImporterFamilies
         {
             get
             {
-                if (_importerSetList == null)
-                    _importerSetList = new ArrayList(4);
+                if (_importerFamilyList == null)
+                    _importerFamilyList = new ArrayList(4);
                 
-                return _importerSetList;
+                return _importerFamilyList;
             }
         }
 
         public int Count
         {
-            get { return _importerByType.Count + (HasImporterSets ? ImporterSets.Count : 0); }
+            get { return _importerByType.Count + (HasImporterSets ? ImporterFamilies.Count : 0); }
         }
         
         public IEnumerator GetEnumerator()
@@ -160,7 +160,7 @@ namespace Jayrock.Json
                 importers.CopyTo(registrations, 0);
 
                 if (HasImporterSets)
-                    ImporterSets.CopyTo(registrations, importers.Count);
+                    ImporterFamilies.CopyTo(registrations, importers.Count);
                 
                 _cachedRegistrations = registrations;
             }
