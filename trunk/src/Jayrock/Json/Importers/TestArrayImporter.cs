@@ -79,27 +79,6 @@ namespace Jayrock.Json.Importers
             AssertImport(new DateTime[] { new DateTime(1999, 12, 31), new DateTime(2000, 1, 1),  }, "[ '1999-12-31', '2000-01-01' ]");
         }
         
-        /* REMOVE:
-        [ Test ]
-        public void AutoElementRegistration()
-        {
-            TestRegistry registry = new TestRegistry();
-            ArrayImporter importer = new ArrayImporter(typeof(int[]));
-            registry.Register(importer);
-            
-            Assert.AreEqual(2, registry.Types.Count);
-            
-            int i;
-            i = registry.Types.IndexOf(typeof(int));
-            Assert.AreNotEqual(-1, i);
-            Assert.AreSame(JsonImporterStock.Int32, registry.Importers[i]);
-            
-            i = registry.Types.IndexOf(typeof(int[]));
-            Assert.AreNotEqual(-1, i);
-            Assert.AreSame(importer, registry.Importers[i]);
-        }
-        */
-        
         [ Test ]
         public void ImportStringAsArray()
         {
@@ -138,28 +117,5 @@ namespace Jayrock.Json.Importers
         {
             return new JsonTextReader(new StringReader(s));
         }
-
-        /* REMOVE
-        private sealed class TestRegistry : IJsonImporterRegistry
-        {
-            public ArrayList Types = new ArrayList();
-            public ArrayList Importers = new ArrayList();
-
-            public void Register(IJsonImporter importer)
-            {
-                Types.Add(importer.ImportType);
-                Importers.Add(importer);
-            }
-
-            public void Register(IJsonImporterSet set)
-            {
-                throw new NotImplementedException();
-            }
-
-            public IJsonImporter Lookup(Type type)
-            {
-                return null;
-            }
-        }*/
     }
 }
