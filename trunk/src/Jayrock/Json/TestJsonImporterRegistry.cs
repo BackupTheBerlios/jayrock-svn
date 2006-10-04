@@ -183,7 +183,21 @@ namespace Jayrock.Json
             _registry.Register(_thing1Importer);
             Assert.AreEqual(new object[] { _thing1Importer }, CollectionHelper.ToArray(_registry));
             _registry.Register(_thing2Importer);
-            Assert.AreEqual(new object[] { _thing1Importer, _thing2Importer }, CollectionHelper.ToArray(_registry));
+            
+            //
+            // IMPORTANT!
+            // We have to use EnumeratorHelper.List here because the order
+            // of enumeration is not guaranteed to be same in which the
+            // importers were registered! Instead we list the entries and 
+            // then remove each expected instance. If the list becomes 
+            // empty then all expectations were met!
+            //
+            
+            IList list = EnumeratorHelper.List(_registry);
+            Assert.AreEqual(2, list.Count);
+            list.Remove(_thing1Importer);
+            list.Remove(_thing2Importer);
+            Assert.AreEqual(0, list.Count);
         }
 
         [ Test, ExpectedException(typeof(ArgumentNullException)) ]
