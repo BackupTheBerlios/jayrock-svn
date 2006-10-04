@@ -30,8 +30,13 @@ namespace Jayrock
     using System.Text;
 
     #endregion
+    
+    /// <summary>
+    /// This type supports the Jayrock infrastructure and is not intended to 
+    /// be used directly from your code.
+    /// </summary>
 
-    internal sealed class DebugString
+    public sealed class DebugString
     {
         public static readonly string Ellipsis = "\x2026";
         public static readonly char ControlReplacement = '?';

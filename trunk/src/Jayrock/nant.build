@@ -75,8 +75,9 @@
 
     <target name="compile-test">
         <property name="my.output.dir.path" value="${path::combine(my.bin.dir.path, 'Test')}" />
-        <solution configuration="Test">
+        <solution configuration="Debug">
             <projects>
+                <include name="Jayrock.csproj" />
                 <include name="Jayrock Test.csproj" />
             </projects>
         </solution>

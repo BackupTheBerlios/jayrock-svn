@@ -59,16 +59,16 @@ namespace Jayrock.Json.Rpc
             Methods.Add(builder);
             return builder;
         }
-            
-        internal JsonRpcMethodBuilder[] GetMethods()
+
+        public JsonRpcMethodBuilder[] GetMethods() // FIXME: Convert to ICollection
         {
             if (!HasMethods)
                 return new JsonRpcMethodBuilder[0];
                 
             return (JsonRpcMethodBuilder[]) Methods.ToArray(typeof(JsonRpcMethodBuilder));
         }
-            
-        internal bool HasMethods
+
+        public bool HasMethods
         {
             get { return _methodList != null && _methodList.Count > 0; }
         }

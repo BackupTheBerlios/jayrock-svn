@@ -22,14 +22,20 @@
 
 namespace Jayrock
 {
+    #region Imports
+
     using System;
     using System.Collections;
 
-    /// <summary>
-    /// Helper methods for enumerators.
+    #endregion
+
+    /// <summary> 
+    /// Helper methods for enumerators. This type supports the
+    /// Jayrock infrastructure and is not intended to be used directly from
+    /// your code. 
     /// </summary>
     
-    internal sealed class EnumeratorHelper
+    public sealed class EnumeratorHelper
     {
         public static IList List(IEnumerable source)
         {

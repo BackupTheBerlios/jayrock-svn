@@ -200,19 +200,34 @@ namespace Jayrock.Json
         // Test-only members
         //
 
-        #if TEST
+        #if TEST || DEBUG // FIXME: Remove DEBUG
 
-        internal object TestCurrentObject
+        /// <summary>
+        /// This member supports the Jayrock test infrastructure and is not 
+        /// intended to  be used directly from your code.
+        /// </summary>
+        
+        public object TestCurrentObject
         {
             get { return _currentObject; }
         }
 
-        internal object TestCurrentArray
+        /// <summary>
+        /// This member supports the Jayrock test infrastructure and is not 
+        /// intended to  be used directly from your code.
+        /// </summary>
+
+        public object TestCurrentArray
         {
             get { return _currentArray; }
         }
 
-        internal Stack TestStack
+        /// <summary>
+        /// This member supports the Jayrock test infrastructure and is not 
+        /// intended to  be used directly from your code.
+        /// </summary>
+        
+        public Stack TestStack
         {
             get { return Stack; }
         }

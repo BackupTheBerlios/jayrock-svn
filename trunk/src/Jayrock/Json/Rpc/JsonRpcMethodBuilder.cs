@@ -115,7 +115,7 @@ namespace Jayrock.Json.Rpc
             return builder;
         }
 
-        internal JsonRpcParameterBuilder[] GetParameters()
+        public JsonRpcParameterBuilder[] GetParameters() // FIXME: Convert to ICollection
         {
             if (!HasParameters)
                 return new JsonRpcParameterBuilder[0];
