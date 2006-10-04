@@ -1,5 +1,5 @@
 Microsoft Visual Studio Solution File, Format Version 8.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jayrock Test", "Jayrock\Jayrock Test.csproj", "{A178A4BB-CE12-4BF3-8B17-6DF0D82120C8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jayrock Test", "Jayrock\Jayrock Test.csproj", "{DA5DD836-2530-4E76-9B76-1AAB3BE6A946}"
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
@@ -7,9 +7,11 @@ Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Test = Test
 	EndGlobalSection
+	GlobalSection(ProjectDependencies) = postSolution
+	EndGlobalSection
 	GlobalSection(ProjectConfiguration) = postSolution
-		{A178A4BB-CE12-4BF3-8B17-6DF0D82120C8}.Test.ActiveCfg = Test|.NET
-		{A178A4BB-CE12-4BF3-8B17-6DF0D82120C8}.Test.Build.0 = Test|.NET
+		{DA5DD836-2530-4E76-9B76-1AAB3BE6A946}.Test.ActiveCfg = Test|.NET
+		{DA5DD836-2530-4E76-9B76-1AAB3BE6A946}.Test.Build.0 = Test|.NET
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection
