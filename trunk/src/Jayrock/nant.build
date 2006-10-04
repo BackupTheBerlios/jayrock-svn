@@ -30,6 +30,8 @@
    
     <property name="my.output.assembly.name" value="Jayrock" />
     <property name="my.output.assembly.filename" value="${my.output.assembly.name + '.dll'}" />
+    <property name="my.output.testassembly.name" value="Jayrock.Tests" />
+    <property name="my.output.testassembly.filename" value="${my.output.testassembly.name + '.dll'}" />
     
     <!-- Mailing -->
 
@@ -49,7 +51,7 @@
     <target name="build" depends="" />
 
     <target name="clean">
-        <delete dir="bin" failonerror="false" />
+        <delete dir="${my.bin.dir.path}" failonerror="false" />
         <delete dir="obj" failonerror="false" />
     </target>
 
@@ -90,13 +92,13 @@
     </target>
 
     <target name="test" depends="compile-test">
-        <property name="my.output.assembly.path" value="${path::combine(my.output.dir.path, my.output.assembly.filename)}" />
+        <property name="my.output.testassembly.path" value="${path::combine(my.output.dir.path, my.output.testassembly.filename)}" />
         <exec program="${my.nunit.console.exe.path}" commandline='"${my.output.assembly.path}"' />
     </target>
     
     <target name="cover" depends="compile-test">
-        <property name="my.output.assembly.path" value="${path::combine(my.output.dir.path, my.output.assembly.filename)}" />
-        <exec program="${my.ncover.console.exe.path}" commandline='/q /o "${nant.project.basedir}\coverage.xml" /c "${my.nunit.console.exe.path}" "\"${my.output.assembly.path}\"" /a ${my.output.assembly.name}' />
+        <property name="my.output.testassembly.path" value="${path::combine(my.output.dir.path, my.output.testassembly.filename)}" />
+        <exec program="${my.ncover.console.exe.path}" commandline='/v /o "${nant.project.basedir}\coverage.xml" /a ${my.output.assembly.name} /c "${my.nunit.console.exe.path}" "\"${my.output.testassembly.path}\""' />
         <copy file="${my.coverage-type.xsl.path}" tofile="${my.coverage.xsl.path}" overwrite="true" failonerror="false" />
         <style style="${my.coverage.xsl.path}" in="${nant.project.basedir}\coverage.xml" out="${nant.project.basedir}\coverage.htm" />
         <call target="draco" if="${draco}" />
@@ -163,6 +165,8 @@
        
         <echo message="my.output.assembly.name = ${my.output.assembly.name}" />
         <echo message="my.output.assembly.filename = ${my.output.assembly.filename}" />
+        <echo message="my.output.testassembly.name = ${my.output.testassembly.name}" />
+        <echo message="my.output.testassembly.filename = ${my.output.testassembly.filename}" />
         
         <echo message="my.smtp.server = ${my.smtp.server}" />
         <echo message="my.mail.from = ${my.mail.from}" />
