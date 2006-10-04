@@ -94,9 +94,16 @@ namespace Jayrock.Json.Rpc
             // Build via attributes.
             //
             
-            object[] attributes = method.GetCustomAttributes(typeof(IMethodReflector), true);
-            foreach (IMethodReflector reflector in attributes)
-                reflector.Build(builder, method);
+            object[] attributes = method.GetCustomAttributes(typeof(Attribute), true);
+            foreach (Attribute attribute in attributes)
+            {
+                IMethodReflector reflector = attribute as IMethodReflector;
+                
+                if (reflector != null)
+                    reflector.Build(builder, method);
+                else 
+                    builder.AddCustomAttribute(attribute);
+            }
             
             //
             // Fault in the method name if still without name.
