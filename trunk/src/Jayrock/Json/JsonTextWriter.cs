@@ -67,7 +67,7 @@ namespace Jayrock.Json
             _writer = writer != null ? writer : new StringWriter();
         }
 
-        public TextWriter InnerWriter
+        protected TextWriter InnerWriter
         {
             get { return _writer; }
         }
