@@ -98,7 +98,7 @@
     
     <target name="cover" depends="compile-test">
         <property name="my.output.testassembly.path" value="${path::combine(my.output.dir.path, my.output.testassembly.filename)}" />
-        <exec program="${my.ncover.console.exe.path}" commandline='/v /o "${nant.project.basedir}\coverage.xml" /a ${my.output.assembly.name} /c "${my.nunit.console.exe.path}" "\"${my.output.testassembly.path}\""' />
+        <exec program="${my.ncover.console.exe.path}" commandline='/w "${my.output.dir.path}" /o "${nant.project.basedir}\coverage.xml" /a ${my.output.assembly.name} /c "${my.nunit.console.exe.path}" "\"${my.output.testassembly.path}\""' />
         <copy file="${my.coverage-type.xsl.path}" tofile="${my.coverage.xsl.path}" overwrite="true" failonerror="false" />
         <style style="${my.coverage.xsl.path}" in="${nant.project.basedir}\coverage.xml" out="${nant.project.basedir}\coverage.htm" />
         <call target="draco" if="${draco}" />
