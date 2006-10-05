@@ -62,10 +62,9 @@ namespace Jayrock.Json.Rpc
             // Set up parameters and their names.
             //
             
-            JsonRpcParameterBuilder[] parameterBuilders = methodBuilder.GetParameters();
-
-            _parameters = new JsonRpcParameter[parameterBuilders.Length];
-            _parameterNames = new string[parameterBuilders.Length];
+            ICollection parameterBuilders = methodBuilder.Parameters;
+            _parameters = new JsonRpcParameter[parameterBuilders.Count];
+            _parameterNames = new string[parameterBuilders.Count];
 
             foreach (JsonRpcParameterBuilder parameterBuilder in parameterBuilders)
             {

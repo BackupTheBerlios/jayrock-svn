@@ -49,6 +49,17 @@ namespace Jayrock
             return values;
         }
         
+        public static Array ToArray(ICollection collection, Type elementType)
+        {
+            if (elementType == null)
+                elementType = typeof(object);
+            
+            if (collection == null)
+                return _zeroObjects;
+
+            return (new ArrayList(collection)).ToArray(elementType);
+        }
+        
         public static IList ToList(ICollection collection)
         {
             return collection != null ? new ArrayList(collection) : new ArrayList();

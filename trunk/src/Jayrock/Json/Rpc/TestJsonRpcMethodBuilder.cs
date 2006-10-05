@@ -89,7 +89,7 @@ namespace Jayrock.Json.Rpc
         {
             Assert.IsNotNull(_builder.DefineParameter());
             Assert.IsNotNull(_builder.DefineParameter());
-            JsonRpcParameterBuilder[] parameters = _builder.GetParameters();
+            JsonRpcParameterBuilder[] parameters = (JsonRpcParameterBuilder[]) CollectionHelper.ToArray(_builder.Parameters, typeof(JsonRpcParameterBuilder));
             Assert.IsNotNull(parameters);
             Assert.AreEqual(2, parameters.Length);
         }

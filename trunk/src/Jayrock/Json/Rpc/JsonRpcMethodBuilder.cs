@@ -36,7 +36,7 @@ namespace Jayrock.Json.Rpc
         private string _name;
         private string _internalName;
         private Type _resultType = typeof(void);
-        private ArrayList _parameters;
+        private ArrayList _parameterList;
         private IDispatcher _dispatcher;
         private string _description;
         private readonly JsonRpcServiceClassBuilder _serviceClass;
@@ -110,17 +110,14 @@ namespace Jayrock.Json.Rpc
         public JsonRpcParameterBuilder DefineParameter()
         {
             JsonRpcParameterBuilder builder = new JsonRpcParameterBuilder(this);
-            builder.Position = Parameters.Count;
-            Parameters.Add(builder);
+            builder.Position = ParameterList.Count;
+            ParameterList.Add(builder);
             return builder;
         }
 
-        public JsonRpcParameterBuilder[] GetParameters() // FIXME: Convert to ICollection
+        public ICollection Parameters
         {
-            if (!HasParameters)
-                return new JsonRpcParameterBuilder[0];
-            
-            return (JsonRpcParameterBuilder[]) _parameters.ToArray(typeof(JsonRpcParameterBuilder));
+            get { return ParameterList; }
         }
 
         private bool HasCustomAttributes
@@ -141,17 +138,17 @@ namespace Jayrock.Json.Rpc
             
         private bool HasParameters
         {
-            get { return _parameters != null && _parameters.Count > 0; }
+            get { return _parameterList != null && _parameterList.Count > 0; }
         }
 
-        private ArrayList Parameters
+        private ArrayList ParameterList
         {
             get
             {
-                if (_parameters == null)
-                    _parameters = new ArrayList();
+                if (_parameterList == null)
+                    _parameterList = new ArrayList();
                 
-                return _parameters;
+                return _parameterList;
             }
         }
     }

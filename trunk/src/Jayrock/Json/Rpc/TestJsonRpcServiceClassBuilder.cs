@@ -46,8 +46,8 @@ namespace Jayrock.Json.Rpc
         {
             Assert.IsNotNull(_builder.Name);
             Assert.IsFalse(_builder.HasMethods);
-            Assert.IsNotNull(_builder.GetMethods());
-            Assert.AreEqual(0, _builder.GetMethods().Length);
+            Assert.IsNotNull(_builder.Methods);
+            Assert.AreEqual(0, _builder.Methods.Count);
             Assert.IsNotNull(_builder.Description);
             Assert.AreEqual(0, _builder.Description.Length);
         }
@@ -68,7 +68,7 @@ namespace Jayrock.Json.Rpc
             Assert.IsTrue(_builder.HasMethods);
             Assert.IsNotNull(_builder.DefineMethod());
             Assert.IsTrue(_builder.HasMethods);
-            JsonRpcMethodBuilder[] methods = _builder.GetMethods();
+            JsonRpcMethodBuilder[] methods = (JsonRpcMethodBuilder[]) CollectionHelper.ToArray(_builder.Methods, typeof(JsonRpcMethodBuilder));
             Assert.IsNotNull(methods);
             Assert.AreEqual(2, methods.Length);
         }

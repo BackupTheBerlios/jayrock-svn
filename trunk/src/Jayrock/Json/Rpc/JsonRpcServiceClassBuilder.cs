@@ -56,16 +56,13 @@ namespace Jayrock.Json.Rpc
         public JsonRpcMethodBuilder DefineMethod()
         {
             JsonRpcMethodBuilder builder = new JsonRpcMethodBuilder(this);
-            Methods.Add(builder);
+            MethodList.Add(builder);
             return builder;
         }
 
-        public JsonRpcMethodBuilder[] GetMethods() // FIXME: Convert to ICollection
+        public ICollection Methods
         {
-            if (!HasMethods)
-                return new JsonRpcMethodBuilder[0];
-                
-            return (JsonRpcMethodBuilder[]) Methods.ToArray(typeof(JsonRpcMethodBuilder));
+            get { return MethodList; }
         }
 
         public bool HasMethods
@@ -73,7 +70,7 @@ namespace Jayrock.Json.Rpc
             get { return _methodList != null && _methodList.Count > 0; }
         }
 
-        private ArrayList Methods
+        private ArrayList MethodList
         {
             get
             {

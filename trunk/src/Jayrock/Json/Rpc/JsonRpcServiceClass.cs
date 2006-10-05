@@ -68,10 +68,9 @@ namespace Jayrock.Json.Rpc
             // Set up methods and their names.
             //
 
-            JsonRpcMethodBuilder[] methodBuilders = classBuilder.GetMethods();
-            
-            _methods = new JsonRpcMethod[methodBuilders.Length];
-            _methodNames = new string[methodBuilders.Length];
+            ICollection methodBuilders = classBuilder.Methods;
+            _methods = new JsonRpcMethod[methodBuilders.Count];
+            _methodNames = new string[methodBuilders.Count];
             int methodIndex = 0;
 
             foreach (JsonRpcMethodBuilder methodBuilder in methodBuilders)
