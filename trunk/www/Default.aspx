@@ -34,7 +34,7 @@
         </div>
         <h1 class="h1-first">
             <a id="what-is" name="what-is">What is Jayrock?</a></h1>
-        <p><em>Web services, the light-weight and simple way!</em></p>
+        <p><em>Web services, the light and simple way!</em></p>
         <p>
             <a href="http://developer.berlios.de/projects/jayrock/">Jayrock</a> is a modest and an open source 
             (<a href="http://www.opensource.org/licenses/lgpl-license.php"><acronym title="GNU Lesser General Public License">LGPL</acronym></a>) implementation 
@@ -50,6 +50,7 @@
             <li><a href="http://developer.berlios.de/project/showfiles.php?group_id=4638">Download
                 Jayrock 0.9 now!</a></li>
             <li><a href="http://groups.google.com/group/jayrock">Discuss Jayrock</a></li>
+            <li><a href="http://jayrock.berlios.de/coverage-report.html">Code coverage report</a></li>
         </ul>
         <p>
             Compatibility &amp; compliance:</p>
@@ -60,6 +61,7 @@
                 <a target="_blank" href="http://www.go-mono.com/"><img src="images/cclogos/mono.gif" width="40" height="46" alt="Mono" border="0" /></a>
                 <a target="_blank" href="http://www.microsoft.com/ie/"><img src="images/cclogos/ie.gif" width="46" height="40" alt="Microsoft Internet Explorer" border="0" /></a>
                 <a target="_blank" href="http://www.getfirefox.com/"><img src="images/cclogos/ff.gif" width="50" height="44" alt="FireFox" border="0" /></a>
+                <a target="_blank" href="http://www.opera.com/"><img src="images/cclogos/opera.gif" width="53" height="43" alt="Opera" border="0" /></a>
                 <a target="_blank" href="http://www.opensource.org/docs/definition.php"><img src="images/cclogos/osi-certified.gif" width="60" height="42" alt="Open Source (OSI) Certified" border="0" /></a>
         </p>
         <h1>

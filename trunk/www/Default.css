@@ -11,7 +11,7 @@ body
     padding: 1em;
 }
 
-code
+pre, code, samp
 {
     font-size: small;
 }
@@ -96,6 +96,11 @@ pre.code
     border-top: solid 5px darkorange;
     border-bottom: solid 2px silver;
     background: #EEEEEE;
+}
+
+pre.samp
+{
+    margin-left: 2em;
 }
 
 .fake-a
