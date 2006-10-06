@@ -105,7 +105,8 @@
         <p>
             You do not need Nant installed on your machine to compile Jayrock. The right and
             required version of all required tools (<a href="http://nant.sourceforge.net/">Nant</a>,
-            <a href="http://www.nunit.org/">NUnit</a> and <a href="http://ncover.org/">NCover</a>)
+            <a href="http://www.nunit.org/">NUnit</a>, <a href="http://ncover.org/">NCover</a> and 
+            <a href="http://www.kiwidude.com/blog/2006/01/ncoverexplorer-debut.html">NCoverExplorer</a>)
             is already included under the <code>tools</code> directory under Jayrock. If you
             are on the Windows platform, you can simply run the batch file <code>src\Jayrock\build.bat</code>
             to invoke Nant and have it build all the targets. To invoke Nant explicitly, otherwise,
@@ -123,19 +124,16 @@
             <dd>
                 Builds the test project and runs the unit tests using NUnit.
             </dd>
-            <dt>debug</dt><dd>Builds the debug version of the Jayrock and Jayrock-JSON assemblies.</dd><dt>release</dt><dd>Builds
+            <dt>debug</dt>
+            <dd>Builds the debug version of the Jayrock and Jayrock-JSON assemblies.</dd><dt>release</dt><dd>Builds
                 the release version of the Jayrock and Jayrock-JSON assemblies. Debug symbols are
-                still included.</dd><dt>cover </dt>
+                still included.</dd>
+            <dt>cover</dt>
             <dd>
-                Builds the test project, and creates a <em>short</em> report using NCover for code
-                coverage resulting from the unit tests. The generated report can be found in <code>src\Jayrock\coverage.htm</code>.
-                It is called a short report because you cannot drilldown to see the line coverage
-                information which can be rather extensive and make it painful to refresh frequently
-                in browsers and on older machines.</dd><dt>cover-long </dt>
-            <dd>
-                Same as the cover configuration, except it builds a <em>full</em> report. The full
-                report contains a lot of detailed line-level converage information that can take
-                a very long time to display in browsers.</dd></dl>
+                Builds the test project, and creates report using NCover and NCoverExplorer for code
+                coverage resulting from the unit tests. The generated report can be found in <code>src\Jayrock\coverage-report.htm</code>.
+            </dd>
+        </dl>
         <h2>
             Compiling with Visual Studio</h2>
         <p>
