@@ -27,6 +27,8 @@ namespace Jayrock.Json
     using System;
     using System.Collections;
     using System.IO;
+    using Jayrock.Configuration;
+    using Jayrock.Json.Exporters;
     using NUnit.Framework;
 
     #endregion
@@ -161,14 +163,21 @@ namespace Jayrock.Json
             Assert.AreEqual("[[1,2,3],[1,2,3],[1,2,3]]", WriteValue(outer));
         }
 
-        [ Test ]
+        /* TODO: Remove
+        [ Test, Ignore ]
         public void WriteCustom()
         {
+            ConfigurationSetup setup = new ConfigurationSetup();
+            setup.AddExporter(typeof(StringArrayExporter));
+            Jayrock.Configuration.SimpleConfigurationProvider configProvider = new SimpleConfigurationProvider();
+            configProvider.Register(typeof(Jayrock.Json.Configuration.Configuration), setup);
+            ConfigurationSystem.SetTestProvider(configProvider);
             JsonTextWriter writer = new JsonTextWriter(new StringWriter());
-            writer.ValueFormatter = new StringArrayFormatter();
+            //writer.ValueFormatter = new StringArrayFormatter();
             writer.WriteValue(new object[] { 1, 2, 3, "Four", 5 });
             Assert.AreEqual("\"1,2,3,Four,5\"", writer.ToString());
         }
+        */
 
         [ Test ]
         public void WriteFromReader()
@@ -189,6 +198,24 @@ namespace Jayrock.Json
             JsonTextWriter writer = new JsonTextWriter();
             writer.WriteValueFromReader(reader);
             Assert.AreEqual("{\"menu\":{\"id\":\"file\",\"value\":\"File:\",\"popup\":{\"menuitem\":[{\"value\":\"New\",\"onclick\":\"CreateNewDoc()\"},{\"value\":\"Open\",\"onclick\":\"OpenDoc()\"},{\"value\":\"Close\",\"onclick\":\"CloseDoc()\"}]}}}", writer.ToString());
+        }
+
+        private sealed class StringArrayExporter : JsonExporterBase
+        {
+            public StringArrayExporter() : 
+                base(typeof(object[])) {}
+            
+            protected override void SubExport(object value, JsonWriter writer)
+            {
+                IEnumerable enumerable = (IEnumerable) value;
+
+                ArrayList list = new ArrayList();
+
+                foreach (object item in enumerable)
+                    list.Add(item == null ? null : item.ToString());
+
+                writer.WriteString(string.Join(",", (string[]) list.ToArray(typeof(string))));
+            }
         }
 
         private sealed class StringArrayFormatter : JsonFormatter

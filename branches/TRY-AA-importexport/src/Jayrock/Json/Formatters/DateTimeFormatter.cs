@@ -67,3 +67,33 @@ namespace Jayrock.Json.Formatters
         }
     }
 }
+
+namespace Jayrock.Json.Exporters
+{
+    #region Imports
+
+    using System;
+    using System.Data;
+    using System.Diagnostics;
+    using System.Globalization;
+    using Jayrock.Json.Formatters;
+
+    #endregion
+
+    /// <remarks>
+    /// See <a href="http://www.w3.org/TR/NOTE-datetime">W3C note on date 
+    /// and time formats</a>.
+    /// </remarks>
+
+    public class DateTimeExporter : JsonExporterBase
+    {
+        public DateTimeExporter() : 
+            base(typeof(DateTime)) {}
+
+        protected override void SubExport(object value, JsonWriter writer) // FIXME: Merge in DateTimeFormatter
+        {
+            DateTimeFormatter formatter = new DateTimeFormatter();
+            formatter.Format(value, writer);
+        }
+    }
+}

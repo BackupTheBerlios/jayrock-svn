@@ -20,39 +20,26 @@
 //
 #endregion
 
-namespace Jayrock.Json.Formatters
+namespace Jayrock
 {
     #region Imports
 
     using System;
-    using NUnit.Framework;
 
     #endregion
 
-    [ TestFixture ]
-    public class TestDateTimeFormatter
+    internal class Compat
     {
-        [ Test ]
-        public void EmptyObject()
+        public static Type FindType(string typeName)
         {
-            DateTime time = new DateTime(1999, 12, 31, 23, 30, 59, 999);
-            Assert.AreEqual("\"1999-12-31T23:30:59.9990000" + Tzd(time) + "\"", Format(time));
+            return Type.GetType(typeName, /* throwOnError = */ false, /* ignoreCase = */ false);
         }
 
-        private static string Format(object o)
+        public static Type GetType(string typeName)
         {
-            JsonTextWriter writer = new JsonTextWriter();
-            writer.WriteValue(o);
-            return writer.ToString();
+            return Type.GetType(typeName, /* throwOnError = */ true, /* ignoreCase = */ false);
         }
- 
-        private static string Tzd(DateTime localTime)
-        {
-            TimeSpan offset = TimeZone.CurrentTimeZone.GetUtcOffset(localTime);
-            string offsetString = offset.ToString();
-            return offset.Ticks < 0 ? 
-                (offsetString.Substring(0, 6)) : 
-                ("+" + offsetString.Substring(0, 5));
-        }
+        
+        private Compat() {}
     }
 }

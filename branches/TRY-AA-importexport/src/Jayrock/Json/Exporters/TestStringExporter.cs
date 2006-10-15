@@ -20,7 +20,7 @@
 //
 #endregion
 
-namespace Jayrock.Json.Formatters
+namespace Jayrock.Json.Exporters
 {
     #region Imports
 
@@ -30,29 +30,37 @@ namespace Jayrock.Json.Formatters
     #endregion
 
     [ TestFixture ]
-    public class TestDateTimeFormatter
+    public class TestStringExporter
     {
         [ Test ]
-        public void EmptyObject()
+        public void Superclass()
         {
-            DateTime time = new DateTime(1999, 12, 31, 23, 30, 59, 999);
-            Assert.AreEqual("\"1999-12-31T23:30:59.9990000" + Tzd(time) + "\"", Format(time));
+            Assert.IsInstanceOfType(typeof(JsonExporterBase), new StringExporter());
         }
 
-        private static string Format(object o)
+        [ Test ]
+        public void InputTypeIsString()
         {
-            JsonTextWriter writer = new JsonTextWriter();
-            writer.WriteValue(o);
-            return writer.ToString();
+            Assert.AreSame(typeof(string), (new StringExporter()).InputType);
         }
- 
-        private static string Tzd(DateTime localTime)
+
+        [ Test ]
+        public void ExportEmpty()
         {
-            TimeSpan offset = TimeZone.CurrentTimeZone.GetUtcOffset(localTime);
-            string offsetString = offset.ToString();
-            return offset.Ticks < 0 ? 
-                (offsetString.Substring(0, 6)) : 
-                ("+" + offsetString.Substring(0, 5));
+            Assert.AreEqual(string.Empty, Export(string.Empty).ReadString());
+        }
+
+        [ Test ]
+        public void ExportString()
+        {
+            Assert.AreEqual("Lorem ipsum dolor sit amet, consectetuer adipiscing elit.", Export("Lorem ipsum dolor sit amet, consectetuer adipiscing elit.").ReadString());
+        }
+
+        private static JsonReader Export(string value)
+        {
+            JsonRecorder writer = new JsonRecorder();
+            writer.WriteValue(value);
+            return writer.CreatePlayer();
         }
     }
 }

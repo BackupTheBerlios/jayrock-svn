@@ -20,7 +20,7 @@
 //
 #endregion
 
-namespace Jayrock.Json.Formatters
+namespace Jayrock.Json.Exporters
 {
     #region Imports
 
@@ -30,29 +30,46 @@ namespace Jayrock.Json.Formatters
     #endregion
 
     [ TestFixture ]
-    public class TestDateTimeFormatter
+    public class TestJsonExporterBase
     {
+        private readonly ThingExporter _exporter = new ThingExporter();
+        
         [ Test ]
-        public void EmptyObject()
+        public void ExportNull()
         {
-            DateTime time = new DateTime(1999, 12, 31, 23, 30, 59, 999);
-            Assert.AreEqual("\"1999-12-31T23:30:59.9990000" + Tzd(time) + "\"", Format(time));
+            Export(null).ReadNull();
         }
 
-        private static string Format(object o)
+        [ Test ]
+        public void InputTypeInitialization()
         {
-            JsonTextWriter writer = new JsonTextWriter();
-            writer.WriteValue(o);
-            return writer.ToString();
+            Assert.AreSame(typeof(Thing), _exporter.InputType);
+        }
+
+        [ Test, ExpectedException(typeof(ArgumentNullException)) ]
+        public void CannotUseNullWriter()
+        {
+            _exporter.Export(null, null);
         }
  
-        private static string Tzd(DateTime localTime)
+        private JsonReader Export(object value)
         {
-            TimeSpan offset = TimeZone.CurrentTimeZone.GetUtcOffset(localTime);
-            string offsetString = offset.ToString();
-            return offset.Ticks < 0 ? 
-                (offsetString.Substring(0, 6)) : 
-                ("+" + offsetString.Substring(0, 5));
+            JsonRecorder writer = new JsonRecorder();
+            _exporter.Export(value, writer);
+            return writer.CreatePlayer();
+        }
+        
+        private class Thing
+        {
+        }
+
+        private class ThingExporter : JsonExporterBase
+        {
+            public ThingExporter() : base(typeof(Thing)) {}
+
+            protected override void SubExport(object value, JsonWriter writer)
+            {
+            }
         }
     }
 }

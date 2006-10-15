@@ -74,3 +74,60 @@ namespace Jayrock.Json.Formatters
         }
     }
 }
+
+namespace Jayrock.Json.Exporters
+{
+    #region Imports
+
+    using System;
+    using System.ComponentModel;
+    using System.Diagnostics;
+    using Jayrock.Json.Formatters;
+
+    #endregion
+    
+    /// <summary>
+    /// Dispenses exporters for top-level and nested types that are 
+    /// public and which have default constructors.
+    /// </summary>
+    
+    public sealed class ComponentExporterFamily : IJsonExporterFamily
+    {
+        public IJsonExporter Page(Type type)
+        {
+            if (type == null)
+                throw new ArgumentNullException("type");
+
+            return (type.IsPublic || type.IsNestedPublic) && type.GetConstructor(Type.EmptyTypes) != null ? 
+                new ComponentExporter(type) : null;
+        }
+    }
+
+    public sealed class ComponentExporter : JsonExporterBase
+    {
+        private PropertyDescriptorCollection _properties;
+
+        public ComponentExporter(Type inputType) :
+            this(inputType, null) {}
+
+        public ComponentExporter(Type inputType, ICustomTypeDescriptor typeDescriptor) :
+            base(inputType)
+        {
+            _properties = typeDescriptor != null ? 
+                typeDescriptor.GetProperties() : TypeDescriptor.GetProperties(inputType);
+        }
+
+        protected override void SubExport(object value, JsonWriter writer)
+        {
+            if (_properties.Count == 0)
+            {
+                writer.WriteString(value.ToString());
+            }
+            else
+            {
+                ComponentFormatter formatter = new ComponentFormatter(_properties);
+                formatter.Format(value, writer);
+            }
+        }
+    }
+}

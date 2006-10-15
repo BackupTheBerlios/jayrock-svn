@@ -26,41 +26,46 @@ namespace Jayrock.Json
 
     using System;
     using System.Collections;
-    using System.Diagnostics;
-    using Jayrock.Json.Importers;
 
     #endregion
-    
-    [ Serializable ]
-    public sealed class JsonImporterRegistry : JsonTraderCollection, IJsonImporterRegistry
+
+    public sealed class JsonExporterCollection : JsonTraderCollection, IJsonFormatter // FIXME: Remove
     {
-        public IJsonImporter Find(Type type)
+        public IJsonExporter Find(Type type)
         {
             if (type == null)
                 throw new ArgumentNullException("type");
             
-            return (IJsonImporter) BaseFind(type);
+            return (IJsonExporter) BaseFind(type);
         }
 
-        public void Register(IJsonImporter importer)
+        public void Register(IJsonExporter exporter)
         {
-            if (importer == null)
-                throw new ArgumentNullException("importer");
+            if (exporter == null)
+                throw new ArgumentNullException("exporter");
             
-            Register(importer.OutputType, importer);
+            Register(exporter.InputType, exporter);
         }
 
-        public void Register(IJsonImporterFamily importerFamily)
+        public void Register(IJsonExporterFamily family)
         {
-            if (importerFamily == null)
-                throw new ArgumentNullException("importerFamily");
+            if (family == null)
+                throw new ArgumentNullException("family");
             
-            RegisterFamily(importerFamily);
+            RegisterFamily(family);
         }
 
         protected override object Page(object family, Type type)
         {
-            return ((IJsonImporterFamily) family).Page(type);
+            return ((IJsonExporterFamily) family).Page(type);
+        }
+
+        public void Format(object o, JsonWriter writer)
+        {
+            if (o == null)
+                writer.WriteNull();
+            else
+                Find(o.GetType()).Export(o, writer);
         }
     }
 }

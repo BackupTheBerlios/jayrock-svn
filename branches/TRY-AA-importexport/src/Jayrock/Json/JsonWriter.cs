@@ -28,6 +28,7 @@ namespace Jayrock.Json
     using System.Collections;
     using System.Diagnostics;
     using System.Globalization;
+    using Jayrock.Json.Exporters;
 
     #endregion
 
@@ -140,6 +141,7 @@ namespace Jayrock.Json
         protected abstract void WriteBooleanImpl(bool value);
         protected abstract void WriteNullImpl();
         
+        [ Obsolete ]
         public IJsonFormatter ValueFormatter
         {
             get
@@ -219,11 +221,11 @@ namespace Jayrock.Json
             }
         }
 
-        public void WriteValue(object value)
+        public virtual void WriteValue(object value)
         {
-            ValueFormatter.Format(value, this);
+            JsonExport.Export(value, this);
         }
-
+                
         public void WriteValueFromReader(JsonReader reader) // FIXME: Make virtual
         {
             if (reader == null)            

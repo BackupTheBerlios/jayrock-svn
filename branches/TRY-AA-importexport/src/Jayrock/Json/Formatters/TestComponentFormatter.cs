@@ -230,7 +230,7 @@ namespace Jayrock.Json.Formatters
             }
         }
 
-        private sealed class Car
+        public sealed class Car
         {
             private string _manufacturer;
             private string _model;
@@ -262,7 +262,7 @@ namespace Jayrock.Json.Formatters
             }
         }
 
-        private sealed class Person
+        public sealed class Person
         {
             private int _id;
             private string _fullName;
@@ -280,7 +280,7 @@ namespace Jayrock.Json.Formatters
             }
         }
 
-        private sealed class Marriage
+        public sealed class Marriage
         {
             private Person _husband;
             private Person _wife;
@@ -298,7 +298,7 @@ namespace Jayrock.Json.Formatters
             }
         }
             
-        private sealed class OwnerCars
+        public sealed class OwnerCars
         {
             private Person _owner;
             private ArrayList _cars = new ArrayList();
@@ -315,7 +315,7 @@ namespace Jayrock.Json.Formatters
             }
         }
 
-        private struct  Point : IJsonFormattable
+        public struct  Point : IJsonFormattable
         {
             private int _x;
             private int _y;

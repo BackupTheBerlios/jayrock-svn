@@ -99,6 +99,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Compat.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "CustomAttribute.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -153,6 +158,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Json\IJsonExporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\IJsonFormattable.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -199,6 +209,16 @@
                 />
                 <File
                     RelPath = "Json\JsonException.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\JsonExport.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\JsonExporterCollection.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -268,6 +288,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Json\JsonTraderCollection.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\JsonWriter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -284,6 +309,46 @@
                 />
                 <File
                     RelPath = "Json\TextParser.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Exporters\BooleanExporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Exporters\DictionaryExporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Exporters\EnumerableExporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Exporters\ExportAwareExporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Exporters\JsonExporterBase.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Exporters\JsonExporters.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Exporters\NumberExporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Exporters\StringExporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

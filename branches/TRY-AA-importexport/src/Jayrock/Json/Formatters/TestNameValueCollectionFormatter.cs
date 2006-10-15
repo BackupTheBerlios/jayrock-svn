@@ -94,8 +94,6 @@ namespace Jayrock.Json.Formatters
         private static string Format(object o)
         {
             JsonTextWriter writer = new JsonTextWriter();
-            writer.ValueFormatter = new NameValueCollectionFormatter();
-
             writer.WriteValue(o);
             return writer.ToString();
         }

@@ -78,3 +78,40 @@ namespace Jayrock.Json.Formatters
         }
     }
 }
+
+namespace Jayrock.Json.Exporters
+{
+    #region Imports
+
+    using System;
+    using System.Collections;
+    using System.Collections.Specialized;
+    using System.ComponentModel;
+    using System.Diagnostics;
+    using Jayrock.Json.Formatters;
+
+    #endregion
+
+    public sealed class NameValueCollectionExporterFamily : IJsonExporterFamily
+    {
+        public IJsonExporter Page(Type type)
+        {
+            if (type == null)
+                throw new ArgumentNullException("type");
+
+            return typeof(NameValueCollection).IsAssignableFrom(type) ? new NameValueCollectionExporter(type) : null;
+        }
+    }
+
+    public sealed class NameValueCollectionExporter : JsonExporterBase // FIXME: Merge in NameValueCollectionFormatter
+    {
+        public NameValueCollectionExporter(Type inputType) : 
+            base(inputType) {}
+
+        protected override void SubExport(object value, JsonWriter writer)
+        {
+            NameValueCollectionFormatter formatter = new NameValueCollectionFormatter();
+            formatter.Format(value, writer);
+        }
+    }
+}

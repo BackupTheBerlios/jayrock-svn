@@ -20,39 +20,42 @@
 //
 #endregion
 
-namespace Jayrock.Json.Formatters
+namespace Jayrock.Json.Exporters
 {
     #region Imports
 
     using System;
-    using NUnit.Framework;
 
     #endregion
 
-    [ TestFixture ]
-    public class TestDateTimeFormatter
+    public abstract class JsonExporterBase : IJsonExporter
     {
-        [ Test ]
-        public void EmptyObject()
+        private readonly Type _inputType;
+
+        protected JsonExporterBase(Type inputType)
         {
-            DateTime time = new DateTime(1999, 12, 31, 23, 30, 59, 999);
-            Assert.AreEqual("\"1999-12-31T23:30:59.9990000" + Tzd(time) + "\"", Format(time));
+            if (inputType == null)
+                throw new ArgumentNullException("inputType");
+            
+            _inputType = inputType;
         }
 
-        private static string Format(object o)
+        public Type InputType
         {
-            JsonTextWriter writer = new JsonTextWriter();
-            writer.WriteValue(o);
-            return writer.ToString();
+            get { return _inputType; }
         }
- 
-        private static string Tzd(DateTime localTime)
+
+        public virtual void Export(object value, JsonWriter writer)
         {
-            TimeSpan offset = TimeZone.CurrentTimeZone.GetUtcOffset(localTime);
-            string offsetString = offset.ToString();
-            return offset.Ticks < 0 ? 
-                (offsetString.Substring(0, 6)) : 
-                ("+" + offsetString.Substring(0, 5));
+            if (writer == null)
+                throw new ArgumentNullException("writer");
+
+            if (value == null)
+                writer.WriteNull();
+            else
+                SubExport(value, writer);
         }
+
+        protected abstract void SubExport(object value, JsonWriter writer);
     }
 }
