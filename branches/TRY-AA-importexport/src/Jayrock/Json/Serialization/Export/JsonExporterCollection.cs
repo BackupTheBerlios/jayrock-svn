@@ -29,7 +29,7 @@ namespace Jayrock.Json.Serialization.Export
 
     #endregion
 
-    public sealed class JsonExporterCollection : JsonTraderCollection, IJsonFormatter // FIXME: Remove
+    public sealed class JsonExporterCollection : JsonTraderCollection
     {
         public IJsonExporter Find(Type type)
         {
@@ -58,14 +58,6 @@ namespace Jayrock.Json.Serialization.Export
         protected override object Page(object family, Type type)
         {
             return ((IJsonExporterFamily) family).Page(type);
-        }
-
-        public void Format(object o, JsonWriter writer)
-        {
-            if (o == null)
-                writer.WriteNull();
-            else
-                Find(o.GetType()).Export(o, writer, null);
         }
     }
 }
