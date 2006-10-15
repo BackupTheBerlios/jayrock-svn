@@ -22,11 +22,14 @@
 
 namespace Jayrock.Json
 {
+    using System;
+
     /// <summary>
     /// This interface allows objects to provide their own implementation for
     /// formatting as JSON.
     /// </summary>
 
+    [ Obsolete ]
     public interface IJsonFormattable
     {
         void Format(JsonWriter writer);

@@ -42,7 +42,7 @@ namespace Jayrock.Json
     /// </remarks>
 
     [ Serializable ]
-    public struct JsonNumber : IConvertible, IJsonFormattable
+    public struct JsonNumber : IConvertible, IJsonFormattable, IJsonExportable
     {
         private readonly string _value;
 
@@ -286,6 +286,14 @@ namespace Jayrock.Json
                 throw new ArgumentNullException("writer");
             
             writer.WriteNumber(Value);
+        }
+
+        public void Export(JsonExportContext context)
+        {
+            if (context == null)
+                throw new ArgumentNullException("context");
+            
+            context.Writer.WriteNumber(Value);
         }
     }
 }

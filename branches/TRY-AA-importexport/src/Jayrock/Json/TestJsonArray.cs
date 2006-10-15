@@ -54,6 +54,20 @@ namespace Jayrock.Json
         }
 
         [ Test ]
+        public void Export()
+        {
+            JsonArray a = new JsonArray(new object[] { 123, "Hello World", true });
+            JsonRecorder writer = new JsonRecorder();
+            a.Export(new JsonExportContext(writer));
+            JsonReader reader = writer.CreatePlayer();
+            reader.ReadToken(JsonTokenClass.Array);
+            Assert.AreEqual(a[0], reader.ReadNumber().ToInt32());
+            Assert.AreEqual(a[1], reader.ReadString());
+            Assert.AreEqual(a[2], reader.ReadBoolean());
+            Assert.AreEqual(JsonTokenClass.EndArray, reader.TokenClass);
+        }
+        
+        [ Test ]
         public void ContentsClearedBeforeImporting()
         {
             JsonArray a = new JsonArray();

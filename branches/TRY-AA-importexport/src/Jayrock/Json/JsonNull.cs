@@ -35,7 +35,7 @@ namespace Jayrock.Json
     /// </summary>
 
     [ Serializable ]
-    public sealed class JsonNull : IObjectReference, IJsonFormattable
+    public sealed class JsonNull : IObjectReference, IJsonFormattable, IJsonExportable
     {
         public const string Text = "null";
         public static readonly JsonNull Value = new JsonNull();
@@ -87,7 +87,15 @@ namespace Jayrock.Json
         {
             writer.WriteNull();
         }
-        
+
+        public void Export(JsonExportContext context)
+        {
+            if (context == null)
+                throw new ArgumentNullException("context");
+            
+            context.Writer.WriteNull();
+        }
+
         object IObjectReference.GetRealObject(StreamingContext context)
         {
             return JsonNull.Value;

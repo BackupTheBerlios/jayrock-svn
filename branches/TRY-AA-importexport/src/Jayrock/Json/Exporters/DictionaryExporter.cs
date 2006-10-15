@@ -54,7 +54,7 @@ namespace Jayrock.Json.Exporters
             foreach (DictionaryEntry entry in dictionary)
             {
                 writer.WriteMember(entry.Key.ToString());
-                writer.WriteValue(entry.Value);
+                context.Export(entry.Value);
             }
             
             writer.WriteEndObject();

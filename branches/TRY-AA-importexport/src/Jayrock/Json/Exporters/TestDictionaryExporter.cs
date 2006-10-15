@@ -87,10 +87,10 @@ namespace Jayrock.Json.Exporters
             }
         }
 
-        private static JsonReader Export(object value)
+        private static JsonReader Export(IDictionary value)
         {
             JsonRecorder writer = new JsonRecorder();
-            writer.WriteValue(value);
+            JsonExport.Export(value, writer);
             return writer.CreatePlayer();
         }
     }

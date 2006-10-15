@@ -42,7 +42,7 @@ namespace Jayrock.Json
     /// </remarks>
 
     [ Serializable ]
-    public class JsonArray : CollectionBase, IJsonFormattable, IJsonImportable
+    public class JsonArray : CollectionBase, IJsonFormattable, IJsonImportable, IJsonExportable
     {
         public JsonArray() {}
 
@@ -194,6 +194,21 @@ namespace Jayrock.Json
             writer.WriteArray(this);
         }
 
+        public virtual void Export(JsonExportContext context)
+        {
+            if (context == null)
+                throw new ArgumentNullException("context");
+
+            JsonWriter writer = context.Writer;
+            
+            writer.WriteStartArray();
+
+            foreach (object item in this)
+                context.Export(item);
+
+            writer.WriteEndArray();
+        }
+        
         public virtual void Import(JsonReader reader)
         {
             if (reader == null)

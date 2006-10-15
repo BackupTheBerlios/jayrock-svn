@@ -38,4 +38,14 @@ namespace Jayrock.Json
     {
         IJsonExporter Page(Type type);
     }
+    
+    /// <summary>
+    /// This interface allows objects to provide their own implementation for
+    /// exporting as JSON.
+    /// </summary>
+    
+    public interface IJsonExportable
+    {
+        void Export(JsonExportContext context);
+    }
 }

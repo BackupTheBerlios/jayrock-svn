@@ -44,7 +44,7 @@ namespace Jayrock.Json
     /// </remarks>
 
     [ Serializable ]
-    public class JsonObject : DictionaryBase, IJsonFormattable, IJsonImportable
+    public class JsonObject : DictionaryBase, IJsonFormattable, IJsonImportable, IJsonExportable
     {
         private ArrayList _nameIndexList;
         [ NonSerialized ] private IList _readOnlyNameIndexList;
@@ -234,7 +234,28 @@ namespace Jayrock.Json
 
             writer.WriteEndObject();
         }
-        
+
+        public void Export(JsonExportContext context)
+        {
+            if (context == null)
+                throw new ArgumentNullException("context");
+            
+            JsonWriter writer = context.Writer;
+            
+            if (writer == null)
+                throw new ArgumentNullException("writer");
+
+            writer.WriteStartObject();
+            
+            foreach (string name in NameIndexList)
+            {
+                writer.WriteMember(name);    
+                context.Export(InnerHashtable[name]);
+            }
+
+            writer.WriteEndObject();
+        }
+
         /// <remarks>
         /// This method is not exception-safe. If an error occurs while 
         /// reading then the object may be partially imported.

@@ -32,7 +32,7 @@ namespace Jayrock.Json.Exporters
     {
         public IJsonExporter Page(Type type)
         {
-            return typeof(IJsonFormattable).IsAssignableFrom(type) ? 
+            return typeof(IJsonExportable).IsAssignableFrom(type) ? 
                 new ExportAwareExporter(type) : null;
         }
     }
@@ -47,7 +47,7 @@ namespace Jayrock.Json.Exporters
             if (context.Writer == null) 
                 throw new ArgumentNullException("writer");
 
-            ((IJsonFormattable) value).Format(context.Writer);
+            ((IJsonExportable) value).Export(context);
         }
     }
 }

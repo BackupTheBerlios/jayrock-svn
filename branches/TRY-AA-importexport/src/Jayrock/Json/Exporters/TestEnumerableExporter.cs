@@ -92,10 +92,10 @@ namespace Jayrock.Json.Exporters
             Assert.AreEqual(JsonTokenClass.EndArray, reader.TokenClass);
         }
 
-        private static JsonReader Export(object value)
+        private static JsonReader Export(IEnumerable values)
         {
             JsonRecorder writer = new JsonRecorder();
-            writer.WriteValue(value);
+            JsonExport.Export(values, writer);
             return writer.CreatePlayer();
         }
     }

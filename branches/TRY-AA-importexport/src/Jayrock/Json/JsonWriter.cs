@@ -221,6 +221,7 @@ namespace Jayrock.Json
             }
         }
 
+        [ Obsolete() ]
         public virtual void WriteValue(object value)
         {
             ValueFormatter.Format(value, this);

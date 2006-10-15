@@ -28,6 +28,7 @@ namespace Jayrock.Json.Formatters
     using System.Collections;
     using System.ComponentModel;
     using System.IO;
+    using Jayrock.Json.Exporters;
     using NUnit.Framework;
 
     #endregion
@@ -315,7 +316,7 @@ namespace Jayrock.Json.Formatters
             }
         }
 
-        public struct  Point : IJsonFormattable
+        public struct  Point : IJsonFormattable, IJsonExportable
         {
             private int _x;
             private int _y;
@@ -344,6 +345,11 @@ namespace Jayrock.Json.Formatters
             {
                 ComponentFormatter formatter = new ComponentFormatter(_properties);
                 formatter.Format(this, writer);
+            }
+
+            public void Export(JsonExportContext context)
+            {
+                Format(context.Writer);
             }
         }
     }

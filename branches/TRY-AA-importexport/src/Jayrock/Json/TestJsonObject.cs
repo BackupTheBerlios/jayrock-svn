@@ -178,5 +178,26 @@ namespace Jayrock.Json
         {
             (new JsonObject()).Format(null);
         }
+
+        [ Test ]
+        public void Export()
+        {
+            JsonObject o = new JsonObject();
+            o.Put("Number", 123);
+            o.Put("String", "Hello World");
+            o.Put("Boolean", true);
+            JsonRecorder writer = new JsonRecorder();
+            o.Export(new JsonExportContext(writer));
+            JsonReader reader = writer.CreatePlayer();
+            reader.ReadToken(JsonTokenClass.Object);
+            string[] members = (string[]) o.GetNamesArray().ToArray(typeof(string));
+            Assert.AreEqual(members[0], reader.ReadMember());
+            Assert.AreEqual(o[members[0]], reader.ReadNumber().ToInt32());
+            Assert.AreEqual(members[1], reader.ReadMember());
+            Assert.AreEqual(o[members[1]], reader.ReadString());
+            Assert.AreEqual(members[2], reader.ReadMember());
+            Assert.AreEqual(o[members[2]], reader.ReadBoolean());
+            Assert.AreEqual(JsonTokenClass.EndObject, reader.TokenClass);
+        }
     }
 }
