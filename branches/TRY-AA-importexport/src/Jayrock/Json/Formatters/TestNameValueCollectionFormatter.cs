@@ -26,7 +26,6 @@ namespace Jayrock.Json.Formatters
 
     using System;
     using System.Collections.Specialized;
-    using Jayrock.Json.Serialization.Export;
     using NUnit.Framework;
 
     #endregion
@@ -95,7 +94,8 @@ namespace Jayrock.Json.Formatters
         private static string Format(object o)
         {
             JsonTextWriter writer = new JsonTextWriter();
-            JsonExport.Export(o, writer);
+            writer.ValueFormatter = new NameValueCollectionFormatter();
+            writer.WriteValue(o);
             return writer.ToString();
         }
    }
