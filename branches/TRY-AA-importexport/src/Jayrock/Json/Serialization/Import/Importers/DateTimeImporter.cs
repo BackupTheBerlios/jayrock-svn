@@ -35,7 +35,7 @@ namespace Jayrock.Json.Serialization.Import.Importers
         public DateTimeImporter() : 
             base(typeof(DateTime)) {}
 
-        protected override object ImportValue(JsonReader reader)
+        protected override object ImportValue(JsonReader reader, object context)
         {
             if (reader == null)
                 throw new ArgumentNullException("reader");

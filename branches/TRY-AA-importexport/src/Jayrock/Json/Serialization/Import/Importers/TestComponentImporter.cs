@@ -40,7 +40,7 @@ namespace Jayrock.Json.Serialization.Import.Importers
         public void ImportNull()
         {
             ComponentImporter importer = new ComponentImporter(typeof(object));
-            Assert.IsNull(importer.Import(CreateReader("null")));
+            Assert.IsNull(importer.Import(CreateReader("null"), null));
         }
 
         [ Test ]

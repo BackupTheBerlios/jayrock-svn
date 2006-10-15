@@ -46,7 +46,7 @@ namespace Jayrock.Json.Serialization.Import.Importers
             get { return _outputType; }
         }
 
-        public virtual object Import(JsonReader reader)
+        public virtual object Import(JsonReader reader, object context)
         {
             if (reader == null)
                 throw new ArgumentNullException("reader");
@@ -57,13 +57,13 @@ namespace Jayrock.Json.Serialization.Import.Importers
             object o = null;
             
             if (reader.TokenClass != JsonTokenClass.Null)
-                o = ImportValue(reader);
+                o = ImportValue(reader, context);
             
             reader.Read();
             return o;
         }
 
-        protected virtual object ImportValue(JsonReader reader)
+        protected virtual object ImportValue(JsonReader reader, object context)
         {
             throw new NotImplementedException();
         }

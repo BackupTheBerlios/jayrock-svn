@@ -180,7 +180,7 @@ namespace Jayrock.Json.Serialization.Import.Importers
 
         private sealed class ImportableThing : IJsonImportable
         {
-            public void Import(JsonReader reader)
+            public void Import(JsonReader reader, object context)
             {
                 throw new NotImplementedException();
             }

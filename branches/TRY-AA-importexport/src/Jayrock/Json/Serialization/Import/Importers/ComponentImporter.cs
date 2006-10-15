@@ -46,7 +46,7 @@ namespace Jayrock.Json.Serialization.Import.Importers
             _properties = typeDescriptor.GetProperties();
         }
 
-        protected override object ImportValue(JsonReader reader)
+        protected override object ImportValue(JsonReader reader, object context)
         {
             if (reader == null)
                 throw new ArgumentNullException("reader");
@@ -62,7 +62,7 @@ namespace Jayrock.Json.Serialization.Import.Importers
                 PropertyDescriptor property = _properties[memberName];
                 
                 if (property != null && !property.IsReadOnly)
-                    property.SetValue(o, reader.ReadValue(property.PropertyType));
+                    property.SetValue(o, reader.ReadValue(property.PropertyType, context));
                 else 
                     reader.Skip();
             }

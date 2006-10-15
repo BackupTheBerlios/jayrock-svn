@@ -77,7 +77,7 @@ namespace Jayrock.Json.Serialization.Import.Importers
         private static void AssertImport(string expected, string input)
         {
             JsonTextReader reader = new JsonTextReader(new StringReader(input));
-            object o = JsonImporterStock.String.Import(reader);
+            object o = JsonImporterStock.String.Import(reader, null);
             Assert.IsTrue(reader.EOF, "Reader must be at EOF.");
             if (expected != null)
                 Assert.IsInstanceOfType(typeof(string), o);

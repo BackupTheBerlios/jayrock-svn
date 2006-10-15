@@ -96,7 +96,7 @@ namespace Jayrock.Json.Serialization.Import.Importers
         private static object Import(string input)
         {
             JsonTextReader reader = new JsonTextReader(new StringReader(input));
-            object o = JsonImporterStock.Boolean.Import(reader);
+            object o = JsonImporterStock.Boolean.Import(reader, null);
             Assert.IsTrue(reader.EOF, "Reader must be at EOF.");
             return o;
         }

@@ -49,7 +49,7 @@ namespace Jayrock.Json.Serialization.Import.Importers
                 throw new ArgumentException(string.Format("{0} is a bit field, which are not currently supported.", type));
         }
 
-        protected override object ImportValue(JsonReader reader)
+        protected override object ImportValue(JsonReader reader, object context)
         {
             string s = reader.ReadString().Trim();
         

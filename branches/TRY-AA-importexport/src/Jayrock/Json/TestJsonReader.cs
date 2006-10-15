@@ -300,7 +300,7 @@ namespace Jayrock.Json
             Assert.AreEqual(JsonTokenClass.EndArray, reader.TokenClass);
         }
         
-        [ Test ]
+        [ Test, Ignore("Need to see how JsonReader.Importers will be integrated again.") ]
         public void ReadValueDefaultIsObject()
         {
             MockedJsonReader reader = new MockedJsonReader();
@@ -374,7 +374,7 @@ namespace Jayrock.Json
                     get { throw new NotImplementedException(); }
                 }
 
-                public object Import(JsonReader reader)
+                public object Import(JsonReader reader, object context)
                 {
                     return null;
                 }

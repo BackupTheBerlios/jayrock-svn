@@ -54,7 +54,7 @@ namespace Jayrock.Json.Serialization.Import.Importers
             _converter = converter;
         }
 
-        protected override object ImportValue(JsonReader reader)
+        protected override object ImportValue(JsonReader reader, object context)
         {
             if (reader == null)
                 throw new ArgumentNullException("reader");

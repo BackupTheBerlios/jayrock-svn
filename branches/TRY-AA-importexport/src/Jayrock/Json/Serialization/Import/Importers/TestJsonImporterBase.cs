@@ -45,7 +45,7 @@ namespace Jayrock.Json.Serialization.Import.Importers
         {
             JsonReader reader = CreateReader("null");
             TestImporter importer = new TestImporter();
-            Assert.IsNull(importer.Import(reader));
+            Assert.IsNull(importer.Import(reader, null));
             Assert.IsTrue(reader.EOF);
         }
         
@@ -55,7 +55,7 @@ namespace Jayrock.Json.Serialization.Import.Importers
             JsonReader reader = CreateReader("123");
             TestImporter importer = new TestImporter();
             importer.ReturnValue = new object();
-            object o = importer.Import(reader);
+            object o = importer.Import(reader, null);
             Assert.IsTrue(reader.EOF);
             Assert.IsTrue(importer.Called);
             Assert.IsNotNull(o);
@@ -75,7 +75,7 @@ namespace Jayrock.Json.Serialization.Import.Importers
             public TestImporter() : 
                 base(typeof(object)) {}
 
-            protected override object ImportValue(JsonReader reader)
+            protected override object ImportValue(JsonReader reader, object context)
             {
                 Called = true;
                 return ReturnValue;

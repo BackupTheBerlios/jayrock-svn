@@ -258,7 +258,7 @@ namespace Jayrock.Json
         /// reading then the object may be partially imported.
         /// </remarks>
 
-        public virtual void Import(JsonReader reader)
+        public virtual void Import(JsonReader reader, object context)
         {
             if (reader == null)
                 throw new ArgumentNullException("reader");
@@ -272,7 +272,7 @@ namespace Jayrock.Json
             reader.ReadToken(JsonTokenClass.Object);
             
             while (reader.TokenClass != JsonTokenClass.EndObject)
-                Put(reader.ReadMember(), reader.ReadValue());
+                Put(reader.ReadMember(), reader.ReadValue(typeof(object), context));
             
             reader.Read();
         }

@@ -79,7 +79,7 @@ namespace Jayrock.Json.Serialization.Import.Importers
         {
             JsonTextReader reader = new JsonTextReader(new StringReader(input));
             Type expectedType = expected.GetType();
-            object o = JsonImporterStock.Registry.Find(expectedType).Import(reader);
+            object o = JsonImporterStock.Registry.Find(expectedType).Import(reader, null);
             Assert.IsInstanceOfType(expectedType, o);
             Assert.AreEqual(expected, o);
         }

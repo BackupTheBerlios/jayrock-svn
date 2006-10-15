@@ -34,7 +34,7 @@ namespace Jayrock.Json.Serialization.Import.Importers
         public BooleanImporter() : 
             base(typeof(bool)) { }
 
-        protected override object ImportValue(JsonReader reader)
+        protected override object ImportValue(JsonReader reader, object context)
         {
             if (reader == null)
                 throw new ArgumentNullException("reader");

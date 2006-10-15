@@ -209,7 +209,7 @@ namespace Jayrock.Json
             writer.WriteEndArray();
         }
         
-        public virtual void Import(JsonReader reader)
+        public virtual void Import(JsonReader reader, object context)
         {
             if (reader == null)
                 throw new ArgumentNullException("reader");
@@ -226,7 +226,7 @@ namespace Jayrock.Json
             reader.ReadToken(JsonTokenClass.Array);
             
             while (reader.TokenClass != JsonTokenClass.EndArray)
-                list.Add(reader.ReadValue());
+                list.Add(reader.ReadValue(typeof(object), context));
             
             reader.Read();
             
