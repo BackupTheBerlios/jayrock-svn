@@ -20,7 +20,7 @@
 //
 #endregion
 
-namespace Jayrock.Json
+namespace Jayrock.Json.Serialization.Export
 {
     using System;
 
@@ -33,12 +33,12 @@ namespace Jayrock.Json
         Type InputType { get; }
         void Export(JsonExportContext context, object value);
     }
-    
+
     public interface IJsonExporterFamily
     {
         IJsonExporter Page(Type type);
     }
-    
+
     /// <summary>
     /// This interface allows objects to provide their own implementation for
     /// exporting as JSON.

@@ -20,52 +20,47 @@
 //
 #endregion
 
-namespace Jayrock.Json
+namespace Jayrock.Json.Serialization.Export.Exporters
 {
     #region Imports
 
     using System;
-    using System.Collections;
+    using NUnit.Framework;
 
     #endregion
 
-    public sealed class JsonExporterCollection : JsonTraderCollection, IJsonFormatter // FIXME: Remove
+    [ TestFixture ]
+    public class TestBooleanExporter
     {
-        public IJsonExporter Find(Type type)
+        [ Test ]
+        public void Superclass()
         {
-            if (type == null)
-                throw new ArgumentNullException("type");
-            
-            return (IJsonExporter) BaseFind(type);
+            Assert.IsInstanceOfType(typeof(JsonExporterBase), new BooleanExporter());
+        }
+        
+        [ Test ]
+        public void InputTypeIsBoolean()
+        {
+            Assert.AreSame(typeof(bool), (new BooleanExporter()).InputType);
         }
 
-        public void Register(IJsonExporter exporter)
+        [ Test ]
+        public void ExportTrue()
         {
-            if (exporter == null)
-                throw new ArgumentNullException("exporter");
-            
-            Register(exporter.InputType, exporter);
+            Assert.AreEqual(true, Export(true).ReadBoolean());
         }
 
-        public void Register(IJsonExporterFamily family)
+        [ Test ]
+        public void ExportFalse()
         {
-            if (family == null)
-                throw new ArgumentNullException("family");
-            
-            RegisterFamily(family);
+            Assert.AreEqual(true, Export(true).ReadBoolean());
         }
 
-        protected override object Page(object family, Type type)
+        private static JsonReader Export(bool value)
         {
-            return ((IJsonExporterFamily) family).Page(type);
-        }
-
-        public void Format(object o, JsonWriter writer)
-        {
-            if (o == null)
-                writer.WriteNull();
-            else
-                Find(o.GetType()).Export(null, o);
+            JsonRecorder writer = new JsonRecorder();
+            JsonExport.Export(value, writer);
+            return writer.CreatePlayer();
         }
     }
 }

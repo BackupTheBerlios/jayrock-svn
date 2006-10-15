@@ -20,21 +20,44 @@
 //
 #endregion
 
-namespace Jayrock.Json.Exporters
+namespace Jayrock.Json.Serialization.Export.Exporters
 {
     #region Imports
 
     using System;
+    using System.Collections;
 
     #endregion
-
-    public sealed class StringExporter : JsonExporterBase
+    
+    public sealed class DictionaryExporterFamily : IJsonExporterFamily
     {
-        public StringExporter() : base(typeof(string)) {}
+        public IJsonExporter Page(Type type)
+        {
+            return typeof(IDictionary).IsAssignableFrom(type) ? 
+                   new DictionaryExporter(type) : null;
+        }
+    }
+
+    public sealed class DictionaryExporter : JsonExporterBase
+    {
+        public DictionaryExporter(Type inputType) : 
+            base(inputType) {}
 
         protected override void SubExport(JsonExportContext context, object value)
         {
-            context.Writer.WriteString(value.ToString());
+            JsonWriter writer = context.Writer;
+            
+            writer.WriteStartObject();
+            
+            IDictionary dictionary = (IDictionary) value;
+            
+            foreach (DictionaryEntry entry in dictionary)
+            {
+                writer.WriteMember(entry.Key.ToString());
+                context.Export(entry.Value);
+            }
+            
+            writer.WriteEndObject();
         }
     }
 }

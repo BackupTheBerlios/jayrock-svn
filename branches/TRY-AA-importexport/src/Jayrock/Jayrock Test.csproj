@@ -174,36 +174,6 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Exporters\TestBooleanExporter.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Json\Exporters\TestDictionaryExporter.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Json\Exporters\TestEnumerableExporter.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Json\Exporters\TestJsonExporterBase.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Json\Exporters\TestNumberExporter.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Json\Exporters\TestStringExporter.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "Json\Formatters\TestComponentFormatter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -320,6 +290,41 @@
                 />
                 <File
                     RelPath = "Json\Rpc\TestJsonRpcServiceReflector.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Serialization\Export\Exporters\TestBooleanExporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Serialization\Export\Exporters\TestDateTimeExporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Serialization\Export\Exporters\TestDictionaryExporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Serialization\Export\Exporters\TestEnumerableExporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Serialization\Export\Exporters\TestJsonExporterBase.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Serialization\Export\Exporters\TestNumberExporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Serialization\Export\Exporters\TestStringExporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

@@ -20,7 +20,7 @@
 //
 #endregion
 
-namespace Jayrock.Json.Exporters
+namespace Jayrock.Json.Serialization.Export.Exporters
 {
     #region Imports
 
@@ -30,37 +30,42 @@ namespace Jayrock.Json.Exporters
     #endregion
 
     [ TestFixture ]
-    public class TestStringExporter
+    public class TestDateTimeExporter
     {
         [ Test ]
         public void Superclass()
         {
-            Assert.IsInstanceOfType(typeof(JsonExporterBase), new StringExporter());
+            Assert.IsInstanceOfType(typeof(JsonExporterBase), new DateTimeExporter());    
         }
 
         [ Test ]
         public void InputTypeIsString()
         {
-            Assert.AreSame(typeof(string), (new StringExporter()).InputType);
+            Assert.AreSame(typeof(DateTime), (new DateTimeExporter()).InputType);
         }
 
         [ Test ]
-        public void ExportEmpty()
+        public void Export()
         {
-            Assert.AreEqual(string.Empty, Export(string.Empty).ReadString());
+            DateTime time = new DateTime(1999, 12, 31, 23, 30, 59, 999);
+            Assert.AreEqual("1999-12-31T23:30:59.9990000" + Tzd(time), Export(time));
         }
 
-        [ Test ]
-        public void ExportString()
-        {
-            Assert.AreEqual("Lorem ipsum dolor sit amet, consectetuer adipiscing elit.", Export("Lorem ipsum dolor sit amet, consectetuer adipiscing elit.").ReadString());
-        }
-
-        private static JsonReader Export(string value)
+        private static string Export(DateTime value)
         {
             JsonRecorder writer = new JsonRecorder();
-            JsonExport.Export(value, writer);
-            return writer.CreatePlayer();
+            DateTimeExporter exporter = new DateTimeExporter();
+            exporter.Export(new JsonExportContext(writer), value);
+            return writer.CreatePlayer().ReadString();
+        }
+ 
+        private static string Tzd(DateTime localTime)
+        {
+            TimeSpan offset = TimeZone.CurrentTimeZone.GetUtcOffset(localTime);
+            string offsetString = offset.ToString();
+            return offset.Ticks < 0 ? 
+                   (offsetString.Substring(0, 6)) : 
+                   ("+" + offsetString.Substring(0, 5));
         }
     }
 }

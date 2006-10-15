@@ -20,23 +20,32 @@
 //
 #endregion
 
-namespace Jayrock.Json
+namespace Jayrock.Json.Serialization.Export.Exporters
 {
     #region Imports
 
     using System;
-    using Jayrock.Json.Exporters;
 
     #endregion
 
-    public sealed class JsonExport
+    public abstract class JsonExporterBase : IJsonExporter
     {
-        public static void Export(object value, JsonWriter writer)
+        private readonly Type _inputType;
+
+        protected JsonExporterBase(Type inputType)
         {
-            Export(new JsonExportContext(writer), value);
+            if (inputType == null)
+                throw new ArgumentNullException("inputType");
+            
+            _inputType = inputType;
         }
 
-        public static void Export(JsonExportContext context, object value)
+        public Type InputType
+        {
+            get { return _inputType; }
+        }
+
+        public virtual void Export(JsonExportContext context, object value)
         {
             if (context == null)
                 throw new ArgumentNullException("context");
@@ -44,45 +53,11 @@ namespace Jayrock.Json
             JsonWriter writer = context.Writer;
             
             if (value == null)
-            {
                 writer.WriteNull();
-                return;
-            }
-
-            IJsonExporter exporter = JsonExporters.Find(value.GetType());
-                
-            if (exporter != null)
-                exporter.Export(context, value);
             else
-                writer.WriteString(value.ToString());
-        }
-        
-        private JsonExport()
-        {
-            throw new NotSupportedException();
-        }
-    }
-    
-    public sealed class JsonExportContext
-    {
-        private readonly JsonWriter _writer;
-
-        public JsonExportContext(JsonWriter writer)
-        {
-            if (writer == null)
-                throw new ArgumentNullException("writer");
-            
-            _writer = writer;
+                SubExport(context, value);
         }
 
-        public JsonWriter Writer
-        {
-            get { return _writer; }
-        }
-        
-        public void Export(object value)
-        {
-            JsonExport.Export(this, value);
-        }
+        protected abstract void SubExport(JsonExportContext context, object value);
     }
 }

@@ -20,47 +20,22 @@
 //
 #endregion
 
-namespace Jayrock.Json.Exporters
+namespace Jayrock.Json.Serialization.Export.Exporters
 {
     #region Imports
 
     using System;
-    using NUnit.Framework;
+    using System.Globalization;
 
     #endregion
 
-    [ TestFixture ]
-    public class TestBooleanExporter
+    public sealed class BooleanExporter : JsonExporterBase
     {
-        [ Test ]
-        public void Superclass()
-        {
-            Assert.IsInstanceOfType(typeof(JsonExporterBase), new BooleanExporter());
-        }
-        
-        [ Test ]
-        public void InputTypeIsBoolean()
-        {
-            Assert.AreSame(typeof(bool), (new BooleanExporter()).InputType);
-        }
+        public BooleanExporter() : base(typeof(bool)) { }
 
-        [ Test ]
-        public void ExportTrue()
+        protected override void SubExport(JsonExportContext context, object value)
         {
-            Assert.AreEqual(true, Export(true).ReadBoolean());
-        }
-
-        [ Test ]
-        public void ExportFalse()
-        {
-            Assert.AreEqual(true, Export(true).ReadBoolean());
-        }
-
-        private static JsonReader Export(bool value)
-        {
-            JsonRecorder writer = new JsonRecorder();
-            JsonExport.Export(value, writer);
-            return writer.CreatePlayer();
+            context.Writer.WriteBoolean((bool) value);
         }
     }
 }

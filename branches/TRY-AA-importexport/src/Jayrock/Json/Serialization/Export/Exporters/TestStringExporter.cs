@@ -20,7 +20,7 @@
 //
 #endregion
 
-namespace Jayrock.Json.Exporters
+namespace Jayrock.Json.Serialization.Export.Exporters
 {
     #region Imports
 
@@ -30,42 +30,37 @@ namespace Jayrock.Json.Exporters
     #endregion
 
     [ TestFixture ]
-    public class TestDateTimeExporter
+    public class TestStringExporter
     {
         [ Test ]
         public void Superclass()
         {
-            Assert.IsInstanceOfType(typeof(JsonExporterBase), new DateTimeExporter());    
+            Assert.IsInstanceOfType(typeof(JsonExporterBase), new StringExporter());
         }
 
         [ Test ]
         public void InputTypeIsString()
         {
-            Assert.AreSame(typeof(DateTime), (new DateTimeExporter()).InputType);
+            Assert.AreSame(typeof(string), (new StringExporter()).InputType);
         }
 
         [ Test ]
-        public void Export()
+        public void ExportEmpty()
         {
-            DateTime time = new DateTime(1999, 12, 31, 23, 30, 59, 999);
-            Assert.AreEqual("1999-12-31T23:30:59.9990000" + Tzd(time), Export(time));
+            Assert.AreEqual(string.Empty, Export(string.Empty).ReadString());
         }
 
-        private static string Export(object o)
+        [ Test ]
+        public void ExportString()
+        {
+            Assert.AreEqual("Lorem ipsum dolor sit amet, consectetuer adipiscing elit.", Export("Lorem ipsum dolor sit amet, consectetuer adipiscing elit.").ReadString());
+        }
+
+        private static JsonReader Export(string value)
         {
             JsonRecorder writer = new JsonRecorder();
-            DateTimeExporter exporter = new DateTimeExporter();
-            exporter.Export(o, writer);
-            return writer.CreatePlayer().ReadString();
-        }
- 
-        private static string Tzd(DateTime localTime)
-        {
-            TimeSpan offset = TimeZone.CurrentTimeZone.GetUtcOffset(localTime);
-            string offsetString = offset.ToString();
-            return offset.Ticks < 0 ? 
-                   (offsetString.Substring(0, 6)) : 
-                   ("+" + offsetString.Substring(0, 5));
+            JsonExport.Export(value, writer);
+            return writer.CreatePlayer();
         }
     }
 }

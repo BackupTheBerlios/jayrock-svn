@@ -20,44 +20,53 @@
 //
 #endregion
 
-namespace Jayrock.Json.Exporters
+namespace Jayrock.Json
 {
     #region Imports
 
     using System;
     using System.Collections;
+    using Jayrock.Json.Serialization.Export;
 
     #endregion
-    
-    public sealed class EnumerableExporterFamily : IJsonExporterFamily
+
+    public sealed class JsonExporterCollection : JsonTraderCollection, IJsonFormatter // FIXME: Remove
     {
-        public IJsonExporter Page(Type type)
+        public IJsonExporter Find(Type type)
         {
             if (type == null)
                 throw new ArgumentNullException("type");
             
-            return typeof(IEnumerable).IsAssignableFrom(type) ? 
-                   new EnumerableExporter(type) : null;
+            return (IJsonExporter) BaseFind(type);
         }
-    }
 
-    public sealed class EnumerableExporter : JsonExporterBase
-    {
-        public EnumerableExporter(Type inputType) : 
-            base(inputType) {}
-
-        protected override void SubExport(JsonExportContext context, object value)
+        public void Register(IJsonExporter exporter)
         {
-            IEnumerable items = (IEnumerable) value;
-
-            JsonWriter writer = context.Writer;
+            if (exporter == null)
+                throw new ArgumentNullException("exporter");
             
-            writer.WriteStartArray();
+            Register(exporter.InputType, exporter);
+        }
 
-            foreach (object item in items)
-                context.Export(item);
+        public void Register(IJsonExporterFamily family)
+        {
+            if (family == null)
+                throw new ArgumentNullException("family");
+            
+            RegisterFamily(family);
+        }
 
-            writer.WriteEndArray();
+        protected override object Page(object family, Type type)
+        {
+            return ((IJsonExporterFamily) family).Page(type);
+        }
+
+        public void Format(object o, JsonWriter writer)
+        {
+            if (o == null)
+                writer.WriteNull();
+            else
+                Find(o.GetType()).Export(null, o);
         }
     }
 }

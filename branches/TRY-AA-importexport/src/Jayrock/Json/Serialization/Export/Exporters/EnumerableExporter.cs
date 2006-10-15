@@ -20,22 +20,44 @@
 //
 #endregion
 
-namespace Jayrock.Json.Exporters
+namespace Jayrock.Json.Serialization.Export.Exporters
 {
     #region Imports
 
     using System;
-    using System.Globalization;
+    using System.Collections;
 
     #endregion
-
-    public sealed class BooleanExporter : JsonExporterBase
+    
+    public sealed class EnumerableExporterFamily : IJsonExporterFamily
     {
-        public BooleanExporter() : base(typeof(bool)) { }
+        public IJsonExporter Page(Type type)
+        {
+            if (type == null)
+                throw new ArgumentNullException("type");
+            
+            return typeof(IEnumerable).IsAssignableFrom(type) ? 
+                   new EnumerableExporter(type) : null;
+        }
+    }
+
+    public sealed class EnumerableExporter : JsonExporterBase
+    {
+        public EnumerableExporter(Type inputType) : 
+            base(inputType) {}
 
         protected override void SubExport(JsonExportContext context, object value)
         {
-            context.Writer.WriteBoolean((bool) value);
+            IEnumerable items = (IEnumerable) value;
+
+            JsonWriter writer = context.Writer;
+            
+            writer.WriteStartArray();
+
+            foreach (object item in items)
+                context.Export(item);
+
+            writer.WriteEndArray();
         }
     }
 }
