@@ -20,7 +20,7 @@
 //
 #endregion
 
-namespace Jayrock.Json
+namespace Jayrock.Json.Serialization
 {
     #region Imports
 
@@ -28,6 +28,11 @@ namespace Jayrock.Json
     using System.Collections;
 
     #endregion
+    
+    /// <summary>
+    /// This type supports the library infrastructure and is not intended to 
+    /// be used directly from your code.
+    /// </summary>
 
     [ Serializable ]
     public abstract class JsonTraderCollection : ICollection

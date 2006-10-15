@@ -283,11 +283,6 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\JsonTraderCollection.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "Json\JsonWriter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -539,6 +534,11 @@
                 />
                 <File
                     RelPath = "Json\Rpc\Web\JsonRpcWebTraceAdapter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Serialization\JsonTraderCollection.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
