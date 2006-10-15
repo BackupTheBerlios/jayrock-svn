@@ -32,7 +32,7 @@ namespace Jayrock.Json.Serialization.Import.Importers
 
     #endregion
 
-    public sealed class JsonImporterStock
+    internal sealed class JsonImporters
     {
         // TODO: Review if these are still needed.
         // JsonImporterStock.Find provides the same functionality.
@@ -57,7 +57,7 @@ namespace Jayrock.Json.Serialization.Import.Importers
         
         [ ThreadStatic ] private static IJsonImporterRegistry _registry;
 
-        static JsonImporterStock()
+        static JsonImporters()
         {
             Byte = NumberImporter.Byte;         
             Int16 = NumberImporter.Int16;       
@@ -120,7 +120,7 @@ namespace Jayrock.Json.Serialization.Import.Importers
             ValueChangingEventHandler handler = RegistryChanging;
                 
             if (handler != null)
-                handler(typeof(JsonImporterStock), new ValueChangingEventArgs(registry));
+                handler(typeof(JsonImporters), new ValueChangingEventArgs(registry));
             
             _registry = registry;
         }
@@ -163,7 +163,7 @@ namespace Jayrock.Json.Serialization.Import.Importers
             return new JsonArray();
         }
 
-        private JsonImporterStock()
+        private JsonImporters()
         {
             throw new NotSupportedException();
         }

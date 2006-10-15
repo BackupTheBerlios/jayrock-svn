@@ -144,7 +144,7 @@ namespace Jayrock.Json.Serialization.Import.Importers
         private object Parse(string s)
         {
             JsonTextReader reader = new JsonTextReader(new StringReader(s));
-            object value = JsonImporterStock.Auto.Import(reader, null);
+            object value = JsonImport.Import(reader);
             Assert.IsTrue(reader.EOF);
             return value;
         }

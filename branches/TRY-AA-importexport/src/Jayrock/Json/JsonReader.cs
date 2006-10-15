@@ -293,7 +293,7 @@ namespace Jayrock.Json
             get
             {
                 if (_importers == null)
-                    _importers = JsonImporterStock.Registry;
+                    _importers = JsonImporters.Registry;
                 
                 return _importers;
             }
