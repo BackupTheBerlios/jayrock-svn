@@ -47,7 +47,7 @@ namespace Jayrock.Json.Serialization.Export
                 return;
             }
 
-            IJsonExporter exporter = JsonExporters.Find(value.GetType());
+            IJsonExporter exporter = TryGetExporter(value.GetType());
                 
             if (exporter != null)
                 exporter.Export(value, writer, context);
@@ -55,6 +55,21 @@ namespace Jayrock.Json.Serialization.Export
                 writer.WriteString(value.ToString());
         }
         
+        public static IJsonExporter TryGetExporter(Type type)
+        {
+            return JsonExporters.Find(type);
+        }
+        
+        public static IJsonExporter GetExporter(Type type)
+        {
+            IJsonExporter exporter = TryGetExporter(type);
+                
+            if (exporter == null)
+                throw new ArgumentException(string.Format("No JSON exporter exists for {0}.", type.FullName), "type");
+            
+            return exporter;
+        }
+
         private JsonExport()
         {
             throw new NotSupportedException();
