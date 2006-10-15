@@ -163,22 +163,6 @@ namespace Jayrock.Json
             Assert.AreEqual("[[1,2,3],[1,2,3],[1,2,3]]", WriteValue(outer));
         }
 
-        /* TODO: Remove
-        [ Test, Ignore ]
-        public void WriteCustom()
-        {
-            ConfigurationSetup setup = new ConfigurationSetup();
-            setup.AddExporter(typeof(StringArrayExporter));
-            Jayrock.Configuration.SimpleConfigurationProvider configProvider = new SimpleConfigurationProvider();
-            configProvider.Register(typeof(Jayrock.Json.Configuration.Configuration), setup);
-            ConfigurationSystem.SetTestProvider(configProvider);
-            JsonTextWriter writer = new JsonTextWriter(new StringWriter());
-            //writer.ValueFormatter = new StringArrayFormatter();
-            writer.WriteValue(new object[] { 1, 2, 3, "Four", 5 });
-            Assert.AreEqual("\"1,2,3,Four,5\"", writer.ToString());
-        }
-        */
-
         [ Test ]
         public void WriteFromReader()
         {
