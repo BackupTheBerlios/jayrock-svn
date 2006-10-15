@@ -20,13 +20,12 @@
 //
 #endregion
 
-namespace Jayrock.Json
+namespace Jayrock.Json.Serialization.Export
 {
     #region Imports
 
     using System;
     using System.Collections;
-    using Jayrock.Json.Serialization.Export;
 
     #endregion
 

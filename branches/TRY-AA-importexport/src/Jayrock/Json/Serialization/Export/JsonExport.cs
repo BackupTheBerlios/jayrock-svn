@@ -20,12 +20,11 @@
 //
 #endregion
 
-namespace Jayrock.Json
+namespace Jayrock.Json.Serialization.Export
 {
     #region Imports
 
     using System;
-    using Jayrock.Json.Serialization.Export;
     using Jayrock.Json.Serialization.Export.Exporters;
 
     #endregion
@@ -63,7 +62,7 @@ namespace Jayrock.Json
             throw new NotSupportedException();
         }
     }
-    
+
     public sealed class JsonExportContext
     {
         private readonly JsonWriter _writer;

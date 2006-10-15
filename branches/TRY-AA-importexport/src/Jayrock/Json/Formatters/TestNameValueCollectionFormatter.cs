@@ -26,6 +26,7 @@ namespace Jayrock.Json.Formatters
 
     using System;
     using System.Collections.Specialized;
+    using Jayrock.Json.Serialization.Export;
     using NUnit.Framework;
 
     #endregion

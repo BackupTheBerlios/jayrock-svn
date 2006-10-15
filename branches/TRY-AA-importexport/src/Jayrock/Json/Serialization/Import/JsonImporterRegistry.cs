@@ -20,18 +20,16 @@
 //
 #endregion
 
-namespace Jayrock.Json
+namespace Jayrock.Json.Serialization.Import
 {
     #region Imports
 
     using System;
     using System.Collections;
     using System.Diagnostics;
-    using Jayrock.Json.Serialization.Import.Importers;
-    using Jayrock.Json.Serialization.Import;
 
     #endregion
-    
+
     [ Serializable ]
     public sealed class JsonImporterRegistry : JsonTraderCollection, IJsonImporterRegistry
     {
