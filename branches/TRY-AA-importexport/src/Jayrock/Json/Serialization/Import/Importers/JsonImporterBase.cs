@@ -20,30 +20,52 @@
 //
 #endregion
 
-namespace Jayrock.Json.Importers
+namespace Jayrock.Json.Serialization.Import.Importers
 {
     #region Imports
 
     using System;
+    using Jayrock.Json.Serialization.Import;
 
     #endregion
 
-    public sealed class StringImporter : JsonImporterBase
+    public abstract class JsonImporterBase : IJsonImporter
     {
-        public StringImporter() : 
-            base(typeof(string)) { }
+        private readonly Type _outputType;
 
-        protected override object ImportValue(JsonReader reader)
+        protected JsonImporterBase(Type outputType)
+        {
+            if (outputType == null)
+                throw new ArgumentNullException("outputType");
+            
+            _outputType = outputType;
+        }
+
+        public Type OutputType
+        {
+            get { return _outputType; }
+        }
+
+        public virtual object Import(JsonReader reader)
         {
             if (reader == null)
                 throw new ArgumentNullException("reader");
             
-            if (reader.TokenClass != JsonTokenClass.String && 
-                reader.TokenClass != JsonTokenClass.Number &&
-                reader.TokenClass != JsonTokenClass.Boolean)
-                throw new JsonException(string.Format("Found {0} where expecting a JSON String.", reader.TokenClass));
+            if (!reader.MoveToContent())
+                throw new JsonException("Unexpected EOF.");
             
-            return reader.Text;
+            object o = null;
+            
+            if (reader.TokenClass != JsonTokenClass.Null)
+                o = ImportValue(reader);
+            
+            reader.Read();
+            return o;
+        }
+
+        protected virtual object ImportValue(JsonReader reader)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -33,6 +33,7 @@ namespace Jayrock.Json.Rpc
     using System.IO;
     using System.Web.UI;
     using Jayrock.Json.Formatters;
+    using Jayrock.Json.Serialization.Import;
 
     #endregion
 

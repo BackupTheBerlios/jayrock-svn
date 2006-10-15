@@ -20,51 +20,56 @@
 //
 #endregion
 
-namespace Jayrock.Json.Importers
+namespace Jayrock.Json.Serialization.Import.Importers
 {
-    #region Imports
+    #region Importer
 
     using System;
+    using Jayrock.Json.Serialization.Import;
 
     #endregion
 
-    public abstract class JsonImporterBase : IJsonImporter
+    public sealed class ImportAwareImporterFamily : IJsonImporterFamily
     {
-        private readonly Type _outputType;
-
-        protected JsonImporterBase(Type outputType)
+        public IJsonImporter Page(Type type)
         {
-            if (outputType == null)
-                throw new ArgumentNullException("outputType");
-            
-            _outputType = outputType;
+            return typeof(IJsonImportable).IsAssignableFrom(type) ? 
+                new ImportableImporter(type) : null;
         }
+    }
 
-        public Type OutputType
+    public sealed class ImportableImporter : JsonImporterBase
+    {
+        private readonly ObjectCreationHandler _creator;
+        
+        public ImportableImporter(Type type) : 
+            this(type, null) {}
+
+        public ImportableImporter(Type type, ObjectCreationHandler creator) :
+            base(type)
         {
-            get { return _outputType; }
+            _creator = creator;
         }
-
-        public virtual object Import(JsonReader reader)
+        
+        public override object Import(JsonReader reader)
         {
-            if (reader == null)
+            if (reader == null) 
                 throw new ArgumentNullException("reader");
+
+            reader.MoveToContent();
             
-            if (!reader.MoveToContent())
-                throw new JsonException("Unexpected EOF.");
+            if (reader.TokenClass == JsonTokenClass.Null)
+                return null;
             
-            object o = null;
-            
-            if (reader.TokenClass != JsonTokenClass.Null)
-                o = ImportValue(reader);
-            
-            reader.Read();
+            IJsonImportable o = (IJsonImportable) CreateObject();
+            o.Import(reader);
             return o;
         }
 
-        protected virtual object ImportValue(JsonReader reader)
+        private object CreateObject()
         {
-            throw new NotImplementedException();
+            return _creator == null ? 
+                   Activator.CreateInstance(OutputType) : _creator(null);
         }
     }
 }

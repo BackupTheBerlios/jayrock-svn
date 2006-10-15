@@ -20,10 +20,30 @@
 //
 #endregion
 
-namespace Jayrock.Json
+namespace Jayrock.Json.Serialization.Import
 {
-    public interface IJsonImportable
+    #region Imports
+
+    using System;
+    using System.Collections;
+
+    #endregion
+
+    public interface IJsonImporter
     {
-        void Import(JsonReader reader);
+        Type OutputType { get; }
+        object Import(JsonReader reader);
+    }
+
+    public interface IJsonImporterFamily
+    {
+        IJsonImporter Page(Type type);
+    }
+
+    public interface IJsonImporterRegistry : ICollection
+    {
+        IJsonImporter Find(Type type);
+        void Register(IJsonImporter importer);
+        void Register(IJsonImporterFamily importerFamily);
     }
 }
