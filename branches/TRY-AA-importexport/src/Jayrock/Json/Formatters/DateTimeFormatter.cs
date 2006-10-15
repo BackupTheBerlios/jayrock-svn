@@ -90,10 +90,10 @@ namespace Jayrock.Json.Serialization.Export.Exporters
         public DateTimeExporter() : 
             base(typeof(DateTime)) {}
 
-        protected override void SubExport(JsonExportContext context, object value) // FIXME: Merge in DateTimeFormatter
+        protected override void SubExport(object value, JsonWriter writer, object context) // FIXME: Merge in DateTimeFormatter
         {
             DateTimeFormatter formatter = new DateTimeFormatter();
-            formatter.Format(value, context.Writer);
+            formatter.Format(value, writer);
         }
     }
 }

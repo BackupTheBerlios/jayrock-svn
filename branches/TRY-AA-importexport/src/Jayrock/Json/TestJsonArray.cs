@@ -59,7 +59,7 @@ namespace Jayrock.Json
         {
             JsonArray a = new JsonArray(new object[] { 123, "Hello World", true });
             JsonRecorder writer = new JsonRecorder();
-            a.Export(new JsonExportContext(writer));
+            a.Export(writer, null);
             JsonReader reader = writer.CreatePlayer();
             reader.ReadToken(JsonTokenClass.Array);
             Assert.AreEqual(a[0], reader.ReadNumber().ToInt32());

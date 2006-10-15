@@ -89,12 +89,12 @@ namespace Jayrock.Json
             writer.WriteNull();
         }
 
-        public void Export(JsonExportContext context)
+        public void Export(JsonWriter writer, object context)
         {
-            if (context == null)
-                throw new ArgumentNullException("context");
+            if (writer == null)
+                throw new ArgumentNullException("writer");
             
-            context.Writer.WriteNull();
+            writer.WriteNull();
         }
 
         object IObjectReference.GetRealObject(StreamingContext context)

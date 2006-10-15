@@ -156,7 +156,7 @@ namespace Jayrock.Json
         {
             TestJsonWriter writer = new TestJsonWriter();
             IJsonExportable number = Number("123");
-            number.Export(new JsonExportContext(writer));
+            number.Export(writer, null);
             Assert.AreEqual("123", writer.WrittenValue);
         }
 

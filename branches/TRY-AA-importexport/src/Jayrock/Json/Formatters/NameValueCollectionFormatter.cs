@@ -108,10 +108,10 @@ namespace Jayrock.Json.Serialization.Export.Exporters
         public NameValueCollectionExporter(Type inputType) : 
             base(inputType) {}
 
-        protected override void SubExport(JsonExportContext context, object value)
+        protected override void SubExport(object value, JsonWriter writer, object context)
         {
             NameValueCollectionFormatter formatter = new NameValueCollectionFormatter();
-            formatter.Format(value, context.Writer);
+            formatter.Format(value, writer);
         }
     }
 }

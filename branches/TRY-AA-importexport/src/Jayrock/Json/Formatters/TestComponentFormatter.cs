@@ -348,9 +348,9 @@ namespace Jayrock.Json.Formatters
                 formatter.Format(this, writer);
             }
 
-            public void Export(JsonExportContext context)
+            public void Export(JsonWriter writer, object context)
             {
-                Format(context.Writer);
+                Format(writer);
             }
         }
     }

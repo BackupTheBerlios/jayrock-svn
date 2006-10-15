@@ -43,10 +43,8 @@ namespace Jayrock.Json.Serialization.Export.Exporters
         public DictionaryExporter(Type inputType) : 
             base(inputType) {}
 
-        protected override void SubExport(JsonExportContext context, object value)
+        protected override void SubExport(object value, JsonWriter writer, object context)
         {
-            JsonWriter writer = context.Writer;
-            
             writer.WriteStartObject();
             
             IDictionary dictionary = (IDictionary) value;
@@ -54,7 +52,7 @@ namespace Jayrock.Json.Serialization.Export.Exporters
             foreach (DictionaryEntry entry in dictionary)
             {
                 writer.WriteMember(entry.Key.ToString());
-                context.Export(entry.Value);
+                JsonExport.Export(entry.Value, writer, context);
             }
             
             writer.WriteEndObject();

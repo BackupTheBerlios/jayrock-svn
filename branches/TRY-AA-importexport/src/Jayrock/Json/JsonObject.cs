@@ -237,13 +237,8 @@ namespace Jayrock.Json
             writer.WriteEndObject();
         }
 
-        public void Export(JsonExportContext context)
+        public void Export(JsonWriter writer, object context)
         {
-            if (context == null)
-                throw new ArgumentNullException("context");
-            
-            JsonWriter writer = context.Writer;
-            
             if (writer == null)
                 throw new ArgumentNullException("writer");
 
@@ -252,7 +247,7 @@ namespace Jayrock.Json
             foreach (string name in NameIndexList)
             {
                 writer.WriteMember(name);    
-                context.Export(InnerHashtable[name]);
+                JsonExport.Export(InnerHashtable[name], writer, context);
             }
 
             writer.WriteEndObject();

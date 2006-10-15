@@ -32,9 +32,9 @@ namespace Jayrock.Json.Serialization.Export.Exporters
     {
         public StringExporter() : base(typeof(string)) {}
 
-        protected override void SubExport(JsonExportContext context, object value)
+        protected override void SubExport(object value, JsonWriter writer, object context)
         {
-            context.Writer.WriteString(value.ToString());
+            writer.WriteString(value.ToString());
         }
     }
 }

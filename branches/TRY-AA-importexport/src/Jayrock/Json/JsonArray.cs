@@ -196,17 +196,15 @@ namespace Jayrock.Json
             writer.WriteArray(this);
         }
 
-        public virtual void Export(JsonExportContext context)
+        public virtual void Export(JsonWriter writer, object context)
         {
-            if (context == null)
-                throw new ArgumentNullException("context");
+            if (writer == null)
+                throw new ArgumentNullException("writer");
 
-            JsonWriter writer = context.Writer;
-            
             writer.WriteStartArray();
 
             foreach (object item in this)
-                context.Export(item);
+                JsonExport.Export(item, writer, context);
 
             writer.WriteEndArray();
         }

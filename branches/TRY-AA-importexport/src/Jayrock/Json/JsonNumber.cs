@@ -289,12 +289,12 @@ namespace Jayrock.Json
             writer.WriteNumber(Value);
         }
 
-        public void Export(JsonExportContext context)
+        public void Export(JsonWriter writer, object context)
         {
-            if (context == null)
-                throw new ArgumentNullException("context");
+            if (writer == null)
+                throw new ArgumentNullException("writer");
             
-            context.Writer.WriteNumber(Value);
+            writer.WriteNumber(Value);
         }
     }
 }

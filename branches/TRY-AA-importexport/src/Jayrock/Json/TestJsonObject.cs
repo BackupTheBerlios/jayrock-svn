@@ -188,7 +188,7 @@ namespace Jayrock.Json
             o.Put("String", "Hello World");
             o.Put("Boolean", true);
             JsonRecorder writer = new JsonRecorder();
-            o.Export(new JsonExportContext(writer));
+            o.Export(writer, null);
             JsonReader reader = writer.CreatePlayer();
             reader.ReadToken(JsonTokenClass.Object);
             string[] members = (string[]) o.GetNamesArray().ToArray(typeof(string));

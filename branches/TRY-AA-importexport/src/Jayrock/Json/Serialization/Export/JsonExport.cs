@@ -33,16 +33,14 @@ namespace Jayrock.Json.Serialization.Export
     {
         public static void Export(object value, JsonWriter writer)
         {
-            Export(new JsonExportContext(writer), value);
+            Export(value, writer, null);
         }
 
-        public static void Export(JsonExportContext context, object value)
+        public static void Export(object value, JsonWriter writer, object context)
         {
-            if (context == null)
-                throw new ArgumentNullException("context");
+            if (writer == null)
+                throw new ArgumentNullException("writer");
 
-            JsonWriter writer = context.Writer;
-            
             if (value == null)
             {
                 writer.WriteNull();
@@ -52,7 +50,7 @@ namespace Jayrock.Json.Serialization.Export
             IJsonExporter exporter = JsonExporters.Find(value.GetType());
                 
             if (exporter != null)
-                exporter.Export(context, value);
+                exporter.Export(value, writer, context);
             else
                 writer.WriteString(value.ToString());
         }
@@ -60,29 +58,6 @@ namespace Jayrock.Json.Serialization.Export
         private JsonExport()
         {
             throw new NotSupportedException();
-        }
-    }
-
-    public sealed class JsonExportContext
-    {
-        private readonly JsonWriter _writer;
-
-        public JsonExportContext(JsonWriter writer)
-        {
-            if (writer == null)
-                throw new ArgumentNullException("writer");
-            
-            _writer = writer;
-        }
-
-        public JsonWriter Writer
-        {
-            get { return _writer; }
-        }
-        
-        public void Export(object value)
-        {
-            JsonExport.Export(this, value);
         }
     }
 }

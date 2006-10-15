@@ -45,19 +45,17 @@ namespace Jayrock.Json.Serialization.Export.Exporters
             get { return _inputType; }
         }
 
-        public virtual void Export(JsonExportContext context, object value)
+        public virtual void Export(object value, JsonWriter writer, object context)
         {
-            if (context == null)
-                throw new ArgumentNullException("context");
+            if (writer == null)
+                throw new ArgumentNullException("writer");
 
-            JsonWriter writer = context.Writer;
-            
             if (value == null)
                 writer.WriteNull();
             else
-                SubExport(context, value);
+                SubExport(value, writer, context);
         }
 
-        protected abstract void SubExport(JsonExportContext context, object value);
+        protected abstract void SubExport(object value, JsonWriter writer, object context);
     }
 }
