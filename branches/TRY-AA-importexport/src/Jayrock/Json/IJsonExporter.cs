@@ -31,7 +31,7 @@ namespace Jayrock.Json
     public interface IJsonExporter
     {
         Type InputType { get; }
-        void Export(object value, JsonWriter writer);
+        void Export(JsonExportContext context, object value);
     }
     
     public interface IJsonExporterFamily

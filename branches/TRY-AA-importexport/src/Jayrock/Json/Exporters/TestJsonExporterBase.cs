@@ -47,7 +47,7 @@ namespace Jayrock.Json.Exporters
         }
 
         [ Test, ExpectedException(typeof(ArgumentNullException)) ]
-        public void CannotUseNullWriter()
+        public void CannotUseNullContext()
         {
             _exporter.Export(null, null);
         }
@@ -55,7 +55,7 @@ namespace Jayrock.Json.Exporters
         private JsonReader Export(object value)
         {
             JsonRecorder writer = new JsonRecorder();
-            _exporter.Export(value, writer);
+            _exporter.Export(new JsonExportContext(writer), value);
             return writer.CreatePlayer();
         }
         
@@ -66,8 +66,8 @@ namespace Jayrock.Json.Exporters
         private class ThingExporter : JsonExporterBase
         {
             public ThingExporter() : base(typeof(Thing)) {}
-
-            protected override void SubExport(object value, JsonWriter writer)
+            
+            protected override void SubExport(JsonExportContext context, object value)
             {
             }
         }

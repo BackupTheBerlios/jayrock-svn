@@ -65,7 +65,7 @@ namespace Jayrock.Json
             if (o == null)
                 writer.WriteNull();
             else
-                Find(o.GetType()).Export(o, writer);
+                Find(o.GetType()).Export(null, o);
         }
     }
 }

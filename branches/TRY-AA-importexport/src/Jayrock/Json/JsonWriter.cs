@@ -223,7 +223,7 @@ namespace Jayrock.Json
 
         public virtual void WriteValue(object value)
         {
-            JsonExport.Export(value, this);
+            ValueFormatter.Format(value, this);
         }
                 
         public void WriteValueFromReader(JsonReader reader) // FIXME: Make virtual

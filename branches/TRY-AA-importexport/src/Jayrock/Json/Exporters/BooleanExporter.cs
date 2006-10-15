@@ -33,9 +33,9 @@ namespace Jayrock.Json.Exporters
     {
         public BooleanExporter() : base(typeof(bool)) { }
 
-        protected override void SubExport(object value, JsonWriter writer)
+        protected override void SubExport(JsonExportContext context, object value)
         {
-            writer.WriteBoolean((bool) value);
+            context.Writer.WriteBoolean((bool) value);
         }
     }
 }

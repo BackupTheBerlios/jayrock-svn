@@ -29,12 +29,19 @@ namespace Jayrock.Json
 
     #endregion
 
-    internal sealed class JsonExport
+    public sealed class JsonExport
     {
         public static void Export(object value, JsonWriter writer)
         {
-            if (writer == null)
-                throw new ArgumentNullException("writer");
+            Export(new JsonExportContext(writer), value);
+        }
+
+        public static void Export(JsonExportContext context, object value)
+        {
+            if (context == null)
+                throw new ArgumentNullException("context");
+
+            JsonWriter writer = context.Writer;
             
             if (value == null)
             {
@@ -45,14 +52,37 @@ namespace Jayrock.Json
             IJsonExporter exporter = JsonExporters.Find(value.GetType());
                 
             if (exporter != null)
-                exporter.Export(value, writer);
-            else 
+                exporter.Export(context, value);
+            else
                 writer.WriteString(value.ToString());
         }
         
         private JsonExport()
         {
             throw new NotSupportedException();
+        }
+    }
+    
+    public sealed class JsonExportContext
+    {
+        private readonly JsonWriter _writer;
+
+        public JsonExportContext(JsonWriter writer)
+        {
+            if (writer == null)
+                throw new ArgumentNullException("writer");
+            
+            _writer = writer;
+        }
+
+        public JsonWriter Writer
+        {
+            get { return _writer; }
+        }
+        
+        public void Export(object value)
+        {
+            JsonExport.Export(this, value);
         }
     }
 }

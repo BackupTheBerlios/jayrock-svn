@@ -41,7 +41,7 @@ namespace Jayrock.Json.Exporters
         public void ExportNull()
         {
             JsonRecorder writer = new JsonRecorder();
-            CreateExporter().Export(null, writer);
+            CreateExporter().Export(new JsonExportContext(writer), null);
             writer.CreatePlayer().ReadNull();
         }
 
@@ -50,7 +50,7 @@ namespace Jayrock.Json.Exporters
         {
             JsonRecorder writer = new JsonRecorder();
             object sample = SampleValue;
-            CreateExporter().Export(sample, writer);
+            CreateExporter().Export(new JsonExportContext(writer), sample);
             object actual = Convert.ChangeType(writer.CreatePlayer().ReadNumber(), sample.GetType());
             Assert.IsInstanceOfType(sample.GetType(), actual);
             Assert.AreEqual(sample, actual);

@@ -43,8 +43,10 @@ namespace Jayrock.Json.Exporters
         public DictionaryExporter(Type inputType) : 
             base(inputType) {}
 
-        protected override void SubExport(object value, JsonWriter writer)
+        protected override void SubExport(JsonExportContext context, object value)
         {
+            JsonWriter writer = context.Writer;
+            
             writer.WriteStartObject();
             
             IDictionary dictionary = (IDictionary) value;

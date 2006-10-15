@@ -117,16 +117,16 @@ namespace Jayrock.Json.Exporters
                 typeDescriptor.GetProperties() : TypeDescriptor.GetProperties(inputType);
         }
 
-        protected override void SubExport(object value, JsonWriter writer)
+        protected override void SubExport(JsonExportContext context, object value)
         {
             if (_properties.Count == 0)
             {
-                writer.WriteString(value.ToString());
+                context.Writer.WriteString(value.ToString());
             }
             else
             {
                 ComponentFormatter formatter = new ComponentFormatter(_properties);
-                formatter.Format(value, writer);
+                formatter.Format(value, context.Writer);
             }
         }
     }

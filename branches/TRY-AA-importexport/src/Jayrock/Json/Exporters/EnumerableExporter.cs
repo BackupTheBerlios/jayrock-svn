@@ -46,9 +46,18 @@ namespace Jayrock.Json.Exporters
         public EnumerableExporter(Type inputType) : 
             base(inputType) {}
 
-        protected override void SubExport(object value, JsonWriter writer)
+        protected override void SubExport(JsonExportContext context, object value)
         {
-            writer.WriteArray((IEnumerable) value);
+            IEnumerable items = (IEnumerable) value;
+
+            JsonWriter writer = context.Writer;
+            
+            writer.WriteStartArray();
+
+            foreach (object item in items)
+                context.Export(item);
+
+            writer.WriteEndArray();
         }
     }
 }

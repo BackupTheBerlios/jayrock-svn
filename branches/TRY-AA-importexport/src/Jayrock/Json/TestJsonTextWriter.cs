@@ -189,7 +189,7 @@ namespace Jayrock.Json
             public StringArrayExporter() : 
                 base(typeof(object[])) {}
             
-            protected override void SubExport(object value, JsonWriter writer)
+            protected override void SubExport(JsonExportContext context, object value)
             {
                 IEnumerable enumerable = (IEnumerable) value;
 
@@ -198,7 +198,7 @@ namespace Jayrock.Json
                 foreach (object item in enumerable)
                     list.Add(item == null ? null : item.ToString());
 
-                writer.WriteString(string.Join(",", (string[]) list.ToArray(typeof(string))));
+                context.Writer.WriteString(string.Join(",", (string[]) list.ToArray(typeof(string))));
             }
         }
 
