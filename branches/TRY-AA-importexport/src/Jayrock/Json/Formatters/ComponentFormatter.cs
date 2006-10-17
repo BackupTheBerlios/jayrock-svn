@@ -98,8 +98,9 @@ namespace Jayrock.Json.Serialization.Export.Exporters
             if (type == null)
                 throw new ArgumentNullException("type");
 
-            return (type.IsPublic || type.IsNestedPublic) && type.GetConstructor(Type.EmptyTypes) != null ? 
-                new ComponentExporter(type) : null;
+            return (type.IsPublic || type.IsNestedPublic) && 
+                   !type.IsPrimitive && type.GetConstructor(Type.EmptyTypes) != null ? 
+                   new ComponentExporter(type) : null;
         }
     }
 

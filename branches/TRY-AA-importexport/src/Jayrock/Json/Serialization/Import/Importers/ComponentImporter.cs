@@ -37,8 +37,9 @@ namespace Jayrock.Json.Serialization.Import.Importers
             if (type == null)
                 throw new ArgumentNullException("type");
 
-            return (type.IsPublic || type.IsNestedPublic) && type.GetConstructor(Type.EmptyTypes) != null ? 
-                new ComponentImporter(type) : null;
+            return (type.IsPublic || type.IsNestedPublic) && 
+                   !type.IsPrimitive && type.GetConstructor(Type.EmptyTypes) != null ? 
+                   new ComponentImporter(type) : null;
         }
     }
 
