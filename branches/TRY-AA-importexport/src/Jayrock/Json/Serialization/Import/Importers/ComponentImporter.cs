@@ -29,6 +29,18 @@ namespace Jayrock.Json.Serialization.Import.Importers
     using System.Reflection;
 
     #endregion
+    
+    public sealed class ComponentImporterFamily : IJsonImporterFamily
+    {
+        public IJsonImporter Page(Type type)
+        {
+            if (type == null)
+                throw new ArgumentNullException("type");
+
+            return (type.IsPublic || type.IsNestedPublic) && type.GetConstructor(Type.EmptyTypes) != null ? 
+                new ComponentImporter(type) : null;
+        }
+    }
 
     public sealed class ComponentImporter : JsonImporterBase
     {
