@@ -39,9 +39,9 @@ namespace Jayrock.Json.Conversion
     [ Serializable ]
     public abstract class JsonConverterCollection : ICollection
     {
-        private readonly Hashtable _traderByType = new Hashtable();
+        private readonly Hashtable _converterByType = new Hashtable();
         private ArrayList _familyList;
-        [ NonSerialized ] private readonly Hashtable _traderByTypeCache = Hashtable.Synchronized(new Hashtable());
+        [ NonSerialized ] private readonly Hashtable _converterByTypeCache = Hashtable.Synchronized(new Hashtable());
         [ NonSerialized ] private object[] _cachedRegistrations;
         [ NonSerialized ] private object _syncRoot;
 
@@ -54,18 +54,18 @@ namespace Jayrock.Json.Conversion
             // First look up cache for previously served requests.
             //
             
-            object trader = _traderByTypeCache[type];
+            object converter = _converterByTypeCache[type];
             
-            if (trader != null)
-                return trader;
+            if (converter != null)
+                return converter;
 
             //
             // Next, look up explicit type registrations.
             //
             
-            trader = _traderByType[type];
+            converter = _converterByType[type];
             
-            if (trader == null)
+            if (converter == null)
             {
                 //
                 // No luck using an exact matching type so far so we ask
@@ -75,9 +75,9 @@ namespace Jayrock.Json.Conversion
             
                 foreach (object family in Families)
                 {
-                    trader = Page(family, type);
+                    converter = Page(family, type);
                 
-                    if (trader != null)
+                    if (converter != null)
                         break;
                 }
             }
@@ -88,21 +88,21 @@ namespace Jayrock.Json.Conversion
             // again.
             //
             
-            if (trader != null)
-                _traderByTypeCache.Add(type, trader);
+            if (converter != null)
+                _converterByTypeCache.Add(type, converter);
             
-            return trader;
+            return converter;
         }
 
         protected abstract object Page(object family, Type type);
 
-        protected void Register(Type type, object trader)
+        protected void Register(Type type, object converter)
         {
-            if (trader == null)
-                throw new ArgumentNullException("trader");
+            if (converter == null)
+                throw new ArgumentNullException("converter");
             
             InvalidateCaches();
-            _traderByType[type] = trader;
+            _converterByType[type] = converter;
         }
 
         protected void RegisterFamily(object family)
@@ -116,7 +116,7 @@ namespace Jayrock.Json.Conversion
 
         protected void InvalidateCaches()
         {
-            _traderByTypeCache.Clear();
+            _converterByTypeCache.Clear();
             _cachedRegistrations = null;
         }
 
@@ -138,7 +138,7 @@ namespace Jayrock.Json.Conversion
 
         public int Count
         {
-            get { return _traderByType.Count + (HasFamilies ? Families.Count : 0); }
+            get { return _converterByType.Count + (HasFamilies ? Families.Count : 0); }
         }
 
         public IEnumerator GetEnumerator()
@@ -163,11 +163,11 @@ namespace Jayrock.Json.Conversion
             {
                 object[] registrations = new object[Count];
 
-                ICollection importers = _traderByType.Values;
-                importers.CopyTo(registrations, 0);
+                ICollection converters = _converterByType.Values;
+                converters.CopyTo(registrations, 0);
 
                 if (HasFamilies)
-                    Families.CopyTo(registrations, importers.Count);
+                    Families.CopyTo(registrations, converters.Count);
                 
                 _cachedRegistrations = registrations;
             }
