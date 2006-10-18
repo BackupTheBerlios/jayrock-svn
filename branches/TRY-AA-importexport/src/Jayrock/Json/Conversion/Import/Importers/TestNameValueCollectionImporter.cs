@@ -95,6 +95,17 @@ namespace Jayrock.Json.Conversion.Import.Importers
             Import("{\"foo\":{}}");
         }
 
+        [ Test ]
+        public void PositionAfterImport()
+        {
+            JsonReader reader = new JsonTextReader(new StringReader("[{},'end']"));
+            reader.ReadToken(JsonTokenClass.Array);
+            Assert.AreSame(JsonTokenClass.Object, reader.TokenClass);
+            IJsonImporter importer = new NameValueCollectionImporter();
+            importer.Import(reader);
+            Assert.AreEqual("end", reader.ReadString());
+        }
+
         private static NameValueCollection UncheckImport(string s)
         {
             JsonReader reader = new JsonTextReader(new StringReader(s));

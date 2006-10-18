@@ -88,8 +88,6 @@ namespace Jayrock.Json.Conversion.Import.Importers
                 reader.Read(); // EndArray/String
             }
             
-            reader.Read(); // EndObject
-            
             return collection;
         }
 
