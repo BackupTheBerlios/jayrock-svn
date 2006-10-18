@@ -32,8 +32,6 @@ namespace Jayrock.Json.Rpc
     using System.Diagnostics;
     using System.IO;
     using System.Web.UI;
-    using Jayrock.Json.Formatters;
-    using Jayrock.Json.Conversion.Import;
 
     #endregion
 
@@ -335,28 +333,7 @@ namespace Jayrock.Json.Rpc
             JsonWriter writer = (JsonWriter) _serviceProvider.GetService(typeof(JsonWriter));
             
             if (writer == null)
-            {
-                IJsonFormatter formatter = (IJsonFormatter) _serviceProvider.GetService(typeof(IJsonFormatter));
-                
-                if (formatter == null)
-                {
-                    CompositeFormatter stock = new CompositeFormatter();
-
-                    stock.AddFormatter(typeof(DateTime), new DateTimeFormatter());
-                    stock.AddFormatter(typeof(DataSet), new DataSetFormatter(), true);
-                    stock.AddFormatter(typeof(DataTable), new DataTableFormatter(), true);
-                    stock.AddFormatter(typeof(DataView), new DataViewFormatter(), true);
-                    stock.AddFormatter(typeof(DataRowView), new DataRowViewFormatter(), true);
-                    stock.AddFormatter(typeof(DataRow), new DataRowFormatter(), true);
-                    stock.AddFormatter(typeof(NameValueCollection), new NameValueCollectionFormatter(), true);
-                    stock.AddFormatter(typeof(Control), new ControlFormatter(), true);
-                    
-                    formatter = stock;
-                }
-                
                 writer = new JsonTextWriter(output);
-                writer.ValueFormatter = formatter;
-            }
 
             writer.WriteValue(response);
         }

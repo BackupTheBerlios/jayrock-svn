@@ -104,9 +104,9 @@ namespace Jayrock.Json
         }
 
         [ Test, ExpectedException(typeof(ArgumentNullException)) ]
-        public void CannotUseNullArgWithFormat()
+        public void CannotUseNullArgWithExport()
         {
-            (new JsonArray()).Format(null);
+            (new JsonArray()).Export(null);
         }
     }
 }

@@ -20,61 +20,6 @@
 //
 #endregion
 
-namespace Jayrock.Json.Formatters
-{
-    #region Imports
-
-    using System;
-    using System.ComponentModel;
-    using System.Diagnostics;
-
-    #endregion
-
-    public sealed class ComponentFormatter : JsonFormatter
-    {
-        private PropertyDescriptorCollection _properties;
-
-        public ComponentFormatter() {}
-
-        public ComponentFormatter(PropertyDescriptorCollection properties)
-        {
-            _properties = properties;
-        }
-
-        protected override void FormatOther(object o, JsonWriter writer)
-        {
-            if (writer == null)
-                throw new ArgumentNullException("writer");
-
-            if (JsonNull.LogicallyEquals(o))
-            {
-                FormatNull(o, writer);
-                return;
-            }
-
-            writer.WriteStartObject();
-
-            if (_properties == null)
-                _properties = TypeDescriptor.GetProperties(o);
-
-            foreach (PropertyDescriptor property in _properties)
-            {
-                // TODO: Allow someone to indicate via an attribute (e.g. JsonIgnore) that a property should be excluded.
-
-                object value = property.GetValue(o);
-                
-                if (!JsonNull.LogicallyEquals(value))
-                {
-                    writer.WriteMember(property.Name);
-                    writer.WriteValue(value);
-                }
-            }
-
-            writer.WriteEndObject();
-        }
-    }
-}
-
 namespace Jayrock.Json.Conversion.Export.Exporters
 {
     #region Imports
@@ -82,7 +27,6 @@ namespace Jayrock.Json.Conversion.Export.Exporters
     using System;
     using System.ComponentModel;
     using System.Diagnostics;
-    using Jayrock.Json.Formatters;
 
     #endregion
     
@@ -106,28 +50,48 @@ namespace Jayrock.Json.Conversion.Export.Exporters
 
     public sealed class ComponentExporter : JsonExporterBase
     {
-        private PropertyDescriptorCollection _properties;
+        private PropertyDescriptorCollection _properties; // TODO: Review thread-safety of PropertyDescriptorCollection
 
         public ComponentExporter(Type inputType) :
-            this(inputType, null) {}
+            this(inputType, (ICustomTypeDescriptor) null) {}
 
         public ComponentExporter(Type inputType, ICustomTypeDescriptor typeDescriptor) :
+            this(inputType, typeDescriptor != null ? 
+                            typeDescriptor.GetProperties() : TypeDescriptor.GetProperties(inputType)) {}
+
+        public ComponentExporter(Type inputType, PropertyDescriptorCollection properties) : 
             base(inputType)
         {
-            _properties = typeDescriptor != null ? 
-                typeDescriptor.GetProperties() : TypeDescriptor.GetProperties(inputType);
+            Debug.Assert(properties != null);
+            
+            _properties = properties;
         }
 
         protected override void SubExport(object value, JsonWriter writer)
         {
+            Debug.Assert(value != null);
+            Debug.Assert(writer != null);
+            
             if (_properties.Count == 0)
             {
                 writer.WriteString(value.ToString());
             }
             else
             {
-                ComponentFormatter formatter = new ComponentFormatter(_properties);
-                formatter.Format(value, writer);
+                writer.WriteStartObject();
+
+                foreach (PropertyDescriptor property in _properties)
+                {
+                    object propertyValue = property.GetValue(value);
+                
+                    if (!JsonNull.LogicallyEquals(propertyValue))
+                    {
+                        writer.WriteMember(property.Name);
+                        writer.WriteValue(propertyValue);
+                    }
+                }
+
+                writer.WriteEndObject();
             }
         }
     }

@@ -20,14 +20,38 @@
 //
 #endregion
 
-namespace Jayrock.Json
+namespace Jayrock.Json.Conversion.Export.Exporters
 {
-    /// <summary>
-    /// Defines the contract for formatting an object as JSON.
-    /// </summary>
-    
-    public interface IJsonFormatter
+    #region Imports
+
+    using System;
+    using System.Data;
+    using System.Diagnostics;
+
+    #endregion
+
+    public class DataTableExporter : JsonExporterBase
     {
-        void Format(object o, JsonWriter writer);
+        public DataTableExporter() :
+            this(typeof(DataTable)) {}
+
+        public DataTableExporter(Type inputType) : 
+            base(inputType) {}
+
+        protected override void SubExport(object value, JsonWriter writer)
+        {
+            Debug.Assert(value != null);
+            Debug.Assert(writer != null);
+
+            ExportTable((DataTable) value, writer);
+        }
+
+        internal static void ExportTable(DataTable table, JsonWriter writer)
+        {
+            Debug.Assert(table != null);
+            Debug.Assert(writer != null);
+
+            DataViewExporter.ExportView(table.DefaultView, writer);
+       }
     }
 }

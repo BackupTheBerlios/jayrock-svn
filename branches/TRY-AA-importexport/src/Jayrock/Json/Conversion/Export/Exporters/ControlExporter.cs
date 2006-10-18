@@ -20,7 +20,7 @@
 //
 #endregion
 
-namespace Jayrock.Json.Formatters
+namespace Jayrock.Json.Conversion.Export.Exporters
 {
     #region Imports
 
@@ -33,23 +33,27 @@ namespace Jayrock.Json.Formatters
 
     #endregion
 
-    public sealed class ControlFormatter : JsonFormatter
+    public sealed class ControlExporter : JsonExporterBase
     {
-        public override void Format(object o, JsonWriter writer)
+        public ControlExporter() : 
+            this(typeof(Control)) {}
+
+        public ControlExporter(Type inputType) : 
+            base(inputType) {}
+
+        protected override void SubExport(object value, JsonWriter writer)
         {
-            if (writer == null)
-                throw new ArgumentNullException("writer");
+            Debug.Assert(value != null);
+            Debug.Assert(writer != null);
 
-            Control control = o as Control;
-
-            if (control != null)
-                FormatControl(control, writer);
-            else
-                base.Format(o, writer);
+            ExportControl((Control) value, writer);
         }
 
-        private static void FormatControl(Control control, JsonWriter writer)
+        private static void ExportControl(Control control, JsonWriter writer)
         {
+            Debug.Assert(control != null);
+            Debug.Assert(writer != null);
+
             StringWriter stringWriter = new StringWriter();
             HtmlTextWriter htmlWriter = GetHtmlWriter(stringWriter);
             control.RenderControl(htmlWriter);

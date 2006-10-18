@@ -28,6 +28,7 @@ namespace Jayrock.Json
     using System.Collections;
     using System.Diagnostics;
     using System.Globalization;
+    using Jayrock.Json.Conversion.Export;
     using Jayrock.Json.Conversion.Export.Exporters;
 
     #endregion
@@ -39,8 +40,6 @@ namespace Jayrock.Json
 
     public abstract class JsonWriter
     {
-        private IJsonFormatter _valueFormatter;
-        private static readonly JsonFormatter _defaultFormatter = new JsonFormatter();
         private JsonTokenClass _currentBracket;
         private Stack _brackets;
         
@@ -141,26 +140,6 @@ namespace Jayrock.Json
         protected abstract void WriteBooleanImpl(bool value);
         protected abstract void WriteNullImpl();
         
-        [ Obsolete ]
-        public IJsonFormatter ValueFormatter
-        {
-            get
-            {
-                if (_valueFormatter == null)
-                    return _defaultFormatter;
-
-                return _valueFormatter;
-            }
-            
-            set
-            {
-                if (value == null) 
-                    throw new ArgumentNullException("value");
-                
-                _valueFormatter = value;
-            }
-        }
-
         public virtual void Flush() { }
 
         public void WriteNumber(byte value)
@@ -221,10 +200,9 @@ namespace Jayrock.Json
             }
         }
 
-        [ Obsolete() ]
         public virtual void WriteValue(object value)
         {
-            ValueFormatter.Format(value, this);
+            JsonExport.Export(value, this);
         }
                 
         public void WriteValueFromReader(JsonReader reader) // FIXME: Make virtual

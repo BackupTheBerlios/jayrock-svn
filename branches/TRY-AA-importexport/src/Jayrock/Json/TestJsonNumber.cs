@@ -146,8 +146,8 @@ namespace Jayrock.Json
         public void JsonFormatting()
         {
             TestJsonWriter writer = new TestJsonWriter();
-            IJsonFormattable number = Number("123");
-            number.Format(writer);
+            JsonNumber number = Number("123");
+            number.Export(writer);
             Assert.AreEqual("123", writer.WrittenValue);
         }
 

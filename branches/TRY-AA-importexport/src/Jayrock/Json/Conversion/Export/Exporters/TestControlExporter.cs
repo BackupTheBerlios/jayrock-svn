@@ -20,41 +20,28 @@
 //
 #endregion
 
-namespace Jayrock.Json.Formatters
+namespace Jayrock.Json.Conversion.Export.Exporters
 {
     #region Imports
 
-    using System;
-    using System.Data;
+    using System.Web.UI.HtmlControls;
+    using NUnit.Framework;
 
     #endregion
 
-    public class DataRowViewFormatter : JsonFormatter
+    [ TestFixture ]
+    public class TestControlExporter
     {
-        public override void Format(object o, JsonWriter writer)
+        [ Test ]
+        public void Export()
         {
-            if (writer == null)
-                throw new ArgumentNullException("writer");
-
-            DataRowView rowView = o as DataRowView;
-
-            if (rowView != null)
-                FormatRowView(rowView, writer);
-            else
-                base.Format(o, writer);
-        }
-
-        private static void FormatRowView(DataRowView rowView, JsonWriter writer)
-        {
-            writer.WriteStartObject();
-    
-            foreach (DataColumn column in rowView.DataView.Table.Columns)
-            {
-                writer.WriteMember(column.ColumnName);
-                writer.WriteValue(rowView[column.Ordinal]);
-            }
-    
-            writer.WriteEndObject();
+            ControlExporter exporter = new ControlExporter();
+            JsonTextWriter writer = new JsonTextWriter();
+            HtmlGenericControl span = new HtmlGenericControl("span");
+            span.InnerText = "Happy & shiny people!";
+            exporter.Export(span, writer);
+            Assert.AreEqual("\"<span\\>Happy &amp; shiny people!</span\\>\"", writer.ToString());
         }
     }
 }
+

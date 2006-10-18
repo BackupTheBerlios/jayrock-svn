@@ -20,46 +20,40 @@
 //
 #endregion
 
-namespace Jayrock.Json.Formatters
+namespace Jayrock.Json.Conversion.Export.Exporters
 {
     #region Imports
 
     using System;
-    using System.Collections;
     using System.Data;
     using System.Diagnostics;
+    using System.Globalization;
 
     #endregion
 
-    public class DataRowFormatter : JsonFormatter
+    /// <remarks>
+    /// See <a href="http://www.w3.org/TR/NOTE-datetime">W3C note on date 
+    /// and time formats</a>.
+    /// </remarks>
+
+    public class DateTimeExporter : JsonExporterBase
     {
-        public override void Format(object o, JsonWriter writer)
+        public DateTimeExporter() : 
+            base(typeof(DateTime)) {}
+
+        protected override void SubExport(object value, JsonWriter writer)
         {
-            if (writer == null)
-                throw new ArgumentNullException("writer");
-
-            DataRow row = o as DataRow;
-
-            if (row != null)
-                FormatDataRow(row, writer);
-            else
-                base.Format(o, writer);
+            Debug.Assert(value != null);
+            Debug.Assert(writer != null);
+            
+            ExportTime((DateTime) value, writer);
         }
-
-        internal static void FormatDataRow(DataRow row, JsonWriter writer)
+ 
+        private void ExportTime(DateTime localTime, JsonWriter writer)
         {
-            Debug.Assert(row != null);
             Debug.Assert(writer != null);
 
-            writer.WriteStartObject();
-    
-            foreach (DataColumn column in row.Table.Columns)
-            {
-                writer.WriteMember(column.ColumnName);
-                writer.WriteValue(row[column]);
-            }
-    
-            writer.WriteEndObject();
+            writer.WriteString(localTime.ToString("yyyy-MM-ddTHH:mm:ss.fffffffzzzzzz", CultureInfo.InvariantCulture));
         }
     }
 }

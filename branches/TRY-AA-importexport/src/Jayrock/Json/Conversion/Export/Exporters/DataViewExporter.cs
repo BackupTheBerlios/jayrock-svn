@@ -20,7 +20,7 @@
 //
 #endregion
 
-namespace Jayrock.Json.Formatters
+namespace Jayrock.Json.Conversion.Export.Exporters
 {
     #region Imports
 
@@ -30,27 +30,44 @@ namespace Jayrock.Json.Formatters
 
     #endregion
 
-    public class DataTableFormatter : JsonFormatter
+    public class DataViewExporter : JsonExporterBase
     {
-        public override void Format(object o, JsonWriter writer)
+        public DataViewExporter() :
+            this(typeof(DataView)) {}
+
+        public DataViewExporter(Type inputType) : 
+            base(inputType) {}
+
+        protected override void SubExport(object value, JsonWriter writer)
         {
-            if (writer == null)
-                throw new ArgumentNullException("writer");
-
-            DataTable table = o as DataTable;
-
-            if (table != null)
-                FormatTable(table, writer);
-            else
-                base.Format(o, writer);
+            Debug.Assert(value != null);
+            Debug.Assert(writer != null);
+            
+            ExportView((DataView) value, writer);
         }
 
-        internal static void FormatTable(DataTable table, JsonWriter writer)
+        internal static void ExportView(DataView view, JsonWriter writer)
         {
-            Debug.Assert(table != null);
+            Debug.Assert(view != null);
             Debug.Assert(writer != null);
 
-            DataViewFormatter.FormatView(table.DefaultView, writer);
-       }
+            writer.WriteStartObject();
+
+            writer.WriteMember("columns");
+
+            writer.WriteStartArray();
+            foreach (DataColumn column in view.Table.Columns)
+                writer.WriteValue(column.ColumnName);
+            writer.WriteEndArray();
+
+            writer.WriteMember("rows");
+
+            writer.WriteStartArray();
+            foreach (DataRowView row in view)
+                writer.WriteValue(row.Row.ItemArray);
+            writer.WriteEndArray();
+
+            writer.WriteEndObject();
+        }
     }
 }

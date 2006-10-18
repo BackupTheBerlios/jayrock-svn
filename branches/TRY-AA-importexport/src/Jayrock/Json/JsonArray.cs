@@ -44,7 +44,7 @@ namespace Jayrock.Json
     /// </remarks>
 
     [ Serializable ]
-    public class JsonArray : CollectionBase, IJsonFormattable, IJsonImportable, IJsonExportable
+    public class JsonArray : CollectionBase, IJsonImportable, IJsonExportable
     {
         public JsonArray() {}
 
@@ -176,7 +176,7 @@ namespace Jayrock.Json
         public override string ToString()
         {
             JsonTextWriter writer = new JsonTextWriter();
-            Format(writer);
+            Export(writer);
             return writer.ToString();
         }
 
@@ -187,14 +187,6 @@ namespace Jayrock.Json
         /// <remarks>
         /// This method assumes that the data structure is acyclical.
         /// </remarks>
-
-        public virtual void Format(JsonWriter writer)
-        {
-            if (writer == null)
-                throw new ArgumentNullException("writer");
-
-            writer.WriteArray(this);
-        }
 
         public virtual void Export(JsonWriter writer)
         {

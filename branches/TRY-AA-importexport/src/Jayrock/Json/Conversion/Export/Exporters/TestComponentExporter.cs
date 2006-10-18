@@ -20,7 +20,7 @@
 //
 #endregion
 
-namespace Jayrock.Json.Formatters
+namespace Jayrock.Json.Conversion.Export.Exporters
 {
     #region Imports
 
@@ -28,14 +28,12 @@ namespace Jayrock.Json.Formatters
     using System.Collections;
     using System.ComponentModel;
     using System.IO;
-    using Jayrock.Json.Conversion.Export;
-    using Jayrock.Json.Conversion.Export.Exporters;
     using NUnit.Framework;
 
     #endregion
 
     [ TestFixture ]
-    public class TestComponentFormatter
+    public class TestComponentExporter
     {
         [ Test ]
         public void EmptyObject()
@@ -94,15 +92,6 @@ namespace Jayrock.Json.Formatters
                         new string[] { "Id", "FullName" },
                         new object[] { snow.Id, snow.FullName })
                 }), m);
-            
-#if false
-            Test(new JsonObject(
-                new string[] { "Id", "FullName", "Spouce" },
-                new object[] { albert.Id, albert.FullName, 
-                    /* Spouce */ new JsonObject(
-                        new string[] { "Id", "FullName" },
-                        new object[] { snow.Id, snow.FullName })}), albert);
-#endif
         }
 
         [ Test ]
@@ -149,15 +138,7 @@ namespace Jayrock.Json.Formatters
 
         private static string Format(object o)
         {
-            CompositeFormatter compositeFormatter = new CompositeFormatter();
-            compositeFormatter.AddFormatter(typeof(Marriage), new ComponentFormatter());
-            compositeFormatter.AddFormatter(typeof(Car), new ComponentFormatter());
-            compositeFormatter.AddFormatter(typeof(Person), new ComponentFormatter());
-            compositeFormatter.AddFormatter(typeof(OwnerCars), new ComponentFormatter());
-
             JsonTextWriter writer = new JsonTextWriter();
-            writer.ValueFormatter = compositeFormatter;
-
             writer.WriteValue(o);
             return writer.ToString();
         }
@@ -317,7 +298,7 @@ namespace Jayrock.Json.Formatters
             }
         }
 
-        public struct  Point : IJsonFormattable, IJsonExportable
+        public struct  Point : IJsonExportable
         {
             private int _x;
             private int _y;
@@ -344,8 +325,8 @@ namespace Jayrock.Json.Formatters
 
             public void Format(JsonWriter writer)
             {
-                ComponentFormatter formatter = new ComponentFormatter(_properties);
-                formatter.Format(this, writer);
+                ComponentExporter exporter = new ComponentExporter(GetType(), _properties);
+                exporter.Export(this, writer);
             }
 
             public void Export(JsonWriter writer)
@@ -355,3 +336,4 @@ namespace Jayrock.Json.Formatters
         }
     }
 }
+

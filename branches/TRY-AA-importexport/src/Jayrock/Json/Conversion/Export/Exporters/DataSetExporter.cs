@@ -20,7 +20,7 @@
 //
 #endregion
 
-namespace Jayrock.Json.Formatters
+namespace Jayrock.Json.Conversion.Export.Exporters
 {
     #region Imports
 
@@ -30,42 +30,35 @@ namespace Jayrock.Json.Formatters
 
     #endregion
 
-    public class DataViewFormatter : JsonFormatter
+    public class DataSetExporter : JsonExporterBase
     {
-        public override void Format(object o, JsonWriter writer)
+        public DataSetExporter() :
+            this(typeof(DataSet)) {}
+
+        public DataSetExporter(Type inputType) : 
+            base(inputType) {}
+
+        protected override void SubExport(object value, JsonWriter writer)
         {
-            if (writer == null)
-                throw new ArgumentNullException("writer");
-
-            DataView view = o as DataView;
-
-            if (view != null)
-                FormatView(view, writer);
-            else
-                base.Format(o, writer);
+            Debug.Assert(value != null);
+            Debug.Assert(writer != null);
+            
+            ExportDataSet((DataSet) value, writer);
         }
 
-        internal static void FormatView(DataView view, JsonWriter writer)
+        private static void ExportDataSet(DataSet dataSet, JsonWriter writer)
         {
-            Debug.Assert(view != null);
+            Debug.Assert(dataSet != null);
             Debug.Assert(writer != null);
 
             writer.WriteStartObject();
-
-            writer.WriteMember("columns");
-
-            writer.WriteStartArray();
-            foreach (DataColumn column in view.Table.Columns)
-                writer.WriteValue(column.ColumnName);
-            writer.WriteEndArray();
-
-            writer.WriteMember("rows");
-
-            writer.WriteStartArray();
-            foreach (DataRowView row in view)
-                writer.WriteValue(row.Row.ItemArray);
-            writer.WriteEndArray();
-
+    
+            foreach (DataTable table in dataSet.Tables)
+            {
+                writer.WriteMember(table.TableName);
+                DataTableExporter.ExportTable(table, writer);
+            }
+    
             writer.WriteEndObject();
         }
     }

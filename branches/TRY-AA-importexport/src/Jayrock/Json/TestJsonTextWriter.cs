@@ -203,28 +203,6 @@ namespace Jayrock.Json
             }
         }
 
-        private sealed class StringArrayFormatter : JsonFormatter
-        {
-            protected override void FormatOther(object o, JsonWriter writer)
-            {
-                IEnumerable enumerable = o as IEnumerable;
-
-                if (enumerable != null)
-                {
-                    ArrayList list = new ArrayList();
-
-                    foreach (object item in enumerable)
-                        list.Add(item == null ? null : item.ToString());
-
-                    FormatString(string.Join(",", (string[]) list.ToArray(typeof(string))), writer);
-                }
-                else
-                {
-                    base.FormatOther(o, writer);
-                }
-            }
-        }
-
         private static string WriteValue(object value)
         {
             JsonTextWriter writer = new JsonTextWriter(new StringWriter());

@@ -20,27 +20,47 @@
 //
 #endregion
 
-namespace Jayrock.Json.Formatters
+namespace Jayrock.Json.Conversion.Export.Exporters
 {
     #region Imports
 
-    using NUnit.Framework;
-    using System.Web.UI.HtmlControls;
+    using System;
+    using System.Collections;
+    using System.Data;
+    using System.Diagnostics;
 
     #endregion
 
-    [ TestFixture ]
-    public class TestControlFormatter
+    public class DataRowExporter : JsonExporterBase
     {
-        [ Test ]
-        public void Formatting()
+        public DataRowExporter() :
+            this(typeof(DataRow)) {}
+
+        public DataRowExporter(Type inputType) : 
+            base(inputType) {}
+
+        protected override void SubExport(object value, JsonWriter writer)
         {
-            ControlFormatter formatter = new ControlFormatter();
-            JsonTextWriter writer = new JsonTextWriter();
-            HtmlGenericControl span = new HtmlGenericControl("span");
-            span.InnerText = "Happy & shiny people!";
-            formatter.Format(span, writer);
-            Assert.AreEqual("\"<span\\>Happy &amp; shiny people!</span\\>\"", writer.ToString());
+            Debug.Assert(value != null);
+            Debug.Assert(writer != null);
+
+            ExportRow((DataRow) value, writer);
+        }
+
+        internal static void ExportRow(DataRow row, JsonWriter writer)
+        {
+            Debug.Assert(row != null);
+            Debug.Assert(writer != null);
+
+            writer.WriteStartObject();
+    
+            foreach (DataColumn column in row.Table.Columns)
+            {
+                writer.WriteMember(column.ColumnName);
+                writer.WriteValue(row[column]);
+            }
+    
+            writer.WriteEndObject();
         }
     }
 }

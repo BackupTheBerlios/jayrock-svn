@@ -20,23 +20,22 @@
 //
 #endregion
 
-namespace Jayrock.Json.Formatters
+namespace Jayrock.Json.Conversion.Export.Exporters
 {
     #region Imports
 
-    using System;
     using System.Collections.Specialized;
     using NUnit.Framework;
 
     #endregion
 
     [ TestFixture ]
-    public class TestNameValueCollectionFormatter
+    public class TestNameValueCollectionExporter
     {
         [ Test ]
         public void Empty()
         {
-            Assert.AreEqual("{}", Format(new NameValueCollection()));
+            Assert.AreEqual("{}", Export(new NameValueCollection()));
         }
 
         [ Test ]
@@ -44,7 +43,7 @@ namespace Jayrock.Json.Formatters
         {
             NameValueCollection collection = new NameValueCollection();
             collection.Add("foo", "bar");
-            Assert.AreEqual("{\"foo\":\"bar\"}", Format(collection));
+            Assert.AreEqual("{\"foo\":\"bar\"}", Export(collection));
         }
 
         [ Test ]
@@ -52,7 +51,7 @@ namespace Jayrock.Json.Formatters
         {
             NameValueCollection collection = new NameValueCollection();
             collection.Add("", "bar");
-            Assert.AreEqual("{\"\":\"bar\"}", Format(collection));
+            Assert.AreEqual("{\"\":\"bar\"}", Export(collection));
         }
 
         [ Test ]
@@ -60,7 +59,7 @@ namespace Jayrock.Json.Formatters
         {
             NameValueCollection collection = new NameValueCollection();
             collection.Add("foo", "");
-            Assert.AreEqual("{\"foo\":\"\"}", Format(collection));
+            Assert.AreEqual("{\"foo\":\"\"}", Export(collection));
         }
 
         [ Test ]
@@ -68,7 +67,7 @@ namespace Jayrock.Json.Formatters
         {
             NameValueCollection collection = new NameValueCollection();
             collection.Add("foo", null);
-            Assert.AreEqual("{\"foo\":null}", Format(collection));
+            Assert.AreEqual("{\"foo\":null}", Export(collection));
         }
 
         [ Test ]
@@ -78,7 +77,7 @@ namespace Jayrock.Json.Formatters
             collection.Add("foo", "bar1");
             collection.Add("foo", "bar2");
             collection.Add("foo", "bar3");
-            Assert.AreEqual("{\"foo\":[\"bar1\",\"bar2\",\"bar3\"]}", Format(collection));
+            Assert.AreEqual("{\"foo\":[\"bar1\",\"bar2\",\"bar3\"]}", Export(collection));
         }
 
         [ Test ]
@@ -88,15 +87,14 @@ namespace Jayrock.Json.Formatters
             collection.Add("foo1", "bar1");
             collection.Add("foo2", "bar2");
             collection.Add("foo3", "bar3");
-            Assert.AreEqual("{\"foo1\":\"bar1\",\"foo2\":\"bar2\",\"foo3\":\"bar3\"}", Format(collection));
+            Assert.AreEqual("{\"foo1\":\"bar1\",\"foo2\":\"bar2\",\"foo3\":\"bar3\"}", Export(collection));
         }
 
-        private static string Format(object o)
+        private static string Export(object o)
         {
             JsonTextWriter writer = new JsonTextWriter();
-            writer.ValueFormatter = new NameValueCollectionFormatter();
             writer.WriteValue(o);
             return writer.ToString();
         }
-   }
+    }
 }

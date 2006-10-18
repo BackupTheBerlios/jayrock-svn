@@ -20,40 +20,47 @@
 //
 #endregion
 
-namespace Jayrock.Json.Formatters
+namespace Jayrock.Json.Conversion.Export.Exporters
 {
     #region Imports
 
     using System;
-    using NUnit.Framework;
+    using System.Collections;
+    using System.Data;
+    using System.Diagnostics;
 
     #endregion
 
-    [ TestFixture ]
-    public class TestDateTimeFormatter
+    public class DataRowViewExporter : JsonExporterBase
     {
-        [ Test ]
-        public void EmptyObject()
+        public DataRowViewExporter() :
+            this(typeof(DataRowView)) {}
+
+        public DataRowViewExporter(Type inputType) : 
+            base(inputType) {}
+
+        protected override void SubExport(object value, JsonWriter writer)
         {
-            DateTime time = new DateTime(1999, 12, 31, 23, 30, 59, 999);
-            Assert.AreEqual("\"1999-12-31T23:30:59.9990000" + Tzd(time) + "\"", Format(time));
+            Debug.Assert(value != null);
+            Debug.Assert(writer != null);
+
+            ExportRowView((DataRowView) value, writer);
         }
 
-        private static string Format(object o)
+        private static void ExportRowView(DataRowView rowView, JsonWriter writer)
         {
-            JsonTextWriter writer = new JsonTextWriter();
-            writer.ValueFormatter = new DateTimeFormatter();
-            writer.WriteValue(o);
-            return writer.ToString();
-        }
- 
-        private static string Tzd(DateTime localTime)
-        {
-            TimeSpan offset = TimeZone.CurrentTimeZone.GetUtcOffset(localTime);
-            string offsetString = offset.ToString();
-            return offset.Ticks < 0 ? 
-                (offsetString.Substring(0, 6)) : 
-                ("+" + offsetString.Substring(0, 5));
+            Debug.Assert(rowView != null);
+            Debug.Assert(writer != null);
+
+            writer.WriteStartObject();
+    
+            foreach (DataColumn column in rowView.DataView.Table.Columns)
+            {
+                writer.WriteMember(column.ColumnName);
+                writer.WriteValue(rowView[column.Ordinal]);
+            }
+    
+            writer.WriteEndObject();
         }
     }
 }

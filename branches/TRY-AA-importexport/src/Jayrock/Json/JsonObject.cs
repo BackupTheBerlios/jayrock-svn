@@ -46,7 +46,7 @@ namespace Jayrock.Json
     /// </remarks>
 
     [ Serializable ]
-    public class JsonObject : DictionaryBase, IJsonFormattable, IJsonImportable, IJsonExportable
+    public class JsonObject : DictionaryBase, IJsonImportable, IJsonExportable
     {
         private ArrayList _nameIndexList;
         [ NonSerialized ] private IList _readOnlyNameIndexList;
@@ -217,24 +217,8 @@ namespace Jayrock.Json
         public override string ToString()
         {
             JsonTextWriter writer = new JsonTextWriter();
-            Format(writer);
+            Export(writer);
             return writer.ToString();
-        }
-
-        public virtual void Format(JsonWriter writer)
-        {
-            if (writer == null)
-                throw new ArgumentNullException("writer");
-
-            writer.WriteStartObject();
-            
-            foreach (string name in NameIndexList)
-            {
-                writer.WriteMember(name);    
-                writer.WriteValue(InnerHashtable[name]);
-            }
-
-            writer.WriteEndObject();
         }
 
         public void Export(JsonWriter writer)
@@ -247,7 +231,7 @@ namespace Jayrock.Json
             foreach (string name in NameIndexList)
             {
                 writer.WriteMember(name);    
-                JsonExport.Export(InnerHashtable[name], writer);
+                writer.WriteValue(InnerHashtable[name]);
             }
 
             writer.WriteEndObject();

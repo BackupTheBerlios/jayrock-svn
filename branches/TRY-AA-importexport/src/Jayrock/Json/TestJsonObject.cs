@@ -175,9 +175,9 @@ namespace Jayrock.Json
         }
 
         [ Test, ExpectedException(typeof(ArgumentNullException)) ]
-        public void CannotUseNullArgWithFormat()
+        public void CannotUseNullArgWithExport()
         {
-            (new JsonObject()).Format(null);
+            (new JsonObject()).Export(null);
         }
 
         [ Test ]
