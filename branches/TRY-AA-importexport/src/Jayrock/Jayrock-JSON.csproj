@@ -158,16 +158,6 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\IJsonFormattable.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Json\IJsonFormatter.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "Json\InvalidMemberException.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -194,11 +184,6 @@
                 />
                 <File
                     RelPath = "Json\JsonException.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Json\JsonFormatter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -278,56 +263,6 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Formatters\ComponentFormatter.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Json\Formatters\CompositeFormatter.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Json\Formatters\ControlFormatter.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Json\Formatters\DataRowFormatter.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Json\Formatters\DataRowViewFormatter.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Json\Formatters\DataSetFormatter.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Json\Formatters\DataTableFormatter.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Json\Formatters\DataViewFormatter.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Json\Formatters\DateTimeFormatter.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Json\Formatters\NameValueCollectionFormatter.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "Json\Conversion\JsonConverterCollection.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -353,6 +288,46 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Json\Conversion\Export\Exporters\ComponentExporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Conversion\Export\Exporters\ControlExporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Conversion\Export\Exporters\DataRowExporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Conversion\Export\Exporters\DataRowViewExporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Conversion\Export\Exporters\DataSetExporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Conversion\Export\Exporters\DataTableExporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Conversion\Export\Exporters\DataViewExporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Conversion\Export\Exporters\DateTimeExporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\Conversion\Export\Exporters\DictionaryExporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -374,6 +349,11 @@
                 />
                 <File
                     RelPath = "Json\Conversion\Export\Exporters\JsonExporters.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Conversion\Export\Exporters\NameValueCollectionExporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
