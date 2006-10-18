@@ -33,6 +33,15 @@ namespace Jayrock.Json.Conversion.Export.Exporters
 
     #endregion
 
+    public sealed class ControlExporterFamily : IJsonExporterFamily
+    {
+        public IJsonExporter Page(Type type)
+        {
+            return typeof(Control).IsAssignableFrom(type) ? 
+                new ControlExporter(type) : null;
+        }
+    }
+
     public sealed class ControlExporter : JsonExporterBase
     {
         public ControlExporter() : 

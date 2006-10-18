@@ -30,6 +30,15 @@ namespace Jayrock.Json.Conversion.Export.Exporters
 
     #endregion
 
+    public sealed class DataSetExporterFamily : IJsonExporterFamily
+    {
+        public IJsonExporter Page(Type type)
+        {
+            return typeof(DataSet).IsAssignableFrom(type) ? 
+                new DataSetExporter(type) : null;
+        }
+    }
+
     public class DataSetExporter : JsonExporterBase
     {
         public DataSetExporter() :

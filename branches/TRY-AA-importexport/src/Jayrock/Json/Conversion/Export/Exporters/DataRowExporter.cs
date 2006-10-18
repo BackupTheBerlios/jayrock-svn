@@ -31,6 +31,15 @@ namespace Jayrock.Json.Conversion.Export.Exporters
 
     #endregion
 
+    public sealed class DataRowExporterFamily : IJsonExporterFamily
+    {
+        public IJsonExporter Page(Type type)
+        {
+            return typeof(DataRow).IsAssignableFrom(type) ? 
+                   new DataRowExporter(type) : null;
+        }
+    }
+    
     public class DataRowExporter : JsonExporterBase
     {
         public DataRowExporter() :

@@ -68,6 +68,10 @@ namespace Jayrock.Json.Conversion.Export
         {
             return new object[]
             {
+                //
+                // Primitive types
+                //
+                
                 new ByteExporter(),
                 new Int16Exporter(),
                 new Int32Exporter(),
@@ -79,10 +83,49 @@ namespace Jayrock.Json.Conversion.Export
                 new BooleanExporter(),
                 new DateTimeExporter(),
                 
+                //
+                // DataRowView
+                //
+                
+                new DataRowViewExporter(),
+
+                //
+                // Types implementing IJsonExportable
+                //
+
                 new ExportAwareExporterFamily(),
+                
+                //
+                // NameValueCollection and sub-types
+                //
+
                 new NameValueCollectionExporterFamily(),
+                
+                //
+                // DataSet-related types that can have sub-types
+                //
+
+                new DataSetExporterFamily(),
+                new DataTableExporterFamily(),
+                new DataRowExporterFamily(),
+                
+                //
+                // All ASP.NET controls
+                //
+
+                new ControlExporterFamily(),
+                
+                //
+                // Types implementing IDictionary, IEnumerable
+                //
+                
                 new DictionaryExporterFamily(),
                 new EnumerableExporterFamily(),
+                
+                //
+                // Catch-all
+                //
+
                 new ComponentExporterFamily()
             };
         }
