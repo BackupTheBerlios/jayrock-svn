@@ -33,7 +33,7 @@ namespace Jayrock.Json.Serialization.Export.Exporters
     {
         public BooleanExporter() : base(typeof(bool)) { }
 
-        protected override void SubExport(object value, JsonWriter writer, object context)
+        protected override void SubExport(object value, JsonWriter writer)
         {
             writer.WriteBoolean((bool) value);
         }

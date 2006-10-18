@@ -190,7 +190,7 @@ namespace Jayrock.Json
             public StringArrayExporter() : 
                 base(typeof(object[])) {}
             
-            protected override void SubExport(object value, JsonWriter writer, object context)
+            protected override void SubExport(object value, JsonWriter writer)
             {
                 IEnumerable enumerable = (IEnumerable) value;
 

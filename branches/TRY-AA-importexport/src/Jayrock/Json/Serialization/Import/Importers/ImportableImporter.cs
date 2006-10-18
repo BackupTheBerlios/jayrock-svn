@@ -44,7 +44,7 @@ namespace Jayrock.Json.Serialization.Import.Importers
         public ImportableImporter(Type type) : 
             base(type) {}
 
-        public override object Import(JsonReader reader, object context)
+        public override object Import(JsonReader reader)
         {
             if (reader == null) 
                 throw new ArgumentNullException("reader");
@@ -55,7 +55,7 @@ namespace Jayrock.Json.Serialization.Import.Importers
                 return null;
             
             IJsonImportable o = (IJsonImportable) CreateObject();
-            o.Import(reader, context);
+            o.Import(reader);
             return o;
         }
 

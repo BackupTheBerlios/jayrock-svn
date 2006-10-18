@@ -32,7 +32,7 @@ namespace Jayrock.Json.Serialization.Import
     public interface IJsonImporter
     {
         Type OutputType { get; }
-        object Import(JsonReader reader, object context);
+        object Import(JsonReader reader);
     }
 
     public interface IJsonImporterFamily

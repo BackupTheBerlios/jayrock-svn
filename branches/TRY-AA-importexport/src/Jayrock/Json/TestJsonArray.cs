@@ -47,7 +47,7 @@ namespace Jayrock.Json
         public void Import()
         {
             JsonArray a = new JsonArray();
-            a.Import(new JsonTextReader(new StringReader("[123,'Hello World',true]")), null);
+            a.Import(new JsonTextReader(new StringReader("[123,'Hello World',true]")));
             Assert.AreEqual(3, a.Length);
             Assert.AreEqual(123, (int) (JsonNumber) a[0]);
             Assert.AreEqual("Hello World", a[1]);
@@ -59,7 +59,7 @@ namespace Jayrock.Json
         {
             JsonArray a = new JsonArray(new object[] { 123, "Hello World", true });
             JsonRecorder writer = new JsonRecorder();
-            a.Export(writer, null);
+            a.Export(writer);
             JsonReader reader = writer.CreatePlayer();
             reader.ReadToken(JsonTokenClass.Array);
             Assert.AreEqual(a[0], reader.ReadNumber().ToInt32());
@@ -74,7 +74,7 @@ namespace Jayrock.Json
             JsonArray a = new JsonArray();
             a.Add(new object());
             Assert.AreEqual(1, a.Length);
-            a.Import(new JsonTextReader(new StringReader("[123]")), null);
+            a.Import(new JsonTextReader(new StringReader("[123]")));
             Assert.AreEqual(1, a.Length);
         }
         
@@ -87,7 +87,7 @@ namespace Jayrock.Json
             
             try
             {
-                a.Import(new JsonTextReader(new StringReader("[123,456,")), null);
+                a.Import(new JsonTextReader(new StringReader("[123,456,")));
             }
             catch (JsonException)
             {
@@ -100,7 +100,7 @@ namespace Jayrock.Json
         [ Test, ExpectedException(typeof(ArgumentNullException)) ]
         public void CannotUseNullArgWithImport()
         {
-            (new JsonArray()).Import(null, null);
+            (new JsonArray()).Import(null);
         }
 
         [ Test, ExpectedException(typeof(ArgumentNullException)) ]

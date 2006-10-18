@@ -45,7 +45,7 @@ namespace Jayrock.Json.Serialization.Export.Exporters
             get { return _inputType; }
         }
 
-        public virtual void Export(object value, JsonWriter writer, object context)
+        public virtual void Export(object value, JsonWriter writer)
         {
             if (writer == null)
                 throw new ArgumentNullException("writer");
@@ -53,9 +53,9 @@ namespace Jayrock.Json.Serialization.Export.Exporters
             if (value == null)
                 writer.WriteNull();
             else
-                SubExport(value, writer, context);
+                SubExport(value, writer);
         }
 
-        protected abstract void SubExport(object value, JsonWriter writer, object context);
+        protected abstract void SubExport(object value, JsonWriter writer);
     }
 }

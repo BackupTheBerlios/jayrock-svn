@@ -35,7 +35,7 @@ namespace Jayrock.Json.Serialization.Export.Exporters
         protected NumberExporterBase(Type inputType) : 
             base(inputType) {}
         
-        protected override void SubExport(object value, JsonWriter writer, object context)
+        protected override void SubExport(object value, JsonWriter writer)
         {
             string s;
 

@@ -62,7 +62,7 @@ namespace Jayrock.Json.Serialization.Import.Importers
             return type;
         }
 
-        public override object Import(JsonReader reader, object context)
+        public override object Import(JsonReader reader)
         {
             if (reader == null)
                 throw new ArgumentNullException("reader");
@@ -85,7 +85,7 @@ namespace Jayrock.Json.Serialization.Import.Importers
                 ArrayList list = new ArrayList();
 
                 while (reader.TokenClass != JsonTokenClass.EndArray)
-                    list.Add(reader.ReadValue(elementType, context));
+                    list.Add(reader.ReadValue(elementType));
 
                 reader.Read();
             
@@ -96,7 +96,7 @@ namespace Jayrock.Json.Serialization.Import.Importers
                      reader.TokenClass == JsonTokenClass.Boolean)
             {
                 Array array = Array.CreateInstance(elementType, 1);
-                array.SetValue(reader.ReadValue(elementType, context), 0);
+                array.SetValue(reader.ReadValue(elementType), 0);
                 return array;
             }
             else

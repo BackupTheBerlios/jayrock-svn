@@ -33,11 +33,6 @@ namespace Jayrock.Json.Serialization.Export
     {
         public static void Export(object value, JsonWriter writer)
         {
-            Export(value, writer, null);
-        }
-
-        public static void Export(object value, JsonWriter writer, object context)
-        {
             if (writer == null)
                 throw new ArgumentNullException("writer");
 
@@ -50,7 +45,7 @@ namespace Jayrock.Json.Serialization.Export
             IJsonExporter exporter = TryGetExporter(value.GetType());
                 
             if (exporter != null)
-                exporter.Export(value, writer, context);
+                exporter.Export(value, writer);
             else
                 writer.WriteString(value.ToString());
         }

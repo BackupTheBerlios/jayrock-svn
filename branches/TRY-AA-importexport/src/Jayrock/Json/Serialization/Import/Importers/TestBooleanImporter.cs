@@ -97,7 +97,7 @@ namespace Jayrock.Json.Serialization.Import.Importers
         {
             JsonTextReader reader = new JsonTextReader(new StringReader(input));
             BooleanImporter importer = new BooleanImporter();
-            object o = importer.Import(reader, null);
+            object o = importer.Import(reader);
             Assert.IsTrue(reader.EOF, "Reader must be at EOF.");
             return o;
         }

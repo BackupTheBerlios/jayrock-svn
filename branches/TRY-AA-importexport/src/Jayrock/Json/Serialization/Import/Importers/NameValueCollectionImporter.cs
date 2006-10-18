@@ -34,7 +34,7 @@ namespace Jayrock.Json.Serialization.Import.Importers
         public NameValueCollectionImporter() : 
             base(typeof(NameValueCollection)) { }
 
-        protected override object ImportValue(JsonReader reader, object context)
+        protected override object ImportValue(JsonReader reader)
         {
             if (reader == null)
                 throw new ArgumentNullException("reader");

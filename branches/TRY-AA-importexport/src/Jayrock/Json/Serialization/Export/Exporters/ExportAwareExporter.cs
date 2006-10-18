@@ -42,12 +42,12 @@ namespace Jayrock.Json.Serialization.Export.Exporters
         public ExportAwareExporter(Type type) : 
             base(type) {}
 
-        protected override void SubExport(object value, JsonWriter writer, object context)
+        protected override void SubExport(object value, JsonWriter writer)
         {
             if (writer == null) 
                 throw new ArgumentNullException("writer");
 
-            ((IJsonExportable) value).Export(writer, context);
+            ((IJsonExportable) value).Export(writer);
         }
     }
 }

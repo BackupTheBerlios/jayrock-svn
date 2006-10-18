@@ -196,7 +196,7 @@ namespace Jayrock.Json
             writer.WriteArray(this);
         }
 
-        public virtual void Export(JsonWriter writer, object context)
+        public virtual void Export(JsonWriter writer)
         {
             if (writer == null)
                 throw new ArgumentNullException("writer");
@@ -204,12 +204,12 @@ namespace Jayrock.Json
             writer.WriteStartArray();
 
             foreach (object item in this)
-                JsonExport.Export(item, writer, context);
+                JsonExport.Export(item, writer);
 
             writer.WriteEndArray();
         }
         
-        public virtual void Import(JsonReader reader, object context)
+        public virtual void Import(JsonReader reader)
         {
             if (reader == null)
                 throw new ArgumentNullException("reader");
@@ -226,7 +226,7 @@ namespace Jayrock.Json
             reader.ReadToken(JsonTokenClass.Array);
             
             while (reader.TokenClass != JsonTokenClass.EndArray)
-                list.Add(reader.ReadValue(typeof(object), context));
+                list.Add(reader.ReadValue());
             
             reader.Read();
             

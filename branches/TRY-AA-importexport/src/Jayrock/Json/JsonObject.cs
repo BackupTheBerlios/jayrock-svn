@@ -237,7 +237,7 @@ namespace Jayrock.Json
             writer.WriteEndObject();
         }
 
-        public void Export(JsonWriter writer, object context)
+        public void Export(JsonWriter writer)
         {
             if (writer == null)
                 throw new ArgumentNullException("writer");
@@ -247,7 +247,7 @@ namespace Jayrock.Json
             foreach (string name in NameIndexList)
             {
                 writer.WriteMember(name);    
-                JsonExport.Export(InnerHashtable[name], writer, context);
+                JsonExport.Export(InnerHashtable[name], writer);
             }
 
             writer.WriteEndObject();
@@ -258,7 +258,7 @@ namespace Jayrock.Json
         /// reading then the object may be partially imported.
         /// </remarks>
 
-        public virtual void Import(JsonReader reader, object context)
+        public virtual void Import(JsonReader reader)
         {
             if (reader == null)
                 throw new ArgumentNullException("reader");
@@ -272,7 +272,7 @@ namespace Jayrock.Json
             reader.ReadToken(JsonTokenClass.Object);
             
             while (reader.TokenClass != JsonTokenClass.EndObject)
-                Put(reader.ReadMember(), reader.ReadValue(typeof(object), context));
+                Put(reader.ReadMember(), reader.ReadValue());
             
             reader.Read();
         }

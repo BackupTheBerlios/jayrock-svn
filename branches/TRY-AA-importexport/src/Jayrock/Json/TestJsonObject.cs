@@ -133,7 +133,7 @@ namespace Jayrock.Json
                     References : [
                         { Title : 'JSON RPC', Link : 'http://www.json-rpc.org/' }
                     ]
-                }")), null);
+                }")));
 
             Assert.IsNotNull(article);
             Assert.AreEqual(5, article.Count);
@@ -164,14 +164,14 @@ namespace Jayrock.Json
             JsonObject o = new JsonObject();
             o.Put("foo", "bar");
             Assert.AreEqual(1, o.Count);
-            o.Import(new JsonTextReader(new StringReader("{}")), null);
+            o.Import(new JsonTextReader(new StringReader("{}")));
             Assert.AreEqual(0, o.Count);
         }
 
         [ Test, ExpectedException(typeof(ArgumentNullException)) ]
         public void CannotUseNullReaderForImport()
         {
-            (new JsonObject()).Import(null, null);
+            (new JsonObject()).Import(null);
         }
 
         [ Test, ExpectedException(typeof(ArgumentNullException)) ]
@@ -188,7 +188,7 @@ namespace Jayrock.Json
             o.Put("String", "Hello World");
             o.Put("Boolean", true);
             JsonRecorder writer = new JsonRecorder();
-            o.Export(writer, null);
+            o.Export(writer);
             JsonReader reader = writer.CreatePlayer();
             reader.ReadToken(JsonTokenClass.Object);
             string[] members = (string[]) o.GetNamesArray().ToArray(typeof(string));

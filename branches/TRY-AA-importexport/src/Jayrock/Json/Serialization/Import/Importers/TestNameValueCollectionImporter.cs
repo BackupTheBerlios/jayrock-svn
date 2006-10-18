@@ -99,7 +99,7 @@ namespace Jayrock.Json.Serialization.Import.Importers
         {
             JsonReader reader = new JsonTextReader(new StringReader(s));
             IJsonImporter importer = new NameValueCollectionImporter();
-            return (NameValueCollection) importer.Import(reader, null);
+            return (NameValueCollection) importer.Import(reader);
         }
 
         private static NameValueCollection Import(string s)

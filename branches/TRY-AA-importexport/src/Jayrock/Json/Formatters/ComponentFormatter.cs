@@ -118,7 +118,7 @@ namespace Jayrock.Json.Serialization.Export.Exporters
                 typeDescriptor.GetProperties() : TypeDescriptor.GetProperties(inputType);
         }
 
-        protected override void SubExport(object value, JsonWriter writer, object context)
+        protected override void SubExport(object value, JsonWriter writer)
         {
             if (_properties.Count == 0)
             {

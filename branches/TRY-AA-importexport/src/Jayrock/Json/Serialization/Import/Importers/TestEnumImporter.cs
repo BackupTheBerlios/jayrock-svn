@@ -132,7 +132,7 @@ namespace Jayrock.Json.Serialization.Import.Importers
         private static object Import(Type type, string s)
         {
             EnumImporter importer = new EnumImporter(type);
-            return importer.Import(CreateReader(s), null);
+            return importer.Import(CreateReader(s));
         }
 
         private static JsonReader CreateReader(string s)

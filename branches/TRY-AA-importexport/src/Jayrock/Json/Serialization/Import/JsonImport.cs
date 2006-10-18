@@ -39,11 +39,6 @@ namespace Jayrock.Json.Serialization.Import
 
         public static object Import(JsonReader reader, Type type)
         {
-            return Import(reader, null, null);
-        }
-
-        public static object Import(JsonReader reader, Type type, object context)
-        {
             if (reader == null)
                 throw new ArgumentNullException("reader");
 
@@ -63,7 +58,7 @@ namespace Jayrock.Json.Serialization.Import
             if (importer == null)
                 throw new JsonException(string.Format("Don't know how to read the type {0} from JSON.", type.FullName)); // TODO: Review the choice of exception type here.
 
-            return importer.Import(reader, context);
+            return importer.Import(reader);
         }
         
         public static IJsonImporter TryGetImporter(Type type)

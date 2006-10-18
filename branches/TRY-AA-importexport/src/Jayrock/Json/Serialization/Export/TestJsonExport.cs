@@ -40,7 +40,7 @@ namespace Jayrock.Json.Serialization.Export
         
         private sealed class ExportableThing : IJsonExportable
         {
-            public void Export(JsonWriter writer, object context)
+            public void Export(JsonWriter writer)
             {
                 throw new NotImplementedException();
             }

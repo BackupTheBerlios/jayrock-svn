@@ -62,7 +62,7 @@ namespace Jayrock.Json.Serialization.Import.Importers
             ImportableImporter importer = new ImportableImporter(typeof(Thing));
             JsonRecorder writer = new JsonRecorder();
             writer.WriteString(string.Empty);
-            Thing thing = (Thing) importer.Import(writer.CreatePlayer(), null);
+            Thing thing = (Thing) importer.Import(writer.CreatePlayer());
             Assert.IsTrue(thing.ImportCalled);
         }
 
@@ -72,7 +72,7 @@ namespace Jayrock.Json.Serialization.Import.Importers
             ImportableImporter importer = new ImportableImporter(typeof(Thing));
             JsonRecorder writer = new JsonRecorder();
             writer.WriteNull();
-            Assert.IsNull(importer.Import(writer.CreatePlayer(), null));
+            Assert.IsNull(importer.Import(writer.CreatePlayer()));
         }
 
         [ Test, ExpectedException(typeof(ArgumentNullException)) ]
@@ -85,7 +85,7 @@ namespace Jayrock.Json.Serialization.Import.Importers
         public void CannotSendNullReaderToImport()
         {
             ImportableImporter importer = new ImportableImporter(typeof(Thing));
-            importer.Import(null, null);
+            importer.Import(null);
         }
         
         [ Test ]
@@ -103,7 +103,7 @@ namespace Jayrock.Json.Serialization.Import.Importers
         {
             public bool ImportCalled;
             
-            public void Import(JsonReader reader, object context)
+            public void Import(JsonReader reader)
             {
                 ImportCalled = true;
             }

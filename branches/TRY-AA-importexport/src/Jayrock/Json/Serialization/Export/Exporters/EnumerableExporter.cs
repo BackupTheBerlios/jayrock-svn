@@ -46,14 +46,14 @@ namespace Jayrock.Json.Serialization.Export.Exporters
         public EnumerableExporter(Type inputType) : 
             base(inputType) {}
 
-        protected override void SubExport(object value, JsonWriter writer, object context)
+        protected override void SubExport(object value, JsonWriter writer)
         {
             IEnumerable items = (IEnumerable) value;
             
             writer.WriteStartArray();
 
             foreach (object item in items)
-                JsonExport.Export(item, writer, context);
+                JsonExport.Export(item, writer);
 
             writer.WriteEndArray();
         }

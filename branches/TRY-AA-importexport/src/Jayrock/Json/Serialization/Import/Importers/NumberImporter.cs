@@ -35,7 +35,7 @@ namespace Jayrock.Json.Serialization.Import.Importers
         protected NumberImporterBase(Type type) :
             base(type) {}
  
-        protected override object ImportValue(JsonReader reader, object context)
+        protected override object ImportValue(JsonReader reader)
         {
             if (reader == null)
                 throw new ArgumentNullException("reader");

@@ -51,7 +51,7 @@ namespace Jayrock.Json.Serialization.Import.Importers
         public void ImportNull()
         {
             ArrayImporter importer = new ArrayImporter();
-            Assert.IsNull(importer.Import(CreateReader("null"), null));
+            Assert.IsNull(importer.Import(CreateReader("null")));
         }
 
         [ Test ]

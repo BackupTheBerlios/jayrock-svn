@@ -24,6 +24,6 @@ namespace Jayrock.Json.Serialization.Import
 {
     public interface IJsonImportable
     {
-        void Import(JsonReader reader, object context);
+        void Import(JsonReader reader);
     }
 }
