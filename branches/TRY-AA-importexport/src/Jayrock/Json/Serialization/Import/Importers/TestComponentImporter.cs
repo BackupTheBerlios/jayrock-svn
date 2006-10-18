@@ -132,11 +132,6 @@ namespace Jayrock.Json.Serialization.Import.Importers
             }";
             
             JsonTextReader reader = new JsonTextReader(new StringReader(text));
-            RegisterYahooTypeImporter(typeof(YahooResponse), reader.Importers);
-            RegisterYahooTypeImporter(typeof(YahooResultSet), reader.Importers);
-            RegisterYahooTypeImporter(typeof(YahooResult), reader.Importers);
-            RegisterYahooTypeImporter(typeof(YahooThumbnail), reader.Importers);
-            
             YahooResponse response = (YahooResponse) reader.ReadValue(typeof(YahooResponse));
             Assert.IsNotNull(response);
             
@@ -197,8 +192,7 @@ namespace Jayrock.Json.Serialization.Import.Importers
             TestTypeDescriptor descriptor = new TestTypeDescriptor();
             descriptor.AddReadOnlyProperty("Id");
             ComponentImporter importer = new ComponentImporter(thingType, descriptor);
-            reader.Importers.Register(importer);
-            reader.ReadValue(thingType);
+            importer.Import(reader, null);
             Assert.IsFalse(descriptor.GetProperty("Id").SetValueCalled);
         }
 
@@ -340,9 +334,6 @@ namespace Jayrock.Json.Serialization.Import.Importers
         private static object Import(Type expectedType, string s)
         {
             JsonReader reader = CreateReader(s);
-            IJsonImporterRegistry registry = reader.Importers;
-            registry.Register(new ComponentImporter(typeof(Person)));
-            registry.Register(new ComponentImporter(typeof(Marriage)));
             object o = reader.ReadValue(expectedType);
             Assert.IsNotNull(o);
             Assert.IsInstanceOfType(expectedType, o);
@@ -354,12 +345,7 @@ namespace Jayrock.Json.Serialization.Import.Importers
             return new JsonTextReader(new StringReader(s));
         }
         
-        private void RegisterYahooTypeImporter(Type type, IJsonImporterRegistry registry)
-        {
-            registry.Register(new ComponentImporter(type));
-        }
-        
-        private sealed class Marriage
+        public sealed class Marriage
         {
             private Person _husband;
             private Person _wife;
@@ -376,8 +362,8 @@ namespace Jayrock.Json.Serialization.Import.Importers
                 set { _wife = value; }
             }
         }
-            
-        private sealed class Person
+
+        public sealed class Person
         {
             private int _id;
             private string _fullName;
@@ -405,13 +391,13 @@ namespace Jayrock.Json.Serialization.Import.Importers
         // not support #pragma warning disable, we have to resort
         // to a more brute force method.
         //
-        
-        private class YahooResponse
+
+        public class YahooResponse
         {
             public YahooResultSet ResultSet = null;
         }
 
-        private class YahooResultSet
+        public class YahooResultSet
         {
             public int totalResultsAvailable = 0;
             public int totalResultsReturned = 0;
@@ -419,7 +405,7 @@ namespace Jayrock.Json.Serialization.Import.Importers
             public YahooResult[] Result = null;
         }
 
-        private class YahooResult
+        public class YahooResult
         {
             public string Title = null;
             public string Summary = null;
@@ -435,7 +421,7 @@ namespace Jayrock.Json.Serialization.Import.Importers
             public YahooThumbnail Thumbnail = null;
         }
 
-        private class YahooThumbnail
+        public class YahooThumbnail
         {
             public string Url = null;
             public int Height = 0;

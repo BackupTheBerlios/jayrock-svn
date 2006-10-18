@@ -68,7 +68,7 @@ namespace Jayrock.Json.Serialization.Import
         
         public static IJsonImporter TryGetImporter(Type type)
         {
-            return JsonImporters.Registry.Find(type);
+            return JsonImporters.Find(type);
         }
         
         public static IJsonImporter GetImporter(Type type)

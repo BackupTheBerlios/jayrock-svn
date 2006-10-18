@@ -613,7 +613,7 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Serialization\Import\JsonImporterRegistry.cs"
+                    RelPath = "Json\Serialization\Import\JsonImporterCollection.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

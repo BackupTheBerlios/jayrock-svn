@@ -25,6 +25,7 @@ namespace Jayrock.Json.Serialization.Import.Importers
     #region Importer
 
     using System;
+    using System.Collections;
     using Jayrock.Json.Serialization.Import;
 
     #endregion
@@ -38,19 +39,11 @@ namespace Jayrock.Json.Serialization.Import.Importers
         }
     }
 
-    public sealed class ImportableImporter : JsonImporterBase
+    public class ImportableImporter : JsonImporterBase
     {
-        private readonly ObjectCreationHandler _creator;
-        
         public ImportableImporter(Type type) : 
-            this(type, null) {}
+            base(type) {}
 
-        public ImportableImporter(Type type, ObjectCreationHandler creator) :
-            base(type)
-        {
-            _creator = creator;
-        }
-        
         public override object Import(JsonReader reader, object context)
         {
             if (reader == null) 
@@ -66,10 +59,31 @@ namespace Jayrock.Json.Serialization.Import.Importers
             return o;
         }
 
-        private object CreateObject()
+        protected virtual object CreateObject()
         {
-            return _creator == null ? 
-                   Activator.CreateInstance(OutputType) : _creator(null);
+            return Activator.CreateInstance(OutputType);
+        }
+    }
+    
+    public class DictionaryImporter : ImportableImporter
+    {
+        public DictionaryImporter() : 
+            base(typeof(IDictionary)) {}
+
+        protected override object CreateObject()
+        {
+            return new Hashtable();
+        }
+    }
+
+    public class ListImporter : ImportableImporter
+    {
+        public ListImporter() : 
+            base(typeof(IList)) {}
+
+        protected override object CreateObject()
+        {
+            return new ArrayList(8);
         }
     }
 }

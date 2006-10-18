@@ -39,11 +39,4 @@ namespace Jayrock.Json.Serialization.Import
     {
         IJsonImporter Page(Type type);
     }
-
-    public interface IJsonImporterRegistry : ICollection
-    {
-        IJsonImporter Find(Type type);
-        void Register(IJsonImporter importer);
-        void Register(IJsonImporterFamily importerFamily);
-    }
 }

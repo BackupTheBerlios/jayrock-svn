@@ -26,6 +26,8 @@ namespace Jayrock.Json.Serialization
 
     using System;
     using System.Collections;
+    using System.Configuration;
+    using System.Diagnostics;
 
     #endregion
     
@@ -187,6 +189,50 @@ namespace Jayrock.Json.Serialization
         bool ICollection.IsSynchronized
         {
             get { return false; }
+        }
+
+        public void Configure(ICollection items)
+        {
+            if (items != null && items.Count > 0)
+                items = EnsureObjects(items);
+            else
+                items = GetDefaultConfiguration();
+
+            foreach (object item in items)
+            {
+                if (item == null)
+                    continue;
+                
+                try
+                {
+                    Register(item);
+                }
+                catch (ArgumentException e)
+                {
+                    throw new ConfigurationException(e.Message, e);
+                }
+            }
+        }
+
+        protected abstract ICollection GetDefaultConfiguration();
+
+        protected abstract void Register(object item);
+
+        private static IList EnsureObjects(ICollection typeSpecs)
+        {
+            Debug.Assert(typeSpecs != null);
+            
+            ArrayList objectList = new ArrayList(typeSpecs.Count);
+            
+            foreach (string typeSpec in typeSpecs)
+            {
+                if (Mask.NullString(typeSpec).Length == 0)
+                    continue;
+
+                objectList.Add(Activator.CreateInstance(Compat.GetType(typeSpec)));
+            }
+            
+            return objectList;
         }
     }
 }

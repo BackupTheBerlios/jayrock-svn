@@ -26,9 +26,13 @@ namespace Jayrock.Json.Serialization.Export
 
     using System;
     using System.Collections;
+    using System.Configuration;
+    using System.Diagnostics;
+    using Jayrock.Json.Serialization.Export.Exporters;
 
     #endregion
 
+    [ Serializable ]
     public sealed class JsonExporterCollection : JsonTraderCollection
     {
         public IJsonExporter Find(Type type)
@@ -58,6 +62,51 @@ namespace Jayrock.Json.Serialization.Export
         protected override object Page(object family, Type type)
         {
             return ((IJsonExporterFamily) family).Page(type);
+        }
+
+        protected override ICollection GetDefaultConfiguration()
+        {
+            return new object[]
+            {
+                new ByteExporter(),
+                new Int16Exporter(),
+                new Int32Exporter(),
+                new Int64Exporter(),
+                new SingleExporter(),
+                new DoubleExporter(),
+                new DecimalExporter(),
+                new StringExporter(),
+                new BooleanExporter(),
+                new DateTimeExporter(),
+                
+                new ExportAwareExporterFamily(),
+                new NameValueCollectionExporterFamily(),
+                new DictionaryExporterFamily(),
+                new EnumerableExporterFamily(),
+                new ComponentExporterFamily()
+            };
+        }
+
+        protected override void Register(object item)
+        {
+            if (item == null)
+                throw new ArgumentNullException("item");
+            
+            IJsonExporter exporter = item as IJsonExporter;
+                    
+            if (exporter != null)
+            {
+                Register(exporter);
+            }
+            else
+            {
+                IJsonExporterFamily family = item as IJsonExporterFamily;
+                        
+                if (family == null)
+                    throw new ArgumentException(string.Format("The type {0} is not a valid JSON exporter. Expected {1} or {2}.", typeof(IJsonExporter).FullName, typeof(IJsonExporterFamily).FullName, item.GetType().FullName));
+                
+                Register(family);
+            }
         }
     }
 }

@@ -27,11 +27,12 @@ namespace Jayrock.Json.Serialization.Import
     using System;
     using System.Collections;
     using System.Diagnostics;
+    using Jayrock.Json.Serialization.Import.Importers;
 
     #endregion
 
     [ Serializable ]
-    public sealed class JsonImporterRegistry : JsonTraderCollection, IJsonImporterRegistry
+    public sealed class JsonImporterCollection : JsonTraderCollection
     {
         public IJsonImporter Find(Type type)
         {
@@ -60,6 +61,53 @@ namespace Jayrock.Json.Serialization.Import
         protected override object Page(object family, Type type)
         {
             return ((IJsonImporterFamily) family).Page(type);
+        }
+
+        protected override ICollection GetDefaultConfiguration()
+        {
+            return new object[]
+            {
+                new ByteImporter(),
+                new Int16Importer(),
+                new Int32Importer(),
+                new Int64Importer(),
+                new SingleImporter(),
+                new DoubleImporter(),
+                new DecimalImporter(),
+                new StringImporter(),
+                new BooleanImporter(),
+                new DateTimeImporter(),
+                new AutoImporter(),
+                new DictionaryImporter(),
+                new ListImporter(),
+
+                new ImportAwareImporterFamily(),
+                new ArrayImporterFamily(),
+                new EnumImporterFamily(),
+                new ComponentImporterFamily()
+            };
+        }
+
+        protected override void Register(object item)
+        {
+            if (item == null)
+                throw new ArgumentNullException("item");
+            
+            IJsonImporter importer = item as IJsonImporter;
+                    
+            if (importer != null)
+            {
+                Register(importer);
+            }
+            else
+            {
+                IJsonImporterFamily family = item as IJsonImporterFamily;
+                        
+                if (family == null)
+                    throw new ArgumentException(string.Format("The type {0} is not a valid JSON importer. Expected {1} or {2}.", item.GetType().FullName, typeof(IJsonImporter).FullName, typeof(IJsonImporterFamily).FullName));
+
+                Register(family);
+            }
         }
     }
 }

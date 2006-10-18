@@ -30,30 +30,11 @@ namespace Jayrock.Json.Serialization.Import.Importers
 
     #endregion
 
-    public sealed class NumberImporter : JsonImporterBase
+    public abstract class NumberImporterBase : JsonImporterBase
     {
-        internal static NumberImporter Byte = new NumberImporter(typeof(byte), new Converter(ConvertToByte));
-        internal static NumberImporter Int16 = new NumberImporter(typeof(short), new Converter(ConvertToInt16));
-        internal static NumberImporter Int32 = new NumberImporter(typeof(int), new Converter(ConvertToInt32));
-        internal static NumberImporter Int64 = new NumberImporter(typeof(long), new Converter(ConvertToInt64));
-        internal static NumberImporter Single = new NumberImporter(typeof(float), new Converter(ConvertToSingle));
-        internal static NumberImporter Double = new NumberImporter(typeof(double), new Converter(ConvertToDouble));
-        internal static NumberImporter Decimal = new NumberImporter(typeof(decimal), new Converter(ConvertToDecimal));
-
-        private delegate object Converter(string s);
-        
-        private readonly Converter _converter;
-
-        private NumberImporter(Type type, Converter converter) :
-            base(type)
-        {
-            Debug.Assert(type != null);
-            Debug.Assert(type.IsValueType);
-            Debug.Assert(converter != null);
-
-            _converter = converter;
-        }
-
+        protected NumberImporterBase(Type type) :
+            base(type) {}
+ 
         protected override object ImportValue(JsonReader reader, object context)
         {
             if (reader == null)
@@ -66,7 +47,7 @@ namespace Jayrock.Json.Serialization.Import.Importers
             
             try
             {
-                return _converter(text);
+                return ConvertFromString(text);
             }
             catch (FormatException e)
             {
@@ -78,17 +59,88 @@ namespace Jayrock.Json.Serialization.Import.Importers
             }
         }
 
+        protected abstract object ConvertFromString(string s);
+
         private Exception NumberError(Exception e, string text)
         {
             return new JsonException(string.Format("Error importing JSON Number {0} as {1}.", text, OutputType.FullName), e);
         }
+    }
+    
+    public class ByteImporter : NumberImporterBase
+    {
+        public ByteImporter() : 
+            base(typeof(byte)) {}
 
-        private static object ConvertToByte(string s) { return Convert.ToByte(s, CultureInfo.InvariantCulture); }
-        private static object ConvertToInt16(string s) { return Convert.ToInt16(s, CultureInfo.InvariantCulture); }
-        private static object ConvertToInt32(string s) { return Convert.ToInt32(s, CultureInfo.InvariantCulture); }
-        private static object ConvertToInt64(string s) { return Convert.ToInt64(s, CultureInfo.InvariantCulture); }
-        private static object ConvertToSingle(string s) { return Convert.ToSingle(s, CultureInfo.InvariantCulture); }
-        private static object ConvertToDouble(string s) { return Convert.ToDouble(s, CultureInfo.InvariantCulture); }
-        private static object ConvertToDecimal(string s) { return Convert.ToDecimal(s, CultureInfo.InvariantCulture); }
+        protected override object ConvertFromString(string s)
+        {
+            return Convert.ToByte(s, CultureInfo.InvariantCulture);
+        }
+    }
+
+    public class Int16Importer : NumberImporterBase
+    {
+        public Int16Importer() : 
+            base(typeof(short)) {}
+
+        protected override object ConvertFromString(string s)
+        {
+            return Convert.ToInt16(s, CultureInfo.InvariantCulture);
+        }
+    }
+
+    public class Int32Importer : NumberImporterBase
+    {
+        public Int32Importer() : 
+            base(typeof(int)) {}
+
+        protected override object ConvertFromString(string s)
+        {
+            return Convert.ToInt32(s, CultureInfo.InvariantCulture);
+        }
+    }
+
+    public class Int64Importer : NumberImporterBase
+    {
+        public Int64Importer() : 
+            base(typeof(long)) {}
+
+        protected override object ConvertFromString(string s)
+        {
+            return Convert.ToInt64(s, CultureInfo.InvariantCulture);
+        }
+    }
+
+    public class SingleImporter : NumberImporterBase
+    {
+        public SingleImporter() : 
+            base(typeof(float)) {}
+
+        protected override object ConvertFromString(string s)
+        {
+            return Convert.ToSingle(s, CultureInfo.InvariantCulture);
+        }
+    }
+
+    public class DoubleImporter : NumberImporterBase
+    {
+        public DoubleImporter() : 
+            base(typeof(double)) {}
+
+        protected override object ConvertFromString(string s)
+        {
+            return Convert.ToDouble(s, CultureInfo.InvariantCulture);
+        }
+    }
+
+    public class DecimalImporter : NumberImporterBase
+    {
+        public DecimalImporter() : 
+            base(typeof(decimal)) {}
+
+        protected override object ConvertFromString(string s)
+        {
+            return Convert.ToDecimal(s, CultureInfo.InvariantCulture);
+        }
     }
 }

@@ -37,7 +37,6 @@ namespace Jayrock.Json
 
     public abstract class JsonReader
     {
-        private IJsonImporterRegistry _importers;
         private JsonToken _token;
         private int _depth;
 
@@ -285,25 +284,6 @@ namespace Jayrock.Json
             else 
             {
                 throw new JsonException(string.Format("{0} not expected.", TokenClass));
-            }
-        }
-
-        public IJsonImporterRegistry Importers
-        {
-            get
-            {
-                if (_importers == null)
-                    _importers = JsonImporters.Registry;
-                
-                return _importers;
-            }
-            
-            set
-            {
-                if (value == null) 
-                    throw new ArgumentNullException("value");
-                
-                _importers = value;
             }
         }
 

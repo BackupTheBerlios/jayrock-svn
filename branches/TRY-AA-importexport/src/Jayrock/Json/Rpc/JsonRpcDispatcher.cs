@@ -251,14 +251,7 @@ namespace Jayrock.Json.Rpc
             JsonReader reader = (JsonReader) _serviceProvider.GetService(typeof(JsonReader));
 
             if (reader == null)
-            {
                 reader = new JsonTextReader(input);
-
-                IJsonImporterRegistry importers = (IJsonImporterRegistry) _serviceProvider.GetService(typeof(IJsonImporterRegistry));
-
-                if (importers != null)
-                    reader.Importers = importers;
-            }
 
             JsonObject request = new JsonObject();
             JsonRpcMethod method = null;

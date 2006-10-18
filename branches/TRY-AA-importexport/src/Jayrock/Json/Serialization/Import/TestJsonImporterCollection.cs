@@ -33,9 +33,9 @@ namespace Jayrock.Json
     #endregion
 
     [ TestFixture ]
-    public class TestJsonImporterRegistry
+    public class TestJsonImporterCollection
     {
-        private JsonImporterRegistry _registry;
+        private JsonImporterCollection _importers;
         private readonly Type _thing1Type = typeof(Thing1);
         private readonly Type _thing2Type = typeof(Thing2);
         private TestImporter _thing1Importer;
@@ -44,7 +44,7 @@ namespace Jayrock.Json
         [ SetUp ]
         public void Init()
         {
-            _registry = new JsonImporterRegistry();
+            _importers = new JsonImporterCollection();
             _thing1Importer = new TestImporter(_thing1Type);
             _thing2Importer = new TestImporter(_thing2Type);
         }
@@ -52,63 +52,63 @@ namespace Jayrock.Json
         [ Test ]
         public void Registration()
         {
-            _registry.Register(_thing1Importer);
-            Assert.AreSame(_thing1Importer, _registry.Find(_thing1Type));
+            _importers.Register(_thing1Importer);
+            Assert.AreSame(_thing1Importer, _importers.Find(_thing1Type));
         }
 
         [ Test ]
         public void LastImporterRegistrationWins()
         {
-            _registry.Register(_thing1Importer);
-            Assert.AreSame(_thing1Importer, _registry.Find(_thing1Type));
+            _importers.Register(_thing1Importer);
+            Assert.AreSame(_thing1Importer, _importers.Find(_thing1Type));
             TestImporter anotherThing1Importer = new TestImporter(_thing1Type);
-            _registry.Register(anotherThing1Importer);
-            Assert.AreSame(anotherThing1Importer, _registry.Find(_thing1Type));
+            _importers.Register(anotherThing1Importer);
+            Assert.AreSame(anotherThing1Importer, _importers.Find(_thing1Type));
         }
 
         [ Test ]
         public void FirstImporterSetRegistrationWins()
         {
-            _registry.Register(new TestImporterFamily(_thing1Importer));
-            _registry.Register(new TestImporterFamily(_thing1Importer));
-            Assert.AreSame(_thing1Importer, _registry.Find(_thing1Type));
+            _importers.Register(new TestImporterFamily(_thing1Importer));
+            _importers.Register(new TestImporterFamily(_thing1Importer));
+            Assert.AreSame(_thing1Importer, _importers.Find(_thing1Type));
         }
 
         [ Test ]
         public void InitialCountIsZero()
         {
-            Assert.AreEqual(0, _registry.Count);
+            Assert.AreEqual(0, _importers.Count);
         }
 
         [ Test ]
         public void CountImporters()
         {
-            _registry.Register(_thing1Importer);
-            Assert.AreEqual(1, _registry.Count);
+            _importers.Register(_thing1Importer);
+            Assert.AreEqual(1, _importers.Count);
 
-            _registry.Register(_thing2Importer);
-            Assert.AreEqual(2, _registry.Count);
+            _importers.Register(_thing2Importer);
+            Assert.AreEqual(2, _importers.Count);
         }
 
         [ Test ]
         public void CountImpoterSets()
         {
-            _registry.Register(new TestImporterFamily(_thing1Importer));
-            Assert.AreEqual(1, _registry.Count);
+            _importers.Register(new TestImporterFamily(_thing1Importer));
+            Assert.AreEqual(1, _importers.Count);
         }
 
         [ Test ]
         public void EnumerateWhenEmpty()
         {
-            Assert.AreEqual(0, EnumeratorHelper.List(_registry).Count);
+            Assert.AreEqual(0, EnumeratorHelper.List(_importers).Count);
         }
 
         [ Test ]
         public void EnumerateImporters()
         {
-            _registry.Register(_thing1Importer);
-            _registry.Register(_thing2Importer);
-            IList list = EnumeratorHelper.List(_registry);
+            _importers.Register(_thing1Importer);
+            _importers.Register(_thing2Importer);
+            IList list = EnumeratorHelper.List(_importers);
             Assert.AreEqual(2, list.Count);
             list.Remove(_thing1Importer);
             list.Remove(_thing2Importer);
@@ -119,71 +119,71 @@ namespace Jayrock.Json
         public void EnumerateImporterSets()
         {
             TestImporterFamily set1 = new TestImporterFamily();
-            _registry.Register(set1);
+            _importers.Register(set1);
             
             TestImporterFamily set2 = new TestImporterFamily();
-            _registry.Register(set2);
+            _importers.Register(set2);
 
-            Assert.AreEqual(new object[] { set1, set2 }, CollectionHelper.ToArray(EnumeratorHelper.List(_registry)));
+            Assert.AreEqual(new object[] { set1, set2 }, CollectionHelper.ToArray(EnumeratorHelper.List(_importers)));
         }
 
         [ Test ]
         public void EnumerateRegistrations()
         {
-            _registry.Register(_thing1Importer);
+            _importers.Register(_thing1Importer);
 
             TestImporterFamily importerFamily = new TestImporterFamily(_thing1Importer);
-            _registry.Register(importerFamily);
+            _importers.Register(importerFamily);
 
-            Assert.AreEqual(new object[] { _thing1Importer, importerFamily }, CollectionHelper.ToArray(EnumeratorHelper.List(_registry)));
+            Assert.AreEqual(new object[] { _thing1Importer, importerFamily }, CollectionHelper.ToArray(EnumeratorHelper.List(_importers)));
         }
 
         [ Test ]
         public void CopyItemsToArray()
         {
-            _registry.Register(_thing1Importer);
+            _importers.Register(_thing1Importer);
 
             TestImporterFamily importerFamily = new TestImporterFamily(_thing2Importer);
-            _registry.Register(importerFamily);
+            _importers.Register(importerFamily);
             
-            object[] items = new object[_registry.Count];
-            _registry.CopyTo(items, 0);
+            object[] items = new object[_importers.Count];
+            _importers.CopyTo(items, 0);
             Assert.AreEqual(new object[] { _thing1Importer, importerFamily }, items);
         }
         
         [ Test ]
         public void CopyItemsToArrayAtNonZeroIndex()
         {
-            _registry.Register(_thing1Importer);
+            _importers.Register(_thing1Importer);
 
             TestImporterFamily importerFamily = new TestImporterFamily(_thing2Importer);
-            _registry.Register(importerFamily);
+            _importers.Register(importerFamily);
             
-            object[] items = new object[2 + _registry.Count];
-            _registry.CopyTo(items, 2);
+            object[] items = new object[2 + _importers.Count];
+            _importers.CopyTo(items, 2);
             Assert.AreEqual(new object[] { null, null, _thing1Importer, importerFamily }, items);
         }
         
         [ Test ]
         public void CollectionNotSynchronized()
         {
-            Assert.IsFalse(((ICollection) _registry).IsSynchronized);
+            Assert.IsFalse(((ICollection) _importers).IsSynchronized);
         }
 
         [ Test ]
         public void CountNotAffectedByCaching()
         {
-            _registry.Register(new TestImporterFamily(new TestImporter(_thing1Type)));
-            _registry.Find(_thing1Type);
-            Assert.AreEqual(1, _registry.Count);
+            _importers.Register(new TestImporterFamily(new TestImporter(_thing1Type)));
+            _importers.Find(_thing1Type);
+            Assert.AreEqual(1, _importers.Count);
         }
 
         [ Test ]
         public void RegistrationCacheInvaidatedWhenNewImporterRegistered()
         {
-            _registry.Register(_thing1Importer);
-            Assert.AreEqual(new object[] { _thing1Importer }, CollectionHelper.ToArray(_registry));
-            _registry.Register(_thing2Importer);
+            _importers.Register(_thing1Importer);
+            Assert.AreEqual(new object[] { _thing1Importer }, CollectionHelper.ToArray(_importers));
+            _importers.Register(_thing2Importer);
             
             //
             // IMPORTANT!
@@ -194,7 +194,7 @@ namespace Jayrock.Json
             // empty then all expectations were met!
             //
             
-            IList list = EnumeratorHelper.List(_registry);
+            IList list = EnumeratorHelper.List(_importers);
             Assert.AreEqual(2, list.Count);
             list.Remove(_thing1Importer);
             list.Remove(_thing2Importer);
@@ -204,13 +204,13 @@ namespace Jayrock.Json
         [ Test, ExpectedException(typeof(ArgumentNullException)) ]
         public void CannotFindNullType()
         {
-            _registry.Find(null);
+            _importers.Find(null);
         }
 
         [ Test ]
         public void SyncRootIsNotSelf()
         {
-            ICollection registry = _registry;
+            ICollection registry = _importers;
             object syncRoot = registry.SyncRoot;
             Assert.IsNotNull(syncRoot);
             Assert.AreNotSame(registry, registry.SyncRoot);

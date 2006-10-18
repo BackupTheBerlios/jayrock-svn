@@ -92,11 +92,11 @@ namespace Jayrock.Json.Serialization.Import.Importers
         public void Registration()
         {
             Type type = typeof(Thing);
-            JsonImporterRegistry registry = new JsonImporterRegistry();
-            Assert.IsNull(registry.Find(type));
+            JsonImporterCollection importers = new JsonImporterCollection();
+            Assert.IsNull(importers.Find(type));
             ImportableImporter importer = new ImportableImporter(type);
-            registry.Register(importer);
-            Assert.AreSame(importer, registry.Find(type));
+            importers.Register(importer);
+            Assert.AreSame(importer, importers.Find(type));
         }
 
         private sealed class Thing : IJsonImportable
