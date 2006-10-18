@@ -192,13 +192,8 @@ namespace Jayrock.Json
         {
             if (writer == null)
                 throw new ArgumentNullException("writer");
-
-            writer.WriteStartArray();
-
-            foreach (object item in this)
-                JsonExport.Export(item, writer);
-
-            writer.WriteEndArray();
+            
+            writer.WriteArray(this);
         }
         
         public virtual void Import(JsonReader reader)

@@ -53,7 +53,7 @@ namespace Jayrock.Json.Conversion.Export.Exporters
             writer.WriteStartArray();
 
             foreach (object item in items)
-                JsonExport.Export(item, writer);
+                writer.WriteValue(item);
 
             writer.WriteEndArray();
         }

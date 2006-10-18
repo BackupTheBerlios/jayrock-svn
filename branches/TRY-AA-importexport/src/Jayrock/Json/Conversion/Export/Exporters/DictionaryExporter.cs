@@ -52,7 +52,7 @@ namespace Jayrock.Json.Conversion.Export.Exporters
             foreach (DictionaryEntry entry in dictionary)
             {
                 writer.WriteMember(entry.Key.ToString());
-                JsonExport.Export(entry.Value, writer);
+                writer.WriteValue(entry.Value);
             }
             
             writer.WriteEndObject();

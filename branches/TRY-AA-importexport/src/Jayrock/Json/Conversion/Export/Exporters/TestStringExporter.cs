@@ -59,7 +59,7 @@ namespace Jayrock.Json.Conversion.Export.Exporters
         private static JsonReader Export(string value)
         {
             JsonRecorder writer = new JsonRecorder();
-            JsonExport.Export(value, writer);
+            writer.WriteValue(value);
             return writer.CreatePlayer();
         }
     }
