@@ -65,7 +65,7 @@ namespace Jayrock.Json.Conversion.Import.Importers
 
         protected virtual object ImportValue(JsonReader reader)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException(); // FIXME: not implemented
         }
     }
 }
