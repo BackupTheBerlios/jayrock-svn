@@ -68,7 +68,7 @@ namespace Jayrock.Json.Formatters
     }
 }
 
-namespace Jayrock.Json.Serialization.Export.Exporters
+namespace Jayrock.Json.Conversion.Export.Exporters
 {
     #region Imports
 

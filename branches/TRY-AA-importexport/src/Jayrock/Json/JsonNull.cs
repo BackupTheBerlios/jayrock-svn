@@ -27,7 +27,7 @@ namespace Jayrock.Json
     using System;
     using System.Data.SqlTypes;
     using System.Runtime.Serialization;
-    using Jayrock.Json.Serialization.Export;
+    using Jayrock.Json.Conversion.Export;
 
     #endregion
 
