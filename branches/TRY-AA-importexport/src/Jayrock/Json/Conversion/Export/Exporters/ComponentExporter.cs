@@ -50,16 +50,16 @@ namespace Jayrock.Json.Conversion.Export.Exporters
 
     public sealed class ComponentExporter : JsonExporterBase
     {
-        private PropertyDescriptorCollection _properties; // TODO: Review thread-safety of PropertyDescriptorCollection
+        private readonly PropertyDescriptorCollection _properties; // TODO: Review thread-safety of PropertyDescriptorCollection
 
         public ComponentExporter(Type inputType) :
             this(inputType, (ICustomTypeDescriptor) null) {}
 
         public ComponentExporter(Type inputType, ICustomTypeDescriptor typeDescriptor) :
             this(inputType, typeDescriptor != null ? 
-                            typeDescriptor.GetProperties() : TypeDescriptor.GetProperties(inputType)) {}
+                            typeDescriptor.GetProperties() : (new CustomTypeDescriptor(inputType)).GetProperties()) {}
 
-        public ComponentExporter(Type inputType, PropertyDescriptorCollection properties) : 
+        private ComponentExporter(Type inputType, PropertyDescriptorCollection properties) : 
             base(inputType)
         {
             Debug.Assert(properties != null);

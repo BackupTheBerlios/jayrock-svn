@@ -28,6 +28,7 @@ namespace Jayrock.Json.Conversion.Export.Exporters
     using System.Collections;
     using System.ComponentModel;
     using System.IO;
+    using System.Reflection;
     using NUnit.Framework;
 
     #endregion
@@ -98,9 +99,16 @@ namespace Jayrock.Json.Conversion.Export.Exporters
         public void CustomPropertiesInternally()
         {
             Point point = new Point(123, 456);
-            JsonTextWriter writer = new JsonTextWriter();
+            JsonRecorder writer = new JsonRecorder();
             writer.WriteValue(point);
-            Assert.AreEqual("{\"X\":123,\"Y\":456}", writer.ToString());
+            JsonReader reader = writer.CreatePlayer();
+            reader.ReadToken(JsonTokenClass.Object);
+            Assert.AreEqual("x", reader.ReadMember());
+            Assert.AreEqual(123, reader.ReadNumber().ToInt32());
+            Assert.AreEqual("y", reader.ReadMember());
+            Assert.AreEqual(456, reader.ReadNumber().ToInt32());
+            Assert.AreSame(JsonTokenClass.EndObject, reader.TokenClass);
+            Assert.IsFalse(reader.Read());
         }
 
         [ Test ]
@@ -265,52 +273,29 @@ namespace Jayrock.Json.Conversion.Export.Exporters
 
         public sealed class Marriage
         {
-            private Person _husband;
-            private Person _wife;
-
-            public Person Husband
-            {
-                get { return _husband; }
-                set { _husband = value; }
-            }
-
-            public Person Wife
-            {
-                get { return _wife; }
-                set { _wife = value; }
-            }
+            public Person Husband;
+            public Person Wife;
         }
             
         public sealed class OwnerCars
         {
-            private Person _owner;
-            private ArrayList _cars = new ArrayList();
-
-            public Person Owner
-            {
-                get { return _owner; }
-                set { _owner = value; }
-            }
-
-            public ArrayList Cars
-            {
-                get { return _cars; }
-            }
+            public Person Owner;
+            public ArrayList Cars = new ArrayList();
         }
 
-        public struct  Point : IJsonExportable
+        public class Point : IJsonExportable
         {
             private int _x;
             private int _y;
-
-            private static readonly PropertyDescriptorCollection _properties;
-
+            
+            private static readonly ICustomTypeDescriptor _componentType;
+            
             static Point()
             {
-                PropertyDescriptorCollection properties = TypeDescriptor.GetProperties(typeof(Point));
-                _properties = new PropertyDescriptorCollection(null);
-                _properties.Add(properties["X"]);
-                _properties.Add(properties["Y"]);
+                Type type = typeof(Point);
+                PropertyInfo x = type.GetProperty("X");
+                PropertyInfo y = type.GetProperty("Y");
+                _componentType = new CustomTypeDescriptor(type, new MemberInfo[] { x, y }, new string[] { "x", "y" });
             }
 
             public Point(int x, int y)
@@ -319,19 +304,13 @@ namespace Jayrock.Json.Conversion.Export.Exporters
                 _y = y;
             }
 
-            public int X { get { return _x; } }
-            public int Y { get { return _y; } }
-            public string XYString { get { return X + "," + Y; } }
-
-            public void Format(JsonWriter writer)
-            {
-                ComponentExporter exporter = new ComponentExporter(GetType(), _properties);
-                exporter.Export(this, writer);
-            }
+            public int X { get { return _x; } set { _x = value; } }
+            public int Y { get { return _y; } set { _y = value; } }
 
             public void Export(JsonWriter writer)
             {
-                Format(writer);
+                ComponentExporter exporter = new ComponentExporter(typeof(Point), _componentType);
+                exporter.Export(this, writer);
             }
         }
     }
