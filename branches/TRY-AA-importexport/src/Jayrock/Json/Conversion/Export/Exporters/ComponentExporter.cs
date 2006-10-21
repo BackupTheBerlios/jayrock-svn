@@ -67,7 +67,7 @@ namespace Jayrock.Json.Conversion.Export.Exporters
             _properties = properties;
         }
 
-        protected override void SubExport(object value, JsonWriter writer)
+        protected override void ExportValue(object value, JsonWriter writer)
         {
             Debug.Assert(value != null);
             Debug.Assert(writer != null);

@@ -53,9 +53,9 @@ namespace Jayrock.Json.Conversion.Export.Exporters
             if (value == null)
                 writer.WriteNull();
             else
-                SubExport(value, writer);
+                ExportValue(value, writer);
         }
 
-        protected abstract void SubExport(object value, JsonWriter writer);
+        protected abstract void ExportValue(object value, JsonWriter writer);
     }
 }

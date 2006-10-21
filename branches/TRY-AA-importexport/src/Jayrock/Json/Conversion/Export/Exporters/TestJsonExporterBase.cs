@@ -67,7 +67,7 @@ namespace Jayrock.Json.Conversion.Export.Exporters
         {
             public ThingExporter() : base(typeof(Thing)) {}
             
-            protected override void SubExport(object value, JsonWriter writer)
+            protected override void ExportValue(object value, JsonWriter writer)
             {
             }
         }

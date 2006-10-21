@@ -39,7 +39,7 @@ namespace Jayrock.Json.Conversion.Export.Exporters
         public DataRowViewExporter(Type inputType) : 
             base(inputType) {}
 
-        protected override void SubExport(object value, JsonWriter writer)
+        protected override void ExportValue(object value, JsonWriter writer)
         {
             Debug.Assert(value != null);
             Debug.Assert(writer != null);

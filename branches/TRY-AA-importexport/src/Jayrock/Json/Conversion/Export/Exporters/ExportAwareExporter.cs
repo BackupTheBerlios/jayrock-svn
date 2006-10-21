@@ -42,7 +42,7 @@ namespace Jayrock.Json.Conversion.Export.Exporters
         public ExportAwareExporter(Type type) : 
             base(type) {}
 
-        protected override void SubExport(object value, JsonWriter writer)
+        protected override void ExportValue(object value, JsonWriter writer)
         {
             if (writer == null) 
                 throw new ArgumentNullException("writer");
