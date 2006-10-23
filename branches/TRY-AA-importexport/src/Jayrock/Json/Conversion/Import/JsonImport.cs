@@ -45,14 +45,9 @@ namespace Jayrock.Json.Conversion.Import
             if (type == null)
                 type = typeof(object);
 
-            reader.MoveToContent();
-            
-            if (reader.TokenClass == JsonTokenClass.Null)
-            {
-                reader.Read();
-                return null;
-            }
-            
+            if (!reader.MoveToContent())
+                throw new JsonException("Unexpected EOF.");
+                                    
             IJsonImporter importer = TryGetImporter(type);
                 
             if (importer == null)
