@@ -29,6 +29,11 @@ namespace Jayrock.Json.Conversion
     using System.Reflection;
 
     #endregion
+    
+    /// <summary>
+    /// Provides an <see cref="ICustomTypeDescriptor"/> implementation on top of the
+    /// public read/write fields and properties of a given type.
+    /// </summary>
 
     public sealed class CustomTypeDescriptor : ICustomTypeDescriptor
     {
@@ -46,7 +51,7 @@ namespace Jayrock.Json.Conversion
                 throw new ArgumentNullException("type");
             
             //
-            // No members supplied? Get all public instance-level fields and 
+            // No members supplied? Get all public, instance-level fields and 
             // properties of the type.
             //
             
@@ -73,7 +78,7 @@ namespace Jayrock.Json.Conversion
                 if (field != null)
                 {
                     //
-                    // Add public fields that are not read only and not 
+                    // Add public fields that are not read-only and not 
                     // constant literals.
                     //
             
