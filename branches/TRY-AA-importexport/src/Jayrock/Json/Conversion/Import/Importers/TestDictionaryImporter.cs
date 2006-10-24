@@ -22,46 +22,29 @@
 
 namespace Jayrock.Json.Conversion.Import.Importers
 {
-    #region Importer
+    #region Imports
 
-    using System;
     using System.Collections;
-    using Jayrock.Json.Conversion.Import;
+    using NUnit.Framework;
 
     #endregion
 
-    public sealed class ImportAwareImporterFamily : IJsonImporterFamily
+    [ TestFixture ]
+    public class TestDictionaryImporter
     {
-        public IJsonImporter Page(Type type)
+        [ Test ]
+        public void Import()
         {
-            return typeof(IJsonImportable).IsAssignableFrom(type) ? 
-                new ImportAwareImporter(type) : null;
-        }
-    }
-
-    public class ImportAwareImporter : JsonImporterBase
-    {
-        public ImportAwareImporter(Type type) : 
-            base(type) {}
-
-        public override object Import(JsonReader reader)
-        {
-            if (reader == null) 
-                throw new ArgumentNullException("reader");
-
-            reader.MoveToContent();
-            
-            if (reader.TokenClass == JsonTokenClass.Null)
-                return null;
-            
-            IJsonImportable o = (IJsonImportable) CreateObject();
-            o.Import(reader);
-            return o;
-        }
-
-        protected virtual object CreateObject()
-        {
-            return Activator.CreateInstance(OutputType);
+            JsonRecorder writer = new JsonRecorder();
+            writer.WriteStartObject();
+            writer.WriteMember("foo");
+            writer.WriteString("bar");
+            writer.WriteEndObject();
+            JsonReader reader = writer.CreatePlayer();
+            IDictionary map = (IDictionary) reader.ReadValue(typeof(IDictionary));
+            Assert.IsNotNull(map);
+            Assert.AreEqual(1, map.Count);
+            Assert.AreEqual("bar", map["foo"]);
         }
     }
 }

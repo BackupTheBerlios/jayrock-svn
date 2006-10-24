@@ -418,6 +418,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Json\Conversion\Import\Importers\DictionaryImporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\Conversion\Import\Importers\EnumImporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -434,6 +439,11 @@
                 />
                 <File
                     RelPath = "Json\Conversion\Import\Importers\JsonImporters.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Conversion\Import\Importers\ListImporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

@@ -22,46 +22,20 @@
 
 namespace Jayrock.Json.Conversion.Import.Importers
 {
-    #region Importer
+    #region Imports
 
-    using System;
     using System.Collections;
-    using Jayrock.Json.Conversion.Import;
 
     #endregion
 
-    public sealed class ImportAwareImporterFamily : IJsonImporterFamily
+    public class ListImporter : ImportAwareImporter
     {
-        public IJsonImporter Page(Type type)
+        public ListImporter() : 
+            base(typeof(IList)) {}
+
+        protected override object CreateObject()
         {
-            return typeof(IJsonImportable).IsAssignableFrom(type) ? 
-                new ImportAwareImporter(type) : null;
-        }
-    }
-
-    public class ImportAwareImporter : JsonImporterBase
-    {
-        public ImportAwareImporter(Type type) : 
-            base(type) {}
-
-        public override object Import(JsonReader reader)
-        {
-            if (reader == null) 
-                throw new ArgumentNullException("reader");
-
-            reader.MoveToContent();
-            
-            if (reader.TokenClass == JsonTokenClass.Null)
-                return null;
-            
-            IJsonImportable o = (IJsonImportable) CreateObject();
-            o.Import(reader);
-            return o;
-        }
-
-        protected virtual object CreateObject()
-        {
-            return Activator.CreateInstance(OutputType);
+            return new JsonArray();
         }
     }
 }
