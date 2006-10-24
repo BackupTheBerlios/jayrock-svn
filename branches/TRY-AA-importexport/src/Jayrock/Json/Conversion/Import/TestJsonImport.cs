@@ -52,11 +52,11 @@ namespace Jayrock.Json.Conversion.Import
             AssertInStock(typeof(AutoImporter), typeof(object));
             AssertInStock(typeof(ArrayImporter), typeof(object[]));
             AssertInStock(typeof(EnumImporter), typeof(System.Globalization.UnicodeCategory));
-            AssertInStock(typeof(ImportableImporter), typeof(JsonObject));
-            AssertInStock(typeof(ImportableImporter), typeof(IDictionary));
-            AssertInStock(typeof(ImportableImporter), typeof(JsonArray));
-            AssertInStock(typeof(ImportableImporter), typeof(IList));
-            AssertInStock(typeof(ImportableImporter), typeof(ImportableThing));
+            AssertInStock(typeof(ImportAwareImporter), typeof(JsonObject));
+            AssertInStock(typeof(ImportAwareImporter), typeof(IDictionary));
+            AssertInStock(typeof(ImportAwareImporter), typeof(JsonArray));
+            AssertInStock(typeof(ImportAwareImporter), typeof(IList));
+            AssertInStock(typeof(ImportAwareImporter), typeof(ImportableThing));
         }
 
         private static void AssertInStock(Type expected, Type type)

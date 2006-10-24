@@ -32,7 +32,7 @@ namespace Jayrock.Json.Conversion.Import.Importers
     #endregion
 
     [ TestFixture ]
-    public class TestImportableImporter
+    public class TestImportAwareImporter
     {
         private ImportAwareImporterFamily _importerFamily;
         
@@ -52,14 +52,14 @@ namespace Jayrock.Json.Conversion.Import.Importers
         public void FindImportableType()
         {
             IJsonImporter importer = _importerFamily.Page(typeof(Thing));
-            Assert.IsInstanceOfType(typeof(ImportableImporter), importer);
+            Assert.IsInstanceOfType(typeof(ImportAwareImporter), importer);
             Assert.IsNotNull(importer);
         }
         
         [ Test ]
         public void ImportTellsObjectToImportSelf()
         {
-            ImportableImporter importer = new ImportableImporter(typeof(Thing));
+            ImportAwareImporter importer = new ImportAwareImporter(typeof(Thing));
             JsonRecorder writer = new JsonRecorder();
             writer.WriteString(string.Empty);
             Thing thing = (Thing) importer.Import(writer.CreatePlayer());
@@ -69,7 +69,7 @@ namespace Jayrock.Json.Conversion.Import.Importers
         [ Test ]
         public void ImportNull()
         {
-            ImportableImporter importer = new ImportableImporter(typeof(Thing));
+            ImportAwareImporter importer = new ImportAwareImporter(typeof(Thing));
             JsonRecorder writer = new JsonRecorder();
             writer.WriteNull();
             Assert.IsNull(importer.Import(writer.CreatePlayer()));
@@ -78,13 +78,13 @@ namespace Jayrock.Json.Conversion.Import.Importers
         [ Test, ExpectedException(typeof(ArgumentNullException)) ]
         public void CannotInitWithNullType()
         {
-            new ImportableImporter(null);
+            new ImportAwareImporter(null);
         }
 
         [ Test, ExpectedException(typeof(ArgumentNullException)) ]
         public void CannotSendNullReaderToImport()
         {
-            ImportableImporter importer = new ImportableImporter(typeof(Thing));
+            ImportAwareImporter importer = new ImportAwareImporter(typeof(Thing));
             importer.Import(null);
         }
         
@@ -94,7 +94,7 @@ namespace Jayrock.Json.Conversion.Import.Importers
             Type type = typeof(Thing);
             JsonImporterCollection importers = new JsonImporterCollection();
             Assert.IsNull(importers.Find(type));
-            ImportableImporter importer = new ImportableImporter(type);
+            ImportAwareImporter importer = new ImportAwareImporter(type);
             importers.Register(importer);
             Assert.AreSame(importer, importers.Find(type));
         }

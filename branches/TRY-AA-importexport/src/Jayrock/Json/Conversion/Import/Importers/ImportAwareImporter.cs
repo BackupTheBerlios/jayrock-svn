@@ -35,13 +35,13 @@ namespace Jayrock.Json.Conversion.Import.Importers
         public IJsonImporter Page(Type type)
         {
             return typeof(IJsonImportable).IsAssignableFrom(type) ? 
-                new ImportableImporter(type) : null;
+                new ImportAwareImporter(type) : null;
         }
     }
 
-    public class ImportableImporter : JsonImporterBase
+    public class ImportAwareImporter : JsonImporterBase
     {
-        public ImportableImporter(Type type) : 
+        public ImportAwareImporter(Type type) : 
             base(type) {}
 
         public override object Import(JsonReader reader)
@@ -65,7 +65,7 @@ namespace Jayrock.Json.Conversion.Import.Importers
         }
     }
     
-    public class DictionaryImporter : ImportableImporter
+    public class DictionaryImporter : ImportAwareImporter
     {
         public DictionaryImporter() : 
             base(typeof(IDictionary)) {}
@@ -76,7 +76,7 @@ namespace Jayrock.Json.Conversion.Import.Importers
         }
     }
 
-    public class ListImporter : ImportableImporter
+    public class ListImporter : ImportAwareImporter
     {
         public ListImporter() : 
             base(typeof(IList)) {}
