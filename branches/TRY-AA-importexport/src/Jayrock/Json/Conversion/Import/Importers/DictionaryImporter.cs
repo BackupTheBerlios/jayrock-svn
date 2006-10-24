@@ -33,7 +33,7 @@ namespace Jayrock.Json.Conversion.Import.Importers
         public DictionaryImporter() : 
             base(typeof(IDictionary)) {}
 
-        protected override object CreateObject()
+        protected override IJsonImportable CreateObject()
         {
             return new JsonObject();
         }

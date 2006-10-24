@@ -54,14 +54,14 @@ namespace Jayrock.Json.Conversion.Import.Importers
             if (reader.TokenClass == JsonTokenClass.Null)
                 return null;
             
-            IJsonImportable o = (IJsonImportable) CreateObject();
+            IJsonImportable o = CreateObject();
             o.Import(reader);
             return o;
         }
 
-        protected virtual object CreateObject()
+        protected virtual IJsonImportable CreateObject()
         {
-            return Activator.CreateInstance(OutputType);
+            return (IJsonImportable) Activator.CreateInstance(OutputType);
         }
     }
 }

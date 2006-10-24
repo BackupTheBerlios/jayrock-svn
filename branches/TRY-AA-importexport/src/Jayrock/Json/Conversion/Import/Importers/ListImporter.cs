@@ -33,7 +33,7 @@ namespace Jayrock.Json.Conversion.Import.Importers
         public ListImporter() : 
             base(typeof(IList)) {}
 
-        protected override object CreateObject()
+        protected override IJsonImportable CreateObject()
         {
             return new JsonArray();
         }
