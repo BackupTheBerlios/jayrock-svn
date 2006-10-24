@@ -448,7 +448,7 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\Import\Importers\ImportableImporter.cs"
+                    RelPath = "Json\Conversion\Import\Importers\ImportAwareImporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
