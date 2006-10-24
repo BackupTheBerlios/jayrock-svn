@@ -33,7 +33,8 @@ namespace Jayrock.Json.Conversion.Import.Importers
     {
         public IJsonImporter Page(Type type)
         {
-            return type.IsEnum ? new EnumImporter(type) : null;
+            return type.IsEnum && !type.IsDefined(typeof(FlagsAttribute), true) ? 
+                   new EnumImporter(type) : null;
         }
     }
     
