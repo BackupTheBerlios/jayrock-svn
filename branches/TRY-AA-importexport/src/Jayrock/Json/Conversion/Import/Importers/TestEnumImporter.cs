@@ -48,21 +48,18 @@ namespace Jayrock.Json.Conversion.Import.Importers
         [ Test ]
         public void ImportNull()
         {
-            EnumImporter importer = new EnumImporter(typeof(Days));
             Assert.IsNull(Import(typeof(Days), JsonNull.Text));
         }
 
         [ Test ]
         public void ImportString()
         {
-            EnumImporter importer = new EnumImporter(typeof(Days));
             Assert.AreEqual(Days.Friday, Import(typeof(Days), "'Friday'"));
         }
 
         [ Test ]
         public void ImportStringIgnoresCase()
         {
-            EnumImporter importer = new EnumImporter(typeof(Days));
             Assert.AreEqual(Days.Friday, Import(typeof(Days), "'FRIDAY'"));
             Assert.AreEqual(Days.Friday, Import(typeof(Days), "'friday'"));
             Assert.AreEqual(Days.Friday, Import(typeof(Days), "'FrIdAy'"));
