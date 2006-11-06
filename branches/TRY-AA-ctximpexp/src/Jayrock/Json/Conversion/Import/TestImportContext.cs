@@ -34,7 +34,7 @@ namespace Jayrock.Json.Conversion.Import
     #endregion
 
     [ TestFixture ]
-    public class TestJsonImportContext
+    public class TestImportContext
     {
         [ Test ]
         public void StockImporters()
