@@ -28,6 +28,7 @@ namespace Jayrock.Json.Rpc
     using System.Collections;
     using System.Globalization;
     using System.Reflection;
+    using Jayrock.Json.Conversion.Import;
 
     #endregion
 
@@ -99,7 +100,8 @@ namespace Jayrock.Json.Rpc
             
             JsonRecorder recorder = new JsonRecorder();
             recorder.WriteValue(result);
-            return recorder.CreatePlayer().ReadValue(resultType);
+            // FIXME: Allow the context to be passed in.
+            return (new ImportContext()).Import(resultType, recorder.CreatePlayer());
         }
 
         private JsonRpcServices()

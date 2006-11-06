@@ -30,12 +30,12 @@ namespace Jayrock.Json.Conversion.Import.Importers
 
     #endregion
 
-    public sealed class AutoImporter : JsonImporterBase
+    public sealed class AutoImporter : TypeImporterBase
     {
         public AutoImporter() : 
             base(typeof(object)) {}
 
-        public override object Import(JsonReader reader)
+        public override object Import(ImportContext context, JsonReader reader)
         {
             if (reader == null)
                 throw new ArgumentNullException("reader");
@@ -62,13 +62,13 @@ namespace Jayrock.Json.Conversion.Import.Importers
             else if (reader.TokenClass == JsonTokenClass.Array)
             {
                 JsonArray items = new JsonArray();
-                items.Import(reader);
+                items.Import(context, reader);
                 return items;
             }
             else if (reader.TokenClass == JsonTokenClass.Object)
             {
                 JsonObject o = new JsonObject();
-                o.Import(reader);
+                o.Import(context, reader);
                 return o;
             }
             else 

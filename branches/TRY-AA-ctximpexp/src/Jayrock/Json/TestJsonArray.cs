@@ -27,6 +27,7 @@ namespace Jayrock.Json
     using System;
     using System.IO;
     using Jayrock.Json.Conversion.Export;
+    using Jayrock.Json.Conversion.Import;
     using NUnit.Framework;
 
     #endregion
@@ -47,7 +48,7 @@ namespace Jayrock.Json
         public void Import()
         {
             JsonArray a = new JsonArray();
-            a.Import(new JsonTextReader(new StringReader("[123,'Hello World',true]")));
+            a.Import(new ImportContext(), new JsonTextReader(new StringReader("[123,'Hello World',true]")));
             Assert.AreEqual(3, a.Length);
             Assert.AreEqual(123, (int) (JsonNumber) a[0]);
             Assert.AreEqual("Hello World", a[1]);
@@ -74,7 +75,7 @@ namespace Jayrock.Json
             JsonArray a = new JsonArray();
             a.Add(new object());
             Assert.AreEqual(1, a.Length);
-            a.Import(new JsonTextReader(new StringReader("[123]")));
+            a.Import(new ImportContext(), new JsonTextReader(new StringReader("[123]")));
             Assert.AreEqual(1, a.Length);
         }
         
@@ -87,7 +88,7 @@ namespace Jayrock.Json
             
             try
             {
-                a.Import(new JsonTextReader(new StringReader("[123,456,")));
+                a.Import(new ImportContext(), new JsonTextReader(new StringReader("[123,456,")));
             }
             catch (JsonException)
             {
@@ -98,9 +99,15 @@ namespace Jayrock.Json
         }
         
         [ Test, ExpectedException(typeof(ArgumentNullException)) ]
-        public void CannotUseNullArgWithImport()
+        public void CannotUseNullReaderWithImport()
         {
-            (new JsonArray()).Import(null);
+            (new JsonArray()).Import(new ImportContext(), null);
+        }
+
+        [ Test, ExpectedException(typeof(ArgumentNullException)) ]
+        public void CannotUseNullContextWithImport()
+        {
+            (new JsonArray()).Import(null, (new JsonRecorder()).CreatePlayer());
         }
 
         [ Test, ExpectedException(typeof(ArgumentNullException)) ]

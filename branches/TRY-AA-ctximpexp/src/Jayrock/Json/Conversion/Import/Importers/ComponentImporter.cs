@@ -30,10 +30,13 @@ namespace Jayrock.Json.Conversion.Import.Importers
 
     #endregion
     
-    public sealed class ComponentImporterFamily : IJsonImporterFamily
+    public sealed class ComponentImporterFamily : ITypeImporterBinder
     {
-        public IJsonImporter Page(Type type)
+        public ITypeImporter Bind(ImportContext context, Type type)
         {
+            if (context == null)
+                throw new ArgumentNullException("context");
+
             if (type == null)
                 throw new ArgumentNullException("type");
 
@@ -43,7 +46,7 @@ namespace Jayrock.Json.Conversion.Import.Importers
         }
     }
 
-    public sealed class ComponentImporter : JsonImporterBase
+    public sealed class ComponentImporter : TypeImporterBase
     {
         private readonly PropertyDescriptorCollection _properties; // TODO: Review thread-safety of PropertyDescriptorCollection
 
@@ -59,8 +62,11 @@ namespace Jayrock.Json.Conversion.Import.Importers
             _properties = typeDescriptor.GetProperties();
         }
 
-        protected override object ImportValue(JsonReader reader)
+        protected override object ImportValue(ImportContext context, JsonReader reader)
         {
+            if (context == null)
+                throw new ArgumentNullException("reader");
+
             if (reader == null)
                 throw new ArgumentNullException("reader");
 
@@ -75,7 +81,7 @@ namespace Jayrock.Json.Conversion.Import.Importers
                 PropertyDescriptor property = _properties[memberName];
                 
                 if (property != null && !property.IsReadOnly)
-                    property.SetValue(o, reader.ReadValue(property.PropertyType));
+                    property.SetValue(o, context.Import(property.PropertyType, reader));
                 else 
                     reader.Skip();
             }

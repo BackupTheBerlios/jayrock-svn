@@ -25,43 +25,50 @@ namespace Jayrock.Json.Conversion.Import.Importers
     #region Imports
 
     using System;
-    using System.Globalization;
+    using Jayrock.Json.Conversion.Import;
 
     #endregion
 
-    public sealed class BooleanImporter : TypeImporterBase
+    public abstract class TypeImporterBase : ITypeImporter
     {
-        public BooleanImporter() : 
-            base(typeof(bool)) { }
+        private readonly Type _outputType;
 
-        protected override object ImportValue(ImportContext context, JsonReader reader)
+        protected TypeImporterBase(Type outputType)
         {
+            if (outputType == null)
+                throw new ArgumentNullException("outputType");
+            
+            _outputType = outputType;
+        }
+
+        public Type OutputType
+        {
+            get { return _outputType; }
+        }
+
+        public virtual object Import(ImportContext context, JsonReader reader)
+        {
+            if (context == null)
+                throw new ArgumentNullException("context");
+            
             if (reader == null)
                 throw new ArgumentNullException("reader");
             
-            bool value;
+            if (!reader.MoveToContent())
+                throw new JsonException("Unexpected EOF.");
             
-            if (reader.TokenClass == JsonTokenClass.Number)
-            {
-                try
-                {
-                    value = Convert.ToInt64(reader.Text, CultureInfo.InvariantCulture) != 0;
-                }
-                catch (FormatException e)
-                {
-                    throw new JsonException(string.Format("The JSON Number {0} must be an integer to be convertible to System.Boolean.", reader.Text), e);
-                }
-            }
-            else if (reader.TokenClass == JsonTokenClass.Boolean)
-            {
-                value = reader.Text == JsonBoolean.TrueText;
-            }
-            else
-            {
-                throw new JsonException(string.Format("Found {0} where expecting a JSON Boolean.", reader.TokenClass));
-            }
+            object o = null;
             
-            return value ? BooleanObject.True : BooleanObject.False;
+            if (reader.TokenClass != JsonTokenClass.Null)
+                o = ImportValue(context, reader);
+            
+            reader.Read();
+            return o;
+        }
+
+        protected virtual object ImportValue(ImportContext context, JsonReader reader)
+        {
+            throw new NotImplementedException(); // FIXME: not implemented
         }
     }
 }

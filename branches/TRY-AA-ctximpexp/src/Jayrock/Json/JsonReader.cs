@@ -287,16 +287,6 @@ namespace Jayrock.Json
             }
         }
 
-        public object ReadValue()
-        {
-            return ReadValue(null);
-        }
-
-        public virtual object ReadValue(Type type)
-        {
-            return JsonImport.Import(this, type);
-        }
-
         public override string ToString()
         {
             return _token.ToString();

@@ -79,7 +79,8 @@ namespace Jayrock.Json.Conversion.Import.Importers
         {
             JsonTextReader reader = new JsonTextReader(new StringReader(input));
             Type expectedType = expected.GetType();
-            object o = JsonImport.GetImporter(expectedType).Import(reader);
+            ImportContext context = new ImportContext();
+            object o = context.Import(expectedType, reader);
             Assert.IsInstanceOfType(expectedType, o);
             Assert.AreEqual(expected, o);
         }

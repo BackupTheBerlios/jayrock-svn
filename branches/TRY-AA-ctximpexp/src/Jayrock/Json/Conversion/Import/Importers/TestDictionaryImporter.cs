@@ -41,7 +41,8 @@ namespace Jayrock.Json.Conversion.Import.Importers
             writer.WriteString("bar");
             writer.WriteEndObject();
             JsonReader reader = writer.CreatePlayer();
-            IDictionary map = (IDictionary) reader.ReadValue(typeof(IDictionary));
+            ImportContext context = new ImportContext();
+            IDictionary map = (IDictionary) context.Import(typeof(IDictionary), reader);
             Assert.IsNotNull(map);
             Assert.AreEqual(1, map.Count);
             Assert.AreEqual("bar", map["foo"]);

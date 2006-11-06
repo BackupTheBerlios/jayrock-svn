@@ -31,7 +31,7 @@ namespace Jayrock.Json.Conversion.Import.Importers
     #endregion
 
     [ TestFixture ]
-    public class TestJsonImporterBase
+    public class TestTypeImporterBase
     {
         [ Test ]
         public void OutputTypeInitialization()
@@ -45,7 +45,7 @@ namespace Jayrock.Json.Conversion.Import.Importers
         {
             JsonReader reader = CreateReader("null");
             TestImporter importer = new TestImporter();
-            Assert.IsNull(importer.Import(reader));
+            Assert.IsNull(importer.Import(new ImportContext(), reader));
             Assert.IsTrue(reader.EOF);
         }
         
@@ -55,7 +55,7 @@ namespace Jayrock.Json.Conversion.Import.Importers
             JsonReader reader = CreateReader("123");
             TestImporter importer = new TestImporter();
             importer.ReturnValue = new object();
-            object o = importer.Import(reader);
+            object o = importer.Import(new ImportContext(), reader);
             Assert.IsTrue(reader.EOF);
             Assert.IsTrue(importer.Called);
             Assert.IsNotNull(o);
@@ -67,7 +67,7 @@ namespace Jayrock.Json.Conversion.Import.Importers
             return new JsonTextReader(new StringReader(s));
         }
         
-        private sealed class TestImporter : JsonImporterBase
+        private sealed class TestImporter : TypeImporterBase
         {
             public object ReturnValue;
             public bool Called;
@@ -75,7 +75,7 @@ namespace Jayrock.Json.Conversion.Import.Importers
             public TestImporter() : 
                 base(typeof(object)) {}
 
-            protected override object ImportValue(JsonReader reader)
+            protected override object ImportValue(ImportContext context, JsonReader reader)
             {
                 Called = true;
                 return ReturnValue;

@@ -29,12 +29,12 @@ namespace Jayrock.Json.Conversion.Import.Importers
 
     #endregion
 
-    public class NameValueCollectionImporter : JsonImporterBase
+    public class NameValueCollectionImporter : TypeImporterBase
     {
         public NameValueCollectionImporter() : 
             base(typeof(NameValueCollection)) { }
 
-        protected override object ImportValue(JsonReader reader)
+        protected override object ImportValue(ImportContext context, JsonReader reader)
         {
             if (reader == null)
                 throw new ArgumentNullException("reader");

@@ -224,12 +224,7 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\Import\TestJsonImport.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Json\Conversion\Import\TestJsonImporterCollection.cs"
+                    RelPath = "Json\Conversion\Import\TestImportContext.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -274,11 +269,6 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\Import\Importers\TestJsonImporterBase.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "Json\Conversion\Import\Importers\TestListImporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -295,6 +285,11 @@
                 />
                 <File
                     RelPath = "Json\Conversion\Import\Importers\TestStringImporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Conversion\Import\Importers\TestTypeImporterBase.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

@@ -40,7 +40,7 @@ namespace Jayrock.Json.Conversion.Import.Importers
         public void ImportNull()
         {
             ComponentImporter importer = new ComponentImporter(typeof(object));
-            Assert.IsNull(importer.Import(CreateReader("null")));
+            Assert.IsNull(importer.Import(new ImportContext(), CreateReader("null")));
         }
 
         [ Test ]
@@ -132,7 +132,8 @@ namespace Jayrock.Json.Conversion.Import.Importers
             }";
             
             JsonTextReader reader = new JsonTextReader(new StringReader(text));
-            YahooResponse response = (YahooResponse) reader.ReadValue(typeof(YahooResponse));
+            ImportContext context = new ImportContext();
+            YahooResponse response = (YahooResponse) context.Import(typeof(YahooResponse), reader);
             Assert.IsNotNull(response);
             
             YahooResultSet resultSet = response.ResultSet;
@@ -192,7 +193,7 @@ namespace Jayrock.Json.Conversion.Import.Importers
             TestTypeDescriptor descriptor = new TestTypeDescriptor();
             descriptor.AddReadOnlyProperty("Id");
             ComponentImporter importer = new ComponentImporter(thingType, descriptor);
-            importer.Import(reader);
+            importer.Import(new ImportContext(), reader);
             Assert.IsFalse(descriptor.GetProperty("Id").SetValueCalled);
         }
 
@@ -334,7 +335,8 @@ namespace Jayrock.Json.Conversion.Import.Importers
         private static object Import(Type expectedType, string s)
         {
             JsonReader reader = CreateReader(s);
-            object o = reader.ReadValue(expectedType);
+            ImportContext context = new ImportContext();
+            object o = context.Import(expectedType, reader);
             Assert.IsNotNull(o);
             Assert.IsInstanceOfType(expectedType, o);
             return o;

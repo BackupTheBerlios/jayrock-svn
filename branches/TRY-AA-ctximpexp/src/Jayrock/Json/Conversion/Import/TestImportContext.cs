@@ -34,7 +34,7 @@ namespace Jayrock.Json.Conversion.Import
     #endregion
 
     [ TestFixture ]
-    public class TestJsonImport
+    public class TestJsonImportContext
     {
         [ Test ]
         public void StockImporters()
@@ -61,7 +61,8 @@ namespace Jayrock.Json.Conversion.Import
 
         private static void AssertInStock(Type expected, Type type)
         {
-            ITypeImporter importer = JsonImporterBinders.FromConfiguration().Bind(type);
+            ImportContext context = new ImportContext();
+            ITypeImporter importer = context.ImporterBinder.Bind(context, type);
             Assert.IsInstanceOfType(expected, importer, type.FullName);
         }
         

@@ -41,7 +41,8 @@ namespace Jayrock.Json.Conversion.Import.Importers
             writer.WriteString("bar");
             writer.WriteEndArray();
             JsonReader reader = writer.CreatePlayer();
-            IList list = (IList) reader.ReadValue(typeof(IList));
+            ImportContext context = new ImportContext();
+            IList list = (IList) context.Import(typeof(IList), reader);
             Assert.AreEqual(new object[] { "foo", "bar" }, CollectionHelper.ToArray(list));
         }
     }

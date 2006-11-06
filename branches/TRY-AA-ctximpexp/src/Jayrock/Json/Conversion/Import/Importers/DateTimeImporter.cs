@@ -30,12 +30,12 @@ namespace Jayrock.Json.Conversion.Import.Importers
 
     #endregion
 
-    public sealed class DateTimeImporter : JsonImporterBase
+    public sealed class DateTimeImporter : TypeImporterBase
     {
         public DateTimeImporter() : 
             base(typeof(DateTime)) {}
 
-        protected override object ImportValue(JsonReader reader)
+        protected override object ImportValue(ImportContext context, JsonReader reader)
         {
             if (reader == null)
                 throw new ArgumentNullException("reader");

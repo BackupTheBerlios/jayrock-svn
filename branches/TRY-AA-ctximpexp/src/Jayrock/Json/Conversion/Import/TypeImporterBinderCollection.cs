@@ -20,18 +20,24 @@
 //
 #endregion
 
-namespace Jayrock.Json.Conversion.Import.Importers
+namespace Jayrock.Json.Conversion.Import
 {
-    #region Importer
+    #region Imports
 
     using System;
     using System.Collections;
-    using Jayrock.Json.Conversion.Import;
+    using System.Threading;
 
     #endregion
 
-    public sealed class ImportAwareImporterFamily : ITypeImporterBinder
+    [ Serializable ]
+    public sealed class TypeImporterBinderCollection : CollectionBase, ITypeImporterBinder
     {
+        public void Add(ITypeImporterBinder binder)
+        {
+            List.Add(binder);
+        }
+
         public ITypeImporter Bind(ImportContext context, Type type)
         {
             if (context == null)
@@ -40,34 +46,31 @@ namespace Jayrock.Json.Conversion.Import.Importers
             if (type == null)
                 throw new ArgumentNullException("type");
 
-            return typeof(IJsonImportable).IsAssignableFrom(type) ? 
-                new ImportAwareImporter(type) : null;
-        }
-    }
-
-    public class ImportAwareImporter : TypeImporterBase
-    {
-        public ImportAwareImporter(Type type) : 
-            base(type) {}
-
-        public override object Import(ImportContext context, JsonReader reader)
-        {
-            if (reader == null) 
-                throw new ArgumentNullException("reader");
-
-            reader.MoveToContent();
+            foreach (ITypeImporterBinder binder in InnerList)
+            {
+                ITypeImporter importer = binder.Bind(context, type);
+                
+                if (importer != null)
+                    return importer;
+            }
             
-            if (reader.TokenClass == JsonTokenClass.Null)
-                return null;
-            
-            IJsonImportable o = CreateObject();
-            o.Import(context, reader);
-            return o;
+            return null;
         }
 
-        protected virtual IJsonImportable CreateObject()
+        protected override void OnValidate(object value)
         {
-            return (IJsonImportable) Activator.CreateInstance(OutputType);
+            if (value == null)
+                throw new ArgumentNullException("binder");
+            
+            if (!(value is ITypeImporterBinder))
+                throw new ArgumentException("binder");
+        }
+        
+        internal ITypeImporterBinder[] ToArray()
+        {
+            ITypeImporterBinder[] binders = new ITypeImporterBinder[Count];
+            InnerList.CopyTo(binders, 0);
+            return binders;
         }
     }
 }

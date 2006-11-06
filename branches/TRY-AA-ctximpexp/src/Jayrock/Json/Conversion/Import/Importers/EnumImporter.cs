@@ -29,16 +29,22 @@ namespace Jayrock.Json.Conversion.Import.Importers
 
     #endregion
 
-    public sealed class EnumImporterFamily : IJsonImporterFamily
+    public sealed class EnumImporterFamily : ITypeImporterBinder
     {
-        public IJsonImporter Page(Type type)
+        public ITypeImporter Bind(ImportContext context, Type type)
         {
+            if (context == null)
+                throw new ArgumentNullException("context");
+
+            if (type == null)
+                throw new ArgumentNullException("type");
+
             return type.IsEnum && !type.IsDefined(typeof(FlagsAttribute), true) ? 
                    new EnumImporter(type) : null;
         }
     }
     
-    public sealed class EnumImporter : JsonImporterBase
+    public sealed class EnumImporter : TypeImporterBase
     {
         public EnumImporter(Type type) :
             base(type)
@@ -50,7 +56,7 @@ namespace Jayrock.Json.Conversion.Import.Importers
                 throw new ArgumentException(string.Format("{0} is a bit field, which are not currently supported.", type));
         }
 
-        protected override object ImportValue(JsonReader reader)
+        protected override object ImportValue(ImportContext context, JsonReader reader)
         {
             string s = reader.ReadString().Trim();
         

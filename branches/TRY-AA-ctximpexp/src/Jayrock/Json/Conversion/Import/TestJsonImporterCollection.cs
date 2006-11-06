@@ -225,24 +225,24 @@ namespace Jayrock.Json
         {
         }
 
-        private sealed class TestImporter : JsonImporterBase
+        private sealed class TestImporter : TypeImporterBase
         {
             public TestImporter(Type type) : 
                 base(type) {}
         }
 
-        private class TestImporterFamily : IJsonImporterFamily
+        private class TestImporterFamily : ITypeImporterBinder
         {
-            private readonly IJsonImporter _importer;
+            private readonly ITypeImporter _importer;
 
             public TestImporterFamily() {}
             
-            public TestImporterFamily(IJsonImporter importer)
+            public TestImporterFamily(ITypeImporter importer)
             {
                 _importer = importer;
             }
 
-            public IJsonImporter Page(Type type)
+            public ITypeImporter Bind(ImportContext context, Type type)
             {
                 return _importer != null  && _importer.OutputType == type ? _importer : null;
             }

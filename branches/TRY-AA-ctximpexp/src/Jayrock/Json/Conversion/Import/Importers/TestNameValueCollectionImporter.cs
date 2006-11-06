@@ -101,16 +101,16 @@ namespace Jayrock.Json.Conversion.Import.Importers
             JsonReader reader = new JsonTextReader(new StringReader("[{},'end']"));
             reader.ReadToken(JsonTokenClass.Array);
             Assert.AreSame(JsonTokenClass.Object, reader.TokenClass);
-            IJsonImporter importer = new NameValueCollectionImporter();
-            importer.Import(reader);
+            ITypeImporter importer = new NameValueCollectionImporter();
+            importer.Import(new ImportContext(), reader);
             Assert.AreEqual("end", reader.ReadString());
         }
 
         private static NameValueCollection UncheckImport(string s)
         {
             JsonReader reader = new JsonTextReader(new StringReader(s));
-            IJsonImporter importer = new NameValueCollectionImporter();
-            return (NameValueCollection) importer.Import(reader);
+            ITypeImporter importer = new NameValueCollectionImporter();
+            return (NameValueCollection) importer.Import(new ImportContext(), reader);
         }
 
         private static NameValueCollection Import(string s)

@@ -30,13 +30,16 @@ namespace Jayrock.Json.Conversion.Import.Importers
 
     #endregion
 
-    public abstract class NumberImporterBase : JsonImporterBase
+    public abstract class NumberImporterBase : TypeImporterBase
     {
         protected NumberImporterBase(Type type) :
             base(type) {}
  
-        protected override object ImportValue(JsonReader reader)
+        protected override object ImportValue(ImportContext context, JsonReader reader)
         {
+            if (context == null)
+                throw new ArgumentNullException("reader");
+
             if (reader == null)
                 throw new ArgumentNullException("reader");
             

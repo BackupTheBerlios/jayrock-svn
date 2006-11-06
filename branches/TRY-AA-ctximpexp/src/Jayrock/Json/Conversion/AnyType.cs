@@ -20,23 +20,21 @@
 //
 #endregion
 
-namespace Jayrock.Json.Conversion.Import
+namespace Jayrock.Json.Conversion
 {
     #region Imports
 
     using System;
-    using System.Collections;
 
     #endregion
 
-    public interface IJsonImporter
+    public sealed class AnyType
     {
-        Type OutputType { get; }
-        object Import(JsonReader reader);
-    }
-
-    public interface IJsonImporterFamily
-    {
-        IJsonImporter Page(Type type);
+        public static readonly Type Value = typeof(object);
+        
+        private AnyType()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

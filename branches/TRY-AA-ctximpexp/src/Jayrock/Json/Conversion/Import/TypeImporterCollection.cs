@@ -20,52 +20,50 @@
 //
 #endregion
 
-namespace Jayrock.Json.Conversion.Import.Importers
+namespace Jayrock.Json.Conversion.Import
 {
     #region Imports
-
+    
     using System;
-    using Jayrock.Json.Conversion.Import;
+    using System.Collections;
 
     #endregion
+    
+    // FIXME: Turn TypeImporterCollection into a real keyed-collection.
 
-    public abstract class JsonImporterBase : IJsonImporter
+    [ Serializable ]
+    public sealed class TypeImporterCollection : ITypeImporterBinder 
     {
-        private readonly Type _outputType;
-
-        protected JsonImporterBase(Type outputType)
+        private Hashtable _importerByType;
+        
+        public void Add(ITypeImporter importer)
         {
-            if (outputType == null)
-                throw new ArgumentNullException("outputType");
+            if (importer == null)
+                throw new ArgumentNullException("importer");
             
-            _outputType = outputType;
+            ImporterByType.Add(importer.OutputType, importer);
         }
 
-        public Type OutputType
+        public ITypeImporter Bind(ImportContext context, Type type)
         {
-            get { return _outputType; }
+            if (context == null)
+                throw new ArgumentNullException("context");
+
+            if (type == null)
+                throw new ArgumentNullException("type");
+            
+            return (ITypeImporter) ImporterByType[type];
         }
 
-        public virtual object Import(JsonReader reader)
+        private Hashtable ImporterByType
         {
-            if (reader == null)
-                throw new ArgumentNullException("reader");
-            
-            if (!reader.MoveToContent())
-                throw new JsonException("Unexpected EOF.");
-            
-            object o = null;
-            
-            if (reader.TokenClass != JsonTokenClass.Null)
-                o = ImportValue(reader);
-            
-            reader.Read();
-            return o;
-        }
-
-        protected virtual object ImportValue(JsonReader reader)
-        {
-            throw new NotImplementedException(); // FIXME: not implemented
+            get
+            {
+                if (_importerByType == null)
+                    _importerByType = new Hashtable();
+                
+                return _importerByType;
+            }
         }
     }
 }

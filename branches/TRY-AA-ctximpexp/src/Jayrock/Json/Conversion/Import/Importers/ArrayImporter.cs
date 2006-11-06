@@ -32,16 +32,22 @@ namespace Jayrock.Json.Conversion.Import.Importers
 
     #endregion
     
-    public sealed class ArrayImporterFamily : IJsonImporterFamily
+    public sealed class ArrayImporterFamily : ITypeImporterBinder
     {
-        public IJsonImporter Page(Type type)
+        public ITypeImporter Bind(ImportContext context, Type type)
         {
+            if (context == null)
+                throw new ArgumentNullException("context");
+
+            if (type == null)
+                throw new ArgumentNullException("type");
+            
             return type.IsArray && type.GetArrayRank() == 1 ? 
                 new ArrayImporter(type) : null;
         }
     }
 
-    public sealed class ArrayImporter : JsonImporterBase
+    public sealed class ArrayImporter : TypeImporterBase
     {
         public ArrayImporter() : this(null) {}
 
@@ -62,8 +68,11 @@ namespace Jayrock.Json.Conversion.Import.Importers
             return type;
         }
 
-        public override object Import(JsonReader reader)
+        public override object Import(ImportContext context, JsonReader reader)
         {
+            if (context == null)
+                throw new ArgumentNullException("context");
+
             if (reader == null)
                 throw new ArgumentNullException("reader");
 
@@ -85,7 +94,7 @@ namespace Jayrock.Json.Conversion.Import.Importers
                 ArrayList list = new ArrayList();
 
                 while (reader.TokenClass != JsonTokenClass.EndArray)
-                    list.Add(reader.ReadValue(elementType));
+                    list.Add(context.Import(elementType, reader));
 
                 reader.Read();
             
@@ -96,7 +105,7 @@ namespace Jayrock.Json.Conversion.Import.Importers
                      reader.TokenClass == JsonTokenClass.Boolean)
             {
                 Array array = Array.CreateInstance(elementType, 1);
-                array.SetValue(reader.ReadValue(elementType), 0);
+                array.SetValue(context.Import(elementType, reader), 0);
                 return array;
             }
             else
@@ -128,7 +137,7 @@ namespace Jayrock.Json.Conversion.Import.Importers
             {
                 importer = JsonImporterStock.Lookup(elementType);
                 if (importer != null)
-                    registry.Register(elementType, importer);
+                    registry.Add(elementType, importer);
             }
 
             base.OnRegister(registry);

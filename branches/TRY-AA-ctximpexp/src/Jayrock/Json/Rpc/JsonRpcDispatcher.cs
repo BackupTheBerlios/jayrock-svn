@@ -32,6 +32,8 @@ namespace Jayrock.Json.Rpc
     using System.Diagnostics;
     using System.IO;
     using System.Web.UI;
+    using Jayrock.Json.Conversion;
+    using Jayrock.Json.Conversion.Import;
 
     #endregion
 
@@ -250,7 +252,9 @@ namespace Jayrock.Json.Rpc
 
             if (reader == null)
                 reader = new JsonTextReader(input);
-
+            
+            ImportContext importContext = new ImportContext();
+            
             JsonObject request = new JsonObject();
             JsonRpcMethod method = null;
             JsonReader paramsReader = null;
@@ -266,7 +270,7 @@ namespace Jayrock.Json.Rpc
                 {
                     case "id" :
                     {
-                        request["id"] = reader.ReadValue();
+                        request["id"] = importContext.ImportAny(reader);
                         break;
                     }
                     case "method" :
@@ -283,7 +287,7 @@ namespace Jayrock.Json.Rpc
                             // the method we're dealing with.
                             //
                             
-                            args = ReadParameters(method, paramsReader);
+                            args = ReadParameters(method, paramsReader, importContext);
                             paramsReader = null;
                         }
                         
@@ -300,7 +304,7 @@ namespace Jayrock.Json.Rpc
                         
                         if (method != null)
                         {
-                            args = ReadParameters(method, reader);
+                            args = ReadParameters(method, reader, importContext);
                         }
                         else
                         {
@@ -346,10 +350,11 @@ namespace Jayrock.Json.Rpc
             return JsonRpcError.FromException(e, _localExecution);
         }
 
-        private static object ReadParameters(JsonRpcMethod method, JsonReader reader)
+        private static object ReadParameters(JsonRpcMethod method, JsonReader reader, ImportContext importContext)
         {
             Debug.Assert(method != null);
             Debug.Assert(reader != null);
+            Debug.Assert(importContext != null);
             
             reader.MoveToContent();
             
@@ -363,7 +368,7 @@ namespace Jayrock.Json.Rpc
                 // TODO: This loop could bomb when more args are supplied that parameters available.
                                                         
                 for (int i = 0; i < parameters.Length && reader.TokenClass != JsonTokenClass.EndArray; i++)
-                    argList.Add(reader.ReadValue(parameters[i].ParameterType));
+                    argList.Add(importContext.Import(parameters[i].ParameterType, reader));
 
                 reader.StepOut();
                 return argList.ToArray();
@@ -378,7 +383,7 @@ namespace Jayrock.Json.Rpc
                     // TODO: Imporve this lookup.
                     // FIXME: Does not work when argument is positional.
                                     
-                    Type parameterType = null;
+                    Type parameterType = AnyType.Value;
                     string name = reader.ReadMember();
 
                     foreach (JsonRpcParameter parameter in parameters)
@@ -390,7 +395,7 @@ namespace Jayrock.Json.Rpc
                         }
                     }
                                     
-                    argByName.Put(name, reader.ReadValue(parameterType));
+                    argByName.Put(name, importContext.Import(parameterType, reader));
                 }
                                 
                 reader.Read();
@@ -398,7 +403,7 @@ namespace Jayrock.Json.Rpc
             }
             else
             {
-                return reader.ReadValue();
+                return importContext.ImportAny(reader);
             }
         }
     }
