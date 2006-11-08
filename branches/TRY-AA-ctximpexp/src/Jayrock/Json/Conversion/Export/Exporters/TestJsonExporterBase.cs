@@ -49,13 +49,13 @@ namespace Jayrock.Json.Conversion.Export.Exporters
         [ Test, ExpectedException(typeof(ArgumentNullException)) ]
         public void CannotUseNullContext()
         {
-            _exporter.Export(null, null);
+            _exporter.Export(null, null, null);
         }
  
         private JsonReader Export(object value)
         {
             JsonRecorder writer = new JsonRecorder();
-            _exporter.Export(value, writer);
+            _exporter.Export(new ExportContext(), value, writer);
             return writer.CreatePlayer();
         }
         
@@ -67,7 +67,7 @@ namespace Jayrock.Json.Conversion.Export.Exporters
         {
             public ThingExporter() : base(typeof(Thing)) {}
             
-            protected override void ExportValue(object value, JsonWriter writer)
+            protected override void ExportValue(ExportContext context, object value, JsonWriter writer)
             {
             }
         }

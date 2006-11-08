@@ -30,16 +30,22 @@ namespace Jayrock.Json.Conversion.Export.Exporters
 
     #endregion
     
-    public sealed class DataTableExporterFamily : IJsonExporterFamily
+    public sealed class DataTableExporterFamily : ITypeExporterBinder
     {
-        public IJsonExporter Page(Type type)
+        public ITypeExporter Bind(ExportContext context, Type type)
         {
+            if (context == null)
+                throw new ArgumentNullException("context");
+            
+            if (type == null)
+                throw new ArgumentNullException("type");
+
             return typeof(DataTable).IsAssignableFrom(type) ? 
                 new DataTableExporter(type) : null;
         }
     }
 
-    public class DataTableExporter : JsonExporterBase
+    public sealed class DataTableExporter : JsonExporterBase
     {
         public DataTableExporter() :
             this(typeof(DataTable)) {}
@@ -47,20 +53,22 @@ namespace Jayrock.Json.Conversion.Export.Exporters
         public DataTableExporter(Type inputType) : 
             base(inputType) {}
 
-        protected override void ExportValue(object value, JsonWriter writer)
+        protected override void ExportValue(ExportContext context, object value, JsonWriter writer)
         {
+            Debug.Assert(context != null);
             Debug.Assert(value != null);
             Debug.Assert(writer != null);
 
-            ExportTable((DataTable) value, writer);
+            ExportTable(context, (DataTable) value, writer);
         }
 
-        internal static void ExportTable(DataTable table, JsonWriter writer)
+        internal static void ExportTable(ExportContext context, DataTable table, JsonWriter writer)
         {
+            Debug.Assert(context != null);
             Debug.Assert(table != null);
             Debug.Assert(writer != null);
 
-            DataViewExporter.ExportView(table.DefaultView, writer);
+            DataViewExporter.ExportView(context, table.DefaultView, writer);
        }
     }
 }

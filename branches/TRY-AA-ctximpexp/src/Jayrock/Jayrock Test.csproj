@@ -169,7 +169,7 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\Export\TestJsonExport.cs"
+                    RelPath = "Json\Conversion\Export\TestExportContext.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

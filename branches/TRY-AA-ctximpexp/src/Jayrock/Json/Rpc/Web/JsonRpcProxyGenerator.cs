@@ -223,7 +223,7 @@ namespace Jayrock.Json.Rpc.Web
             writer.Write(service.Name);
             writer.Write(".rpcMethods = ");
             JsonTextWriter jsonWriter = new JsonTextWriter(writer);
-            jsonWriter.WriteArray(methodNames);
+            jsonWriter.WriteStringArray(methodNames);
             writer.WriteLine(";");
         }
 

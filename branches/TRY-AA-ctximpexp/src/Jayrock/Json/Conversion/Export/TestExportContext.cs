@@ -14,7 +14,7 @@ namespace Jayrock.Json.Conversion.Export
     #endregion
 
     [ TestFixture ]
-    public class TestJsonExport
+    public class TestExportContext
     {
         [ Test ]
         public void StockExporters()
@@ -50,13 +50,14 @@ namespace Jayrock.Json.Conversion.Export
         
         private static void AssertInStock(Type expected, Type type)
         {
-            IJsonExporter importer = JsonExport.GetExporter(type);
+            ExportContext context = new ExportContext();
+            ITypeExporter importer = context.ExporterBinder.Bind(context, type);
             Assert.IsInstanceOfType(expected, importer, type.FullName);
         }
         
         private sealed class ExportableThing : IJsonExportable
         {
-            public void Export(JsonWriter writer)
+            public void Export(ExportContext context, JsonWriter writer)
             {
                 throw new NotImplementedException();
             }

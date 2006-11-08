@@ -30,7 +30,7 @@ namespace Jayrock.Json.Conversion.Export.Exporters
 
     #endregion
 
-    public class DataViewExporter : JsonExporterBase
+    public sealed class DataViewExporter : JsonExporterBase
     {
         public DataViewExporter() :
             this(typeof(DataView)) {}
@@ -38,16 +38,18 @@ namespace Jayrock.Json.Conversion.Export.Exporters
         public DataViewExporter(Type inputType) : 
             base(inputType) {}
 
-        protected override void ExportValue(object value, JsonWriter writer)
+        protected override void ExportValue(ExportContext context, object value, JsonWriter writer)
         {
+            Debug.Assert(context != null);
             Debug.Assert(value != null);
             Debug.Assert(writer != null);
             
-            ExportView((DataView) value, writer);
+            ExportView(context, (DataView) value, writer);
         }
 
-        internal static void ExportView(DataView view, JsonWriter writer)
+        internal static void ExportView(ExportContext context, DataView view, JsonWriter writer)
         {
+            Debug.Assert(context != null);
             Debug.Assert(view != null);
             Debug.Assert(writer != null);
 
@@ -57,14 +59,14 @@ namespace Jayrock.Json.Conversion.Export.Exporters
 
             writer.WriteStartArray();
             foreach (DataColumn column in view.Table.Columns)
-                writer.WriteValue(column.ColumnName);
+                context.Export(column.ColumnName, writer);
             writer.WriteEndArray();
 
             writer.WriteMember("rows");
 
             writer.WriteStartArray();
             foreach (DataRowView row in view)
-                writer.WriteValue(row.Row.ItemArray);
+                context.Export(row.Row.ItemArray, writer);
             writer.WriteEndArray();
 
             writer.WriteEndObject();

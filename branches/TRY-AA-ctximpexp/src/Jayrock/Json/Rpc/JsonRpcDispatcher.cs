@@ -33,6 +33,7 @@ namespace Jayrock.Json.Rpc
     using System.IO;
     using System.Web.UI;
     using Jayrock.Json.Conversion;
+    using Jayrock.Json.Conversion.Export;
     using Jayrock.Json.Conversion.Import;
 
     #endregion
@@ -339,7 +340,8 @@ namespace Jayrock.Json.Rpc
             if (writer == null)
                 writer = new JsonTextWriter(output);
 
-            writer.WriteValue(response);
+            ExportContext exportContext = new ExportContext();
+            exportContext.Export(response, writer);
         }
 
         protected virtual object OnError(Exception e)

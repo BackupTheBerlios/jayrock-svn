@@ -55,7 +55,7 @@ namespace Jayrock.Json.Conversion.Export.Exporters
         {
             JsonRecorder writer = new JsonRecorder();
             DateTimeExporter exporter = new DateTimeExporter();
-            exporter.Export(value, writer);
+            exporter.Export(new ExportContext(), value, writer);
             return writer.CreatePlayer().ReadString();
         }
  

@@ -33,10 +33,16 @@ namespace Jayrock.Json.Conversion.Export.Exporters
 
     #endregion
 
-    public sealed class ControlExporterFamily : IJsonExporterFamily
+    public sealed class ControlExporterFamily : ITypeExporterBinder
     {
-        public IJsonExporter Page(Type type)
+        public ITypeExporter Bind(ExportContext context, Type type)
         {
+            if (context == null)
+                throw new ArgumentNullException("context");
+            
+            if (type == null)
+                throw new ArgumentNullException("type");
+
             return typeof(Control).IsAssignableFrom(type) ? 
                 new ControlExporter(type) : null;
         }
@@ -50,8 +56,9 @@ namespace Jayrock.Json.Conversion.Export.Exporters
         public ControlExporter(Type inputType) : 
             base(inputType) {}
 
-        protected override void ExportValue(object value, JsonWriter writer)
+        protected override void ExportValue(ExportContext context, object value, JsonWriter writer)
         {
+            Debug.Assert(context != null);
             Debug.Assert(value != null);
             Debug.Assert(writer != null);
 

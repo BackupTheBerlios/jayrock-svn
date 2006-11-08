@@ -217,12 +217,16 @@ namespace Jayrock.Json
         public override string ToString()
         {
             JsonTextWriter writer = new JsonTextWriter();
-            Export(writer);
+            ExportContext context = new ExportContext();
+            context.Export(this, writer);
             return writer.ToString();
         }
 
-        public void Export(JsonWriter writer)
+        public void Export(ExportContext context, JsonWriter writer)
         {
+            if (context == null)
+                throw new ArgumentNullException("context");
+
             if (writer == null)
                 throw new ArgumentNullException("writer");
 
@@ -231,7 +235,7 @@ namespace Jayrock.Json
             foreach (string name in NameIndexList)
             {
                 writer.WriteMember(name);    
-                writer.WriteValue(InnerHashtable[name]);
+                context.Export(InnerHashtable[name], writer);
             }
 
             writer.WriteEndObject();

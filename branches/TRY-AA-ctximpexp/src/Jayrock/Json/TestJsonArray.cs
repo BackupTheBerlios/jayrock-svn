@@ -60,7 +60,7 @@ namespace Jayrock.Json
         {
             JsonArray a = new JsonArray(new object[] { 123, "Hello World", true });
             JsonRecorder writer = new JsonRecorder();
-            a.Export(writer);
+            a.Export(new ExportContext(), writer);
             JsonReader reader = writer.CreatePlayer();
             reader.ReadToken(JsonTokenClass.Array);
             Assert.AreEqual(a[0], reader.ReadNumber().ToInt32());
@@ -113,7 +113,7 @@ namespace Jayrock.Json
         [ Test, ExpectedException(typeof(ArgumentNullException)) ]
         public void CannotUseNullArgWithExport()
         {
-            (new JsonArray()).Export(null);
+            (new JsonArray()).Export(null, null);
         }
     }
 }

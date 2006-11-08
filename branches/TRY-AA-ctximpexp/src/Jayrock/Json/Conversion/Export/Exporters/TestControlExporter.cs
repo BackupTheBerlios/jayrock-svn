@@ -39,7 +39,7 @@ namespace Jayrock.Json.Conversion.Export.Exporters
             JsonTextWriter writer = new JsonTextWriter();
             HtmlGenericControl span = new HtmlGenericControl("span");
             span.InnerText = "Happy & shiny people!";
-            exporter.Export(span, writer);
+            exporter.Export(new ExportContext(), span, writer);
             Assert.AreEqual("\"<span\\>Happy &amp; shiny people!</span\\>\"", writer.ToString());
         }
     }

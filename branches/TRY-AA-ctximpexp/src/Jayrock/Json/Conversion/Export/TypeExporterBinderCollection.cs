@@ -20,64 +20,56 @@
 //
 #endregion
 
-namespace Jayrock.Json.Conversion.Export.Exporters
+namespace Jayrock.Json.Conversion.Export
 {
     #region Imports
 
     using System;
     using System.Collections;
-    using System.Data;
-    using System.Diagnostics;
 
     #endregion
 
-    public sealed class DataRowExporterFamily : ITypeExporterBinder
+    [ Serializable ]
+    public sealed class TypeExporterBinderCollection : CollectionBase, ITypeExporterBinder
     {
+        public void Add(ITypeExporterBinder binder)
+        {
+            List.Add(binder);
+        }
+
         public ITypeExporter Bind(ExportContext context, Type type)
         {
             if (context == null)
                 throw new ArgumentNullException("context");
-            
+
             if (type == null)
                 throw new ArgumentNullException("type");
 
-            return typeof(DataRow).IsAssignableFrom(type) ? 
-                   new DataRowExporter(type) : null;
-        }
-    }
-    
-    public sealed class DataRowExporter : JsonExporterBase
-    {
-        public DataRowExporter() :
-            this(typeof(DataRow)) {}
-
-        public DataRowExporter(Type inputType) : 
-            base(inputType) {}
-
-        protected override void ExportValue(ExportContext context, object value, JsonWriter writer)
-        {
-            Debug.Assert(context != null);
-            Debug.Assert(value != null);
-            Debug.Assert(writer != null);
-
-            ExportRow(context, (DataRow) value, writer);
-        }
-
-        internal static void ExportRow(ExportContext context, DataRow row, JsonWriter writer)
-        {
-            Debug.Assert(context != null);
-            Debug.Assert(row != null);
-            Debug.Assert(writer != null);
-
-            writer.WriteStartObject();
-    
-            foreach (DataColumn column in row.Table.Columns)
+            foreach (ITypeExporterBinder binder in InnerList)
             {
-                writer.WriteMember(column.ColumnName);
-                context.Export(row[column], writer);
+                ITypeExporter exporter = binder.Bind(context, type);
+                
+                if (exporter != null)
+                    return exporter;
             }
-    
-            writer.WriteEndObject();
+            
+            return null;
+        }
+
+        protected override void OnValidate(object value)
+        {
+            if (value == null)
+                throw new ArgumentNullException("binder");
+            
+            if (!(value is ITypeExporterBinder))
+                throw new ArgumentException("binder");
+        }
+        
+        internal ITypeExporterBinder[] ToArray()
+        {
+            ITypeExporterBinder[] binders = new ITypeExporterBinder[Count];
+            InnerList.CopyTo(binders, 0);
+            return binders;
         }
     }
 }

@@ -143,20 +143,11 @@ namespace Jayrock.Json
         }
         
         [ Test ]
-        public void JsonFormatting()
-        {
-            TestJsonWriter writer = new TestJsonWriter();
-            JsonNumber number = Number("123");
-            number.Export(writer);
-            Assert.AreEqual("123", writer.WrittenValue);
-        }
-
-        [ Test ]
         public void Export()
         {
             TestJsonWriter writer = new TestJsonWriter();
             IJsonExportable number = Number("123");
-            number.Export(writer);
+            number.Export(new ExportContext(), writer);
             Assert.AreEqual("123", writer.WrittenValue);
         }
 

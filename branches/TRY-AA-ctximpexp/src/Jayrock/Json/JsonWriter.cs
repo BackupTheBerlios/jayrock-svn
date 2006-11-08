@@ -183,7 +183,7 @@ namespace Jayrock.Json
             WriteNumber(value.ToString(CultureInfo.InvariantCulture));
         }
         
-        public void WriteArray(IEnumerable values)
+        public void WriteStringArray(IEnumerable values)
         {
             if (values == null)
             {
@@ -192,19 +192,41 @@ namespace Jayrock.Json
             else
             {
                 WriteStartArray();
-
+                        
                 foreach (object value in values)
-                    WriteValue(value);
-
+                {
+                    if (JsonNull.LogicallyEquals(value))
+                        WriteNull();
+                    else
+                        WriteString(value.ToString());
+                }
+                        
                 WriteEndArray();
             }
         }
-
-        public virtual void WriteValue(object value)
+        
+        public void WriteStringArray(params string[] values)
         {
-            JsonExport.Export(value, this);
+            if (values == null)
+            {
+                WriteNull();
+            }
+            else
+            {
+                WriteStartArray();
+                        
+                foreach (string value in values)
+                {
+                    if (JsonNull.LogicallyEquals(value))
+                        WriteNull();
+                    else
+                        WriteString(value);
+                }
+                        
+                WriteEndArray();
+            }
         }
-                
+        
         public void WriteValueFromReader(JsonReader reader) // FIXME: Make virtual
         {
             if (reader == null)            

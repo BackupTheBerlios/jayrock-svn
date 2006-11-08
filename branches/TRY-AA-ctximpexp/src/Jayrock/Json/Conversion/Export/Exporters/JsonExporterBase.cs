@@ -28,7 +28,7 @@ namespace Jayrock.Json.Conversion.Export.Exporters
 
     #endregion
 
-    public abstract class JsonExporterBase : IJsonExporter
+    public abstract class JsonExporterBase : ITypeExporter
     {
         private readonly Type _inputType;
 
@@ -45,17 +45,20 @@ namespace Jayrock.Json.Conversion.Export.Exporters
             get { return _inputType; }
         }
 
-        public virtual void Export(object value, JsonWriter writer)
+        public virtual void Export(ExportContext context, object value, JsonWriter writer)
         {
+            if (context == null)
+                throw new ArgumentNullException("context");
+            
             if (writer == null)
                 throw new ArgumentNullException("writer");
 
-            if (value == null)
+            if (JsonNull.LogicallyEquals(value))
                 writer.WriteNull();
             else
-                ExportValue(value, writer);
+                ExportValue(context, value, writer);
         }
 
-        protected abstract void ExportValue(object value, JsonWriter writer);
+        protected abstract void ExportValue(ExportContext context, object value, JsonWriter writer);
     }
 }

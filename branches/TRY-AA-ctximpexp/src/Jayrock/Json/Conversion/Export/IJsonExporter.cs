@@ -28,15 +28,15 @@ namespace Jayrock.Json.Conversion.Export
     /// Defines the contract for exporting an object as JSON.
     /// </summary>
     
-    public interface IJsonExporter
+    public interface ITypeExporter
     {
         Type InputType { get; }
-        void Export(object value, JsonWriter writer);
+        void Export(ExportContext context, object value, JsonWriter writer);
     }
 
-    public interface IJsonExporterFamily
+    public interface ITypeExporterBinder
     {
-        IJsonExporter Page(Type type);
+        ITypeExporter Bind(ExportContext context, Type type);
     }
 
     /// <summary>
@@ -46,6 +46,6 @@ namespace Jayrock.Json.Conversion.Export
     
     public interface IJsonExportable
     {
-        void Export(JsonWriter writer);
+        void Export(ExportContext context, JsonWriter writer);
     }
 }

@@ -90,7 +90,7 @@ namespace Jayrock.Json.Conversion.Export.Exporters
         private static JsonReader Export(IDictionary value)
         {
             JsonRecorder writer = new JsonRecorder();
-            writer.WriteValue(value);
+            (new ExportContext()).Export(value, writer);
             return writer.CreatePlayer();
         }
     }

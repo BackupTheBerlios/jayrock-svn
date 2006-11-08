@@ -35,8 +35,17 @@ namespace Jayrock.Json.Conversion.Export.Exporters
         protected NumberExporterBase(Type inputType) : 
             base(inputType) {}
         
-        protected override void ExportValue(object value, JsonWriter writer)
+        protected override void ExportValue(ExportContext context, object value, JsonWriter writer)
         {
+            if (context == null)
+                throw new ArgumentNullException("context");
+            
+            if (value == null)
+                throw new ArgumentNullException("value");
+
+            if (writer == null)
+                throw new ArgumentNullException("writer");
+            
             string s;
 
             try

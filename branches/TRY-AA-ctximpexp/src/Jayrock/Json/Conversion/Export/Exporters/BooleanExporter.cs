@@ -25,6 +25,7 @@ namespace Jayrock.Json.Conversion.Export.Exporters
     #region Imports
 
     using System;
+    using System.Diagnostics;
     using System.Globalization;
 
     #endregion
@@ -33,8 +34,12 @@ namespace Jayrock.Json.Conversion.Export.Exporters
     {
         public BooleanExporter() : base(typeof(bool)) { }
 
-        protected override void ExportValue(object value, JsonWriter writer)
+        protected override void ExportValue(ExportContext context, object value, JsonWriter writer)
         {
+            Debug.Assert(context != null);
+            Debug.Assert(value != null);
+            Debug.Assert(writer != null);
+            
             writer.WriteBoolean((bool) value);
         }
     }

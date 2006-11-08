@@ -41,7 +41,7 @@ namespace Jayrock.Json.Conversion.Export.Exporters
         public DateTimeExporter() : 
             base(typeof(DateTime)) {}
 
-        protected override void ExportValue(object value, JsonWriter writer)
+        protected override void ExportValue(ExportContext context, object value, JsonWriter writer)
         {
             Debug.Assert(value != null);
             Debug.Assert(writer != null);

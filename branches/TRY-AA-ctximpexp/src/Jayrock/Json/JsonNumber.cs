@@ -281,8 +281,11 @@ namespace Jayrock.Json
             return number.ToDateTime();
         }
 
-        public void Export(JsonWriter writer)
+        public void Export(ExportContext context, JsonWriter writer)
         {
+            if (context == null)
+                throw new ArgumentNullException("context");
+
             if (writer == null)
                 throw new ArgumentNullException("writer");
             

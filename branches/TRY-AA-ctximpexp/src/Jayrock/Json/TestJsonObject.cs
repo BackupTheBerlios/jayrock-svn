@@ -184,7 +184,7 @@ namespace Jayrock.Json
         [ Test, ExpectedException(typeof(ArgumentNullException)) ]
         public void CannotUseNullArgWithExport()
         {
-            (new JsonObject()).Export(null);
+            (new JsonObject()).Export(null, null);
         }
 
         [ Test ]
@@ -195,7 +195,7 @@ namespace Jayrock.Json
             o.Put("String", "Hello World");
             o.Put("Boolean", true);
             JsonRecorder writer = new JsonRecorder();
-            o.Export(writer);
+            o.Export(new ExportContext(), writer);
             JsonReader reader = writer.CreatePlayer();
             reader.ReadToken(JsonTokenClass.Object);
             string[] members = (string[]) o.GetNamesArray().ToArray(typeof(string));

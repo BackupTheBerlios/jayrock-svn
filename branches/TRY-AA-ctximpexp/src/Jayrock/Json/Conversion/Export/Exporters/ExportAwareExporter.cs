@@ -25,13 +25,20 @@ namespace Jayrock.Json.Conversion.Export.Exporters
     #region Importer
 
     using System;
+    using System.Diagnostics;
 
     #endregion
 
-    public sealed class ExportAwareExporterFamily : IJsonExporterFamily
+    public sealed class ExportAwareExporterFamily : ITypeExporterBinder
     {
-        public IJsonExporter Page(Type type)
+        public ITypeExporter Bind(ExportContext context, Type type)
         {
+            if (context == null)
+                throw new ArgumentNullException("context");
+            
+            if (type == null)
+                throw new ArgumentNullException("type");
+
             return typeof(IJsonExportable).IsAssignableFrom(type) ? 
                 new ExportAwareExporter(type) : null;
         }
@@ -42,12 +49,13 @@ namespace Jayrock.Json.Conversion.Export.Exporters
         public ExportAwareExporter(Type type) : 
             base(type) {}
 
-        protected override void ExportValue(object value, JsonWriter writer)
+        protected override void ExportValue(ExportContext context, object value, JsonWriter writer)
         {
-            if (writer == null) 
-                throw new ArgumentNullException("writer");
+            Debug.Assert(context != null);
+            Debug.Assert(value != null);
+            Debug.Assert(writer != null);
 
-            ((IJsonExportable) value).Export(writer);
+            ((IJsonExportable) value).Export(context, writer);
         }
     }
 }

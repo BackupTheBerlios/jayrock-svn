@@ -30,16 +30,22 @@ namespace Jayrock.Json.Conversion.Export.Exporters
 
     #endregion
 
-    public sealed class DataSetExporterFamily : IJsonExporterFamily
+    public sealed class DataSetExporterFamily : ITypeExporterBinder
     {
-        public IJsonExporter Page(Type type)
+        public ITypeExporter Bind(ExportContext context, Type type)
         {
+            if (context == null)
+                throw new ArgumentNullException("context");
+            
+            if (type == null)
+                throw new ArgumentNullException("type");
+
             return typeof(DataSet).IsAssignableFrom(type) ? 
                 new DataSetExporter(type) : null;
         }
     }
 
-    public class DataSetExporter : JsonExporterBase
+    public sealed class DataSetExporter : JsonExporterBase
     {
         public DataSetExporter() :
             this(typeof(DataSet)) {}
@@ -47,16 +53,18 @@ namespace Jayrock.Json.Conversion.Export.Exporters
         public DataSetExporter(Type inputType) : 
             base(inputType) {}
 
-        protected override void ExportValue(object value, JsonWriter writer)
+        protected override void ExportValue(ExportContext context, object value, JsonWriter writer)
         {
+            Debug.Assert(context != null);
             Debug.Assert(value != null);
             Debug.Assert(writer != null);
             
-            ExportDataSet((DataSet) value, writer);
+            ExportDataSet(context, (DataSet) value, writer);
         }
 
-        private static void ExportDataSet(DataSet dataSet, JsonWriter writer)
+        private static void ExportDataSet(ExportContext context, DataSet dataSet, JsonWriter writer)
         {
+            Debug.Assert(context != null);
             Debug.Assert(dataSet != null);
             Debug.Assert(writer != null);
 
@@ -65,7 +73,7 @@ namespace Jayrock.Json.Conversion.Export.Exporters
             foreach (DataTable table in dataSet.Tables)
             {
                 writer.WriteMember(table.TableName);
-                DataTableExporter.ExportTable(table, writer);
+                DataTableExporter.ExportTable(context, table, writer);
             }
     
             writer.WriteEndObject();

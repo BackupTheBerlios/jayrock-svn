@@ -93,7 +93,7 @@ namespace Jayrock.Json
         public void WriteEmptyArray()
         {
             JsonTextWriter writer = new JsonTextWriter(new StringWriter());
-            writer.WriteArray(new object[0]);
+            writer.WriteStringArray(new string[0]);
             Assert.AreEqual("[]", writer.ToString());
         }
 
@@ -101,8 +101,8 @@ namespace Jayrock.Json
         public void WriteArray()
         {
             JsonTextWriter writer = new JsonTextWriter(new StringWriter());
-            writer.WriteArray(new object[] { 123, "Hello \"Old\" World", true });
-            Assert.AreEqual("[123,\"Hello \\\"Old\\\" World\",true]", writer.ToString());
+            writer.WriteStringArray(new object[] { 123, "Hello \"Old\" World", true });
+            Assert.AreEqual("[\"123\",\"Hello \\\"Old\\\" World\",\"True\"]", writer.ToString());
         }
 
         [ Test ]
@@ -131,7 +131,7 @@ namespace Jayrock.Json
         public void WriteNullValue()
         {
             JsonTextWriter writer = new JsonTextWriter(new StringWriter());
-            writer.WriteValue(JsonNull.Value);
+            (new ExportContext()).Export(JsonNull.Value, writer);
             Assert.AreEqual("null", writer.ToString());
         }
 
@@ -190,7 +190,7 @@ namespace Jayrock.Json
             public StringArrayExporter() : 
                 base(typeof(object[])) {}
             
-            protected override void ExportValue(object value, JsonWriter writer)
+            protected override void ExportValue(ExportContext context, object value, JsonWriter writer)
             {
                 IEnumerable enumerable = (IEnumerable) value;
 
@@ -206,7 +206,7 @@ namespace Jayrock.Json
         private static string WriteValue(object value)
         {
             JsonTextWriter writer = new JsonTextWriter(new StringWriter());
-            writer.WriteValue(value);
+            (new ExportContext()).Export(value, writer);
             return writer.ToString();
         }
     }

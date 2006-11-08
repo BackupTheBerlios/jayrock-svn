@@ -273,7 +273,7 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\JsonConverterCollection.cs"
+                    RelPath = "Json\Conversion\Export\ExportContext.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -283,12 +283,12 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\Export\JsonExport.cs"
+                    RelPath = "Json\Conversion\Export\TypeExporterBinderCollection.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\Export\JsonExporterCollection.cs"
+                    RelPath = "Json\Conversion\Export\TypeExporterCollection.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -354,11 +354,6 @@
                 />
                 <File
                     RelPath = "Json\Conversion\Export\Exporters\JsonExporterBase.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Json\Conversion\Export\Exporters\JsonExporters.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

@@ -25,6 +25,7 @@ namespace Jayrock.Json.Conversion.Export.Exporters
     #region Imports
 
     using System;
+    using System.Diagnostics;
 
     #endregion
 
@@ -32,8 +33,12 @@ namespace Jayrock.Json.Conversion.Export.Exporters
     {
         public StringExporter() : base(typeof(string)) {}
 
-        protected override void ExportValue(object value, JsonWriter writer)
+        protected override void ExportValue(ExportContext context, object value, JsonWriter writer)
         {
+            Debug.Assert(context != null);
+            Debug.Assert(value != null);
+            Debug.Assert(writer != null);
+
             writer.WriteString(value.ToString());
         }
     }

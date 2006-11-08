@@ -32,10 +32,13 @@ namespace Jayrock.Json.Conversion.Export.Exporters
     
     #endregion
 
-    public sealed class NameValueCollectionExporterFamily : IJsonExporterFamily
+    public sealed class NameValueCollectionExporterFamily : ITypeExporterBinder
     {
-        public IJsonExporter Page(Type type)
+        public ITypeExporter Bind(ExportContext context, Type type)
         {
+            if (context == null)
+                throw new ArgumentNullException("context");
+
             if (type == null)
                 throw new ArgumentNullException("type");
 
@@ -51,16 +54,18 @@ namespace Jayrock.Json.Conversion.Export.Exporters
         public NameValueCollectionExporter(Type inputType) : 
             base(inputType) {}
 
-        protected override void ExportValue(object value, JsonWriter writer)
+        protected override void ExportValue(ExportContext context, object value, JsonWriter writer)
         {
+            Debug.Assert(context != null);
             Debug.Assert(value != null);
             Debug.Assert(writer != null);
 
-            ExportCollection((NameValueCollection) value, writer);
+            ExportCollection(context, (NameValueCollection) value, writer);
         }
 
-        private static void ExportCollection(NameValueCollection collection, JsonWriter writer)
+        private static void ExportCollection(ExportContext context, NameValueCollection collection, JsonWriter writer)
         {
+            Debug.Assert(context != null);
             Debug.Assert(collection != null);
             Debug.Assert(writer != null);
 
@@ -75,9 +80,9 @@ namespace Jayrock.Json.Conversion.Export.Exporters
                 if (values == null)
                     writer.WriteNull();
                 else if (values.Length > 1)
-                    writer.WriteValue(values);
+                    context.Export(values, writer);
                 else
-                    writer.WriteValue(values[0]);
+                    context.Export(values[0], writer);
             }
 
             writer.WriteEndObject();

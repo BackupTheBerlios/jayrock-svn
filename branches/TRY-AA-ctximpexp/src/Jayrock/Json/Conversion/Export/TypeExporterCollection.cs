@@ -25,49 +25,45 @@ namespace Jayrock.Json.Conversion.Export
     #region Imports
 
     using System;
-    using Jayrock.Json.Conversion.Export.Exporters;
+    using System.Collections;
 
     #endregion
 
-    public sealed class JsonExport
+    // FIXME: Turn TypeImporterCollection into a real keyed-collection.
+
+    [ Serializable ]
+    public sealed class TypeExporterCollection : ITypeExporterBinder 
     {
-        public static void Export(object value, JsonWriter writer)
-        {
-            if (writer == null)
-                throw new ArgumentNullException("writer");
-
-            if (value == null)
-            {
-                writer.WriteNull();
-                return;
-            }
-
-            IJsonExporter exporter = TryGetExporter(value.GetType());
-                
-            if (exporter != null)
-                exporter.Export(value, writer);
-            else
-                writer.WriteString(value.ToString());
-        }
+        private Hashtable _exporterByType;
         
-        public static IJsonExporter TryGetExporter(Type type)
+        public void Add(ITypeExporter exporter)
         {
-            return JsonExporters.Find(type);
-        }
-        
-        public static IJsonExporter GetExporter(Type type)
-        {
-            IJsonExporter exporter = TryGetExporter(type);
-                
             if (exporter == null)
-                throw new ArgumentException(string.Format("No JSON exporter exists for {0}.", type.FullName), "type");
+                throw new ArgumentNullException("exporter");
             
-            return exporter;
+            ExporterByType.Add(exporter.InputType, exporter);
         }
 
-        private JsonExport()
+        public ITypeExporter Bind(ExportContext context, Type type)
         {
-            throw new NotSupportedException();
+            if (context == null)
+                throw new ArgumentNullException("context");
+
+            if (type == null)
+                throw new ArgumentNullException("type");
+            
+            return (ITypeExporter) ExporterByType[type];
+        }
+
+        private Hashtable ExporterByType
+        {
+            get
+            {
+                if (_exporterByType == null)
+                    _exporterByType = new Hashtable();
+                
+                return _exporterByType;
+            }
         }
     }
 }

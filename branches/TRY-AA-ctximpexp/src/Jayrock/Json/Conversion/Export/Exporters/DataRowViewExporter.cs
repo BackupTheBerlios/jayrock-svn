@@ -31,7 +31,7 @@ namespace Jayrock.Json.Conversion.Export.Exporters
 
     #endregion
 
-    public class DataRowViewExporter : JsonExporterBase
+    public sealed class DataRowViewExporter : JsonExporterBase
     {
         public DataRowViewExporter() :
             this(typeof(DataRowView)) {}
@@ -39,16 +39,18 @@ namespace Jayrock.Json.Conversion.Export.Exporters
         public DataRowViewExporter(Type inputType) : 
             base(inputType) {}
 
-        protected override void ExportValue(object value, JsonWriter writer)
+        protected override void ExportValue(ExportContext context, object value, JsonWriter writer)
         {
+            Debug.Assert(context != null);
             Debug.Assert(value != null);
             Debug.Assert(writer != null);
 
-            ExportRowView((DataRowView) value, writer);
+            ExportRowView(context, (DataRowView) value, writer);
         }
 
-        private static void ExportRowView(DataRowView rowView, JsonWriter writer)
+        private static void ExportRowView(ExportContext context, DataRowView rowView, JsonWriter writer)
         {
+            Debug.Assert(context != null);
             Debug.Assert(rowView != null);
             Debug.Assert(writer != null);
 
@@ -57,7 +59,7 @@ namespace Jayrock.Json.Conversion.Export.Exporters
             foreach (DataColumn column in rowView.DataView.Table.Columns)
             {
                 writer.WriteMember(column.ColumnName);
-                writer.WriteValue(rowView[column.Ordinal]);
+                context.Export(rowView[column.Ordinal], writer);
             }
     
             writer.WriteEndObject();

@@ -35,10 +35,13 @@ namespace Jayrock.Json.Conversion.Export.Exporters
     /// public and which have default constructors.
     /// </summary>
     
-    public sealed class ComponentExporterFamily : IJsonExporterFamily
+    public sealed class ComponentExporterFamily : ITypeExporterBinder
     {
-        public IJsonExporter Page(Type type)
+        public ITypeExporter Bind(ExportContext context, Type type)
         {
+            if (context == null)
+                throw new ArgumentNullException("context");
+            
             if (type == null)
                 throw new ArgumentNullException("type");
 
@@ -67,8 +70,9 @@ namespace Jayrock.Json.Conversion.Export.Exporters
             _properties = properties;
         }
 
-        protected override void ExportValue(object value, JsonWriter writer)
+        protected override void ExportValue(ExportContext context, object value, JsonWriter writer)
         {
+            Debug.Assert(context != null);
             Debug.Assert(value != null);
             Debug.Assert(writer != null);
             
@@ -87,7 +91,7 @@ namespace Jayrock.Json.Conversion.Export.Exporters
                     if (!JsonNull.LogicallyEquals(propertyValue))
                     {
                         writer.WriteMember(property.Name);
-                        writer.WriteValue(propertyValue);
+                        context.Export(propertyValue, writer);
                     }
                 }
 

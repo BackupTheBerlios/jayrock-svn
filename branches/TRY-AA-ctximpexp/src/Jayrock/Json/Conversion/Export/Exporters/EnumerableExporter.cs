@@ -26,16 +26,20 @@ namespace Jayrock.Json.Conversion.Export.Exporters
 
     using System;
     using System.Collections;
+    using System.Diagnostics;
 
     #endregion
     
-    public sealed class EnumerableExporterFamily : IJsonExporterFamily
+    public sealed class EnumerableExporterFamily : ITypeExporterBinder
     {
-        public IJsonExporter Page(Type type)
+        public ITypeExporter Bind(ExportContext context, Type type)
         {
+            if (context == null)
+                throw new ArgumentNullException("context");
+            
             if (type == null)
                 throw new ArgumentNullException("type");
-            
+
             return typeof(IEnumerable).IsAssignableFrom(type) ? 
                    new EnumerableExporter(type) : null;
         }
@@ -46,14 +50,18 @@ namespace Jayrock.Json.Conversion.Export.Exporters
         public EnumerableExporter(Type inputType) : 
             base(inputType) {}
 
-        protected override void ExportValue(object value, JsonWriter writer)
+        protected override void ExportValue(ExportContext context, object value, JsonWriter writer)
         {
+            Debug.Assert(context != null);
+            Debug.Assert(value != null);
+            Debug.Assert(writer != null);
+
             IEnumerable items = (IEnumerable) value;
             
             writer.WriteStartArray();
 
             foreach (object item in items)
-                writer.WriteValue(item);
+                context.Export(item, writer);
 
             writer.WriteEndArray();
         }
