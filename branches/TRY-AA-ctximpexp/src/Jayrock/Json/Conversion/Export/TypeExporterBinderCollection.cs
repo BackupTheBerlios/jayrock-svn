@@ -64,12 +64,5 @@ namespace Jayrock.Json.Conversion.Export
             if (!(value is ITypeExporterBinder))
                 throw new ArgumentException("binder");
         }
-        
-        internal ITypeExporterBinder[] ToArray()
-        {
-            ITypeExporterBinder[] binders = new ITypeExporterBinder[Count];
-            InnerList.CopyTo(binders, 0);
-            return binders;
-        }
     }
 }

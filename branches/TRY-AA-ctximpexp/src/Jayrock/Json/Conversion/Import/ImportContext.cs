@@ -73,7 +73,7 @@ namespace Jayrock.Json.Conversion.Import
             ITypeImporter importer = ImporterBinder.Bind(this, type);
 
             if (importer == null)
-                throw new JsonException(string.Format("Don't know how to import {0}.", type.FullName));
+                throw new JsonException(string.Format("Don't know how to import {0} from JSON.", type.FullName));
 
             reader.MoveToContent();
             return importer.Import(this, reader);
