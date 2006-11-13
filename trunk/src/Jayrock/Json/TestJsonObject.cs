@@ -27,6 +27,8 @@ namespace Jayrock.Json
     using System;
     using System.Collections;
     using System.IO;
+    using Jayrock.Json.Conversion.Export;
+    using Jayrock.Json.Conversion.Import;
     using NUnit.Framework;
 
     #endregion
@@ -120,7 +122,7 @@ namespace Jayrock.Json
         {
             JsonObject article = new JsonObject();
             
-            article.Import(new JsonTextReader(new StringReader(@"
+            article.Import(new ImportContext(), new JsonTextReader(new StringReader(@"
                 /* Article */ {
                     Title : 'Introduction to JSON',
                     Rating : 2,
@@ -163,20 +165,47 @@ namespace Jayrock.Json
             JsonObject o = new JsonObject();
             o.Put("foo", "bar");
             Assert.AreEqual(1, o.Count);
-            o.Import(new JsonTextReader(new StringReader("{}")));
+            o.Import(new ImportContext(), new JsonTextReader(new StringReader("{}")));
             Assert.AreEqual(0, o.Count);
         }
 
         [ Test, ExpectedException(typeof(ArgumentNullException)) ]
-        public void CannotUseNullArgWithImport()
+        public void CannotUseNullReaderWithImport()
         {
-            (new JsonObject()).Import(null);
+            (new JsonObject()).Import(new ImportContext(), null);
         }
 
         [ Test, ExpectedException(typeof(ArgumentNullException)) ]
-        public void CannotUseNullArgWithFormat()
+        public void CannotUseNullContextWithImport()
         {
-            (new JsonObject()).Format(null);
+            (new JsonObject()).Import(null, (new JsonRecorder()).CreatePlayer());
+        }
+
+        [ Test, ExpectedException(typeof(ArgumentNullException)) ]
+        public void CannotUseNullArgWithExport()
+        {
+            (new JsonObject()).Export(null, null);
+        }
+
+        [ Test ]
+        public void Export()
+        {
+            JsonObject o = new JsonObject();
+            o.Put("Number", 123);
+            o.Put("String", "Hello World");
+            o.Put("Boolean", true);
+            JsonRecorder writer = new JsonRecorder();
+            o.Export(new ExportContext(), writer);
+            JsonReader reader = writer.CreatePlayer();
+            reader.ReadToken(JsonTokenClass.Object);
+            string[] members = (string[]) o.GetNamesArray().ToArray(typeof(string));
+            Assert.AreEqual(members[0], reader.ReadMember());
+            Assert.AreEqual(o[members[0]], reader.ReadNumber().ToInt32());
+            Assert.AreEqual(members[1], reader.ReadMember());
+            Assert.AreEqual(o[members[1]], reader.ReadString());
+            Assert.AreEqual(members[2], reader.ReadMember());
+            Assert.AreEqual(o[members[2]], reader.ReadBoolean());
+            Assert.AreEqual(JsonTokenClass.EndObject, reader.TokenClass);
         }
     }
 }

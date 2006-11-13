@@ -27,6 +27,9 @@ namespace Jayrock.Json
     using System;
     using System.Collections;
     using System.IO;
+    using Jayrock.Configuration;
+    using Jayrock.Json.Conversion.Export;
+    using Jayrock.Json.Conversion.Export.Exporters;
     using NUnit.Framework;
 
     #endregion
@@ -90,7 +93,7 @@ namespace Jayrock.Json
         public void WriteEmptyArray()
         {
             JsonTextWriter writer = new JsonTextWriter(new StringWriter());
-            writer.WriteArray(new object[0]);
+            writer.WriteStringArray(new string[0]);
             Assert.AreEqual("[]", writer.ToString());
         }
 
@@ -98,8 +101,8 @@ namespace Jayrock.Json
         public void WriteArray()
         {
             JsonTextWriter writer = new JsonTextWriter(new StringWriter());
-            writer.WriteArray(new object[] { 123, "Hello \"Old\" World", true });
-            Assert.AreEqual("[123,\"Hello \\\"Old\\\" World\",true]", writer.ToString());
+            writer.WriteStringArray(new object[] { 123, "Hello \"Old\" World", true });
+            Assert.AreEqual("[\"123\",\"Hello \\\"Old\\\" World\",\"True\"]", writer.ToString());
         }
 
         [ Test ]
@@ -128,7 +131,7 @@ namespace Jayrock.Json
         public void WriteNullValue()
         {
             JsonTextWriter writer = new JsonTextWriter(new StringWriter());
-            writer.WriteValue(JsonNull.Value);
+            (new ExportContext()).Export(JsonNull.Value, writer);
             Assert.AreEqual("null", writer.ToString());
         }
 
@@ -162,15 +165,6 @@ namespace Jayrock.Json
         }
 
         [ Test ]
-        public void WriteCustom()
-        {
-            JsonTextWriter writer = new JsonTextWriter(new StringWriter());
-            writer.ValueFormatter = new StringArrayFormatter();
-            writer.WriteValue(new object[] { 1, 2, 3, "Four", 5 });
-            Assert.AreEqual("\"1,2,3,Four,5\"", writer.ToString());
-        }
-
-        [ Test ]
         public void WriteFromReader()
         {
             JsonTextReader reader = new JsonTextReader(new StringReader(@"
@@ -191,32 +185,28 @@ namespace Jayrock.Json
             Assert.AreEqual("{\"menu\":{\"id\":\"file\",\"value\":\"File:\",\"popup\":{\"menuitem\":[{\"value\":\"New\",\"onclick\":\"CreateNewDoc()\"},{\"value\":\"Open\",\"onclick\":\"OpenDoc()\"},{\"value\":\"Close\",\"onclick\":\"CloseDoc()\"}]}}}", writer.ToString());
         }
 
-        private sealed class StringArrayFormatter : JsonFormatter
+        private sealed class StringArrayExporter : JsonExporterBase
         {
-            protected override void FormatOther(object o, JsonWriter writer)
+            public StringArrayExporter() : 
+                base(typeof(object[])) {}
+            
+            protected override void ExportValue(ExportContext context, object value, JsonWriter writer)
             {
-                IEnumerable enumerable = o as IEnumerable;
+                IEnumerable enumerable = (IEnumerable) value;
 
-                if (enumerable != null)
-                {
-                    ArrayList list = new ArrayList();
+                ArrayList list = new ArrayList();
 
-                    foreach (object item in enumerable)
-                        list.Add(item == null ? null : item.ToString());
+                foreach (object item in enumerable)
+                    list.Add(item == null ? null : item.ToString());
 
-                    FormatString(string.Join(",", (string[]) list.ToArray(typeof(string))), writer);
-                }
-                else
-                {
-                    base.FormatOther(o, writer);
-                }
+                writer.WriteString(string.Join(",", (string[]) list.ToArray(typeof(string))));
             }
         }
 
         private static string WriteValue(object value)
         {
             JsonTextWriter writer = new JsonTextWriter(new StringWriter());
-            writer.WriteValue(value);
+            (new ExportContext()).Export(value, writer);
             return writer.ToString();
         }
     }

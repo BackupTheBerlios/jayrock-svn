@@ -114,11 +114,6 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\TestJsonImporterRegistry.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "Json\TestJsonNull.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -174,87 +169,127 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Formatters\TestComponentFormatter.cs"
+                    RelPath = "Json\Conversion\Export\TestExportContext.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Formatters\TestCompositeFormatter.cs"
+                    RelPath = "Json\Conversion\Export\Exporters\TestBooleanExporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Formatters\TestControlFormatter.cs"
+                    RelPath = "Json\Conversion\Export\Exporters\TestComponentExporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Formatters\TestDateTimeFormatter.cs"
+                    RelPath = "Json\Conversion\Export\Exporters\TestControlExporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Formatters\TestNameValueCollectionFormatter.cs"
+                    RelPath = "Json\Conversion\Export\Exporters\TestDateTimeExporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Importers\TestArrayImporter.cs"
+                    RelPath = "Json\Conversion\Export\Exporters\TestDictionaryExporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Importers\TestAutoImporter.cs"
+                    RelPath = "Json\Conversion\Export\Exporters\TestEnumerableExporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Importers\TestBooleanImporter.cs"
+                    RelPath = "Json\Conversion\Export\Exporters\TestJsonExporterBase.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Importers\TestComponentImporter.cs"
+                    RelPath = "Json\Conversion\Export\Exporters\TestNameValueCollectionExporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Importers\TestDateTimeImporter.cs"
+                    RelPath = "Json\Conversion\Export\Exporters\TestNumberExporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Importers\TestEnumImporter.cs"
+                    RelPath = "Json\Conversion\Export\Exporters\TestStringExporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Importers\TestImportableImporter.cs"
+                    RelPath = "Json\Conversion\Import\TestImportContext.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Importers\TestJsonImporterBase.cs"
+                    RelPath = "Json\Conversion\Import\Importers\TestArrayImporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Importers\TestJsonImporterStock.cs"
+                    RelPath = "Json\Conversion\Import\Importers\TestAutoImporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Importers\TestNameValueCollectionImporter.cs"
+                    RelPath = "Json\Conversion\Import\Importers\TestBooleanImporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Importers\TestNumberImporter.cs"
+                    RelPath = "Json\Conversion\Import\Importers\TestComponentImporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Importers\TestStringImporter.cs"
+                    RelPath = "Json\Conversion\Import\Importers\TestDateTimeImporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Conversion\Import\Importers\TestDictionaryImporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Conversion\Import\Importers\TestEnumImporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Conversion\Import\Importers\TestImportAwareImporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Conversion\Import\Importers\TestListImporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Conversion\Import\Importers\TestNameValueCollectionImporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Conversion\Import\Importers\TestNumberImporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Conversion\Import\Importers\TestStringImporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Conversion\Import\Importers\TestTypeImporterBase.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

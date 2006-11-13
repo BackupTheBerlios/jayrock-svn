@@ -28,6 +28,7 @@ namespace Jayrock.Json.Rpc
     using System.Collections;
     using System.IO;
     using System.Reflection;
+    using Jayrock.Json.Conversion.Import;
     using NUnit.Framework;
 
     #endregion
@@ -165,7 +166,8 @@ namespace Jayrock.Json.Rpc
 
         private object Parse(string source)
         {
-            return (new JsonTextReader(new StringReader(source))).ReadValue();
+            ImportContext context = new ImportContext();
+            return context.ImportAny(new JsonTextReader(new StringReader(source)));
         }
 
         private sealed class TestService : JsonRpcService

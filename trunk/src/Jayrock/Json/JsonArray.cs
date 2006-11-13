@@ -28,6 +28,8 @@ namespace Jayrock.Json
     using System.Collections;
     using System.Globalization;
     using System.Text;
+    using Jayrock.Json.Conversion.Export;
+    using Jayrock.Json.Conversion.Import;
 
     #endregion
 
@@ -42,7 +44,7 @@ namespace Jayrock.Json
     /// </remarks>
 
     [ Serializable ]
-    public class JsonArray : CollectionBase, IJsonFormattable, IJsonImportable
+    public class JsonArray : CollectionBase, IJsonImportable, IJsonExportable
     {
         public JsonArray() {}
 
@@ -174,7 +176,8 @@ namespace Jayrock.Json
         public override string ToString()
         {
             JsonTextWriter writer = new JsonTextWriter();
-            Format(writer);
+            ExportContext context = new ExportContext();
+            context.Export(this, writer);
             return writer.ToString();
         }
 
@@ -186,16 +189,27 @@ namespace Jayrock.Json
         /// This method assumes that the data structure is acyclical.
         /// </remarks>
 
-        public virtual void Format(JsonWriter writer)
+        public virtual void Export(ExportContext context, JsonWriter writer)
         {
+            if (context == null)
+                throw new ArgumentNullException("context");
+
             if (writer == null)
                 throw new ArgumentNullException("writer");
+            
+            writer.WriteStartArray();
 
-            writer.WriteArray(this);
+            foreach (object value in this)
+                context.Export(value, writer);
+            
+            writer.WriteEndArray();
         }
-
-        public virtual void Import(JsonReader reader)
+        
+        public virtual void Import(ImportContext context, JsonReader reader)
         {
+            if (context == null)
+                throw new ArgumentNullException("context");
+            
             if (reader == null)
                 throw new ArgumentNullException("reader");
             
@@ -211,7 +225,7 @@ namespace Jayrock.Json
             reader.ReadToken(JsonTokenClass.Array);
             
             while (reader.TokenClass != JsonTokenClass.EndArray)
-                list.Add(reader.ReadValue());
+                list.Add(context.ImportAny(reader));
             
             reader.Read();
             

@@ -92,8 +92,8 @@ namespace Jayrock.Json.Rpc.Web
                         writer.WriteNull();
                     else if (values.Length == 1)
                         writer.WriteString(values[0]);
-                    else 
-                        writer.WriteArray(values);
+                    else
+                        writer.WriteStringArray(values);
                 }
             }
             

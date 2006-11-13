@@ -28,6 +28,8 @@ namespace Jayrock.Json
     using System.Collections;
     using System.Diagnostics;
     using System.Globalization;
+    using Jayrock.Json.Conversion.Export;
+    using Jayrock.Json.Conversion.Export.Exporters;
 
     #endregion
 
@@ -38,8 +40,6 @@ namespace Jayrock.Json
 
     public abstract class JsonWriter
     {
-        private IJsonFormatter _valueFormatter;
-        private static readonly JsonFormatter _defaultFormatter = new JsonFormatter();
         private JsonTokenClass _currentBracket;
         private Stack _brackets;
         
@@ -140,25 +140,6 @@ namespace Jayrock.Json
         protected abstract void WriteBooleanImpl(bool value);
         protected abstract void WriteNullImpl();
         
-        public IJsonFormatter ValueFormatter
-        {
-            get
-            {
-                if (_valueFormatter == null)
-                    return _defaultFormatter;
-
-                return _valueFormatter;
-            }
-            
-            set
-            {
-                if (value == null) 
-                    throw new ArgumentNullException("value");
-                
-                _valueFormatter = value;
-            }
-        }
-
         public virtual void Flush() { }
 
         public void WriteNumber(byte value)
@@ -202,7 +183,7 @@ namespace Jayrock.Json
             WriteNumber(value.ToString(CultureInfo.InvariantCulture));
         }
         
-        public void WriteArray(IEnumerable values)
+        public void WriteStringArray(IEnumerable values)
         {
             if (values == null)
             {
@@ -211,19 +192,41 @@ namespace Jayrock.Json
             else
             {
                 WriteStartArray();
-
+                        
                 foreach (object value in values)
-                    WriteValue(value);
-
+                {
+                    if (JsonNull.LogicallyEquals(value))
+                        WriteNull();
+                    else
+                        WriteString(value.ToString());
+                }
+                        
                 WriteEndArray();
             }
         }
-
-        public void WriteValue(object value)
+        
+        public void WriteStringArray(params string[] values)
         {
-            ValueFormatter.Format(value, this);
+            if (values == null)
+            {
+                WriteNull();
+            }
+            else
+            {
+                WriteStartArray();
+                        
+                foreach (string value in values)
+                {
+                    if (JsonNull.LogicallyEquals(value))
+                        WriteNull();
+                    else
+                        WriteString(value);
+                }
+                        
+                WriteEndArray();
+            }
         }
-
+        
         public void WriteValueFromReader(JsonReader reader) // FIXME: Make virtual
         {
             if (reader == null)            

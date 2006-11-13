@@ -26,6 +26,8 @@ namespace Jayrock.Json
 
     using System;
     using System.Collections;
+    using Jayrock.Json.Conversion.Export;
+    using Jayrock.Json.Conversion.Import;
 
     #endregion
 
@@ -44,7 +46,7 @@ namespace Jayrock.Json
     /// </remarks>
 
     [ Serializable ]
-    public class JsonObject : DictionaryBase, IJsonFormattable, IJsonImportable
+    public class JsonObject : DictionaryBase, IJsonImportable, IJsonExportable
     {
         private ArrayList _nameIndexList;
         [ NonSerialized ] private IList _readOnlyNameIndexList;
@@ -215,12 +217,16 @@ namespace Jayrock.Json
         public override string ToString()
         {
             JsonTextWriter writer = new JsonTextWriter();
-            Format(writer);
+            ExportContext context = new ExportContext();
+            context.Export(this, writer);
             return writer.ToString();
         }
 
-        public virtual void Format(JsonWriter writer)
+        public void Export(ExportContext context, JsonWriter writer)
         {
+            if (context == null)
+                throw new ArgumentNullException("context");
+
             if (writer == null)
                 throw new ArgumentNullException("writer");
 
@@ -229,19 +235,22 @@ namespace Jayrock.Json
             foreach (string name in NameIndexList)
             {
                 writer.WriteMember(name);    
-                writer.WriteValue(InnerHashtable[name]);
+                context.Export(InnerHashtable[name], writer);
             }
 
             writer.WriteEndObject();
         }
-        
+
         /// <remarks>
         /// This method is not exception-safe. If an error occurs while 
         /// reading then the object may be partially imported.
         /// </remarks>
 
-        public virtual void Import(JsonReader reader)
+        public virtual void Import(ImportContext context, JsonReader reader)
         {
+            if (context == null)
+                throw new ArgumentNullException("context");
+
             if (reader == null)
                 throw new ArgumentNullException("reader");
 
@@ -254,7 +263,7 @@ namespace Jayrock.Json
             reader.ReadToken(JsonTokenClass.Object);
             
             while (reader.TokenClass != JsonTokenClass.EndObject)
-                Put(reader.ReadMember(), reader.ReadValue());
+                Put(reader.ReadMember(), context.ImportAny(reader));
             
             reader.Read();
         }

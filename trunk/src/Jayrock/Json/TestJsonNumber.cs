@@ -25,6 +25,7 @@ namespace Jayrock.Json
     #region Imports
 
     using System;
+    using Jayrock.Json.Conversion.Export;
     using NUnit.Framework;
 
     #endregion
@@ -142,11 +143,11 @@ namespace Jayrock.Json
         }
         
         [ Test ]
-        public void JsonFormatting()
+        public void Export()
         {
             TestJsonWriter writer = new TestJsonWriter();
-            IJsonFormattable number = Number("123");
-            number.Format(writer);
+            IJsonExportable number = Number("123");
+            number.Export(new ExportContext(), writer);
             Assert.AreEqual("123", writer.WrittenValue);
         }
 

@@ -28,6 +28,7 @@ namespace Jayrock.Json
     using System.Data.SqlTypes;
     using System.IO;
     using System.Runtime.Serialization.Formatters.Binary;
+    using Jayrock.Json.Conversion.Export;
     using NUnit.Framework;
 
     #endregion
@@ -60,6 +61,16 @@ namespace Jayrock.Json
             Assert.IsTrue(JsonNull.LogicallyEquals(null), "Equals null reference?");
             Assert.IsTrue(JsonNull.LogicallyEquals(DBNull.Value), "Equals DBNull?");
             Assert.IsTrue(JsonNull.LogicallyEquals(SqlInt32.Null), "Equals nullable type?");
+        }
+
+        [ Test ]
+        public void Export()
+        {
+            JsonRecorder writer = new JsonRecorder();
+            JsonNull.Value.Export(new ExportContext(), writer);
+            JsonReader reader = writer.CreatePlayer();
+            reader.ReadNull();
+            Assert.IsTrue(reader.EOF);
         }
     }
 }

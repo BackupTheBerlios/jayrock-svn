@@ -26,6 +26,7 @@ namespace Jayrock.Json
 
     using System;
     using System.Globalization;
+    using Jayrock.Json.Conversion.Export;
 
     #endregion
     
@@ -42,7 +43,7 @@ namespace Jayrock.Json
     /// </remarks>
 
     [ Serializable ]
-    public struct JsonNumber : IConvertible, IJsonFormattable
+    public struct JsonNumber : IConvertible, IJsonExportable
     {
         private readonly string _value;
 
@@ -280,8 +281,11 @@ namespace Jayrock.Json
             return number.ToDateTime();
         }
 
-        public void Format(JsonWriter writer)
+        public void Export(ExportContext context, JsonWriter writer)
         {
+            if (context == null)
+                throw new ArgumentNullException("context");
+
             if (writer == null)
                 throw new ArgumentNullException("writer");
             
