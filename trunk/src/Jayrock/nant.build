@@ -21,6 +21,7 @@
 
     <!-- NUnit 2.2.3 (unit-testing) -->
 
+    <property name="my.tests" value="${path::combine(nant.project.basedir, '..\..\tests')}" />
     <property name="my.nunit.dir.path" value="${path::combine(my.tools, 'NUnit 2.2.3')}" />
     <property name="my.nunit.console.exe.path" value="${path::combine(my.nunit.dir.path, 'nunit-console.exe')}" />
 
@@ -82,7 +83,7 @@
         <solution configuration="Debug">
             <projects>
                 <include name="Jayrock.csproj" />
-                <include name="Jayrock Test.csproj" />
+                <include name="${path::combine(my.tests, 'Jayrock\Jayrock Test.csproj')}" />
             </projects>
         </solution>
     </target>
@@ -149,6 +150,7 @@
         <echo message="my.ncover.dir.path = ${my.ncover.dir.path}" />
         <echo message="my.ncover.console.exe.path = ${my.ncover.console.exe.path}" />
 
+        <echo message="my.tests= ${my.tests}" />
         <echo message="my.nunit.dir.path = ${my.nunit.dir.path}" />
         <echo message="my.nunit.console.exe.path = ${my.nunit.console.exe.path}" />
 
