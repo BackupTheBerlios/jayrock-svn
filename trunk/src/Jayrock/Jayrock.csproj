@@ -89,11 +89,6 @@
         <Files>
             <Include>
                 <File
-                    RelPath = "ArrayHelper.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "AssemblyInfo.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -145,6 +140,11 @@
                 />
                 <File
                     RelPath = "InternetDate.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "InvariantStringArray.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
