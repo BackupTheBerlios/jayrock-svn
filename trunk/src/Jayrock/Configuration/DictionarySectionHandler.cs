@@ -27,6 +27,7 @@ namespace Jayrock.Configuration
     using System;
     using System.Collections;
     using System.Configuration;
+    using System.Globalization;
     using System.Xml;
 
     #endregion
@@ -90,9 +91,14 @@ namespace Jayrock.Configuration
 
         protected virtual IDictionary CreateDictionary(object parent)
         {
+#if NET_1_0
+            CaseInsensitiveHashCodeProvider hcp = new CaseInsensitiveHashCodeProvider(CultureInfo.InvariantCulture);
+            CaseInsensitiveComparer comparer = new CaseInsensitiveComparer(CultureInfo.InvariantCulture);
+#else
             CaseInsensitiveHashCodeProvider hcp = CaseInsensitiveHashCodeProvider.DefaultInvariant;
             CaseInsensitiveComparer comparer = CaseInsensitiveComparer.DefaultInvariant;
-
+#endif
+            
             return parent != null ?
                 new Hashtable((IDictionary) parent, hcp, comparer) :
                 new Hashtable(hcp, comparer);

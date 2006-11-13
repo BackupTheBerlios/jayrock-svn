@@ -27,6 +27,7 @@ namespace Jayrock.JsonRpc
     using System;
     using System.Collections;
     using System.Diagnostics;
+    using System.Globalization;
 
     #endregion
 
@@ -98,7 +99,7 @@ namespace Jayrock.JsonRpc
             //
             
             _sortedMethods = (JsonRpcMethod[]) _methods.Clone();
-            Array.Sort(_methodNames, _sortedMethods, Comparer.DefaultInvariant);
+            InvariantStringArray.Sort(_methodNames, _sortedMethods);
         }
 
         public string Name
@@ -124,7 +125,7 @@ namespace Jayrock.JsonRpc
 
         public JsonRpcMethod FindMethodByName(string name)
         {
-            int i = Array.BinarySearch(_methodNames, name, Comparer.DefaultInvariant);
+            int i = InvariantStringArray.BinarySearch(_methodNames, name);
             return i >= 0 ? _sortedMethods[i] : null;
         }
 

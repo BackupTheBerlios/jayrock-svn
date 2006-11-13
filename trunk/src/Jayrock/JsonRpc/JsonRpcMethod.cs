@@ -80,7 +80,7 @@ namespace Jayrock.JsonRpc
             //
             
             _sortedParameters = (JsonRpcParameter[]) _parameters.Clone();
-            Array.Sort(_parameterNames, _sortedParameters, Comparer.DefaultInvariant);
+            InvariantStringArray.Sort(_parameterNames, _sortedParameters);
         }
 
         public string Name
@@ -230,7 +230,7 @@ namespace Jayrock.JsonRpc
                 
                 if (position < 0)
                 {
-                    int order = Array.BinarySearch(_parameterNames, name, Comparer.DefaultInvariant);
+                    int order = InvariantStringArray.BinarySearch(_parameterNames, name);
                     if (order >= 0)
                         position = _sortedParameters[order].Position;
                 }
