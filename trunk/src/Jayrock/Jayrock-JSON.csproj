@@ -278,7 +278,12 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\Export\IJsonExporter.cs"
+                    RelPath = "Json\Conversion\Export\IJsonExportable.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Conversion\Export\ITypeExporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
