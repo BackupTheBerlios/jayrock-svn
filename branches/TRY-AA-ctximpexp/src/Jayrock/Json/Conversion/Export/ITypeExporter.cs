@@ -38,14 +38,4 @@ namespace Jayrock.Json.Conversion.Export
     {
         ITypeExporter Bind(ExportContext context, Type type);
     }
-
-    /// <summary>
-    /// This interface allows objects to provide their own implementation for
-    /// exporting as JSON.
-    /// </summary>
-    
-    public interface IJsonExportable
-    {
-        void Export(ExportContext context, JsonWriter writer);
-    }
 }
