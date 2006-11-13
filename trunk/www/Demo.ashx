@@ -13,8 +13,8 @@ namespace JayrockWeb
     using System.Web.UI;
     using System.Web.UI.WebControls;
     using Jayrock.Json;
-    using Jayrock.Json.Rpc;
-    using Jayrock.Json.Rpc.Web;
+    using Jayrock.JsonRpc;
+    using Jayrock.JsonRpc.Web;
 
     [ JsonRpcHelp("This is a JSON-RPC service that demonstrates the basic features of the Jayrock library.") ]    
     public class DemoService : JsonRpcHandler, IRequiresSessionState 

@@ -275,8 +275,8 @@ namespace JayrockWeb
     using System;
     using System.Web;
     using Jayrock.Json;
-    using Jayrock.Json.Rpc;
-    using Jayrock.Json.Rpc.Web;
+    using Jayrock.JsonRpc;
+    using Jayrock.JsonRpc.Web;
 
     public class HelloWorld : JsonRpcHandler
     {
@@ -290,7 +290,7 @@ namespace JayrockWeb
 </pre>
         <p>
             There are a few interesting things to note about this code. First of all, <code>HelloWorld</code>
-            inherits from the <code>Jayrock.Json.Rpc.Web.JsonRpcHandler</code> class. This is
+            inherits from the <code>Jayrock.JsonRpc.Web.JsonRpcHandler</code> class. This is
             all that is needed to make your service callable using the standard JSON-RPC protocol.
             Second, the <code>Greetings</code> method is decorated with the <code>JsonRpcMethod</code>
             attribute. This is required to tell Jayrock that your method should be callable
@@ -312,7 +312,7 @@ namespace JayrockWeb
         &lt;sectionGroup name="json.rpc"&gt;
             &lt;section 
                 name="features" 
-                type="Jayrock.Json.Rpc.Web.JsonRpcFeaturesSectionHandler, Jayrock" /&gt;        
+                type="Jayrock.JsonRpc.Web.JsonRpcFeaturesSectionHandler, Jayrock" /&gt;        
         &lt;/sectionGroup&gt;
     &lt;/sectionGroup&gt;
     ...
@@ -322,13 +322,13 @@ namespace JayrockWeb
     &lt;json.rpc&gt;
         &lt;features&gt;
             &lt;add name="rpc" 
-                 type="Jayrock.Json.Rpc.Web.JsonRpcExecutive, Jayrock" /&gt;
+                 type="Jayrock.JsonRpc.Web.JsonRpcExecutive, Jayrock" /&gt;
             &lt;add name="proxy" 
-                 type="Jayrock.Json.Rpc.Web.JsonRpcProxyGenerator, Jayrock" /&gt;
+                 type="Jayrock.JsonRpc.Web.JsonRpcProxyGenerator, Jayrock" /&gt;
             &lt;add name="help" 
-                 type="Jayrock.Json.Rpc.Web.JsonRpcHelp, Jayrock" /&gt;
+                 type="Jayrock.JsonRpc.Web.JsonRpcHelp, Jayrock" /&gt;
             &lt;add name="test" 
-                 type="Jayrock.Json.Rpc.Web.JsonRpcTester, Jayrock" /&gt;
+                 type="Jayrock.JsonRpc.Web.JsonRpcTester, Jayrock" /&gt;
         &lt;/features&gt;
     &lt;/json.rpc&gt;
 &lt;/jayrock&gt;

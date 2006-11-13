@@ -493,187 +493,187 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Rpc\DuplicateMethodException.cs"
+                    RelPath = "JsonRpc\DuplicateMethodException.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Rpc\IDispatcher.cs"
+                    RelPath = "JsonRpc\IDispatcher.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Rpc\InvocationException.cs"
+                    RelPath = "JsonRpc\InvocationException.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Rpc\IService.cs"
+                    RelPath = "JsonRpc\IService.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Rpc\IServiceBinding.cs"
+                    RelPath = "JsonRpc\IServiceBinding.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Rpc\JsonRpcDispatcher.cs"
+                    RelPath = "JsonRpc\JsonRpcDispatcher.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Rpc\JsonRpcError.cs"
+                    RelPath = "JsonRpc\JsonRpcError.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Rpc\JsonRpcException.cs"
+                    RelPath = "JsonRpc\JsonRpcException.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Rpc\JsonRpcHelpAttribute.cs"
+                    RelPath = "JsonRpc\JsonRpcHelpAttribute.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Rpc\JsonRpcMethod.cs"
+                    RelPath = "JsonRpc\JsonRpcMethod.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Rpc\JsonRpcMethodAttribute.cs"
+                    RelPath = "JsonRpc\JsonRpcMethodAttribute.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Rpc\JsonRpcMethodBuilder.cs"
+                    RelPath = "JsonRpc\JsonRpcMethodBuilder.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Rpc\JsonRpcObsoleteAttribute.cs"
+                    RelPath = "JsonRpc\JsonRpcObsoleteAttribute.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Rpc\JsonRpcParameter.cs"
+                    RelPath = "JsonRpc\JsonRpcParameter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Rpc\JsonRpcParameterBuilder.cs"
+                    RelPath = "JsonRpc\JsonRpcParameterBuilder.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Rpc\JsonRpcService.cs"
+                    RelPath = "JsonRpc\JsonRpcService.cs"
                     SubType = "Component"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Rpc\JsonRpcServiceAttribute.cs"
+                    RelPath = "JsonRpc\JsonRpcServiceAttribute.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Rpc\JsonRpcServiceClass.cs"
+                    RelPath = "JsonRpc\JsonRpcServiceClass.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Rpc\JsonRpcServiceClassBuilder.cs"
+                    RelPath = "JsonRpc\JsonRpcServiceClassBuilder.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Rpc\JsonRpcServiceReflector.cs"
+                    RelPath = "JsonRpc\JsonRpcServiceReflector.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Rpc\JsonRpcServices.cs"
+                    RelPath = "JsonRpc\JsonRpcServices.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Rpc\JsonRpcTrace.cs"
+                    RelPath = "JsonRpc\JsonRpcTrace.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Rpc\MethodNotFoundException.cs"
+                    RelPath = "JsonRpc\MethodNotFoundException.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Rpc\SynchronousAsyncResult.cs"
+                    RelPath = "JsonRpc\SynchronousAsyncResult.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Rpc\TargetMethodException.cs"
+                    RelPath = "JsonRpc\TargetMethodException.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Rpc\Web\HttpRequestSecurity.cs"
+                    RelPath = "JsonRpc\Web\HttpRequestSecurity.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Rpc\Web\JsonRpcExecutive.cs"
+                    RelPath = "JsonRpc\Web\JsonRpcExecutive.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Rpc\Web\JsonRpcFeaturesSectionHandler.cs"
+                    RelPath = "JsonRpc\Web\JsonRpcFeaturesSectionHandler.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Rpc\Web\JsonRpcGetProtocol.cs"
+                    RelPath = "JsonRpc\Web\JsonRpcGetProtocol.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Rpc\Web\JsonRpcHandler.cs"
+                    RelPath = "JsonRpc\Web\JsonRpcHandler.cs"
                     SubType = "Component"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Rpc\Web\JsonRpcHelp.cs"
+                    RelPath = "JsonRpc\Web\JsonRpcHelp.cs"
                     SubType = "ASPXCodeBehind"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Rpc\Web\JsonRpcPage.cs"
+                    RelPath = "JsonRpc\Web\JsonRpcPage.cs"
                     SubType = "ASPXCodeBehind"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Rpc\Web\JsonRpcProxyGenerator.cs"
+                    RelPath = "JsonRpc\Web\JsonRpcProxyGenerator.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Rpc\Web\JsonRpcServiceBindingBase.cs"
+                    RelPath = "JsonRpc\Web\JsonRpcServiceBindingBase.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Rpc\Web\JsonRpcTester.cs"
+                    RelPath = "JsonRpc\Web\JsonRpcTester.cs"
                     SubType = "ASPXCodeBehind"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Rpc\Web\JsonRpcWebGateway.cs"
+                    RelPath = "JsonRpc\Web\JsonRpcWebGateway.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Rpc\Web\JsonRpcWebTraceAdapter.cs"
+                    RelPath = "JsonRpc\Web\JsonRpcWebTraceAdapter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

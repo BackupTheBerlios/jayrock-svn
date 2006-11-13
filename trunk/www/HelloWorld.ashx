@@ -5,8 +5,8 @@ namespace JayrockWeb
     using System;
     using System.Web;
     using Jayrock.Json;
-    using Jayrock.Json.Rpc;
-    using Jayrock.Json.Rpc.Web;
+    using Jayrock.JsonRpc;
+    using Jayrock.JsonRpc.Web;
 
     public class HelloWorld : JsonRpcHandler
     {
