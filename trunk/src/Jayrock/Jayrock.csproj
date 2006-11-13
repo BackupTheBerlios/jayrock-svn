@@ -163,17 +163,7 @@
                     BuildAction = "None"
                 />
                 <File
-                    RelPath = "ObjectCreationHandler.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "UnixTime.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "ValueChange.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
