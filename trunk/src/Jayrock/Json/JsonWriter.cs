@@ -115,6 +115,13 @@ namespace Jayrock.Json
         
         public virtual void Flush() {}
 
+        /// <summary>
+        /// Closes the writer and releases any underlying resources 
+        /// associated with the writer.
+        /// </summary>
+        
+        public virtual void Close() {}
+        
         public void WriteNumber(byte value)
         {
             WriteNumber(value.ToString(CultureInfo.InvariantCulture));

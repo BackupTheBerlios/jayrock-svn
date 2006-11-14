@@ -71,6 +71,13 @@ namespace Jayrock.Json
         /// </summary>
 
         public abstract int Depth { get; }
+        
+        /// <summary>
+        /// Closes the reader and releases any underlying resources 
+        /// associated with the reader.
+        /// </summary>
+        
+        public virtual void Close() {}
 
         /// <summary>
         /// Indicates whether the reader has reached the end of input source.
