@@ -97,7 +97,7 @@ namespace Jayrock.Json.Conversion.Import
                     bindings.Add(new StringImporter());
                     bindings.Add(new BooleanImporter());
                     bindings.Add(new DateTimeImporter());
-                    bindings.Add(new AutoImporter());
+                    bindings.Add(new AnyImporter());
                     bindings.Add(new DictionaryImporter());
                     bindings.Add(new ListImporter());
 

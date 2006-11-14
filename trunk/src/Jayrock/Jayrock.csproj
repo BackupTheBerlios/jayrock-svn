@@ -433,12 +433,12 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\Import\Importers\ArrayImporter.cs"
+                    RelPath = "Json\Conversion\Import\Importers\AnyImporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\Import\Importers\AutoImporter.cs"
+                    RelPath = "Json\Conversion\Import\Importers\ArrayImporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

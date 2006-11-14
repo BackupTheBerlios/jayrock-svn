@@ -49,7 +49,7 @@ namespace Jayrock.Json.Conversion.Import
             AssertInStock(typeof(DateTimeImporter), typeof(DateTime));
             AssertInStock(typeof(StringImporter), typeof(string));
             AssertInStock(typeof(BooleanImporter), typeof(bool));
-            AssertInStock(typeof(AutoImporter), typeof(object));
+            AssertInStock(typeof(AnyImporter), typeof(object));
             AssertInStock(typeof(ArrayImporter), typeof(object[]));
             AssertInStock(typeof(EnumImporter), typeof(System.Globalization.UnicodeCategory));
             AssertInStock(typeof(ImportAwareImporter), typeof(JsonObject));

@@ -30,10 +30,10 @@ namespace Jayrock.Json.Conversion.Import.Importers
 
     #endregion
 
-    public sealed class AutoImporter : TypeImporterBase
+    public sealed class AnyImporter : TypeImporterBase
     {
-        public AutoImporter() : 
-            base(typeof(object)) {}
+        public AnyImporter() : 
+            base(AnyType.Value) {}
 
         public override object Import(ImportContext context, JsonReader reader)
         {
