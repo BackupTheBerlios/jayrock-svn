@@ -84,7 +84,7 @@ namespace Jayrock.Json
             return nullable.IsNull;
         }
         
-        public void Export(ExportContext context, JsonWriter writer)
+        void IJsonExportable.Export(ExportContext context, JsonWriter writer)
         {
             if (context == null)
                 throw new ArgumentNullException("context");

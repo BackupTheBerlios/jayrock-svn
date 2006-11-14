@@ -67,7 +67,7 @@ namespace Jayrock.Json
         public void Export()
         {
             JsonRecorder writer = new JsonRecorder();
-            JsonNull.Value.Export(new ExportContext(), writer);
+            ((IJsonExportable) JsonNull.Value).Export(new ExportContext(), writer);
             JsonReader reader = writer.CreatePlayer();
             reader.ReadNull();
             Assert.IsTrue(reader.EOF);
