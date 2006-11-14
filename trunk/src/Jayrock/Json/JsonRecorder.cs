@@ -33,22 +33,22 @@ namespace Jayrock.Json
     [ Serializable ]
     public sealed class JsonRecorder : JsonWriterBase
     {
-        private ArrayList _entries;
+        private ArrayList _tokenList;
 
-        private ArrayList Entries
+        private ArrayList TokenList
         {
             get
             {
-                if (_entries == null)
-                    _entries = new ArrayList();
+                if (_tokenList == null)
+                    _tokenList = new ArrayList();
 
-                return _entries;
+                return _tokenList;
             }
         }
 
         private void Write(JsonToken token)
         {
-            Entries.Add(token);
+            TokenList.Add(token);
         }
 
         protected override void WriteStartObjectImpl()
@@ -98,17 +98,17 @@ namespace Jayrock.Json
 
         public JsonReader CreatePlayer()
         {
-            int count = _entries == null ? 0 : _entries.Count;
+            int count = _tokenList == null ? 0 : _tokenList.Count;
             
-            JsonToken[] entries = new JsonToken[count + 2];
+            JsonToken[] tokens = new JsonToken[count + 2];
             
             if (count > 0)
-                _entries.CopyTo(entries, 1);
+                _tokenList.CopyTo(tokens, 1);
             
-            entries[0] = JsonToken.BOF();
-            entries[entries.Length - 1] = JsonToken.EOF();
+            tokens[0] = JsonToken.BOF();
+            tokens[tokens.Length - 1] = JsonToken.EOF();
 
-            return new JsonPlayer(entries);
+            return new JsonPlayer(tokens);
         }
 
         public void Playback(JsonWriter writer)
@@ -133,18 +133,18 @@ namespace Jayrock.Json
         private sealed class JsonPlayer : JsonReaderBase
         {
             private int _index;
-            private readonly JsonToken[] _entries;
+            private readonly JsonToken[] _tokens;
 
-            public JsonPlayer(JsonToken[] entries)
+            public JsonPlayer(JsonToken[] tokens)
             {
-                Debug.Assert(entries != null);
+                Debug.Assert(tokens != null);
                 
-                _entries = entries;
+                _tokens = tokens;
             }
 
             protected override JsonToken ReadTokenImpl()
             {
-                return _entries[++_index];
+                return _tokens[++_index];
             }
         }
     }
