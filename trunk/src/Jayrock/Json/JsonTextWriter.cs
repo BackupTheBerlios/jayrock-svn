@@ -37,7 +37,7 @@ namespace Jayrock.Json
     /// emitting JSON data formatted as JSON text (RFC 4627).
     /// </summary>
 
-    public class JsonTextWriter : JsonWriter
+    public class JsonTextWriter : JsonWriterBase
     {
         private readonly TextWriter _writer;
 

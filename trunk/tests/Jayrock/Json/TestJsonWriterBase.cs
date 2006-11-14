@@ -22,11 +22,15 @@
 
 namespace Jayrock.Json
 {
+    #region Imports
+
     using System;
     using NUnit.Framework;
 
+    #endregion
+
     [ TestFixture ]
-    public class TestJsonWriter
+    public class TestJsonWriterBase
     {
         private JsonWriter _writer;
         
@@ -105,7 +109,7 @@ namespace Jayrock.Json
             _writer.WriteEndObject();
         }
 
-        private sealed class StubJsonWriter : JsonWriter
+        private sealed class StubJsonWriter : JsonWriterBase
         {
             protected override void WriteStartObjectImpl()
             {

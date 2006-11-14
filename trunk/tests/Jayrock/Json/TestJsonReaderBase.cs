@@ -34,7 +34,7 @@ namespace Jayrock.Json
     #endregion
 
     [ TestFixture ]
-    public class TestJsonReader
+    public class TestJsonReaderBase
     {
         [ Test ]
         public void EOF()
@@ -300,7 +300,7 @@ namespace Jayrock.Json
             Assert.AreEqual(JsonTokenClass.EndArray, reader.TokenClass);
         }
         
-        private sealed class MockedJsonReader : JsonReader
+        private sealed class MockedJsonReader : JsonReaderBase
         {
             private Queue _queue = new Queue();
 

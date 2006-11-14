@@ -25,11 +25,9 @@ namespace Jayrock.Json
     #region Imports
 
     using System;
-    using Jayrock.Json.Conversion.Import.Importers;
-    using Jayrock.Json.Conversion.Import;
 
     #endregion
-    
+
     /// <summary>
     /// Represents a reader that provides fast, non-cached, forward-only 
     /// access to JSON data. 
@@ -37,23 +35,18 @@ namespace Jayrock.Json
 
     public abstract class JsonReader
     {
-        private JsonToken _token;
-        private int _depth;
+        /// <summary>
+        /// Reads the next token and returns true if one was found.
+        /// </summary>
 
-        public JsonReader()
-        {
-            _token = JsonToken.BOF();
-        }
+        public abstract bool Read();
 
         /// <summary>
         /// Gets the current token.
         /// </summary>
 
-        public JsonToken Token
-        {
-            get { return _token; }
-        }
-        
+        public abstract JsonToken Token { get; }
+
         /// <summary>
         /// Gets the class of the current token.
         /// </summary>
@@ -62,7 +55,7 @@ namespace Jayrock.Json
         {
             get { return Token.Class; }
         }
-        
+
         /// <summary>
         /// Gets the text of the current token.
         /// </summary>
@@ -77,10 +70,7 @@ namespace Jayrock.Json
         /// nested objects and arrays.
         /// </summary>
 
-        public int Depth
-        {
-            get { return _depth; }
-        }
+        public abstract int Depth { get; }
 
         /// <summary>
         /// Indicates whether the reader has reached the end of input source.
@@ -90,32 +80,6 @@ namespace Jayrock.Json
         {
             get { return TokenClass == JsonTokenClass.EOF; }
         }
-
-        /// <summary>
-        /// Reads the next token and returns true if one was found.
-        /// </summary>
-
-        public bool Read()
-        {
-            if (!EOF)
-            {
-                if (TokenClass == JsonTokenClass.EndObject || TokenClass == JsonTokenClass.EndArray)
-                    _depth--;
-
-                _token = ReadTokenImpl();
-
-                if (TokenClass == JsonTokenClass.Object || TokenClass == JsonTokenClass.Array)
-                    _depth++;
-            }
-            
-            return !EOF;
-        }
-
-        /// <summary>
-        /// Reads the next token and returns it.
-        /// </summary>
-        
-        protected abstract JsonToken ReadTokenImpl();
 
         /// <summary>
         /// Reads the next token ensuring that it matches the specified 
@@ -144,7 +108,7 @@ namespace Jayrock.Json
         {
             return ReadToken(JsonTokenClass.String);
         }
-        
+
         public bool ReadBoolean()
         {
             return ReadToken(JsonTokenClass.Boolean) == JsonBoolean.TrueText;
@@ -177,7 +141,7 @@ namespace Jayrock.Json
             
             Read(/* past tail */);
         }
-        
+
         public void Skip()
         {
             if (!MoveToContent())
@@ -285,11 +249,6 @@ namespace Jayrock.Json
             {
                 throw new JsonException(string.Format("{0} not expected.", TokenClass));
             }
-        }
-
-        public override string ToString()
-        {
-            return _token.ToString();
         }
     }
 }

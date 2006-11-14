@@ -31,7 +31,7 @@ namespace Jayrock.Json
 
     #endregion
 
-    public sealed class JsonCodeWriter : JsonWriter
+    public sealed class JsonCodeWriter : JsonWriterBase
     {
         private readonly CodeVariableReferenceExpression _variable;
         private readonly ICollector _collector;

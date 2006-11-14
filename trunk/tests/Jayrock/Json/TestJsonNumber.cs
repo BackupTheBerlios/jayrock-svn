@@ -156,7 +156,7 @@ namespace Jayrock.Json
             return new JsonNumber(s);
         }
 
-        private sealed class TestJsonWriter : JsonWriter
+        private sealed class TestJsonWriter : JsonWriterBase
         {
             public string WrittenValue;
             

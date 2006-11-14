@@ -31,7 +31,7 @@ namespace Jayrock.Json
     #endregion
 
     [ Serializable ]
-    public sealed class JsonRecorder : JsonWriter
+    public sealed class JsonRecorder : JsonWriterBase
     {
         private ArrayList _entries;
 
@@ -130,7 +130,7 @@ namespace Jayrock.Json
         }
 
         [ Serializable ]
-        private sealed class JsonPlayer : JsonReader
+        private sealed class JsonPlayer : JsonReaderBase
         {
             private int _index;
             private readonly JsonToken[] _entries;

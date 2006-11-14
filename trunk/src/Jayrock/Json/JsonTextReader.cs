@@ -40,7 +40,7 @@ namespace Jayrock.Json
     /// access to JSON data over JSON text (RFC 4627). 
     /// </summary>
 
-    public sealed class JsonTextReader : JsonReader
+    public sealed class JsonTextReader : JsonReaderBase
     {
         private readonly TextParser _parser;
         private Stack _stack;

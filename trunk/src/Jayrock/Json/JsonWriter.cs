@@ -26,10 +26,7 @@ namespace Jayrock.Json
 
     using System;
     using System.Collections;
-    using System.Diagnostics;
     using System.Globalization;
-    using Jayrock.Json.Conversion.Export;
-    using Jayrock.Json.Conversion.Export.Exporters;
 
     #endregion
 
@@ -40,107 +37,83 @@ namespace Jayrock.Json
 
     public abstract class JsonWriter
     {
-        private JsonTokenClass _currentBracket;
-        private Stack _brackets;
+        /// <summary>
+        /// Return the current level of nesting as the writer encounters
+        /// nested objects and arrays.
+        /// </summary>
+
+        public abstract int Depth { get; }
         
-        public JsonWriter()
-        {
-            _brackets = new Stack(4);
-            _currentBracket = JsonTokenClass.BOF;
-        }
+        /// <summary>
+        /// When overridden in a derived class, writes out the start of a 
+        /// JSON object.
+        /// </summary>
+
+        public abstract void WriteStartObject();
+
+        /// <summary>
+        /// When overridden in a derived class, writes out the end of a 
+        /// JSON object.
+        /// </summary>
+
+        public abstract void WriteEndObject();
+
+        /// <summary>
+        /// When overridden in a derived class, writes out an object
+        /// member (but not its value).
+        /// </summary>
+
+        public abstract void WriteMember(string name);
+
+        /// <summary>
+        /// When overridden in a derived class, writes out the start of a 
+        /// JSON array.
+        /// </summary>
+
+        public abstract void WriteStartArray();
+
+        /// <summary>
+        /// When overridden in a derived class, writes out the end of a 
+        /// JSON array.
+        /// </summary>
+
+        public abstract void WriteEndArray();
+
+        /// <summary>
+        /// When overridden in a derived class, writes out a JSON string 
+        /// value.
+        /// </summary>
+
+        public abstract void WriteString(string value);
+
+        /// <summary>
+        /// When overridden in a derived class, writes out a JSON number 
+        /// value.
+        /// </summary>
+
+        public abstract void WriteNumber(string value);
+
+        /// <summary>
+        /// When overridden in a derived class, writes out a JSON boolean 
+        /// value.
+        /// </summary>
         
-        public int Depth
-        {
-            get { return _brackets.Count; }
-        }
+        public abstract void WriteBoolean(bool value);
 
-        public void WriteStartObject()
-        {
-            EnsureNotEnded();
-            EnterBracket(JsonTokenClass.Object);
-            WriteStartObjectImpl();
-        }
-
-        public void WriteEndObject()
-        {
-            EnsureStructural();
-
-            if (_currentBracket != JsonTokenClass.Object)
-                throw new JsonException("JSON Object tail not expected at this time.");
-            
-            WriteEndObjectImpl();
-            ExitBracket();
-        }
-
-        public void WriteMember(string name)
-        {
-            EnsureStructural();
-            
-            if (_currentBracket != JsonTokenClass.Object)
-                throw new JsonException("A JSON Object member is not valid inside a JSON Array.");
-            
-            WriteMemberImpl(name);
-        }
-
-        public void WriteStartArray()
-        {
-            EnsureNotEnded();
-            EnterBracket(JsonTokenClass.Array);
-            WriteStartArrayImpl();
-        }
-
-        public void WriteEndArray()
-        {
-            EnsureStructural();
-
-            if (_currentBracket != JsonTokenClass.Array)
-                throw new JsonException("JSON Array tail not expected at this time.");
-            
-            WriteEndArrayImpl();
-            ExitBracket();
-        }
-
-        public void WriteString(string value)
-        {
-            EnsureStructural();
-            WriteStringImpl(value);
-        }
-
-        public void WriteNumber(string value)
-        {
-            EnsureStructural();
-            WriteNumberImpl(value);
-        }
-
-        public void WriteBoolean(bool value)
-        {
-            EnsureStructural();
-            WriteBooleanImpl(value);
-        }
-
-        public void WriteNull()
-        {
-            EnsureStructural();
-            WriteNullImpl();
-        }
+        /// <summary>
+        /// When overridden in a derived class, writes out the JSON null
+        /// value.
+        /// </summary>
         
-        //
-        // Actual methods that need to be implemented by the subclass.
-        // These methods do not need to check for the structural 
-        // integrity since this is checked by this base implementation.
-        //
+        public abstract void WriteNull();
         
-        protected abstract void WriteStartObjectImpl();
-        protected abstract void WriteEndObjectImpl();
-        protected abstract void WriteMemberImpl(string name);
-        protected abstract void WriteStartArrayImpl();
-        protected abstract void WriteEndArrayImpl();
-        protected abstract void WriteStringImpl(string value);
-        protected abstract void WriteNumberImpl(string value);
-        protected abstract void WriteBooleanImpl(bool value);
-        protected abstract void WriteNullImpl();
+        /// <summary>
+        /// When overridden in a derived class, flushes whatever is in the 
+        /// buffer to the underlying streams and also flushes the 
+        /// underlying stream. The default implementation does nothing.
+        /// </summary>
         
-        public virtual void Flush() { }
+        public virtual void Flush() {}
 
         public void WriteNumber(byte value)
         {
@@ -161,7 +134,7 @@ namespace Jayrock.Json
         {
             WriteNumber(value.ToString(CultureInfo.InvariantCulture));
         }
-        
+
         public void WriteNumber(decimal value)
         {
             WriteNumber(value.ToString(CultureInfo.InvariantCulture));
@@ -182,7 +155,7 @@ namespace Jayrock.Json
 
             WriteNumber(value.ToString(CultureInfo.InvariantCulture));
         }
-        
+
         public void WriteStringArray(IEnumerable values)
         {
             if (values == null)
@@ -204,7 +177,7 @@ namespace Jayrock.Json
                 WriteEndArray();
             }
         }
-        
+
         public void WriteStringArray(params string[] values)
         {
             if (values == null)
@@ -226,7 +199,7 @@ namespace Jayrock.Json
                 WriteEndArray();
             }
         }
-        
+
         public void WriteValueFromReader(JsonReader reader) // FIXME: Make virtual
         {
             if (reader == null)            
@@ -280,38 +253,6 @@ namespace Jayrock.Json
             }
 
             reader.Read();
-        }
- 
-        private void EnterBracket(JsonTokenClass newBracket)
-        {
-            Debug.Assert(newBracket == JsonTokenClass.Array || newBracket == JsonTokenClass.Object);
-            
-            _brackets.Push(_currentBracket);
-            _currentBracket = newBracket;
-        }
-        
-        private void ExitBracket()
-        {
-            JsonTokenClass bracket = (JsonTokenClass) _brackets.Pop();
-
-            if (bracket == JsonTokenClass.BOF)
-                bracket = JsonTokenClass.EOF;
-            
-            _currentBracket = bracket;
-        }
-
-        private void EnsureStructural()
-        {
-            /*
-            if (Depth == 0)
-                throw new JsonException("A JSON Object or Array has not been started.");
-            */                
-        }
- 
-        private void EnsureNotEnded()
-        {
-            if (_currentBracket == JsonTokenClass.EOF)
-                throw new JsonException("JSON text has already been ended.");
         }
     }
 }
