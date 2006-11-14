@@ -200,7 +200,7 @@ namespace Jayrock.Json
             }
         }
 
-        public void WriteValueFromReader(JsonReader reader) // FIXME: Make virtual
+        public virtual void WriteValueFromReader(JsonReader reader)
         {
             if (reader == null)            
                 throw new ArgumentNullException("reader");
