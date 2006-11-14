@@ -122,30 +122,54 @@ namespace Jayrock.Json
         
         public virtual void Close() {}
         
+        /// <summary>
+        /// Writes a JSON number from a <see cref="Byte"/> value.
+        /// </summary>
+
         public void WriteNumber(byte value)
         {
             WriteNumber(value.ToString(CultureInfo.InvariantCulture));
         }
+
+        /// <summary>
+        /// Writes a JSON number from an <see cref="Int16"/> value.
+        /// </summary>
 
         public void WriteNumber(short value)
         {
             WriteNumber(value.ToString(CultureInfo.InvariantCulture));
         }
 
+        /// <summary>
+        /// Writes a JSON number from an <see cref="Int32"/> value.
+        /// </summary>
+
         public void WriteNumber(int value)
         {
             WriteNumber(value.ToString(CultureInfo.InvariantCulture));
         }
+
+        /// <summary>
+        /// Writes a JSON number from an <see cref="Int64"/> value.
+        /// </summary>
 
         public void WriteNumber(long value)
         {
             WriteNumber(value.ToString(CultureInfo.InvariantCulture));
         }
 
+        /// <summary>
+        /// Writes a JSON number from a <see cref="Decimal"/> value.
+        /// </summary>
+
         public void WriteNumber(decimal value)
         {
             WriteNumber(value.ToString(CultureInfo.InvariantCulture));
         }
+
+        /// <summary>
+        /// Writes a JSON number from a <see cref="Single"/> value.
+        /// </summary>
 
         public void WriteNumber(float value)
         {
@@ -155,6 +179,10 @@ namespace Jayrock.Json
             WriteNumber(value.ToString(CultureInfo.InvariantCulture));
         }
 
+        /// <summary>
+        /// Writes a JSON number from a <see cref="Double"/> value.
+        /// </summary>
+
         public void WriteNumber(double value)
         {
             if (double.IsNaN(value))
@@ -162,6 +190,11 @@ namespace Jayrock.Json
 
             WriteNumber(value.ToString(CultureInfo.InvariantCulture));
         }
+
+        /// <summary>
+        /// Writes a JSON array of JSON strings given an enumerable source
+        /// of arbitrary <see cref="Object"/> values.
+        /// </summary>
 
         public void WriteStringArray(IEnumerable values)
         {
@@ -185,6 +218,11 @@ namespace Jayrock.Json
             }
         }
 
+        /// <summary>
+        /// Writes a JSON array of JSON strings given an array of 
+        /// <see cref="String"/> values.
+        /// </summary>
+
         public void WriteStringArray(params string[] values)
         {
             if (values == null)
@@ -206,6 +244,13 @@ namespace Jayrock.Json
                 WriteEndArray();
             }
         }
+
+        /// <summary>
+        /// Writes the next value from the given <see cref="JsonReader"/>
+        /// into this writer's output. If the reader is positioned
+        /// at the root of JSON data, then the entire data will be
+        /// written.
+        /// </summary>
 
         public virtual void WriteValueFromReader(JsonReader reader)
         {
