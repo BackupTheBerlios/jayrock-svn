@@ -109,26 +109,55 @@ namespace Jayrock.Json
             return ReadToken(JsonTokenClass.String);
         }
 
+        /// <summary>
+        /// Reads the next token, ensures it is a Boolean and returns its 
+        /// value. If the next token is not a Boolean, then an exception 
+        /// is thrown instead.
+        /// </summary>
+
         public bool ReadBoolean()
         {
             return ReadToken(JsonTokenClass.Boolean) == JsonBoolean.TrueText;
         }
+
+        /// <summary>
+        /// Reads the next token, ensures it is a Number and returns its 
+        /// text representation. If the next token is not a Number, then 
+        /// an exception is thrown instead.
+        /// </summary>
 
         public JsonNumber ReadNumber()
         {
             return new JsonNumber(ReadToken(JsonTokenClass.Number));
         }
 
+        /// <summary>
+        /// Reads the next token, ensures it is a Null. If the next token 
+        /// is not a Null, then an exception is thrown instead.
+        /// </summary>
+        
         public void ReadNull()
         {
             ReadToken(JsonTokenClass.Null);
         }
 
+        /// <summary>
+        /// Reads the next token, ensures it is Member (of an object) and 
+        /// returns its text. If the next token is not a Member, then an 
+        /// exception is thrown instead.
+        /// </summary>
+
         public string ReadMember()
         {
             return ReadToken(JsonTokenClass.Member);
         }
-
+        
+        /// <summary>
+        /// Steps out of the current depth to the level immediately above. 
+        /// Usually this skips the current Object or Array being read, 
+        /// including all nested structures.
+        /// </summary>
+        
         public void StepOut()
         {
             int depth = Depth;
@@ -141,6 +170,13 @@ namespace Jayrock.Json
             
             Read(/* past tail */);
         }
+
+        /// <summary>
+        /// Skips through the next item. If it is an Object or Array, then
+        /// the entire object or array is skipped. If it is a scalar value
+        /// then just that value is skipped. If the reader is on an object
+        /// member then the member and its value is skipped.
+        /// </summary>
 
         public void Skip()
         {
