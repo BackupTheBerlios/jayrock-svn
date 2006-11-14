@@ -62,13 +62,13 @@ namespace Jayrock.Json.Conversion.Import.Importers
             else if (reader.TokenClass == JsonTokenClass.Array)
             {
                 JsonArray items = new JsonArray();
-                items.Import(context, reader);
+                ((IJsonImportable) items).Import(context, reader);
                 return items;
             }
             else if (reader.TokenClass == JsonTokenClass.Object)
             {
                 JsonObject o = new JsonObject();
-                o.Import(context, reader);
+                ((IJsonImportable) o).Import(context, reader);
                 return o;
             }
             else 

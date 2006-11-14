@@ -217,12 +217,21 @@ namespace Jayrock.Json
         public override string ToString()
         {
             JsonTextWriter writer = new JsonTextWriter();
-            ExportContext context = new ExportContext();
-            context.Export(this, writer);
+            Export(writer);
             return writer.ToString();
         }
+        
+        public void Export(JsonWriter writer)
+        {
+            Export(new ExportContext(), writer);
+        }
 
-        public void Export(ExportContext context, JsonWriter writer)
+        void IJsonExportable.Export(ExportContext context, JsonWriter writer)
+        {
+            Export(context, writer);
+        }
+
+        protected virtual void Export(ExportContext context, JsonWriter writer)
         {
             if (context == null)
                 throw new ArgumentNullException("context");
@@ -245,8 +254,18 @@ namespace Jayrock.Json
         /// This method is not exception-safe. If an error occurs while 
         /// reading then the object may be partially imported.
         /// </remarks>
+        
+        public void Import(JsonReader reader)
+        {
+            Import(new ImportContext(), reader);
+        }
+        
+        void IJsonImportable.Import(ImportContext context, JsonReader reader)
+        {
+            Import(context, reader);
+        }
 
-        public virtual void Import(ImportContext context, JsonReader reader)
+        protected virtual void Import(ImportContext context, JsonReader reader)
         {
             if (context == null)
                 throw new ArgumentNullException("context");

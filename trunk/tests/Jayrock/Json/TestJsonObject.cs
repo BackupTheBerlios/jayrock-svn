@@ -122,7 +122,7 @@ namespace Jayrock.Json
         {
             JsonObject article = new JsonObject();
             
-            article.Import(new ImportContext(), new JsonTextReader(new StringReader(@"
+            article.Import(new JsonTextReader(new StringReader(@"
                 /* Article */ {
                     Title : 'Introduction to JSON',
                     Rating : 2,
@@ -165,26 +165,29 @@ namespace Jayrock.Json
             JsonObject o = new JsonObject();
             o.Put("foo", "bar");
             Assert.AreEqual(1, o.Count);
-            o.Import(new ImportContext(), new JsonTextReader(new StringReader("{}")));
+            o.Import(new JsonTextReader(new StringReader("{}")));
             Assert.AreEqual(0, o.Count);
         }
 
         [ Test, ExpectedException(typeof(ArgumentNullException)) ]
         public void CannotUseNullReaderWithImport()
         {
-            (new JsonObject()).Import(new ImportContext(), null);
+            IJsonImportable o = new JsonObject();
+            o.Import(new ImportContext(), null);
         }
 
         [ Test, ExpectedException(typeof(ArgumentNullException)) ]
         public void CannotUseNullContextWithImport()
         {
-            (new JsonObject()).Import(null, (new JsonRecorder()).CreatePlayer());
+            IJsonImportable o = new JsonObject();
+            o.Import(null, (new JsonRecorder()).CreatePlayer());
         }
 
         [ Test, ExpectedException(typeof(ArgumentNullException)) ]
         public void CannotUseNullArgWithExport()
         {
-            (new JsonObject()).Export(null, null);
+            IJsonExportable o = new JsonObject();
+            o.Export(null, null);
         }
 
         [ Test ]
@@ -195,7 +198,7 @@ namespace Jayrock.Json
             o.Put("String", "Hello World");
             o.Put("Boolean", true);
             JsonRecorder writer = new JsonRecorder();
-            o.Export(new ExportContext(), writer);
+            o.Export(writer);
             JsonReader reader = writer.CreatePlayer();
             reader.ReadToken(JsonTokenClass.Object);
             string[] members = (string[]) o.GetNamesArray().ToArray(typeof(string));

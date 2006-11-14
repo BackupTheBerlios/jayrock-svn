@@ -176,11 +176,10 @@ namespace Jayrock.Json
         public override string ToString()
         {
             JsonTextWriter writer = new JsonTextWriter();
-            ExportContext context = new ExportContext();
-            context.Export(this, writer);
+            Export(writer);
             return writer.ToString();
         }
-
+        
         /// <summary>
         /// Make an JSON external form string of this JsonArray. For
         /// compactness, no unnecessary whitespace is added.
@@ -189,7 +188,17 @@ namespace Jayrock.Json
         /// This method assumes that the data structure is acyclical.
         /// </remarks>
 
-        public virtual void Export(ExportContext context, JsonWriter writer)
+        public virtual void Export(JsonWriter writer)
+        {
+            Export(new ExportContext(), writer);
+        }
+
+        void IJsonExportable.Export(ExportContext context, JsonWriter writer)
+        {
+            Export(context, writer);
+        }
+
+        protected virtual void Export(ExportContext context, JsonWriter writer)
         {
             if (context == null)
                 throw new ArgumentNullException("context");
@@ -205,7 +214,17 @@ namespace Jayrock.Json
             writer.WriteEndArray();
         }
         
-        public virtual void Import(ImportContext context, JsonReader reader)
+        public virtual void Import(JsonReader reader)
+        {
+            Import(new ImportContext(), reader);
+        }
+
+        void IJsonImportable.Import(ImportContext context, JsonReader reader)
+        {
+            Import(context, reader);
+        }
+
+        protected virtual void Import(ImportContext context, JsonReader reader)
         {
             if (context == null)
                 throw new ArgumentNullException("context");
