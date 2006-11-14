@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+﻿<%@ Page Language="C#" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
     <title>Jayrock: JSON and JSON-RPC for .NET</title>
@@ -269,6 +270,9 @@
             called <code>HelloWorld</code>. Begin by creating a file called <code>helloworld.ashx</code>
             in the root your ASP.NET application. Add the following code to the file:
         </p>
+        <p>
+            <strong>IMPORTANT!</strong> This quick start tutorial and its code illustrations are
+            based on version <% = typeof(Jayrock.Json.JsonReader).Assembly.GetName().Version %> of Jayrock.</p>
         <pre class="code">&lt;%@ WebHandler Class="JayrockWeb.HelloWorld" %&gt;
 
 namespace JayrockWeb
