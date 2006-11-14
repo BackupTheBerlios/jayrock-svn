@@ -653,6 +653,16 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "JsonRpc\Web\JsonRpcProxyGeneratorBase.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "JsonRpc\Web\JsonRpcPythonProxyGenerator.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "JsonRpc\Web\JsonRpcServiceBindingBase.cs"
                     SubType = "Code"
                     BuildAction = "Compile"

@@ -59,6 +59,7 @@
                 <a target="_blank" href="http://www.linux.org/"><img src="images/cclogos/linux.gif" width="34" height="40" alt="Linux" border="0" /></a>
                 <a target="_blank" href="http://msdn.microsoft.com/netframework/"><img src="images/cclogos/dotnet.gif" width="68" height="35" alt="Microsoft .NET Framework" border="0" /></a>
                 <a target="_blank" href="http://www.go-mono.com/"><img src="images/cclogos/mono.gif" width="40" height="46" alt="Mono" border="0" /></a>
+                <a target="_blank" href="http://www.python.org/"><img src="images/cclogos/python.gif" width="39" height="39" alt="Python" border="0" /></a>
                 <a target="_blank" href="http://www.microsoft.com/ie/"><img src="images/cclogos/ie.gif" width="46" height="40" alt="Microsoft Internet Explorer" border="0" /></a>
                 <a target="_blank" href="http://www.getfirefox.com/"><img src="images/cclogos/ff.gif" width="50" height="44" alt="FireFox" border="0" /></a>
                 <a target="_blank" href="http://www.opera.com/"><img src="images/cclogos/opera.gif" width="53" height="43" alt="Opera" border="0" /></a>
