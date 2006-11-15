@@ -34,6 +34,7 @@ namespace Jayrock.JsonRpc
     public sealed class JsonRpcMethodAttribute : Attribute, IMethodReflector
     {
         private string _name;
+        private bool _idempotent;
 
         public JsonRpcMethodAttribute() {}
 
@@ -48,9 +49,16 @@ namespace Jayrock.JsonRpc
             set { _name = value; }
         }
 
+        public bool Idempotent
+        {
+            get { return _idempotent; }
+            set { _idempotent = value; }
+        }
+
         void IMethodReflector.Build(JsonRpcMethodBuilder builder, MethodInfo method)
         {
             builder.Name = Name;
+            builder.Idempotent = Idempotent;
         }
     }
 }

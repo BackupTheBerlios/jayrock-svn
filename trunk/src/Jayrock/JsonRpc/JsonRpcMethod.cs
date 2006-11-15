@@ -43,6 +43,7 @@ namespace Jayrock.JsonRpc
         private readonly JsonRpcParameter[] _sortedParameters;  // FIXME: [ NonSerialized ]
         private readonly IDispatcher _dispatcher;
         private readonly string _description;
+        private readonly bool _idempotent;
         private readonly Attribute[] _attributes;
 
         internal JsonRpcMethod(JsonRpcMethodBuilder methodBuilder, JsonRpcServiceClass clazz)
@@ -55,6 +56,7 @@ namespace Jayrock.JsonRpc
             _resultType = methodBuilder.ResultType;
             _description = methodBuilder.Description;
             _dispatcher = methodBuilder.Dispatcher;
+            _idempotent = methodBuilder.Idempotent;
             _attributes = DeepCopy(methodBuilder.GetCustomAttributes());
             _class = clazz;
             
@@ -112,6 +114,11 @@ namespace Jayrock.JsonRpc
         public string Description
         {
             get { return _description; }
+        }
+
+        public bool Idempotent
+        {
+            get { return _idempotent; }
         }
 
         public JsonRpcServiceClass ServiceClass

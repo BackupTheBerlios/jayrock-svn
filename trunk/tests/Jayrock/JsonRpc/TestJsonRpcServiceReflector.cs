@@ -243,6 +243,14 @@ namespace Jayrock.JsonRpc
             JsonRpcMethod method = JsonRpcServiceClass.FromType(typeof(TestService)).GetMethodByName("Foo");
             Assert.AreNotSame(method.FindFirstCustomAttribute(typeof(MyAttribute)), method.FindFirstCustomAttribute(typeof(MyAttribute)));
         }
+
+        [ Test ]
+        public void MethodIdempotency()
+        {
+            JsonRpcServiceClass clazz = JsonRpcServiceClass.FromType(typeof(IdempotencyTestService));
+            Assert.IsFalse(clazz.GetMethodByName("NonIdempotentMethod").Idempotent);
+            Assert.IsTrue(clazz.GetMethodByName("IdempotentMethod").Idempotent);
+        }
         
         private sealed class EmptyService
         {
@@ -275,6 +283,15 @@ namespace Jayrock.JsonRpc
             {
                 throw new NotImplementedException();
             }
+        }
+        
+        private sealed class IdempotencyTestService
+        {
+            [ JsonRpcMethod ]
+            public void NonIdempotentMethod() {}
+
+            [ JsonRpcMethod(Idempotent = true) ]
+            public void IdempotentMethod() {}
         }
 
         [ AttributeUsage(AttributeTargets.All, AllowMultiple = true) ]

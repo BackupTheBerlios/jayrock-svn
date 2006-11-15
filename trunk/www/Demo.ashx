@@ -19,28 +19,28 @@ namespace JayrockWeb
     [ JsonRpcHelp("This is a JSON-RPC service that demonstrates the basic features of the Jayrock library.") ]    
     public class DemoService : JsonRpcHandler, IRequiresSessionState 
     {
-        [ JsonRpcMethod("echo")]
+        [ JsonRpcMethod("echo", Idempotent = true)]
         [ JsonRpcHelp("Echoes back the text sent as input.") ]
         public string Echo(string text)
         {
             return text;
         }
 
-        [ JsonRpcMethod("echoObject")]
+        [ JsonRpcMethod("echoObject", Idempotent = true)]
         [ JsonRpcHelp("Echoes back the object sent as input.") ]
         public object EchoOject(object o)
         {
             return o;
         }
 
-        [ JsonRpcMethod("echoArgs")]
+        [ JsonRpcMethod("echoArgs", Idempotent = true)]
         [ JsonRpcHelp("Echoes back the arguments sent as input. This method demonstrates variable number of arguments.") ]
         public object EchoArgs(params object[] args)
         {
             return args;
         }
 
-        [ JsonRpcMethod("echoAsStrings")]
+        [ JsonRpcMethod("echoAsStrings", Idempotent = true)]
         [ JsonRpcHelp("Echoes back the arguments as an array of strings. This method demonstrates working with variable number of arguments.") ]
         public object EchoAsStrings(params object[] args)
         {
@@ -55,7 +55,7 @@ namespace JayrockWeb
             return strings;
         }
 
-        [ JsonRpcMethod("sum")]
+        [ JsonRpcMethod("sum", Idempotent = true)]
         [ JsonRpcHelp("Return the sum of two integers.") ]
         [ JsonRpcObsolete("Use the total method instead.") ]
         public int Sum(int a, int b)
@@ -63,42 +63,42 @@ namespace JayrockWeb
             return a + b;
         }
         
-        [ JsonRpcMethod("getStringArray")]
+        [ JsonRpcMethod("getStringArray", Idempotent = true)]
         [ JsonRpcHelp("Returns an array of city names. Demonstrates returning a strongly-typed array.") ]
         public string[] GetCities()
         {
             return new string[] { "London", "Zurich", "Paris", "New York" };
         }
         
-        [ JsonRpcMethod("now")]
+        [ JsonRpcMethod("now", Idempotent = true)]
         [ JsonRpcHelp("Returns the local time on the server. Demonstrates how DateTime is returned simply as a string using the ISO 8601 format.") ]
         public DateTime Now()
         {
             return DateTime.Now;
         }
 
-        [ JsonRpcMethod("newGuid")]
+        [ JsonRpcMethod("newGuid", Idempotent = true)]
         [ JsonRpcHelp("Generates and returns a GUID as a string.") ]
         public Guid NewGuid()
         {
             return Guid.NewGuid();
         }
 
-        [ JsonRpcMethod("cookies")]
+        [ JsonRpcMethod("cookies", Idempotent = true)]
         [ JsonRpcHelp("Returns the cookie names seen by the server.") ]
         public HttpCookieCollection Cookies()
         {
             return Request.Cookies;
         }
         
-        [ JsonRpcMethod("serverVariables")]
+        [ JsonRpcMethod("serverVariables", Idempotent = true)]
         [ JsonRpcHelp("Returns the server variables collection at the server. Demonstrates returning NameValueCollection.") ]
         public NameValueCollection ServerVariables()
         {
             return Request.ServerVariables;
         }
 
-        [ JsonRpcMethod("getAuthor")]
+        [ JsonRpcMethod("getAuthor", Idempotent = true)]
         [ JsonRpcHelp("Returns information about the author. Demonstrates how a Hashtable from the server is automatically converted into an object on the client-side.") ]
         public IDictionary GetAuthor()
         {
@@ -108,7 +108,7 @@ namespace JayrockWeb
             return author;
         }
         
-        [ JsonRpcMethod("getDataSet")]
+        [ JsonRpcMethod("getDataSet", Idempotent = true)]
         [ JsonRpcHelp("Returns the Northwind employees as a DataSet.") ]
         public DataSet GetEmployeeSet()
         {
@@ -122,49 +122,49 @@ namespace JayrockWeb
             }
         }
         
-        [ JsonRpcMethod("getDataTable")]
+        [ JsonRpcMethod("getDataTable", Idempotent = true)]
         [ JsonRpcHelp("Returns the Northwind employees as a DataTable.") ]
         public DataTable GetEmployeeTable()
         {
             return GetEmployeeSet().Tables[0];
         }
 
-        [ JsonRpcMethod("getRowArray")]
+        [ JsonRpcMethod("getRowArray", Idempotent = true)]
         [ JsonRpcHelp("Returns the Northwind employees as an array of DataRow objects.") ]
         public DataRow[] GetEmployeeRowArray()
         {
             return GetEmployeeSet().Tables[0].Select();
         }
 
-        [ JsonRpcMethod("getRowCollection")]
+        [ JsonRpcMethod("getRowCollection", Idempotent = true)]
         [ JsonRpcHelp("Returns the Northwind employees as a DataRowCollection.") ]
         public DataRowCollection GetEmployeeRows()
         {
             return GetEmployeeSet().Tables[0].Rows;
         }
 
-        [ JsonRpcMethod("getDataView")]
+        [ JsonRpcMethod("getDataView", Idempotent = true)]
         [ JsonRpcHelp("Returns the Northwind employees as a DataView object.") ]
         public DataView GetEmployeeView()
         {
             return GetEmployeeSet().Tables[0].DefaultView;
         }
 
-        [ JsonRpcMethod("getFirstDataRow")]
+        [ JsonRpcMethod("getFirstDataRow", Idempotent = true)]
         [ JsonRpcHelp("Returns the first Northwind employee as a DataRow object.") ]
         public DataRow GetFirstEmployeeRow()
         {
             return GetEmployeeSet().Tables[0].Rows[0];
         }
 
-        [ JsonRpcMethod("getFirstDataRowView")]
+        [ JsonRpcMethod("getFirstDataRowView", Idempotent = true)]
         [ JsonRpcHelp("Returns the first Northwind employee as a DataRowView object.") ]
         public DataRowView GetFirstEmployeeRowView()
         {
             return GetEmployeeSet().Tables[0].DefaultView[0];
         }
 
-        [ JsonRpcMethod("getDropDown")]
+        [ JsonRpcMethod("getDropDown", Idempotent = true)]
         [ JsonRpcHelp("Returns a data-bound DropDownList to the client as HTML.") ]
         public Control EmployeeDropDown()
         {
@@ -179,7 +179,7 @@ namespace JayrockWeb
             return ddl;
         }
         
-        [ JsonRpcMethod("getDataGrid")]
+        [ JsonRpcMethod("getDataGrid", Idempotent = true)]
         [ JsonRpcHelp("Returns a data-bound DataGrid to the client as HTML.") ]
         public Control EmployeeDataGrid()
         {
@@ -189,7 +189,7 @@ namespace JayrockWeb
             return grid;
         }
 
-        [ JsonRpcMethod("total")]
+        [ JsonRpcMethod("total", Idempotent = true)]
         [ JsonRpcHelp("Returns the total of all integers sent in an array.") ]
         public int Total(int[] values)
         {
@@ -201,28 +201,28 @@ namespace JayrockWeb
             return total;
         }
         
-        [ JsonRpcMethod("sleep") ]
+        [ JsonRpcMethod("sleep", Idempotent = true) ]
         [ JsonRpcHelp("Blocks the request for the specified number of milliseconds (maximum 7 seconds).") ]
         public void Sleep(int milliseconds)
         {
             System.Threading.Thread.Sleep(Math.Min(7000, milliseconds));
         }
         
-        [ JsonRpcMethod("throwError")]
+        [ JsonRpcMethod("throwError", Idempotent = true)]
         [ JsonRpcHelp("Throws an error if you try to call this method.") ]
         public void ThrowError()
         {
             throw new ApplicationException();
         }
 
-        [ JsonRpcMethod("format")]
+        [ JsonRpcMethod("format", Idempotent = true)]
         [ JsonRpcHelp("Formats placeholders in a format specification with supplied replacements. This method demonstrates fixed and variable arguments.") ]
         public string Format(string format, params object[] args)
         {
             return string.Format(format, args);
         }
         
-        [ JsonRpcMethod("counter")]
+        [ JsonRpcMethod("counter", Idempotent = true)]
         [ JsonRpcHelp("Increments a counter and returns its new value. Demonstrates use of session state.") ]
         public int SessionCounter()
         {

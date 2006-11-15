@@ -25,6 +25,7 @@ namespace Jayrock.JsonRpc.Web
     #region Imports
 
     using System;
+    using System.Collections;
     using System.Web.UI;
     using System.Web.UI.HtmlControls;
     using System.Web.UI.WebControls;
@@ -61,11 +62,29 @@ namespace Jayrock.JsonRpc.Web
             AddLink(para, JsonRpcServices.GetServiceName(Service) + " test page", Request.FilePath + "?test");
             AddLiteral(para, "):");
 
-            HtmlGenericControl methodList = new HtmlGenericControl("dl");
-            content.Controls.Add(methodList);
+            Control dl = AddGeneric(content, "dl", null);
+            content.Controls.Add(dl);
 
-            foreach (JsonRpcMethod method in SortedMethods)
-                AddMethod(methodList, method);
+            JsonRpcMethod[] methods = SortedMethods;
+            ArrayList idemList = new ArrayList(methods.Length);
+
+            foreach (JsonRpcMethod method in methods)
+            {
+                AddMethod(dl, method);
+                
+                if (method.Idempotent)
+                    idemList.Add(method);
+            }
+            
+            if (idemList.Count > 0)
+            {
+                AddGeneric(content, "hr", null);
+                AddPara(content, null, "The following method(s) of this service are marked as idempotent and therefore safe for use with HTTP GET:");
+
+                Control idemMethodList = AddGeneric(content, "ul", null);
+                foreach (JsonRpcMethod method in idemList)
+                    AddGeneric(idemMethodList, "li", null, method.Name);
+            }
 
             base.AddContent ();
         }
@@ -78,13 +97,11 @@ namespace Jayrock.JsonRpc.Web
             AddSpan(methodTerm, "method-name", method.Name);
             AddSignature(methodTerm, method);
 
-            if (method.Description.Length > 0 || obsolete != null)
-            {
+            if (method.Description.Length > 0)
                 AddGeneric(parent, "dd", "method-summary", method.Description);
 
-                if (obsolete != null)
-                    AddGeneric(parent, "dd", "obsolete-message", " This method has been obsoleted. " + obsolete.Message);
-            }
+            if (obsolete != null)
+                AddGeneric(parent, "dd", "obsolete-message", " This method has been obsoleted. " + obsolete.Message);
         }
 
         private static void AddSignature(Control parent, JsonRpcMethod method)

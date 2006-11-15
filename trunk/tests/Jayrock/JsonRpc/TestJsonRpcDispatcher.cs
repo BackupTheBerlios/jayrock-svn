@@ -165,6 +165,22 @@ namespace Jayrock.JsonRpc
             Assert.AreEqual(new int[] { 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36 }, JsonRpcServices.GetResult(response, typeof(int[])));
         }
 
+        [ Test, ExpectedException(typeof(JsonRpcException)) ]
+        public void CannotCallNonIdempotentMethodWhenIdempotencyRequired()
+        {
+            JsonRpcDispatcher server = new JsonRpcDispatcher(new TestService());
+            server.RequireIdempotency = true;
+            JsonRpcServices.GetResult((IDictionary) Parse(server.Process("{ id : 1, method : 'Dummy', params : [] }")));
+        }
+
+        [ Test ]
+        public void CallIdempotentMethodWithIdempotencyRequired()
+        {
+            JsonRpcDispatcher server = new JsonRpcDispatcher(new TestService());
+            server.RequireIdempotency = true;
+            JsonRpcServices.GetResult((IDictionary) Parse(server.Process("{ id : 1, method : 'Idem', params : [] }")));
+        }
+
         private object Parse(string source)
         {
             ImportContext context = new ImportContext();
@@ -204,6 +220,11 @@ namespace Jayrock.JsonRpc
                 foreach (int i in ints)
                     sum += i;
                 return sum;
+            }
+
+            [ JsonRpcMethod(Idempotent = true) ]
+            public void Idem()
+            {                
             }
         }
 

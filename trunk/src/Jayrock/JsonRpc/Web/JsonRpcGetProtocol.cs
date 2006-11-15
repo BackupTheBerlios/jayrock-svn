@@ -108,6 +108,8 @@ namespace Jayrock.JsonRpc.Web
 
             JsonRpcDispatcher dispatcher = new JsonRpcDispatcher(Service);
             
+            dispatcher.RequireIdempotency = true;
+            
             if (HttpRequestSecurity.IsLocal(Request))
                 dispatcher.SetLocalExecution();
             

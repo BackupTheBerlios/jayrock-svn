@@ -52,6 +52,7 @@ namespace Jayrock.JsonRpc
         private readonly IServiceProvider _serviceProvider;
         private string _serviceName;
         private bool _localExecution;
+        private bool _requireIdempotency;
 
         public JsonRpcDispatcher(IService service) :
             this(service, null) {}
@@ -89,6 +90,12 @@ namespace Jayrock.JsonRpc
             // TODO: Need to make this public but through a more generic set of options.
 
             _localExecution = true;
+        }
+
+        public bool RequireIdempotency
+        {
+            get { return _requireIdempotency; }
+            set { _requireIdempotency = value; }
         }
 
         private string ServiceName
@@ -184,6 +191,9 @@ namespace Jayrock.JsonRpc
             {
                 JsonRpcMethod method = _service.GetClass().GetMethodByName(methodName);
                 
+                if (RequireIdempotency && !method.Idempotent)
+                    throw new JsonRpcException(string.Format("Method {1} on service {0} is not allowed for idempotent type of requests.", ServiceName, methodName));
+                        
                 object[] args;
                 string[] names = null;
 

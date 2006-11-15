@@ -52,6 +52,7 @@ namespace Jayrock.JsonRpc
             Assert.IsNotNull(_builder.Description);
             Assert.AreEqual(0, _builder.Description.Length);
             Assert.IsNotNull(_builder.ServiceClass);
+            Assert.IsFalse(_builder.Idempotent);
         }
         
         [ Test ]
@@ -141,6 +142,13 @@ namespace Jayrock.JsonRpc
         public void ServiceClassReference()
         {
             Assert.AreSame(_classBuilder, _builder.ServiceClass);
+        }
+
+        [ Test ]
+        public void GetSetIdempotent()
+        {
+            _builder.Idempotent = true;
+            Assert.IsTrue(_builder.Idempotent);
         }
         
         private class StubDispatcher : IDispatcher

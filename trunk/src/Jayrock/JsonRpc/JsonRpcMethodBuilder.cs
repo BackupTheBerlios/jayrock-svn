@@ -41,6 +41,7 @@ namespace Jayrock.JsonRpc
         private string _description;
         private readonly JsonRpcServiceClassBuilder _serviceClass;
         private ArrayList _attributes;
+        private bool _idempotent;
 
         internal JsonRpcMethodBuilder(JsonRpcServiceClassBuilder serviceClass)
         {
@@ -105,6 +106,12 @@ namespace Jayrock.JsonRpc
         {
             get { return Mask.NullString(_description); }
             set { _description = value; }
+        }
+
+        public bool Idempotent
+        {
+            get { return _idempotent; }
+            set { _idempotent = value; }
         }
 
         public JsonRpcParameterBuilder DefineParameter()
