@@ -81,8 +81,13 @@ namespace Jayrock.JsonRpc.Web
                          timeZone.DaylightName : timeZone.StandardName);
             writer.WriteLine(")");
             
-            writer.WriteLine(_docQuotes);            
+            writer.WriteLine(_docQuotes);
             writer.Indent++;
+            
+            Uri url = new Uri(Request.Url.GetLeftPart(UriPartial.Path));
+            writer.WriteLine(@"def __init__(self, url = '" + url + @"'):
+        self.url = url
+        self.__id = 0");
             
             writer.WriteLine();
         }
@@ -121,10 +126,8 @@ namespace Jayrock.JsonRpc.Web
 
             foreach (JsonRpcParameter parameter in parameters)
             {
-                if (parameter.Position > 0)
-                    writer.Write(", ");
-
                 writer.Write(parameter.Name);
+                writer.Write(", ");
             }
 
             writer.WriteLine("))");
@@ -139,7 +142,19 @@ namespace Jayrock.JsonRpc.Web
             
             writer.WriteLine(@"
     def __call(self, method, params):
-        return simplejson.loads(urllib.urlopen('"+ url +"', urllib.urlencode([('JSON-RPC', simplejson.dumps({ 'id' : 1, 'method' : method, 'params' : params }))])).read())['result']");
-        }
+        self.__id = self.__id + 1
+        response = simplejson.loads(urllib.urlopen(self.url, urllib.urlencode([('JSON-RPC', simplejson.dumps({ 'id' : self.__id, 'method' : method, 'params' : params }))])).read())
+        if response.has_key('error'): raise Error(None, response)
+        return response['result']
+
+class Error(Exception):
+    """"""Exception raised when an error occurs calling a JSON-RPC service.""""""
+    def __init__(self, message = None, response = None):
+        self.error = response['error']
+        self.response = response
+        if message: self.message = str(message)
+        else: self.message = self.error['message']
+");
+       }
     }
 }
