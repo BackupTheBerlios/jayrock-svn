@@ -83,7 +83,7 @@ namespace Jayrock.JsonRpc.Web
                 AddGeneric(parent, "dd", "method-summary", method.Description);
 
                 if (obsolete != null)
-                    AddSpan(parent, "obsolete-message", " This method has been obsoleted. " + obsolete.Message);
+                    AddGeneric(parent, "dd", "obsolete-message", " This method has been obsoleted. " + obsolete.Message);
             }
         }
 
