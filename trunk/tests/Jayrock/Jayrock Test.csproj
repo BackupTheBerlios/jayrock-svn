@@ -294,6 +294,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "JsonRpc\TestJsonRpcError.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "JsonRpc\TestJsonRpcMethod.cs"
                     SubType = "Code"
                     BuildAction = "Compile"

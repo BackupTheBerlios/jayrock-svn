@@ -26,35 +26,44 @@ namespace Jayrock.JsonRpc
 
     using System;
     using Jayrock.Json;
+    using NUnit.Framework;
 
     #endregion
 
-    public sealed class JsonRpcError
+    [ TestFixture ]
+    public class TestJsonRpcError
     {
-        public static JsonObject FromException(Exception e)
+        [ Test ]
+        public void InitializationFromException()
         {
-            return FromException(e, false);
+            ApplicationException exception = new ApplicationException();
+            JsonObject error = JsonRpcError.FromException(ThrowAndCatch(exception));
+            Assert.IsNotNull(error);
+            Assert.AreEqual(2, error.Count);
+            Assert.AreEqual(exception.Message, error["message"]);
+            Assert.AreEqual("JSONRPCError", error["name"]);
         }
 
-        public static JsonObject FromException(Exception e, bool includeStackTrace)
+        [ Test ]
+        public void StackTraceInclusion()
         {
-            if (e == null)
-                throw new ArgumentNullException("e");
-
-            JsonObject error = new JsonObject();
-            
-            error.Put("name", "JSONRPCError");
-            error.Put("message", e.GetBaseException().Message);
-
-            if (includeStackTrace)
-                error.Put("stackTrace", e.StackTrace);
-
-            return error;
+            ApplicationException exception = new ApplicationException();
+            JsonObject error = JsonRpcError.FromException(ThrowAndCatch(exception), true);
+            string trace = (string) error["stackTrace"];
+            Assert.IsNotNull(trace);
+            Assert.IsNotEmpty(trace);
         }
 
-        private JsonRpcError()
+        private static Exception ThrowAndCatch(Exception exceptionToThrow)
         {
-            throw new NotSupportedException();
+            try
+            {
+                throw exceptionToThrow;
+            }
+            catch (Exception exception)
+            {
+                return exception;
+            }
         }
     }
 }
