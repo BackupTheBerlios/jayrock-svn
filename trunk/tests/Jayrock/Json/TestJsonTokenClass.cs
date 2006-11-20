@@ -157,22 +157,6 @@ namespace Jayrock.Json
         }
         
         [ Test ]
-        public void JsonTokenString()
-        {
-            Assert.AreEqual("String:hello", JsonToken.String("hello").ToString());
-            Assert.AreEqual("Number:123", JsonToken.Number("123").ToString());
-            Assert.AreEqual("Boolean:true", JsonToken.Boolean(true).ToString());
-            Assert.AreEqual("Boolean:false", JsonToken.Boolean(false).ToString());
-            Assert.AreEqual("Null:null", JsonToken.Null().ToString());
-            Assert.AreEqual("Array", JsonToken.Array().ToString());
-            Assert.AreEqual("EndArray", JsonToken.EndArray().ToString());
-            Assert.AreEqual("Object", JsonToken.Object().ToString());
-            Assert.AreEqual("EndObject", JsonToken.EndObject().ToString());
-            Assert.AreEqual("BOF", JsonToken.BOF().ToString());
-            Assert.AreEqual("EOF", JsonToken.EOF().ToString());
-        }
-        
-        [ Test ]
         public void DeserializesToFactoryInstance()
         {
             IFormatter formatter = new BinaryFormatter();
