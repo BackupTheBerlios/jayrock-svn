@@ -63,7 +63,7 @@ namespace Jayrock.Json
 
         public override string ToString()
         {
-            return Text == null ? Class.Name : Class.Name + ":" + Text;
+            return Text == null ? Class.Name : Class.Name + ":" + DebugString.Format(Text);
         }
         
         //

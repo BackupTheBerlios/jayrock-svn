@@ -87,10 +87,5 @@ namespace Jayrock.Json
         /// </summary>
         
         protected abstract JsonToken ReadTokenImpl();
-
-        public override string ToString()
-        {
-            return Token.ToString();
-        }
     }
 }

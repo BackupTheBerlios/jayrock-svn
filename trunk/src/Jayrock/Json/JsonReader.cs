@@ -80,6 +80,16 @@ namespace Jayrock.Json
         public virtual void Close() {}
 
         /// <summary>
+        /// Returns a <see cref="String"/> that represents the state of the 
+        /// instance.
+        /// </summary>
+
+        public override string ToString()
+        {
+            return Token.ToString();
+        }
+        
+        /// <summary>
         /// Indicates whether the reader has reached the end of input source.
         /// </summary>
 
@@ -98,7 +108,7 @@ namespace Jayrock.Json
             MoveToContent();
             
             if (TokenClass != token)
-                throw new JsonException(string.Format("Found {0} where {1} was expected.", TokenClass.ToString(), token.ToString()));
+                throw new JsonException(string.Format("Found {0} where {1} was expected.", TokenClass, token));
             
             string s = Text;
             Read();
