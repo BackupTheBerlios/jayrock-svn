@@ -26,6 +26,8 @@ namespace Jayrock.Json.Conversion
 
     using System;
     using System.ComponentModel;
+    using System.Diagnostics;
+    using System.Globalization;
     using System.Reflection;
 
     #endregion
@@ -188,7 +190,7 @@ namespace Jayrock.Json.Conversion
         private abstract class TypeMemberDescriptor : PropertyDescriptor
         {
             protected TypeMemberDescriptor(MemberInfo member, string name) : 
-                base(Mask.EmptyString(name, member.Name), null) {}
+                base(ChooseName(name, member.Name), null) {}
 
             protected abstract MemberInfo Member { get; }
                 
@@ -208,6 +210,22 @@ namespace Jayrock.Json.Conversion
             public abstract override Type PropertyType { get; }
             public abstract override object GetValue(object component);
             public abstract override void SetValue(object component, object value);
+
+            private static string ChooseName(string propsedName, string baseName)
+            {
+                if (Mask.NullString(propsedName).Length > 0)
+                    return propsedName;
+                
+                return ToCamelCase(baseName);
+            }
+
+            private static string ToCamelCase(string s)
+            {
+                if (s == null || s.Length == 0)
+                    return s;
+                
+                return char.ToLower(s[0], CultureInfo.InvariantCulture) + s.Substring(1);
+            }
         }
 
         /// <summary>

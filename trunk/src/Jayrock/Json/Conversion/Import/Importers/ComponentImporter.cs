@@ -78,7 +78,7 @@ namespace Jayrock.Json.Conversion.Import.Importers
             {
                 string memberName = reader.ReadMember();
                
-                PropertyDescriptor property = _properties[memberName];
+                PropertyDescriptor property = _properties.Find(memberName, true);
                 
                 if (property != null && !property.IsReadOnly)
                     property.SetValue(o, context.Import(property.PropertyType, reader));

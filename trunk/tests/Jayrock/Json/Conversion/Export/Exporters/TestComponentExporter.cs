@@ -52,7 +52,7 @@ namespace Jayrock.Json.Conversion.Export.Exporters
             car.Color = "Silver";
 
             Test(new JsonObject(
-                new string[] { "Manufacturer", "Model", "Year", "Color" },
+                new string[] { "manufacturer", "model", "year", "color" },
                 new object[] { car.Manufacturer, car.Model, car.Year, car.Color }), car);
         }
 
@@ -63,7 +63,7 @@ namespace Jayrock.Json.Conversion.Export.Exporters
 
             JsonReader reader = FormatForReading(car);
             reader.ReadToken(JsonTokenClass.Object);
-            Assert.AreEqual("Year", reader.ReadMember());
+            Assert.AreEqual("year", reader.ReadMember());
             Assert.AreEqual(0, (int) reader.ReadNumber());
             Assert.AreEqual(JsonTokenClass.EndObject, reader.TokenClass);
         }
@@ -84,13 +84,13 @@ namespace Jayrock.Json.Conversion.Export.Exporters
             m.Wife = snow;
 
             Test(new JsonObject(
-                new string[] { "Husband", "Wife" },
+                new string[] { "husband", "wife" },
                 new object[] {
                     /* Husband */ new JsonObject(
-                        new string[] { "Id", "FullName" },
+                        new string[] { "id", "fullName" },
                         new object[] { albert.Id, albert.FullName }),
                     /* Wife */ new JsonObject(
-                        new string[] { "Id", "FullName" },
+                        new string[] { "id", "fullName" },
                         new object[] { snow.Id, snow.FullName })
                 }), m);
         }
@@ -129,14 +129,14 @@ namespace Jayrock.Json.Conversion.Export.Exporters
             johnCars.Cars.Add(beamer);
 
             JsonObject test = new JsonObject(
-                new string[] { "Owner", "Cars" }, 
+                new string[] { "owner", "cars" }, 
                 new object[] {
                     /* Owner */ new JsonObject(
-                        new string[] { "Id", "FullName" }, 
+                        new string[] { "id", "fullName" }, 
                         new object[] { john.Id,  john.FullName }),
                     /* Cars */ new object[] {
                         new JsonObject(
-                            new string[] { "Manufacturer", "Model", "Year", "Color" }, 
+                            new string[] { "manufacturer", "model", "year", "color" }, 
                             new object[] { beamer.Manufacturer, beamer.Model, beamer.Year, beamer.Color })
                     }
                 });
