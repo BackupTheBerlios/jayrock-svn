@@ -24,8 +24,10 @@ namespace Jayrock.Json
 {
     #region Imports
 
+    using System;
     using System.Collections;
     using System.Diagnostics;
+    using System.Globalization;
 
     #endregion
 
@@ -38,6 +40,7 @@ namespace Jayrock.Json
     {
         private JsonTokenClass _currentBracket;
         private Stack _brackets;
+        private int _maxDepth = 25;
         
         public JsonWriterBase()
         {
@@ -48,6 +51,19 @@ namespace Jayrock.Json
         public sealed override int Depth
         {
             get { return _brackets.Count; }
+        }
+
+        public override int MaxDepth
+        {
+            get { return _maxDepth; }
+            
+            set
+            {
+                if (value < 1)
+                    throw new ArgumentException("value");
+                
+                _maxDepth = value;
+            }
         }
 
         public sealed override void WriteStartObject()
@@ -140,6 +156,7 @@ namespace Jayrock.Json
         {
             Debug.Assert(newBracket == JsonTokenClass.Array || newBracket == JsonTokenClass.Object);
             
+            EnsureDepthWithinLimit();
             _brackets.Push(_currentBracket);
             _currentBracket = newBracket;
         }
@@ -166,6 +183,12 @@ namespace Jayrock.Json
         {
             if (_currentBracket == JsonTokenClass.EOF)
                 throw new JsonException("JSON text has already been ended.");
+        }
+
+        private void EnsureDepthWithinLimit()
+        {
+            if (Depth + 1 > MaxDepth)
+                throw new JsonException(string.Format("Maximum depth of {0} exceeded.", MaxDepth.ToString()));
         }
     }
 }

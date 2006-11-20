@@ -45,6 +45,14 @@ namespace Jayrock.Json
         public abstract int Depth { get; }
         
         /// <summary>
+        /// Gets or sets the maximum depth the writer is allowed to reach.
+        /// Attempts to write beyond the maximum depth will result in 
+        /// <see cref="JsonException"/>.
+        /// </summary>
+
+        public abstract int MaxDepth { get; set; }
+
+        /// <summary>
         /// When overridden in a derived class, writes out the start of a 
         /// JSON object.
         /// </summary>

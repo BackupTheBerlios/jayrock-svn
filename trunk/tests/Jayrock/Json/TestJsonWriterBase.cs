@@ -109,6 +109,59 @@ namespace Jayrock.Json
             _writer.WriteEndObject();
         }
 
+        [ Test ]
+        public void DefaultMaxDepth()
+        {
+            Assert.AreEqual(25, _writer.MaxDepth);
+        }
+
+        [ Test ]
+        public void SetMaxDepth()
+        {
+            _writer.MaxDepth = 123;
+            Assert.AreEqual(123, _writer.MaxDepth);
+        }
+
+        [ Test, ExpectedException(typeof(ArgumentException)) ]
+        public void CannotSetMaxDepthToZero()
+        {
+            _writer.MaxDepth = 0;
+        }
+
+        [ Test, ExpectedException(typeof(ArgumentException)) ]
+        public void CannotSetMaxDepthBelowZero()
+        {
+            _writer.MaxDepth = -12;
+        }
+
+        [ Test, ExpectedException(typeof(JsonException)) ]
+        public void CannotWriteBeyondMaxDepth()
+        {
+            _writer.MaxDepth = 1;
+            _writer.WriteStartObject();
+            _writer.WriteStartObject();
+        }
+
+        [ Test, ExpectedException(typeof(JsonException)) ]
+        public void CannotWriteBeyondMaxDepthNestingOfObjects()
+        {
+            _writer.MaxDepth = 3;
+            _writer.WriteStartArray();
+            _writer.WriteStartArray();
+            _writer.WriteStartArray();
+            _writer.WriteStartArray();
+        }
+        
+        [ Test, ExpectedException(typeof(JsonException)) ]
+        public void CannotWriteBeyondMaxDepthNestingOfArrays()
+        {
+            _writer.MaxDepth = 3;
+            _writer.WriteStartObject();
+            _writer.WriteStartObject();
+            _writer.WriteStartObject();
+            _writer.WriteStartObject();
+        }
+
         private sealed class StubJsonWriter : JsonWriterBase
         {
             protected override void WriteStartObjectImpl()
