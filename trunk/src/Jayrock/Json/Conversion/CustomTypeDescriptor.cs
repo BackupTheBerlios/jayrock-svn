@@ -25,11 +25,24 @@ namespace Jayrock.Json.Conversion
     #region Imports
 
     using System;
-    using System.ComponentModel;
     using System.Diagnostics;
     using System.Globalization;
     using System.Reflection;
-
+    
+    //
+    // Types from System.ComponentModel must be imported explicitly because
+    // .NET Framework 2.0 also contains a CustomTypeDescriptor in 
+    // System.ComponentModel.
+    //
+    
+    using ICustomTypeDescriptor = System.ComponentModel.ICustomTypeDescriptor;
+    using PropertyDescriptorCollection = System.ComponentModel.PropertyDescriptorCollection;
+    using PropertyDescriptor = System.ComponentModel.PropertyDescriptor;
+    using AttributeCollection= System.ComponentModel.AttributeCollection;
+    using TypeConverter = System.ComponentModel.TypeConverter;
+    using EventDescriptor = System.ComponentModel.EventDescriptor;
+    using EventDescriptorCollection = System.ComponentModel.EventDescriptorCollection;
+    
     #endregion
     
     /// <summary>
