@@ -108,7 +108,7 @@ namespace Jayrock.Json
 
         protected override void WriteBooleanImpl(bool value)
         {
-            BracketedWrite(value ? "true" : "false");
+            BracketedWrite(value ? JsonBoolean.TrueText : JsonBoolean.FalseText);
         }
 
         protected override void WriteNullImpl()
