@@ -29,21 +29,6 @@ namespace Jayrock.Json.Conversion.Import.Importers
 
     #endregion
 
-    public sealed class EnumImporterFamily : ITypeImporterBinder
-    {
-        public ITypeImporter Bind(ImportContext context, Type type)
-        {
-            if (context == null)
-                throw new ArgumentNullException("context");
-
-            if (type == null)
-                throw new ArgumentNullException("type");
-
-            return type.IsEnum && !type.IsDefined(typeof(FlagsAttribute), true) ? 
-                   new EnumImporter(type) : null;
-        }
-    }
-    
     public sealed class EnumImporter : TypeImporterBase
     {
         public EnumImporter(Type type) :

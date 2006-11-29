@@ -33,9 +33,4 @@ namespace Jayrock.Json.Conversion.Export
         Type InputType { get; }
         void Export(ExportContext context, object value, JsonWriter writer);
     }
-
-    public interface ITypeExporterBinder
-    {
-        ITypeExporter Bind(ExportContext context, Type type);
-    }
 }

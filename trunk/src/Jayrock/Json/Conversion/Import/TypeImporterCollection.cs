@@ -23,47 +23,40 @@
 namespace Jayrock.Json.Conversion.Import
 {
     #region Imports
-    
+
     using System;
-    using System.Collections;
+    using Jayrock.Collections;
 
     #endregion
     
-    // FIXME: Turn TypeImporterCollection into a real keyed-collection.
-
     [ Serializable ]
-    public sealed class TypeImporterCollection : ITypeImporterBinder 
+    public sealed class TypeImporterCollection : KeyedCollection
     {
-        private Hashtable _importerByType;
+        public ITypeImporter this[Type type]
+        {
+            get { return (ITypeImporter) GetByKey(type); }
+        }
+       
+        public void Put(ITypeImporter exporter)
+        {
+            if (exporter == null)
+                throw new ArgumentNullException("exporter");
+            
+            Remove(exporter.OutputType);
+            Add(exporter);
+        }
+
+        public void Add(ITypeImporter exporter)
+        {
+            if (exporter == null)
+                throw new ArgumentNullException("exporter");
+            
+            base.Add(exporter);
+        }
         
-        public void Add(ITypeImporter importer)
+        protected override object KeyFromValue(object value)
         {
-            if (importer == null)
-                throw new ArgumentNullException("importer");
-            
-            ImporterByType.Add(importer.OutputType, importer);
-        }
-
-        public ITypeImporter Bind(ImportContext context, Type type)
-        {
-            if (context == null)
-                throw new ArgumentNullException("context");
-
-            if (type == null)
-                throw new ArgumentNullException("type");
-            
-            return (ITypeImporter) ImporterByType[type];
-        }
-
-        private Hashtable ImporterByType
-        {
-            get
-            {
-                if (_importerByType == null)
-                    _importerByType = new Hashtable();
-                
-                return _importerByType;
-            }
+            return ((ITypeImporter) value).OutputType;
         }
     }
 }

@@ -1,4 +1,5 @@
 #region License, Terms and Conditions
+
 //
 // Jayrock - A JSON-RPC implementation for the Microsoft .NET Framework
 // Written by Atif Aziz (atif.aziz@skybow.com)
@@ -18,6 +19,7 @@
 // along with this library; if not, write to the Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
 //
+
 #endregion
 
 namespace Jayrock.Json.Conversion.Export
@@ -25,7 +27,9 @@ namespace Jayrock.Json.Conversion.Export
     #region Imports
 
     using System;
-    using System.Threading;
+    using System.Collections;
+    using System.Configuration;
+    using System.Diagnostics;
     using Jayrock.Json.Conversion.Export.Exporters;
 
     #endregion
@@ -33,87 +37,139 @@ namespace Jayrock.Json.Conversion.Export
     [ Serializable ]
     public class ExportContext
     {
-        private ITypeExporterBinder _exporterBinder;
-
-        private static object _defaultExporterBinder;
-        
-        public ITypeExporterBinder ExporterBinder
-        {
-            get
-            {
-                if (_exporterBinder == null)
-                    _exporterBinder = DefaultExporterBinder;
-                
-                return _exporterBinder;
-            }
-            
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException("value");
-                
-                _exporterBinder = value;
-            }
-        }
+        TypeExporterCollection _exporters;
 
         public virtual void Export(object value, JsonWriter writer)
         {
             if (writer == null)
                 throw new ArgumentNullException("writer");
-            
+
             if (JsonNull.LogicallyEquals(value))
             {
                 writer.WriteNull();
             }
             else
             {
-                Type valueType = value.GetType();
-                ITypeExporter exporter = ExporterBinder.Bind(this, valueType);
+                ITypeExporter exporter = FindExporter(value.GetType());
 
                 if (exporter != null)
                     exporter.Export(this, value, writer);
-                else 
+                else
                     writer.WriteString(value.ToString());
             }
         }
 
-        private static ITypeExporterBinder DefaultExporterBinder
+        public virtual void Register(ITypeExporter exporter)
+        {
+            if (exporter == null)
+                throw new ArgumentNullException("exporter");
+
+            Exporters.Put(exporter);
+        }
+
+        public virtual ITypeExporter FindExporter(Type type)
+        {
+            if (type == null)
+                throw new ArgumentNullException("type");
+
+            ITypeExporter exporter = Exporters[type];
+
+            if (exporter != null)
+                return exporter;
+            
+            exporter = FindCompatibleExporter(type);
+
+            if (exporter != null)
+            {
+                Register(exporter);
+                return exporter;
+            }
+            
+            return null;
+        }
+
+        private ITypeExporter FindCompatibleExporter(Type type)
+        {
+            Debug.Assert(type != null);
+
+            if (typeof(IJsonExportable).IsAssignableFrom(type))
+                return new ExportAwareExporter(type);
+
+            if (type.IsClass)
+            {
+                ITypeExporter exporter = FindBaseExporter(type);
+                if (exporter != null)
+                    return exporter;
+            }
+
+            if (typeof(IDictionary).IsAssignableFrom(type))
+                return new DictionaryExporter(type);
+
+            if (typeof(IEnumerable).IsAssignableFrom(type))
+                return new EnumerableExporter(type);
+            
+            if ((type.IsPublic || type.IsNestedPublic) &&
+                !type.IsPrimitive && type.GetConstructor(Type.EmptyTypes) != null)
+            {
+                return new ComponentExporter(type);
+            }
+
+            return null;
+        }
+
+        private ITypeExporter FindBaseExporter(Type type)
+        {
+            Debug.Assert(type != null);
+
+            if (type == typeof(object))
+                return null;
+
+            Type baseType = type.BaseType;
+            ITypeExporter exporter = Exporters[baseType];
+
+            if (exporter == null)
+                return FindBaseExporter(baseType);
+
+            return (ITypeExporter) Activator.CreateInstance(exporter.GetType(), new object[] {type});
+        }
+ 
+        private TypeExporterCollection Exporters
         {
             get
             {
-                if (_defaultExporterBinder == null)
+                if (_exporters == null)
                 {
-                    TypeExporterCollection bindings = new TypeExporterCollection();
-                    
-                    bindings.Add(new ByteExporter());
-                    bindings.Add(new Int16Exporter());
-                    bindings.Add(new Int32Exporter());
-                    bindings.Add(new Int64Exporter());
-                    bindings.Add(new SingleExporter());
-                    bindings.Add(new DoubleExporter());
-                    bindings.Add(new DecimalExporter());
-                    bindings.Add(new StringExporter());
-                    bindings.Add(new BooleanExporter());
-                    bindings.Add(new DateTimeExporter());
-                    bindings.Add(new DataRowViewExporter());
-                    
-                    TypeExporterBinderCollection binders = new TypeExporterBinderCollection();
-                    
-                    binders.Add(bindings);
-                    binders.Add(new ExportAwareExporterFamily());
-                    binders.Add(new NameValueCollectionExporterFamily());
-                    binders.Add(new DataSetExporterFamily());
-                    binders.Add(new DataTableExporterFamily());
-                    binders.Add(new DataRowExporterFamily());
-                    binders.Add(new ControlExporterFamily());
-                    binders.Add(new DictionaryExporterFamily());
-                    binders.Add(new EnumerableExporterFamily());
-                    binders.Add(new ComponentExporterFamily());
+                    TypeExporterCollection exporters = new TypeExporterCollection();
 
-                    Interlocked.CompareExchange(ref _defaultExporterBinder, binders, null);
+                    exporters.Add(new ByteExporter());
+                    exporters.Add(new Int16Exporter());
+                    exporters.Add(new Int32Exporter());
+                    exporters.Add(new Int64Exporter());
+                    exporters.Add(new SingleExporter());
+                    exporters.Add(new DoubleExporter());
+                    exporters.Add(new DecimalExporter());
+                    exporters.Add(new StringExporter());
+                    exporters.Add(new BooleanExporter());
+                    exporters.Add(new DateTimeExporter());
+                    exporters.Add(new DataRowViewExporter());
+                    exporters.Add(new NameValueCollectionExporter());
+                    exporters.Add(new DataSetExporter());
+                    exporters.Add(new DataTableExporter());
+                    exporters.Add(new DataRowExporter());
+                    exporters.Add(new ControlExporter());
+
+                    IList typeList = (IList) ConfigurationSettings.GetConfig("jayrock/json.conversion.exporters");
+
+                    if (typeList != null && typeList.Count > 0)
+                    {
+                        foreach (Type type in typeList)
+                            exporters.Add((ITypeExporter) Activator.CreateInstance(type));
+                    }
+
+                    _exporters = exporters;
                 }
-                
-                return (ITypeExporterBinder) _defaultExporterBinder;
+
+                return _exporters;
             }
         }
     }

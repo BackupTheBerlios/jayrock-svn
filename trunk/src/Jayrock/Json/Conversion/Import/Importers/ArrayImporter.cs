@@ -32,21 +32,6 @@ namespace Jayrock.Json.Conversion.Import.Importers
 
     #endregion
     
-    public sealed class ArrayImporterFamily : ITypeImporterBinder
-    {
-        public ITypeImporter Bind(ImportContext context, Type type)
-        {
-            if (context == null)
-                throw new ArgumentNullException("context");
-
-            if (type == null)
-                throw new ArgumentNullException("type");
-            
-            return type.IsArray && type.GetArrayRank() == 1 ? 
-                new ArrayImporter(type) : null;
-        }
-    }
-
     public sealed class ArrayImporter : TypeImporterBase
     {
         public ArrayImporter() : this(null) {}

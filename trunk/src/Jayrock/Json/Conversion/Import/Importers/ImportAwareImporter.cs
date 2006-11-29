@@ -30,21 +30,6 @@ namespace Jayrock.Json.Conversion.Import.Importers
 
     #endregion
 
-    public sealed class ImportAwareImporterFamily : ITypeImporterBinder
-    {
-        public ITypeImporter Bind(ImportContext context, Type type)
-        {
-            if (context == null)
-                throw new ArgumentNullException("context");
-
-            if (type == null)
-                throw new ArgumentNullException("type");
-
-            return typeof(IJsonImportable).IsAssignableFrom(type) ? 
-                new ImportAwareImporter(type) : null;
-        }
-    }
-
     public class ImportAwareImporter : TypeImporterBase
     {
         public ImportAwareImporter(Type type) : 

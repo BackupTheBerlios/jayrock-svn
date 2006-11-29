@@ -30,22 +30,6 @@ namespace Jayrock.Json.Conversion.Import.Importers
 
     #endregion
     
-    public sealed class ComponentImporterFamily : ITypeImporterBinder
-    {
-        public ITypeImporter Bind(ImportContext context, Type type)
-        {
-            if (context == null)
-                throw new ArgumentNullException("context");
-
-            if (type == null)
-                throw new ArgumentNullException("type");
-
-            return (type.IsPublic || type.IsNestedPublic) && 
-                   !type.IsPrimitive && type.GetConstructor(Type.EmptyTypes) != null ? 
-                   new ComponentImporter(type) : null;
-        }
-    }
-
     public sealed class ComponentImporter : TypeImporterBase
     {
         private readonly PropertyDescriptorCollection _properties; // TODO: Review thread-safety of PropertyDescriptorCollection

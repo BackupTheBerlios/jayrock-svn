@@ -25,45 +25,38 @@ namespace Jayrock.Json.Conversion.Export
     #region Imports
 
     using System;
-    using System.Collections;
+    using Jayrock.Collections;
 
     #endregion
 
-    // FIXME: Turn TypeImporterCollection into a real keyed-collection.
-
     [ Serializable ]
-    public sealed class TypeExporterCollection : ITypeExporterBinder 
+    public sealed class TypeExporterCollection : KeyedCollection
     {
-        private Hashtable _exporterByType;
-        
+        public ITypeExporter this[Type type]
+        {
+            get { return (ITypeExporter) GetByKey(type); }
+        }
+       
+        public void Put(ITypeExporter exporter)
+        {
+            if (exporter == null)
+                throw new ArgumentNullException("exporter");
+            
+            Remove(exporter.InputType);
+            Add(exporter);
+        }
+
         public void Add(ITypeExporter exporter)
         {
             if (exporter == null)
                 throw new ArgumentNullException("exporter");
             
-            ExporterByType.Add(exporter.InputType, exporter);
+            base.Add(exporter);
         }
-
-        public ITypeExporter Bind(ExportContext context, Type type)
+        
+        protected override object KeyFromValue(object value)
         {
-            if (context == null)
-                throw new ArgumentNullException("context");
-
-            if (type == null)
-                throw new ArgumentNullException("type");
-            
-            return (ITypeExporter) ExporterByType[type];
-        }
-
-        private Hashtable ExporterByType
-        {
-            get
-            {
-                if (_exporterByType == null)
-                    _exporterByType = new Hashtable();
-                
-                return _exporterByType;
-            }
+            return ((ITypeExporter) value).InputType;
         }
     }
 }

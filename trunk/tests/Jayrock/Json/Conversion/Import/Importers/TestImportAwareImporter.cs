@@ -34,28 +34,6 @@ namespace Jayrock.Json.Conversion.Import.Importers
     [ TestFixture ]
     public class TestImportAwareImporter
     {
-        private ImportAwareImporterFamily _importerFamily;
-        
-        [ SetUp ]
-        public void Init()
-        {
-            _importerFamily = new ImportAwareImporterFamily();
-        }
-
-        [ Test ]
-        public void FindNonImportableType()
-        {
-            Assert.IsNull(_importerFamily.Bind(new ImportContext(), typeof(object)));
-        }
-
-        [ Test ]
-        public void FindImportableType()
-        {
-            ITypeImporter importer = _importerFamily.Bind(new ImportContext(), typeof(Thing));
-            Assert.IsInstanceOfType(typeof(ImportAwareImporter), importer);
-            Assert.IsNotNull(importer);
-        }
-        
         [ Test ]
         public void ImportTellsObjectToImportSelf()
         {
@@ -88,18 +66,6 @@ namespace Jayrock.Json.Conversion.Import.Importers
             importer.Import(null, null);
         }
         
-        [ Test ]
-        public void Registration()
-        {
-            Type type = typeof(Thing);
-            TypeImporterCollection binders = new TypeImporterCollection();
-            ImportContext context = new ImportContext();
-            Assert.IsNull(binders.Bind(context, type));
-            ImportAwareImporter importer = new ImportAwareImporter(type);
-            binders.Add(importer);
-            Assert.AreSame(importer, binders.Bind(context, type));
-        }
-
         private sealed class Thing : IJsonImportable
         {
             public bool ImportCalled;

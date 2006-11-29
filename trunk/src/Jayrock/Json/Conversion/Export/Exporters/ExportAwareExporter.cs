@@ -29,21 +29,6 @@ namespace Jayrock.Json.Conversion.Export.Exporters
 
     #endregion
 
-    public sealed class ExportAwareExporterFamily : ITypeExporterBinder
-    {
-        public ITypeExporter Bind(ExportContext context, Type type)
-        {
-            if (context == null)
-                throw new ArgumentNullException("context");
-            
-            if (type == null)
-                throw new ArgumentNullException("type");
-
-            return typeof(IJsonExportable).IsAssignableFrom(type) ? 
-                new ExportAwareExporter(type) : null;
-        }
-    }
-
     public sealed class ExportAwareExporter : JsonExporterBase
     {
         public ExportAwareExporter(Type type) : 

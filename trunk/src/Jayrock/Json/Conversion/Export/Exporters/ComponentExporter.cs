@@ -30,27 +30,6 @@ namespace Jayrock.Json.Conversion.Export.Exporters
 
     #endregion
     
-    /// <summary>
-    /// Dispenses exporters for top-level and nested types that are 
-    /// public and which have default constructors.
-    /// </summary>
-    
-    public sealed class ComponentExporterFamily : ITypeExporterBinder
-    {
-        public ITypeExporter Bind(ExportContext context, Type type)
-        {
-            if (context == null)
-                throw new ArgumentNullException("context");
-            
-            if (type == null)
-                throw new ArgumentNullException("type");
-
-            return (type.IsPublic || type.IsNestedPublic) && 
-                   !type.IsPrimitive && type.GetConstructor(Type.EmptyTypes) != null ? 
-                   new ComponentExporter(type) : null;
-        }
-    }
-
     public sealed class ComponentExporter : JsonExporterBase
     {
         private readonly PropertyDescriptorCollection _properties; // TODO: Review thread-safety of PropertyDescriptorCollection

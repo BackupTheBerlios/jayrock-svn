@@ -32,20 +32,6 @@ namespace Jayrock.Json.Conversion.Export.Exporters
     
     #endregion
 
-    public sealed class NameValueCollectionExporterFamily : ITypeExporterBinder
-    {
-        public ITypeExporter Bind(ExportContext context, Type type)
-        {
-            if (context == null)
-                throw new ArgumentNullException("context");
-
-            if (type == null)
-                throw new ArgumentNullException("type");
-
-            return typeof(NameValueCollection).IsAssignableFrom(type) ? new NameValueCollectionExporter(type) : null;
-        }
-    }
-
     public sealed class NameValueCollectionExporter : JsonExporterBase
     {
         public NameValueCollectionExporter() : 

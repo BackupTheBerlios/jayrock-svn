@@ -168,7 +168,22 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Collections\KeyedCollection.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Configuration\DictionarySectionHandler.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Configuration\ListSectionHandler.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Configuration\TypeListSectionHandler.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -308,17 +323,17 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Json\Conversion\Export\ExporterListSectionHandler.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\Conversion\Export\IJsonExportable.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
                     RelPath = "Json\Conversion\Export\ITypeExporter.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Json\Conversion\Export\TypeExporterBinderCollection.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -418,12 +433,12 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\Import\ITypeImporter.cs"
+                    RelPath = "Json\Conversion\Import\ImporterListSectionHandler.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\Import\TypeImporterBinderCollection.cs"
+                    RelPath = "Json\Conversion\Import\ITypeImporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

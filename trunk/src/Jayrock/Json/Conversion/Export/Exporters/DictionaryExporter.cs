@@ -30,21 +30,6 @@ namespace Jayrock.Json.Conversion.Export.Exporters
 
     #endregion
     
-    public sealed class DictionaryExporterFamily : ITypeExporterBinder
-    {
-        public ITypeExporter Bind(ExportContext context, Type type)
-        {
-            if (context == null)
-                throw new ArgumentNullException("context");
-            
-            if (type == null)
-                throw new ArgumentNullException("type");
-
-            return typeof(IDictionary).IsAssignableFrom(type) ? 
-                   new DictionaryExporter(type) : null;
-        }
-    }
-
     public sealed class DictionaryExporter : JsonExporterBase
     {
         public DictionaryExporter(Type inputType) : 

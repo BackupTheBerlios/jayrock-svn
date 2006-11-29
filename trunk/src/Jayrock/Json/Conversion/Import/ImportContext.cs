@@ -26,6 +26,8 @@ namespace Jayrock.Json.Conversion.Import
 
     using System;
     using System.Collections;
+    using System.Configuration;
+    using System.Diagnostics;
     using System.Threading;
     using Jayrock.Json.Conversion.Import.Importers;
 
@@ -34,28 +36,7 @@ namespace Jayrock.Json.Conversion.Import
     [ Serializable ]
     public class ImportContext
     {
-        private ITypeImporterBinder _importerBinder;
-
-        private static object _defaultImporterBinder;
-        
-        public ITypeImporterBinder ImporterBinder
-        {
-            get
-            {
-                if (_importerBinder == null)
-                    _importerBinder = DefaultImporterBinder;
-                
-                return _importerBinder;
-            }
-            
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException("value");
-                
-                _importerBinder = value;
-            }
-        }
+        private TypeImporterCollection _importers;
 
         public virtual object ImportAny(JsonReader reader)
         {
@@ -69,8 +50,8 @@ namespace Jayrock.Json.Conversion.Import
             
             if (reader == null)
                 throw new ArgumentNullException("reader");
-            
-            ITypeImporter importer = ImporterBinder.Bind(this, type);
+
+            ITypeImporter importer = FindImporter(type);
 
             if (importer == null)
                 throw new JsonException(string.Format("Don't know how to import {0} from JSON.", type.FullName));
@@ -79,40 +60,91 @@ namespace Jayrock.Json.Conversion.Import
             return importer.Import(this, reader);
         }
 
-        private static ITypeImporterBinder DefaultImporterBinder
+        public virtual void Register(ITypeImporter importer)
+        {
+            if (importer == null)
+                throw new ArgumentNullException("importer");
+            
+            Importers.Put(importer);
+        }
+
+        public virtual ITypeImporter FindImporter(Type type) 
+        {
+            if (type == null)
+                throw new ArgumentNullException("type");
+
+            ITypeImporter importer = Importers[type];
+            
+            if (importer != null)
+                return importer;
+
+            importer = FindCompatibleImporter(type);
+
+            if (importer != null)
+            {
+                Register(importer);
+                return importer;
+            }
+
+            return null;
+        }
+
+        private static ITypeImporter FindCompatibleImporter(Type type) 
+        {
+            Debug.Assert(type != null);
+
+            if (typeof(IJsonImportable).IsAssignableFrom(type))
+                return new ImportAwareImporter(type);
+            
+            if (type.IsArray && type.GetArrayRank() == 1)
+                return new ArrayImporter(type);
+
+            if (type.IsEnum)
+                return new EnumImporter(type);
+            
+            if ((type.IsPublic || type.IsNestedPublic) && 
+                !type.IsPrimitive && type.GetConstructor(Type.EmptyTypes) != null)
+            {
+                return new ComponentImporter(type);
+            }
+
+            return null;
+        }
+ 
+        private TypeImporterCollection Importers
         {
             get
             {
-                if (_defaultImporterBinder == null)
+                if (_importers == null)
                 {
-                    TypeImporterCollection bindings = new TypeImporterCollection();
+                    TypeImporterCollection importers = new TypeImporterCollection();
 
-                    bindings.Add(new ByteImporter());
-                    bindings.Add(new Int16Importer());
-                    bindings.Add(new Int32Importer());
-                    bindings.Add(new Int64Importer());
-                    bindings.Add(new SingleImporter());
-                    bindings.Add(new DoubleImporter());
-                    bindings.Add(new DecimalImporter());
-                    bindings.Add(new StringImporter());
-                    bindings.Add(new BooleanImporter());
-                    bindings.Add(new DateTimeImporter());
-                    bindings.Add(new AnyImporter());
-                    bindings.Add(new DictionaryImporter());
-                    bindings.Add(new ListImporter());
+                    importers.Add(new ByteImporter());
+                    importers.Add(new Int16Importer());
+                    importers.Add(new Int32Importer());
+                    importers.Add(new Int64Importer());
+                    importers.Add(new SingleImporter());
+                    importers.Add(new DoubleImporter());
+                    importers.Add(new DecimalImporter());
+                    importers.Add(new StringImporter());
+                    importers.Add(new BooleanImporter());
+                    importers.Add(new DateTimeImporter());
+                    importers.Add(new AnyImporter());
+                    importers.Add(new DictionaryImporter());
+                    importers.Add(new ListImporter());
+                    
+                    IList typeList = (IList) ConfigurationSettings.GetConfig("jayrock/json.conversion.importers");
 
-                    TypeImporterBinderCollection binders = new TypeImporterBinderCollection();
+                    if (typeList != null && typeList.Count > 0)
+                    {
+                        foreach (Type type in typeList)
+                            importers.Add((ITypeImporter) Activator.CreateInstance(type));
+                    }
 
-                    binders.Add(bindings);
-                    binders.Add(new ImportAwareImporterFamily());
-                    binders.Add(new ArrayImporterFamily());
-                    binders.Add(new EnumImporterFamily());
-                    binders.Add(new ComponentImporterFamily());
-
-                    Interlocked.CompareExchange(ref _defaultImporterBinder, binders, null);
+                    _importers = importers;
                 }
                 
-                return (ITypeImporterBinder) _defaultImporterBinder;
+                return _importers;
             }
         }
     }

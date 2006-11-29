@@ -35,9 +35,4 @@ namespace Jayrock.Json.Conversion.Import
         Type OutputType { get; }
         object Import(ImportContext context, JsonReader reader);
     }
-
-    public interface ITypeImporterBinder
-    {
-        ITypeImporter Bind(ImportContext context, Type type);
-    }
 }

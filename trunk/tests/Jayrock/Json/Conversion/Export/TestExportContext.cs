@@ -39,6 +39,7 @@ namespace Jayrock.Json.Conversion.Export
             AssertInStock(typeof(ExportAwareExporter), typeof(ExportableThing));
             AssertInStock(typeof(ControlExporter), typeof(Control));
             AssertInStock(typeof(ControlExporter), typeof(HtmlControl));
+            AssertInStock(typeof(ControlExporter), typeof(HtmlImage));
             AssertInStock(typeof(DataSetExporter), typeof(DataSet));
             AssertInStock(typeof(DataSetExporter), typeof(MyDataSet));
             AssertInStock(typeof(DataTableExporter), typeof(DataTable));
@@ -47,12 +48,13 @@ namespace Jayrock.Json.Conversion.Export
             AssertInStock(typeof(DataRowExporter), typeof(MyDataRow));
             AssertInStock(typeof(DataRowViewExporter), typeof(DataRowView));
         }
-        
+
         private static void AssertInStock(Type expected, Type type)
         {
             ExportContext context = new ExportContext();
-            ITypeExporter importer = context.ExporterBinder.Bind(context, type);
-            Assert.IsInstanceOfType(expected, importer, type.FullName);
+            ITypeExporter exporter = context.FindExporter(type);
+            Assert.IsNotNull(exporter, "No exporter found for {0}", type.FullName);
+            Assert.IsInstanceOfType(expected, exporter, type.FullName);
         }
         
         private sealed class ExportableThing : IJsonExportable

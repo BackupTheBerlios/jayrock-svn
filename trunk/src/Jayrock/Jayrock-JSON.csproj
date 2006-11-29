@@ -143,6 +143,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Collections\KeyedCollection.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\DelimitedListParser.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -288,11 +293,6 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\Export\TypeExporterBinderCollection.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "Json\Conversion\Export\TypeExporterCollection.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -389,11 +389,6 @@
                 />
                 <File
                     RelPath = "Json\Conversion\Import\ITypeImporter.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Json\Conversion\Import\TypeImporterBinderCollection.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

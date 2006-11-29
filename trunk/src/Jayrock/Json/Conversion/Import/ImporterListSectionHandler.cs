@@ -20,35 +20,18 @@
 //
 #endregion
 
-namespace Jayrock.Json.Conversion.Export.Exporters
+namespace Jayrock.Json.Conversion.Import
 {
     #region Imports
 
     using System;
-    using System.Collections;
-    using System.Diagnostics;
+    using Jayrock.Configuration;
 
     #endregion
-    
-    public sealed class EnumerableExporter : JsonExporterBase
+
+    internal sealed class ImporterListSectionHandler : TypeListSectionHandler
     {
-        public EnumerableExporter(Type inputType) : 
-            base(inputType) {}
-
-        protected override void ExportValue(ExportContext context, object value, JsonWriter writer)
-        {
-            Debug.Assert(context != null);
-            Debug.Assert(value != null);
-            Debug.Assert(writer != null);
-
-            IEnumerable items = (IEnumerable) value;
-            
-            writer.WriteStartArray();
-
-            foreach (object item in items)
-                context.Export(item, writer);
-
-            writer.WriteEndArray();
-        }
+        public ImporterListSectionHandler() : 
+            base("importer", typeof(ITypeImporter)) {}
     }
 }
