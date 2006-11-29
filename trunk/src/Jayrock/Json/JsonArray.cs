@@ -242,7 +242,7 @@ namespace Jayrock.Json
             reader.ReadToken(JsonTokenClass.Array);
             
             while (reader.TokenClass != JsonTokenClass.EndArray)
-                list.Add(context.ImportAny(reader));
+                list.Add(context.Import(reader));
             
             reader.Read();
             

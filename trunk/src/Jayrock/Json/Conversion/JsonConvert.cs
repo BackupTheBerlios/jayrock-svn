@@ -69,17 +69,17 @@ namespace Jayrock.Json.Conversion
             return sb.ToString();
         }
 
-        public static object ImportAny(string text)
+        public static object Import(string text)
         {
-            return ImportAny(new StringReader(text));
+            return Import(new StringReader(text));
         }
 
-        public static object ImportAny(TextReader reader)
+        public static object Import(TextReader reader)
         {
-            return ImportAny(new JsonTextReader(reader));
+            return Import(new JsonTextReader(reader));
         }
 
-        public static object ImportAny(JsonReader reader)
+        public static object Import(JsonReader reader)
         {
             return Import(AnyType.Value, reader);
         }

@@ -38,7 +38,7 @@ namespace Jayrock.Json.Conversion
     {
         private TypeImporterCollection _importers;
 
-        public virtual object ImportAny(JsonReader reader)
+        public virtual object Import(JsonReader reader)
         {
             return Import(AnyType.Value, reader);
         }

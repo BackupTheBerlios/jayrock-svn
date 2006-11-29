@@ -183,7 +183,7 @@ namespace Jayrock.JsonRpc
 
         private object Parse(string source)
         {
-            return JsonConvert.ImportAny(source);
+            return JsonConvert.Import(source);
         }
 
         private sealed class TestService : JsonRpcService

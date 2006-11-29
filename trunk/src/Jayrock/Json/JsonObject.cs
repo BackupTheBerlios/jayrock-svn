@@ -281,7 +281,7 @@ namespace Jayrock.Json
             reader.ReadToken(JsonTokenClass.Object);
             
             while (reader.TokenClass != JsonTokenClass.EndObject)
-                Put(reader.ReadMember(), context.ImportAny(reader));
+                Put(reader.ReadMember(), context.Import(reader));
             
             reader.Read();
         }

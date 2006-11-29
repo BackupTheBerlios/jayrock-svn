@@ -277,7 +277,7 @@ namespace Jayrock.JsonRpc
                 {
                     case "id" :
                     {
-                        request["id"] = importContext.ImportAny(reader);
+                        request["id"] = importContext.Import(reader);
                         break;
                     }
                     case "method" :
@@ -411,7 +411,7 @@ namespace Jayrock.JsonRpc
             }
             else
             {
-                return importContext.ImportAny(reader);
+                return importContext.Import(reader);
             }
         }
     }
