@@ -29,7 +29,7 @@ namespace Jayrock.Json.Conversion.Exporters
 
     #endregion
 
-    public sealed class ExportAwareExporter : JsonExporterBase
+    public sealed class ExportAwareExporter : TypeExporterBase
     {
         public ExportAwareExporter(Type type) : 
             base(type) {}

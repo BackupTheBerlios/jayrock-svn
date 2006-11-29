@@ -30,7 +30,7 @@ namespace Jayrock.Json.Conversion.Exporters
 
     #endregion
 
-    public sealed class BooleanExporter : JsonExporterBase
+    public sealed class BooleanExporter : TypeExporterBase
     {
         public BooleanExporter() : base(typeof(bool)) { }
 

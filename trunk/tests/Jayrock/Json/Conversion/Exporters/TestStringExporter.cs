@@ -35,7 +35,7 @@ namespace Jayrock.Json.Conversion.Exporters
         [ Test ]
         public void Superclass()
         {
-            Assert.IsInstanceOfType(typeof(JsonExporterBase), new StringExporter());
+            Assert.IsInstanceOfType(typeof(TypeExporterBase), new StringExporter());
         }
 
         [ Test ]

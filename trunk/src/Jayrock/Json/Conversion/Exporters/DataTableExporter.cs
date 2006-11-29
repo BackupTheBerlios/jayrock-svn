@@ -30,7 +30,7 @@ namespace Jayrock.Json.Conversion.Exporters
 
     #endregion
     
-    public sealed class DataTableExporter : JsonExporterBase
+    public sealed class DataTableExporter : TypeExporterBase
     {
         public DataTableExporter() :
             this(typeof(DataTable)) {}

@@ -28,11 +28,11 @@ namespace Jayrock.Json.Conversion.Exporters
 
     #endregion
 
-    public abstract class JsonExporterBase : ITypeExporter
+    public abstract class TypeExporterBase : ITypeExporter
     {
         private readonly Type _inputType;
 
-        protected JsonExporterBase(Type inputType)
+        protected TypeExporterBase(Type inputType)
         {
             if (inputType == null)
                 throw new ArgumentNullException("inputType");

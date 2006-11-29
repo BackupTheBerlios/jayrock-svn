@@ -151,7 +151,7 @@ namespace Jayrock.Json.Conversion.Exporters
         [ Test ]
         public void Superclass()
         {
-            Assert.IsInstanceOfType(typeof(JsonExporterBase), NumberExporter.Get(typeof(byte)));    
+            Assert.IsInstanceOfType(typeof(TypeExporterBase), NumberExporter.Get(typeof(byte)));    
         }
 
         [ Test ]

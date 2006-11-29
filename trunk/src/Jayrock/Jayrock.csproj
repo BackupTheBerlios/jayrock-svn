@@ -418,11 +418,6 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\Exporters\JsonExporterBase.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "Json\Conversion\Exporters\NameValueCollectionExporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -434,6 +429,11 @@
                 />
                 <File
                     RelPath = "Json\Conversion\Exporters\StringExporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Conversion\Exporters\TypeExporterBase.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

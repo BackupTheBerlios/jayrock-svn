@@ -32,7 +32,7 @@ namespace Jayrock.Json.Conversion.Exporters
     
     #endregion
 
-    public sealed class NameValueCollectionExporter : JsonExporterBase
+    public sealed class NameValueCollectionExporter : TypeExporterBase
     {
         public NameValueCollectionExporter() : 
             this(typeof(NameValueCollection)) {}

@@ -30,7 +30,7 @@ namespace Jayrock.Json.Conversion.Exporters
     #endregion
 
     [ TestFixture ]
-    public class TestJsonExporterBase
+    public class TestTypeExporterBase
     {
         private readonly ThingExporter _exporter = new ThingExporter();
         
@@ -63,7 +63,7 @@ namespace Jayrock.Json.Conversion.Exporters
         {
         }
 
-        private class ThingExporter : JsonExporterBase
+        private class ThingExporter : TypeExporterBase
         {
             public ThingExporter() : base(typeof(Thing)) {}
             
