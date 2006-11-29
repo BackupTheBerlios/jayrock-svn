@@ -148,6 +148,21 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Configuration\DictionarySectionHandler.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Configuration\ListSectionHandler.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Configuration\TypeListSectionHandler.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\DelimitedListParser.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -278,187 +293,197 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\Export\ExportContext.cs"
+                    RelPath = "Json\Conversion\ExportContext.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\Export\IJsonExportable.cs"
+                    RelPath = "Json\Conversion\ExporterListSectionHandler.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\Export\ITypeExporter.cs"
+                    RelPath = "Json\Conversion\IJsonExportable.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\Export\TypeExporterCollection.cs"
+                    RelPath = "Json\Conversion\IJsonImportable.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\Export\Exporters\BooleanExporter.cs"
+                    RelPath = "Json\Conversion\ImportContext.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\Export\Exporters\ComponentExporter.cs"
+                    RelPath = "Json\Conversion\ImporterListSectionHandler.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\Export\Exporters\ControlExporter.cs"
+                    RelPath = "Json\Conversion\ITypeExporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\Export\Exporters\DataRowExporter.cs"
+                    RelPath = "Json\Conversion\ITypeImporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\Export\Exporters\DataRowViewExporter.cs"
+                    RelPath = "Json\Conversion\TypeExporterCollection.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\Export\Exporters\DataSetExporter.cs"
+                    RelPath = "Json\Conversion\TypeImporterCollection.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\Export\Exporters\DataTableExporter.cs"
+                    RelPath = "Json\Conversion\Exporters\BooleanExporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\Export\Exporters\DataViewExporter.cs"
+                    RelPath = "Json\Conversion\Exporters\ComponentExporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\Export\Exporters\DateTimeExporter.cs"
+                    RelPath = "Json\Conversion\Exporters\ControlExporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\Export\Exporters\DictionaryExporter.cs"
+                    RelPath = "Json\Conversion\Exporters\DataRowExporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\Export\Exporters\EnumerableExporter.cs"
+                    RelPath = "Json\Conversion\Exporters\DataRowViewExporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\Export\Exporters\ExportAwareExporter.cs"
+                    RelPath = "Json\Conversion\Exporters\DataSetExporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\Export\Exporters\JsonExporterBase.cs"
+                    RelPath = "Json\Conversion\Exporters\DataTableExporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\Export\Exporters\NameValueCollectionExporter.cs"
+                    RelPath = "Json\Conversion\Exporters\DataViewExporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\Export\Exporters\NumberExporter.cs"
+                    RelPath = "Json\Conversion\Exporters\DateTimeExporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\Export\Exporters\StringExporter.cs"
+                    RelPath = "Json\Conversion\Exporters\DictionaryExporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\Import\IJsonImportable.cs"
+                    RelPath = "Json\Conversion\Exporters\EnumerableExporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\Import\ImportContext.cs"
+                    RelPath = "Json\Conversion\Exporters\ExportAwareExporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\Import\ITypeImporter.cs"
+                    RelPath = "Json\Conversion\Exporters\JsonExporterBase.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\Import\TypeImporterCollection.cs"
+                    RelPath = "Json\Conversion\Exporters\NameValueCollectionExporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\Import\Importers\AnyImporter.cs"
+                    RelPath = "Json\Conversion\Exporters\NumberExporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\Import\Importers\ArrayImporter.cs"
+                    RelPath = "Json\Conversion\Exporters\StringExporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\Import\Importers\BooleanImporter.cs"
+                    RelPath = "Json\Conversion\Importers\AnyImporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\Import\Importers\ComponentImporter.cs"
+                    RelPath = "Json\Conversion\Importers\ArrayImporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\Import\Importers\DateTimeImporter.cs"
+                    RelPath = "Json\Conversion\Importers\BooleanImporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\Import\Importers\DictionaryImporter.cs"
+                    RelPath = "Json\Conversion\Importers\ComponentImporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\Import\Importers\EnumImporter.cs"
+                    RelPath = "Json\Conversion\Importers\DateTimeImporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\Import\Importers\ImportAwareImporter.cs"
+                    RelPath = "Json\Conversion\Importers\DictionaryImporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\Import\Importers\ListImporter.cs"
+                    RelPath = "Json\Conversion\Importers\EnumImporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\Import\Importers\NameValueCollectionImporter.cs"
+                    RelPath = "Json\Conversion\Importers\ImportAwareImporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\Import\Importers\NumberImporter.cs"
+                    RelPath = "Json\Conversion\Importers\ListImporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\Import\Importers\StringImporter.cs"
+                    RelPath = "Json\Conversion\Importers\NameValueCollectionImporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\Import\Importers\TypeImporterBase.cs"
+                    RelPath = "Json\Conversion\Importers\NumberImporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Conversion\Importers\StringImporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Conversion\Importers\TypeImporterBase.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
