@@ -99,8 +99,8 @@ namespace Jayrock.JsonRpc
             
             JsonRecorder recorder = new JsonRecorder();
             // FIXME: Allow the context to be passed in.
-            (new ExportContext()).Export(result, recorder);
-            return (new ImportContext()).Import(resultType, recorder.CreatePlayer());
+            JsonConvert.Export(result, recorder);
+            return JsonConvert.Import(resultType, recorder.CreatePlayer());
         }
 
         private JsonRpcServices()

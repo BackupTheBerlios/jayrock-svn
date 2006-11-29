@@ -54,8 +54,7 @@ namespace Jayrock.Json
 
         private static string Json(string s)
         {
-            ImportContext context = new ImportContext();
-            return context.ImportAny(new JsonTextReader(new StringReader(s))).ToString();
+            return JsonConvert.ImportAny(s).ToString();
         }
 
         private static object ParseRowToArray(string s)

@@ -95,7 +95,7 @@ namespace Jayrock.Json.Conversion.Exporters
         private static JsonReader Export(IEnumerable values)
         {
             JsonRecorder writer = new JsonRecorder();
-            (new ExportContext()).Export(values, writer);
+            JsonConvert.Export(values, writer);
             return writer.CreatePlayer();
         }
     }

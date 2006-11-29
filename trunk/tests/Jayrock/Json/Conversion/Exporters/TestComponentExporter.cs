@@ -100,7 +100,7 @@ namespace Jayrock.Json.Conversion.Exporters
         {
             Point point = new Point(123, 456);
             JsonRecorder writer = new JsonRecorder();
-            (new ExportContext()).Export(point, writer);
+            JsonConvert.Export(point, writer);
             JsonReader reader = writer.CreatePlayer();
             reader.ReadToken(JsonTokenClass.Object);
             Assert.AreEqual("x", reader.ReadMember());
@@ -147,7 +147,7 @@ namespace Jayrock.Json.Conversion.Exporters
         private static string Format(object o)
         {
             JsonTextWriter writer = new JsonTextWriter();
-            (new ExportContext()).Export(o, writer);
+            JsonConvert.Export(o, writer);
             return writer.ToString();
         }
 

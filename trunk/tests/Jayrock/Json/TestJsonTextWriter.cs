@@ -130,9 +130,7 @@ namespace Jayrock.Json
         [ Test ]
         public void WriteNullValue()
         {
-            JsonTextWriter writer = new JsonTextWriter(new StringWriter());
-            (new ExportContext()).Export(JsonNull.Value, writer);
-            Assert.AreEqual("null", writer.ToString());
+            Assert.AreEqual("null", JsonConvert.ExportToString(JsonNull.Value));
         }
 
         [ Test ]
@@ -206,7 +204,7 @@ namespace Jayrock.Json
         private static string WriteValue(object value)
         {
             JsonTextWriter writer = new JsonTextWriter(new StringWriter());
-            (new ExportContext()).Export(value, writer);
+            JsonConvert.Export(value, writer);
             return writer.ToString();
         }
     }

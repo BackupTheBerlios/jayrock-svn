@@ -93,7 +93,7 @@ namespace Jayrock.Json.Conversion.Exporters
         private static string Export(object o)
         {
             JsonTextWriter writer = new JsonTextWriter();
-            (new ExportContext()).Export(o, writer);
+            JsonConvert.Export(o, writer);
             return writer.ToString();
         }
     }
