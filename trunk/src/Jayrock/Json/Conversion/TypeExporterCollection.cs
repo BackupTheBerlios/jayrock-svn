@@ -30,7 +30,7 @@ namespace Jayrock.Json.Conversion
     #endregion
 
     [ Serializable ]
-    public sealed class TypeExporterCollection : KeyedCollection
+    internal sealed class TypeExporterCollection : KeyedCollection
     {
         public ITypeExporter this[Type type]
         {
