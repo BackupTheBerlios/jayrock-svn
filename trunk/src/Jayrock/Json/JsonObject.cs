@@ -26,8 +26,7 @@ namespace Jayrock.Json
 
     using System;
     using System.Collections;
-    using Jayrock.Json.Conversion.Export;
-    using Jayrock.Json.Conversion.Import;
+    using Jayrock.Json.Conversion;
 
     #endregion
 

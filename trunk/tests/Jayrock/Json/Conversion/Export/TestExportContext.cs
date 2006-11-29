@@ -1,4 +1,4 @@
-namespace Jayrock.Json.Conversion.Export
+namespace Jayrock.Json.Conversion
 {
     #region Imports
 
@@ -8,7 +8,7 @@ namespace Jayrock.Json.Conversion.Export
     using System.Data;
     using System.Web.UI;
     using System.Web.UI.HtmlControls;
-    using Jayrock.Json.Conversion.Export.Exporters;
+    using Jayrock.Json.Conversion.Exporters;
     using NUnit.Framework;
 
     #endregion

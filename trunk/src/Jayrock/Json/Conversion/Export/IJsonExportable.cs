@@ -20,7 +20,7 @@
 //
 #endregion
 
-namespace Jayrock.Json.Conversion.Export
+namespace Jayrock.Json.Conversion
 {
     /// <summary>
     /// This interface allows objects to provide their own implementation for

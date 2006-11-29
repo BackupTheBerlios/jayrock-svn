@@ -29,7 +29,7 @@ namespace Jayrock.JsonRpc
     using System.IO;
     using System.Reflection;
     using Jayrock.Json;
-    using Jayrock.Json.Conversion.Import;
+    using Jayrock.Json.Conversion;
     using NUnit.Framework;
 
     #endregion

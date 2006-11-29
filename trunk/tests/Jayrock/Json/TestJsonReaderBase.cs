@@ -27,8 +27,8 @@ namespace Jayrock.Json
     using System;
     using System.Collections;
     using System.Globalization;
-    using Jayrock.Json.Conversion.Import.Importers;
-    using Jayrock.Json.Conversion.Import;
+    using Jayrock.Json.Conversion.Importers;
+    using Jayrock.Json.Conversion;
     using NUnit.Framework;
 
     #endregion

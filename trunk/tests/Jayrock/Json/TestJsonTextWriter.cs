@@ -28,8 +28,8 @@ namespace Jayrock.Json
     using System.Collections;
     using System.IO;
     using Jayrock.Configuration;
-    using Jayrock.Json.Conversion.Export;
-    using Jayrock.Json.Conversion.Export.Exporters;
+    using Jayrock.Json.Conversion;
+    using Jayrock.Json.Conversion.Exporters;
     using NUnit.Framework;
 
     #endregion

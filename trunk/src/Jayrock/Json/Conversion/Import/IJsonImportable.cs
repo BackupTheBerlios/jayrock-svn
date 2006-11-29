@@ -20,7 +20,7 @@
 //
 #endregion
 
-namespace Jayrock.Json.Conversion.Import
+namespace Jayrock.Json.Conversion
 {
     public interface IJsonImportable
     {

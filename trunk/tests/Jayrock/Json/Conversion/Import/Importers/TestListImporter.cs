@@ -20,7 +20,7 @@
 //
 #endregion
 
-namespace Jayrock.Json.Conversion.Import.Importers
+namespace Jayrock.Json.Conversion.Importers
 {
     #region Imports
 

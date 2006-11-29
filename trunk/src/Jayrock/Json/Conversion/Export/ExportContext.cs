@@ -22,7 +22,7 @@
 
 #endregion
 
-namespace Jayrock.Json.Conversion.Export
+namespace Jayrock.Json.Conversion
 {
     #region Imports
 
@@ -30,7 +30,7 @@ namespace Jayrock.Json.Conversion.Export
     using System.Collections;
     using System.Configuration;
     using System.Diagnostics;
-    using Jayrock.Json.Conversion.Export.Exporters;
+    using Jayrock.Json.Conversion.Exporters;
 
     #endregion
 

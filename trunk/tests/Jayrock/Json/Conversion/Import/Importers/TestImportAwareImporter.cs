@@ -20,13 +20,13 @@
 //
 #endregion
 
-namespace Jayrock.Json.Conversion.Import.Importers
+namespace Jayrock.Json.Conversion.Importers
 {
     #region Imports
 
     using System;
     using System.Collections;
-    using Jayrock.Json.Conversion.Import;
+    using Jayrock.Json.Conversion;
     using NUnit.Framework;
 
     #endregion
