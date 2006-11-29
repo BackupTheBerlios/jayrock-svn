@@ -30,7 +30,7 @@ namespace Jayrock.Json.Conversion.Importers
     #endregion
 
     [ TestFixture ]
-    public class TestAutoImporter
+    public class TestAnyImporter
     {
         [ Test ]
         public void ParseNumber()

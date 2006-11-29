@@ -219,12 +219,12 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\Importers\TestArrayImporter.cs"
+                    RelPath = "Json\Conversion\Importers\TestAnyImporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\Conversion\Importers\TestAutoImporter.cs"
+                    RelPath = "Json\Conversion\Importers\TestArrayImporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
