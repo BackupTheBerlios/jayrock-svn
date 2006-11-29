@@ -104,11 +104,6 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\TestDelimitedListParser.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "Json\TestJsonArray.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -160,11 +155,6 @@
                 />
                 <File
                     RelPath = "Json\TestJsonWriterBase.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Json\TestParserOutput.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

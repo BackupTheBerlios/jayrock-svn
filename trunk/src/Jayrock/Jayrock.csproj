@@ -188,17 +188,7 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\DelimitedListParser.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "Json\InvalidMemberException.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Json\IParserOutput.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -294,11 +284,6 @@
                 />
                 <File
                     RelPath = "Json\ParseException.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Json\ParserOutput.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

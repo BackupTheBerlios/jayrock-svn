@@ -33,17 +33,6 @@ namespace Jayrock.Json.Conversion.Importers
     public class TestAutoImporter
     {
         [ Test ]
-        public void EmptyMemberName()
-        {
-            ParserOutput output = new ParserOutput();
-            output.StartObject();
-            output.ObjectPut(string.Empty, string.Empty);
-            JsonObject o = (JsonObject) output.EndObject();
-            Assert.AreEqual(1, o.Count);
-            Assert.AreEqual(string.Empty, o[string.Empty]);
-        }
-
-        [ Test ]
         public void ParseNumber()
         {
             Assert.AreEqual(123, (int) (JsonNumber) Parse("123"));
