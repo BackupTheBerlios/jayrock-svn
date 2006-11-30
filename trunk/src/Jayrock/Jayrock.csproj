@@ -283,11 +283,6 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Json\ParseException.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "Json\TextParser.cs"
                     SubType = "Code"
                     BuildAction = "Compile"

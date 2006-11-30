@@ -167,7 +167,7 @@ namespace Jayrock.Json
                 ch = Next();
 
                 if ((ch == EOF) || (ch == '\n') || (ch == '\r')) 
-                    throw new ParseException("Unterminated string.");
+                    throw new JsonException("Unterminated string.");
 
                 if (ch == '\\')
                 {

@@ -97,7 +97,6 @@ namespace Jayrock.Json
 
             if (ch == '"' || ch == '\'')
             {
-                // TODO: TextParser.NextString throw ParseException when we should throw JsonException!
                 return Yield(JsonToken.String(_parser.NextString(ch)));
             }
 

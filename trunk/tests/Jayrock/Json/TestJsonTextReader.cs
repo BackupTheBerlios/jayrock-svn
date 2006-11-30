@@ -309,7 +309,7 @@ namespace Jayrock.Json
             Read(@"/* This is an unclosed comment");
         }
 
-        [ Test, ExpectedException(typeof(ParseException)) ]
+        [ Test, ExpectedException(typeof(JsonException)) ]
         public void UnterminatedString()
         {
             Read("\"Hello World'");
