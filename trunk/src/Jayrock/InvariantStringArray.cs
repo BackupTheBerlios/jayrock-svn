@@ -60,7 +60,6 @@ namespace Jayrock
             get
             {
 #if NET_1_0
-                // FIXME: Use the invariant comparer here for 1.0 compilation.
                 return StringComparer.DefaultInvariant;
 #else
                 return Comparer.DefaultInvariant;
