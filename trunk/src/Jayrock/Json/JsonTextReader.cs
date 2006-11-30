@@ -323,14 +323,12 @@ namespace Jayrock.Json
 
         private JsonToken ParseNextMember()
         {
-            char ch = NextClean();
-
-            switch (ch)
+            switch (NextClean())
             {
                 case ';':
                 case ',':
                     {
-                        if ((ch = NextClean()) == '}')
+                        if (NextClean() == '}')
                             return Yield(JsonToken.EndObject());
                         break;
                     }
