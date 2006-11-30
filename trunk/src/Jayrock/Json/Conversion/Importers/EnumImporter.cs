@@ -41,9 +41,15 @@ namespace Jayrock.Json.Conversion.Importers
                 throw new ArgumentException(string.Format("{0} is a bit field, which are not currently supported.", type));
         }
 
-        protected override object ImportValue(ImportContext context, JsonReader reader)
+        protected override object ImportFromString(ImportContext context, JsonReader reader)
         {
-            string s = reader.ReadString().Trim();
+            if (context == null)
+                throw new ArgumentNullException("context");
+            
+            if (reader == null)
+                throw new ArgumentNullException("reader");
+
+            string s = reader.Text.Trim();
         
             if (s.Length > 0)
             {
@@ -55,7 +61,7 @@ namespace Jayrock.Json.Conversion.Importers
 
             try
             {
-                return Enum.Parse(OutputType, s, true);
+                return ReturnReadingTail(Enum.Parse(OutputType, s, true), reader);
             }
             catch (ArgumentException e)
             {

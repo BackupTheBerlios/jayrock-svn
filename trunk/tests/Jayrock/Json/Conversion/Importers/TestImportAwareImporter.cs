@@ -40,7 +40,7 @@ namespace Jayrock.Json.Conversion.Importers
             ImportAwareImporter importer = new ImportAwareImporter(typeof(Thing));
             JsonRecorder writer = new JsonRecorder();
             writer.WriteString(string.Empty);
-            Thing thing = (Thing) importer.Import(null, writer.CreatePlayer());
+            Thing thing = (Thing) importer.Import(new ImportContext(), writer.CreatePlayer());
             Assert.IsTrue(thing.ImportCalled);
         }
 
@@ -50,7 +50,7 @@ namespace Jayrock.Json.Conversion.Importers
             ImportAwareImporter importer = new ImportAwareImporter(typeof(Thing));
             JsonRecorder writer = new JsonRecorder();
             writer.WriteNull();
-            Assert.IsNull(importer.Import(null, writer.CreatePlayer()));
+            Assert.IsNull(importer.Import(new ImportContext(), writer.CreatePlayer()));
         }
 
         [ Test, ExpectedException(typeof(ArgumentNullException)) ]

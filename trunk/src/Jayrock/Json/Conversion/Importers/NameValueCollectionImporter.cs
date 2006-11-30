@@ -34,11 +34,14 @@ namespace Jayrock.Json.Conversion.Importers
         public NameValueCollectionImporter() : 
             base(typeof(NameValueCollection)) { }
 
-        protected override object ImportValue(ImportContext context, JsonReader reader)
+        protected override object ImportFromObject(ImportContext context, JsonReader reader)
         {
+            if (context == null)
+                throw new ArgumentNullException("context");
+
             if (reader == null)
                 throw new ArgumentNullException("reader");
-            
+
             //
             // Reader must be sitting on an object.
             //

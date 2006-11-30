@@ -33,17 +33,25 @@ namespace Jayrock.Json.Conversion.Importers
         public StringImporter() : 
             base(typeof(string)) { }
 
-        protected override object ImportValue(ImportContext context, JsonReader reader)
+        protected override object ImportFromBoolean(ImportContext context, JsonReader reader)
         {
+            return ImportFromString(context, reader);
+        }
+
+        protected override object ImportFromNumber(ImportContext context, JsonReader reader)
+        {
+            return ImportFromString(context, reader);
+        }
+
+        protected override object ImportFromString(ImportContext context, JsonReader reader)
+        {
+            if (context == null)
+                throw new ArgumentNullException("context");
+
             if (reader == null)
                 throw new ArgumentNullException("reader");
             
-            if (reader.TokenClass != JsonTokenClass.String && 
-                reader.TokenClass != JsonTokenClass.Number &&
-                reader.TokenClass != JsonTokenClass.Boolean)
-                throw new JsonException(string.Format("Found {0} where expecting a JSON String.", reader.TokenClass));
-            
-            return reader.Text;
+            return ReturnReadingTail(reader.Text, reader);
         }
     }
 }

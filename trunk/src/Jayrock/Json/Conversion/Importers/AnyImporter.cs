@@ -35,46 +35,33 @@ namespace Jayrock.Json.Conversion.Importers
         public AnyImporter() : 
             base(AnyType.Value) {}
 
-        public override object Import(ImportContext context, JsonReader reader)
+        protected override object ImportFromBoolean(ImportContext context, JsonReader reader)
         {
-            if (reader == null)
-                throw new ArgumentNullException("reader");
+            return BooleanObject.Box(reader.ReadBoolean());
+        }
 
-            reader.MoveToContent();
-            
-            if (reader.TokenClass == JsonTokenClass.String)
-            {
-                return reader.ReadString();
-            }
-            else if (reader.TokenClass == JsonTokenClass.Number)
-            {
-                return reader.ReadNumber();
-            }
-            else if (reader.TokenClass == JsonTokenClass.Boolean)
-            {
-                return reader.ReadBoolean();
-            }
-            else if (reader.TokenClass == JsonTokenClass.Null)
-            {
-                reader.Read();
-                return null;
-            }
-            else if (reader.TokenClass == JsonTokenClass.Array)
-            {
-                JsonArray items = new JsonArray();
-                ((IJsonImportable) items).Import(context, reader);
-                return items;
-            }
-            else if (reader.TokenClass == JsonTokenClass.Object)
-            {
-                JsonObject o = new JsonObject();
-                ((IJsonImportable) o).Import(context, reader);
-                return o;
-            }
-            else 
-            {
-                throw new JsonException(string.Format("{0} not expected.", reader.TokenClass));
-            }
+        protected override object ImportFromNumber(ImportContext context, JsonReader reader)
+        {
+            return reader.ReadNumber();
+        }
+
+        protected override object ImportFromString(ImportContext context, JsonReader reader)
+        {
+            return reader.ReadString();
+        }
+
+        protected override object ImportFromArray(ImportContext context, JsonReader reader)
+        {
+            JsonArray items = new JsonArray();
+            ((IJsonImportable) items).Import(context, reader);
+            return items;
+        }
+
+        protected override object ImportFromObject(ImportContext context, JsonReader reader)
+        {
+            JsonObject o = new JsonObject();
+            ((IJsonImportable) o).Import(context, reader);
+            return o;
         }
     }
 }

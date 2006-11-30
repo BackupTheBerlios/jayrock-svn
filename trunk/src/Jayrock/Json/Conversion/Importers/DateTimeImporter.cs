@@ -34,60 +34,68 @@ namespace Jayrock.Json.Conversion.Importers
     {
         public DateTimeImporter() : 
             base(typeof(DateTime)) {}
-
-        protected override object ImportValue(ImportContext context, JsonReader reader)
+        
+        protected override object ImportFromString(ImportContext context, JsonReader reader)
         {
+            if (context == null)
+                throw new ArgumentNullException("context");
+
+            if (reader == null)
+                throw new ArgumentNullException("reader");
+
+            try
+            {
+                return ReturnReadingTail(XmlConvert.ToDateTime(reader.Text), reader);
+            }
+            catch (FormatException e)
+            {
+                throw new JsonException("Error importing JSON String as System.DateTime.", e);
+            }
+        }
+
+        protected override object ImportFromNumber(ImportContext context, JsonReader reader)
+        {
+            if (context == null)
+                throw new ArgumentNullException("context");
+
             if (reader == null)
                 throw new ArgumentNullException("reader");
 
             string text = reader.Text;
 
-            if (reader.TokenClass == JsonTokenClass.String)
-            {
-                try
-                {
-                    return XmlConvert.ToDateTime(text);
-                }
-                catch (FormatException e)
-                {
-                    throw new JsonException("Error importing JSON String as System.DateTime.", e);
-                }
-            }
-            else if (reader.TokenClass == JsonTokenClass.Number)
-            {
-                long time;
+            long time;
 
-                try
-                {
-                    time = Convert.ToInt64(text, CultureInfo.InvariantCulture);
-                }
-                catch (FormatException e)
-                {
-                    throw NumberError(e, text);
-                }
-                catch (OverflowException e)
-                {
-                    throw NumberError(e, text);
-                }
-
-                try
-                {
-                    return UnixTime.ToDateTime(time);
-                }
-                catch (ArgumentException e)
-                {
-                    throw NumberError(e, text);
-                }
-            }
-            else
+            try
             {
-                throw new JsonException(string.Format("Found {0} where expecting a JSON String in ISO 8601 time format or a JSON Number expressed in Unix time.", reader.TokenClass));
+                time = Convert.ToInt64(text, CultureInfo.InvariantCulture);
+            }
+            catch (FormatException e)
+            {
+                throw NumberError(e, text);
+            }
+            catch (OverflowException e)
+            {
+                throw NumberError(e, text);
+            }
+
+            try
+            {
+                return ReturnReadingTail(UnixTime.ToDateTime(time), reader);
+            }
+            catch (ArgumentException e)
+            {
+                throw NumberError(e, text);
             }
         }
 
         private static JsonException NumberError(Exception e, string text)
         {
             return new JsonException(string.Format("Error importing JSON Number {0} as System.DateTime.", text), e);
+        }
+
+        protected override JsonException GetImportException(string jsonValueType)
+        {
+            return new JsonException(string.Format("Found {0} where expecting a JSON String in ISO 8601 time format or a JSON Number expressed in Unix time.", jsonValueType));
         }
     }
 }

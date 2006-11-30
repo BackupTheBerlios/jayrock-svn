@@ -53,7 +53,7 @@ namespace Jayrock.Json.Conversion.Importers
             return type;
         }
 
-        public override object Import(ImportContext context, JsonReader reader)
+        protected override object ImportFromArray(ImportContext context, JsonReader reader)
         {
             if (context == null)
                 throw new ArgumentNullException("context");
@@ -61,42 +61,44 @@ namespace Jayrock.Json.Conversion.Importers
             if (reader == null)
                 throw new ArgumentNullException("reader");
 
-            if (!reader.MoveToContent())
-                throw new JsonException("Unexpected EOF.");
-            
-            if (reader.TokenClass == JsonTokenClass.Null)
-            {
-                reader.Read();
-                return null;
-            }
+            reader.Read();
 
+            ArrayList list = new ArrayList();
             Type elementType = OutputType.GetElementType();
 
-            if (reader.TokenClass == JsonTokenClass.Array)
-            {
-                reader.Read();
+            while (reader.TokenClass != JsonTokenClass.EndArray)
+                list.Add(context.Import(elementType, reader));
 
-                ArrayList list = new ArrayList();
+            return ReturnReadingTail(list.ToArray(elementType), reader);
+        }
 
-                while (reader.TokenClass != JsonTokenClass.EndArray)
-                    list.Add(context.Import(elementType, reader));
+        protected override object ImportFromBoolean(ImportContext context, JsonReader reader)
+        {
+            return ImportScalarAsArray(context, reader);
+        }
 
-                reader.Read();
-            
-                return list.ToArray(elementType);
-            }
-            else if (reader.TokenClass == JsonTokenClass.String ||
-                     reader.TokenClass == JsonTokenClass.Number ||
-                     reader.TokenClass == JsonTokenClass.Boolean)
-            {
-                Array array = Array.CreateInstance(elementType, 1);
-                array.SetValue(context.Import(elementType, reader), 0);
-                return array;
-            }
-            else
-            {
-                throw new JsonException(string.Format("Found {0} where expecting JSON Array.", reader.TokenClass));
-            }
+        protected override object ImportFromNumber(ImportContext context, JsonReader reader)
+        {
+            return ImportScalarAsArray(context, reader);
+        }
+
+        protected override object ImportFromString(ImportContext context, JsonReader reader)
+        {
+            return ImportScalarAsArray(context, reader);
+        }
+
+        private object ImportScalarAsArray(ImportContext context, JsonReader reader)
+        {
+            if (context == null)
+                throw new ArgumentNullException("context");
+
+            if (reader == null)
+                throw new ArgumentNullException("reader");
+
+            Type elementType = OutputType.GetElementType();
+            Array array = Array.CreateInstance(elementType, 1);
+            array.SetValue(context.Import(elementType, reader), 0);
+            return array;
         }
     }
 }

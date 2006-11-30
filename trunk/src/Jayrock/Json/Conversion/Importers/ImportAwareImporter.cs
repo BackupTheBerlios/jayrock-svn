@@ -35,16 +35,39 @@ namespace Jayrock.Json.Conversion.Importers
         public ImportAwareImporter(Type type) : 
             base(type) {}
 
-        public override object Import(ImportContext context, JsonReader reader)
+        protected override object ImportFromBoolean(ImportContext context, JsonReader reader)
         {
+            return ReflectImport(context, reader);
+        }
+
+        protected override object ImportFromNumber(ImportContext context, JsonReader reader)
+        {
+            return ReflectImport(context, reader);
+        }
+
+        protected override object ImportFromString(ImportContext context, JsonReader reader)
+        {
+            return ReflectImport(context, reader);
+        }
+
+        protected override object ImportFromArray(ImportContext context, JsonReader reader)
+        {
+            return ReflectImport(context, reader);
+        }
+
+        protected override object ImportFromObject(ImportContext context, JsonReader reader)
+        {
+            return ReflectImport(context, reader);
+        }
+
+        private object ReflectImport(ImportContext context, JsonReader reader)
+        {
+            if (context == null) 
+                throw new ArgumentNullException("context");
+
             if (reader == null) 
                 throw new ArgumentNullException("reader");
 
-            reader.MoveToContent();
-            
-            if (reader.TokenClass == JsonTokenClass.Null)
-                return null;
-            
             IJsonImportable o = CreateObject();
             o.Import(context, reader);
             return o;

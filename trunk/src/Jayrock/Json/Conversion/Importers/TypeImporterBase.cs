@@ -25,6 +25,7 @@ namespace Jayrock.Json.Conversion.Importers
     #region Imports
 
     using System;
+    using System.Diagnostics;
     using Jayrock.Json.Conversion;
 
     #endregion
@@ -57,18 +58,66 @@ namespace Jayrock.Json.Conversion.Importers
             if (!reader.MoveToContent())
                 throw new JsonException("Unexpected EOF.");
             
-            object o = null;
-            
-            if (reader.TokenClass != JsonTokenClass.Null)
-                o = ImportValue(context, reader);
-            
-            reader.Read();
-            return o;
+            if (reader.TokenClass == JsonTokenClass.Null)
+            {
+                return ImportNull(context, reader);
+            }
+            else if (reader.TokenClass == JsonTokenClass.String)
+            {
+                return ImportFromString(context, reader);
+            }
+            else if (reader.TokenClass == JsonTokenClass.Number)
+            {
+                return ImportFromNumber(context, reader);
+            }
+            else if (reader.TokenClass == JsonTokenClass.Boolean)
+            {
+                return ImportFromBoolean(context, reader);
+            }
+            else if (reader.TokenClass == JsonTokenClass.Array)
+            {
+                return ImportFromArray(context, reader);
+            }
+            else if (reader.TokenClass == JsonTokenClass.Object)
+            {
+                return ImportFromObject(context, reader);
+            }
+            else 
+            {
+                throw new JsonException(string.Format("{0} not expected.", reader.TokenClass));
+            }
         }
 
-        protected virtual object ImportValue(ImportContext context, JsonReader reader)
+        protected virtual object ImportNull(ImportContext context, JsonReader reader) 
         {
-            throw new NotImplementedException(); // FIXME: not implemented
+            reader.Read();
+            return null;
+        }
+
+        protected virtual object ImportFromBoolean(ImportContext context, JsonReader reader) { return ThrowNotSupported(JsonTokenClass.Boolean); }
+        protected virtual object ImportFromNumber(ImportContext context, JsonReader reader) { return ThrowNotSupported(JsonTokenClass.Number); }
+        protected virtual object ImportFromString(ImportContext context, JsonReader reader) { return ThrowNotSupported(JsonTokenClass.String); }
+        protected virtual object ImportFromArray(ImportContext context, JsonReader reader) { return ThrowNotSupported(JsonTokenClass.Array); }
+        protected virtual object ImportFromObject(ImportContext context, JsonReader reader) { return ThrowNotSupported(JsonTokenClass.Object); }
+
+        protected static object ReturnReadingTail(object value, JsonReader reader) 
+        {
+            if (reader == null)
+                throw new ArgumentNullException("reader");
+            
+            reader.Read();
+            return value;
+        }
+
+        protected virtual JsonException GetImportException(string jsonValueType) 
+        {
+            return new JsonException(string.Format("Cannot import {0} from a JSON {1} value.", OutputType, jsonValueType));
+        }
+
+        private object ThrowNotSupported(JsonTokenClass clazz)
+        {
+            Debug.Assert(clazz != null);
+            throw GetImportException(clazz.Name);
         }
     }
 }

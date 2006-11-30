@@ -34,34 +34,33 @@ namespace Jayrock.Json.Conversion.Importers
         public BooleanImporter() : 
             base(typeof(bool)) { }
 
-        protected override object ImportValue(ImportContext context, JsonReader reader)
+        protected override object ImportFromBoolean(ImportContext context, JsonReader reader)
         {
+            if (context == null)
+                throw new ArgumentNullException("context");
+
             if (reader == null)
                 throw new ArgumentNullException("reader");
-            
-            bool value;
-            
-            if (reader.TokenClass == JsonTokenClass.Number)
+
+            return BooleanObject.Box(reader.ReadBoolean());
+        }
+
+        protected override object ImportFromNumber(ImportContext context, JsonReader reader)
+        {
+            if (context == null)
+                throw new ArgumentNullException("context");
+
+            if (reader == null)
+                throw new ArgumentNullException("reader");
+
+            try
             {
-                try
-                {
-                    value = Convert.ToInt64(reader.Text, CultureInfo.InvariantCulture) != 0;
-                }
-                catch (FormatException e)
-                {
-                    throw new JsonException(string.Format("The JSON Number {0} must be an integer to be convertible to System.Boolean.", reader.Text), e);
-                }
+                return BooleanObject.Box(reader.ReadNumber().ToInt64() != 0);                
             }
-            else if (reader.TokenClass == JsonTokenClass.Boolean)
+            catch (FormatException e)
             {
-                value = reader.Text == JsonBoolean.TrueText;
+                throw new JsonException(string.Format("The JSON Number {0} must be an integer to be convertible to System.Boolean.", reader.Text), e);
             }
-            else
-            {
-                throw new JsonException(string.Format("Found {0} where expecting a JSON Boolean.", reader.TokenClass));
-            }
-            
-            return value ? BooleanObject.True : BooleanObject.False;
         }
     }
 }

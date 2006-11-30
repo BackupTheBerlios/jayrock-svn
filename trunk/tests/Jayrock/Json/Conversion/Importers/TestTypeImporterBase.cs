@@ -49,17 +49,88 @@ namespace Jayrock.Json.Conversion.Importers
             Assert.IsTrue(reader.EOF);
         }
         
-        [ Test ]
-        public void Subclassing()
+        [ Test, ExpectedException(typeof(JsonException)) ]
+        public void CannotImportNumber()
         {
-            JsonReader reader = CreateReader("123");
-            TestImporter importer = new TestImporter();
-            importer.ReturnValue = new object();
-            object o = importer.Import(new ImportContext(), reader);
-            Assert.IsTrue(reader.EOF);
-            Assert.IsTrue(importer.Called);
-            Assert.IsNotNull(o);
-            Assert.AreEqual(importer.ReturnValue, o);
+            Import("42");
+        }
+
+        [ Test, ExpectedException(typeof(JsonException)) ]
+        public void CannotImportBoolean()
+        {
+            Import("true");
+        }
+
+        [ Test, ExpectedException(typeof(JsonException)) ]
+        public void CannotImportString()
+        {
+            Import("'string'");
+        }
+
+        [ Test, ExpectedException(typeof(JsonException)) ]
+        public void CannotImportObject()
+        {
+            Import("{}");
+        }
+
+        [ Test, ExpectedException(typeof(JsonException)) ]
+        public void CannotImportArray()
+        {
+            Import("[]");
+        }
+        
+        [ Test ]
+        public void NumberCallsImportNumber()
+        {
+            JsonReader reader = CreateReader("42");
+            ImporterMock importer = new ImporterMock();
+            const int result = 42;
+            importer.Number = result;
+            Assert.AreEqual(result, importer.Import(new ImportContext(), reader));
+        }
+
+        [ Test ]
+        public void StringCallsImportString()
+        {
+            JsonReader reader = CreateReader("''");
+            ImporterMock importer = new ImporterMock();
+            const string result = "hello";
+            importer.String = result;
+            Assert.AreEqual(result, importer.Import(new ImportContext(), reader));
+        }
+        
+        [ Test ]
+        public void BooleanCallsImportBoolean()
+        {
+            JsonReader reader = CreateReader("true");
+            ImporterMock importer = new ImporterMock();
+            importer.Boolean = true;
+            Assert.AreEqual(true, importer.Import(new ImportContext(), reader));
+        }
+
+        [ Test ]
+        public void ArrayCallsImportArray()
+        {
+            JsonReader reader = CreateReader("[]");
+            ImporterMock importer = new ImporterMock();
+            object result = new object();
+            importer.Array = result;
+            Assert.AreEqual(result, importer.Import(new ImportContext(), reader));
+        }
+
+        [ Test ]
+        public void ObjectCallsImportObject()
+        {
+            JsonReader reader = CreateReader("{}");
+            ImporterMock importer = new ImporterMock();
+            object result = new object();
+            importer.Object = result;
+            Assert.AreEqual(result, importer.Import(new ImportContext(), reader));
+        }
+        
+        private static void Import(string s)
+        {
+            (new TestImporter()).Import(new ImportContext(), CreateReader(s));
         }
 
         private static JsonReader CreateReader(string s)
@@ -67,18 +138,58 @@ namespace Jayrock.Json.Conversion.Importers
             return new JsonTextReader(new StringReader(s));
         }
         
-        private sealed class TestImporter : TypeImporterBase
+        private class TestImporter : TypeImporterBase
         {
-            public object ReturnValue;
-            public bool Called;
-
             public TestImporter() : 
                 base(typeof(object)) {}
+        }
 
-            protected override object ImportValue(ImportContext context, JsonReader reader)
+        private class ImporterMock : TestImporter
+        {
+            public object Boolean = null;
+            public object Number = null;
+            public object String = null;
+            public object Object = null;
+            public object Array = null;
+
+            protected override object ImportFromBoolean(ImportContext context, JsonReader reader)
             {
-                Called = true;
-                return ReturnValue;
+                Assert.IsNotNull(context);
+                Assert.IsNotNull(reader);
+                
+                return Boolean;
+            }
+
+            protected override object ImportFromNumber(ImportContext context, JsonReader reader)
+            {
+                Assert.IsNotNull(context);
+                Assert.IsNotNull(reader);
+                
+                return Number;
+            }
+
+            protected override object ImportFromString(ImportContext context, JsonReader reader)
+            {
+                Assert.IsNotNull(context);
+                Assert.IsNotNull(reader);
+                
+                return String;
+            }
+
+            protected override object ImportFromArray(ImportContext context, JsonReader reader)
+            {
+                Assert.IsNotNull(context);
+                Assert.IsNotNull(reader);
+                
+                return Array;
+            }
+
+            protected override object ImportFromObject(ImportContext context, JsonReader reader)
+            {
+                Assert.IsNotNull(context);
+                Assert.IsNotNull(reader);
+                
+                return Object;
             }
         }
     }

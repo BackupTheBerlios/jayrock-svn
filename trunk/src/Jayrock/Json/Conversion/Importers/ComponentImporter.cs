@@ -46,15 +46,15 @@ namespace Jayrock.Json.Conversion.Importers
             _properties = typeDescriptor.GetProperties();
         }
 
-        protected override object ImportValue(ImportContext context, JsonReader reader)
+        protected override object ImportFromObject(ImportContext context, JsonReader reader)
         {
             if (context == null)
-                throw new ArgumentNullException("reader");
+                throw new ArgumentNullException("context");
 
             if (reader == null)
                 throw new ArgumentNullException("reader");
 
-            reader.ReadToken(JsonTokenClass.Object);
+            reader.Read();
             
             object o = Activator.CreateInstance(OutputType);
             
@@ -70,7 +70,7 @@ namespace Jayrock.Json.Conversion.Importers
                     reader.Skip();
             }
          
-            return o;
+            return ReturnReadingTail(o, reader);
         }
     }
 }

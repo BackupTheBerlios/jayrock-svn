@@ -34,23 +34,25 @@ namespace Jayrock.Json.Conversion.Importers
     {
         protected NumberImporterBase(Type type) :
             base(type) {}
- 
-        protected override object ImportValue(ImportContext context, JsonReader reader)
+
+        protected override object ImportFromString(ImportContext context, JsonReader reader)
+        {
+            return ImportFromNumber(context, reader);
+        }
+
+        protected override object ImportFromNumber(ImportContext context, JsonReader reader)
         {
             if (context == null)
-                throw new ArgumentNullException("reader");
+                throw new ArgumentNullException("context");
 
             if (reader == null)
                 throw new ArgumentNullException("reader");
-            
-            if (reader.TokenClass != JsonTokenClass.Number && reader.TokenClass != JsonTokenClass.String)
-                throw new JsonException(string.Format("Found {0} where expecting a number.", reader.TokenClass));
 
             string text = reader.Text;
             
             try
             {
-                return ConvertFromString(text);
+                return ReturnReadingTail(ConvertFromString(text), reader);
             }
             catch (FormatException e)
             {

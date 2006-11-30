@@ -113,7 +113,11 @@ namespace Jayrock.Json.Conversion.Importers
         {
             JsonTextReader reader = new JsonTextReader(new StringReader(input));
             ImportContext context = new ImportContext();
-            return context.Import(typeof(DateTime), reader);
+            object value = context.Import(typeof(DateTime), reader);
+            Assert.IsTrue(reader.EOF, "Reader must be at EOF.");
+            if (value != null)
+                Assert.IsInstanceOfType(typeof(DateTime), value);
+            return value;
         }
 
         private static string Tzd(DateTime localTime)

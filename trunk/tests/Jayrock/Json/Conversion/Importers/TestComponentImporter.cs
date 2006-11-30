@@ -337,6 +337,7 @@ namespace Jayrock.Json.Conversion.Importers
             JsonReader reader = CreateReader(s);
             ImportContext context = new ImportContext();
             object o = context.Import(expectedType, reader);
+            Assert.IsTrue(reader.EOF, "Reader must be at EOF.");
             Assert.IsNotNull(o);
             Assert.IsInstanceOfType(expectedType, o);
             return o;
