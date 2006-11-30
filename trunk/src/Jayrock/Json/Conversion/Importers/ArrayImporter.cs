@@ -98,35 +98,5 @@ namespace Jayrock.Json.Conversion.Importers
                 throw new JsonException(string.Format("Found {0} where expecting JSON Array.", reader.TokenClass));
             }
         }
-
-        // FIXME: Re-instate auto-element registration through registration callback?
-        /*
-        protected override void OnRegister(IJsonImporterRegistrar registry)
-        {
-            Type elementType = ImportType.GetElementType();
-            
-            //
-            // For sake of convenience, if the element type does not have an
-            // importer already registered then we'll check if the stock has
-            // one. If yes, then we'll auto-register it here at the same time
-            // as registering the importer for the array type. This allows 
-            // simple types like array of integers to be handles without
-            // requiring the user to register the element type and
-            // then the array, which can seem like extra steps for the most
-            // common cases.
-            //
-            
-            IJsonImporter importer = registry.Lookup(elementType);
-            
-            if (importer == null)
-            {
-                importer = JsonImporterStock.Lookup(elementType);
-                if (importer != null)
-                    registry.Add(elementType, importer);
-            }
-
-            base.OnRegister(registry);
-        }
-        */
     }
 }
