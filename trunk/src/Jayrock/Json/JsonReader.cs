@@ -33,7 +33,7 @@ namespace Jayrock.Json
     /// access to JSON data. 
     /// </summary>
 
-    public abstract class JsonReader
+    public abstract class JsonReader : IDisposable
     {
         /// <summary>
         /// Reads the next token and returns true if one was found.
@@ -77,7 +77,11 @@ namespace Jayrock.Json
         /// associated with the reader.
         /// </summary>
         
-        public virtual void Close() {}
+        public virtual void Close()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
 
         /// <summary>
         /// Returns a <see cref="String"/> that represents the state of the 
@@ -231,6 +235,31 @@ namespace Jayrock.Json
                 return Read();
 
             return !EOF;
+        }
+
+        /// <summary>
+        /// Represents the method that handles the Disposed event of a reader.
+        /// </summary>
+        
+        public virtual event EventHandler Disposed;
+        
+        void IDisposable.Dispose()
+        {
+            Close();
+        }
+        
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+                OnDisposed(EventArgs.Empty);
+        }
+
+        private void OnDisposed(EventArgs e)
+        {
+            EventHandler handler = new EventHandler(Disposed);
+            
+            if (handler != null)
+                handler(this, e);
         }
     }
 }

@@ -35,7 +35,7 @@ namespace Jayrock.Json
     /// emitting JSON data.
     /// </summary>
 
-    public abstract class JsonWriter
+    public abstract class JsonWriter : IDisposable
     {
         /// <summary>
         /// Return the current level of nesting as the writer encounters
@@ -128,7 +128,11 @@ namespace Jayrock.Json
         /// associated with the writer.
         /// </summary>
         
-        public virtual void Close() {}
+        public virtual void Close()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
         
         /// <summary>
         /// Writes a JSON number from a <see cref="Byte"/> value.
@@ -313,6 +317,31 @@ namespace Jayrock.Json
             }
 
             reader.Read();
+        }
+
+        /// <summary>
+        /// Represents the method that handles the Disposed event of a reader.
+        /// </summary>
+        
+        public virtual event EventHandler Disposed;
+        
+        void IDisposable.Dispose()
+        {
+            Close();
+        }
+        
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+                OnDisposed(EventArgs.Empty);
+        }
+
+        private void OnDisposed(EventArgs e)
+        {
+            EventHandler handler = new EventHandler(Disposed);
+            
+            if (handler != null)
+                handler(this, e);
         }
     }
 }
