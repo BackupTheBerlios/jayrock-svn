@@ -478,6 +478,18 @@ namespace Jayrock.Json
             reader.StepOut();
         }
 
+        [ Test ]
+        public void NullMemberNameHarmless()
+        {
+            JsonReader reader = CreateReader("{null:null}");
+            reader.MoveToContent();
+            reader.ReadToken(JsonTokenClass.Object);
+            Assert.AreEqual("null", reader.ReadMember());
+            reader.ReadNull();
+            Assert.AreSame(JsonTokenClass.EndObject, reader.TokenClass);
+            Assert.IsFalse(reader.Read());
+        }
+
         private void AssertTokenText(JsonTokenClass token, string text)
         {
             Assert.IsTrue(_reader.Read());

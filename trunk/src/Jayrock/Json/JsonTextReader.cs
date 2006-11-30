@@ -283,7 +283,6 @@ namespace Jayrock.Json
 
             _parser.Back();
             string name = Parse().Text;
-            // TODO: Check return from NextObject;
             return Yield(JsonToken.Member(name), ParseObjectMemberValueMethod);
         }
 
@@ -342,7 +341,6 @@ namespace Jayrock.Json
 
             _parser.Back();
             string name = Parse().Text;
-            // TODO: Check return from NextObject;
             return Yield(JsonToken.Member(name), ParseObjectMemberValueMethod);
         }
 
