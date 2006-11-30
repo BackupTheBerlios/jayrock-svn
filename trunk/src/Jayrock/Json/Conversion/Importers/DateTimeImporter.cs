@@ -25,6 +25,7 @@ namespace Jayrock.Json.Conversion.Importers
     #region Imports
 
     using System;
+    using System.Diagnostics;
     using System.Globalization;
     using System.Xml;
 
@@ -37,15 +38,12 @@ namespace Jayrock.Json.Conversion.Importers
         
         protected override object ImportFromString(ImportContext context, JsonReader reader)
         {
-            if (context == null)
-                throw new ArgumentNullException("context");
-
-            if (reader == null)
-                throw new ArgumentNullException("reader");
+            Debug.Assert(context != null);
+            Debug.Assert(reader != null);
 
             try
             {
-                return ReturnReadingTail(XmlConvert.ToDateTime(reader.Text), reader);
+                return ReadReturning(reader, XmlConvert.ToDateTime(reader.Text));
             }
             catch (FormatException e)
             {
@@ -55,11 +53,8 @@ namespace Jayrock.Json.Conversion.Importers
 
         protected override object ImportFromNumber(ImportContext context, JsonReader reader)
         {
-            if (context == null)
-                throw new ArgumentNullException("context");
-
-            if (reader == null)
-                throw new ArgumentNullException("reader");
+            Debug.Assert(context != null);
+            Debug.Assert(reader != null);
 
             string text = reader.Text;
 
@@ -80,7 +75,7 @@ namespace Jayrock.Json.Conversion.Importers
 
             try
             {
-                return ReturnReadingTail(UnixTime.ToDateTime(time), reader);
+                return ReadReturning(reader, UnixTime.ToDateTime(time));
             }
             catch (ArgumentException e)
             {

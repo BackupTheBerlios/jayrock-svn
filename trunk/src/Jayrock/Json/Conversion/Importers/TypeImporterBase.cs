@@ -100,13 +100,11 @@ namespace Jayrock.Json.Conversion.Importers
         protected virtual object ImportFromArray(ImportContext context, JsonReader reader) { return ThrowNotSupported(JsonTokenClass.Array); }
         protected virtual object ImportFromObject(ImportContext context, JsonReader reader) { return ThrowNotSupported(JsonTokenClass.Object); }
 
-        protected static object ReturnReadingTail(object value, JsonReader reader) 
+        internal static object ReadReturning(JsonReader reader, object result) 
         {
-            if (reader == null)
-                throw new ArgumentNullException("reader");
-            
+            Debug.Assert(reader != null);
             reader.Read();
-            return value;
+            return result;
         }
 
         protected virtual JsonException GetImportException(string jsonValueType) 

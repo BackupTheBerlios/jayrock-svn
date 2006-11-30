@@ -52,7 +52,7 @@ namespace Jayrock.Json.Conversion.Importers
             
             try
             {
-                return ReturnReadingTail(ConvertFromString(text), reader);
+                return ReadReturning(reader, ConvertFromString(text));
             }
             catch (FormatException e)
             {
@@ -72,7 +72,7 @@ namespace Jayrock.Json.Conversion.Importers
         }
     }
     
-    public class ByteImporter : NumberImporterBase
+    public sealed class ByteImporter : NumberImporterBase
     {
         public ByteImporter() : 
             base(typeof(byte)) {}
@@ -83,7 +83,7 @@ namespace Jayrock.Json.Conversion.Importers
         }
     }
 
-    public class Int16Importer : NumberImporterBase
+    public sealed class Int16Importer : NumberImporterBase
     {
         public Int16Importer() : 
             base(typeof(short)) {}
@@ -94,7 +94,7 @@ namespace Jayrock.Json.Conversion.Importers
         }
     }
 
-    public class Int32Importer : NumberImporterBase
+    public sealed class Int32Importer : NumberImporterBase
     {
         public Int32Importer() : 
             base(typeof(int)) {}
@@ -105,7 +105,7 @@ namespace Jayrock.Json.Conversion.Importers
         }
     }
 
-    public class Int64Importer : NumberImporterBase
+    public sealed class Int64Importer : NumberImporterBase
     {
         public Int64Importer() : 
             base(typeof(long)) {}
@@ -116,7 +116,7 @@ namespace Jayrock.Json.Conversion.Importers
         }
     }
 
-    public class SingleImporter : NumberImporterBase
+    public sealed class SingleImporter : NumberImporterBase
     {
         public SingleImporter() : 
             base(typeof(float)) {}
@@ -127,7 +127,7 @@ namespace Jayrock.Json.Conversion.Importers
         }
     }
 
-    public class DoubleImporter : NumberImporterBase
+    public sealed class DoubleImporter : NumberImporterBase
     {
         public DoubleImporter() : 
             base(typeof(double)) {}
@@ -138,7 +138,7 @@ namespace Jayrock.Json.Conversion.Importers
         }
     }
 
-    public class DecimalImporter : NumberImporterBase
+    public sealed class DecimalImporter : NumberImporterBase
     {
         public DecimalImporter() : 
             base(typeof(decimal)) {}

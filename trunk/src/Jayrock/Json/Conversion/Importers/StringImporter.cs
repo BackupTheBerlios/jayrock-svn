@@ -25,6 +25,7 @@ namespace Jayrock.Json.Conversion.Importers
     #region Imports
 
     using System;
+    using System.Diagnostics;
 
     #endregion
 
@@ -45,13 +46,10 @@ namespace Jayrock.Json.Conversion.Importers
 
         protected override object ImportFromString(ImportContext context, JsonReader reader)
         {
-            if (context == null)
-                throw new ArgumentNullException("context");
+            Debug.Assert(context != null);
+            Debug.Assert(reader != null);
 
-            if (reader == null)
-                throw new ArgumentNullException("reader");
-            
-            return ReturnReadingTail(reader.Text, reader);
+            return ReadReturning(reader, reader.Text);
         }
     }
 }

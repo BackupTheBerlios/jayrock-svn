@@ -55,11 +55,8 @@ namespace Jayrock.Json.Conversion.Importers
 
         protected override object ImportFromArray(ImportContext context, JsonReader reader)
         {
-            if (context == null)
-                throw new ArgumentNullException("context");
-
-            if (reader == null)
-                throw new ArgumentNullException("reader");
+            Debug.Assert(context != null);
+            Debug.Assert(reader != null);
 
             reader.Read();
 
@@ -69,7 +66,7 @@ namespace Jayrock.Json.Conversion.Importers
             while (reader.TokenClass != JsonTokenClass.EndArray)
                 list.Add(context.Import(elementType, reader));
 
-            return ReturnReadingTail(list.ToArray(elementType), reader);
+            return ReadReturning(reader, list.ToArray(elementType));
         }
 
         protected override object ImportFromBoolean(ImportContext context, JsonReader reader)
@@ -89,11 +86,8 @@ namespace Jayrock.Json.Conversion.Importers
 
         private object ImportScalarAsArray(ImportContext context, JsonReader reader)
         {
-            if (context == null)
-                throw new ArgumentNullException("context");
-
-            if (reader == null)
-                throw new ArgumentNullException("reader");
+            Debug.Assert(context != null);
+            Debug.Assert(reader != null);
 
             Type elementType = OutputType.GetElementType();
             Array array = Array.CreateInstance(elementType, 1);
