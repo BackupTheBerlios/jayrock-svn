@@ -25,6 +25,7 @@ namespace Jayrock.Json.Conversion
     #region Imports
 
     using System;
+    using System.Collections;
     using System.Diagnostics;
     using System.Globalization;
     using System.Reflection;
@@ -67,7 +68,8 @@ namespace Jayrock.Json.Conversion
             
             //
             // No members supplied? Get all public, instance-level fields and 
-            // properties of the type.
+            // properties of the type that are not marked with the JsonIgnore
+            // attribute.
             //
             
             if (members == null)
@@ -76,9 +78,25 @@ namespace Jayrock.Json.Conversion
                 FieldInfo[] fields = type.GetFields(bindings);
                 PropertyInfo[] properties = type.GetProperties(bindings);
                 
-                members = new MemberInfo[fields.Length + properties.Length];
-                fields.CopyTo(members, 0);
-                properties.CopyTo(members, fields.Length);
+                //
+                // Filter out members marked with JsonIgnore attribute.
+                //
+                
+                ArrayList memberList = new ArrayList(fields.Length + properties.Length);
+                memberList.AddRange(fields);
+                memberList.AddRange(properties);
+
+                for (int i = 0; i < memberList.Count; i++)
+                {
+                    MemberInfo member = (MemberInfo) memberList[i];
+                    
+                    if (!member.IsDefined(typeof(JsonIgnoreAttribute), true))
+                        continue;
+                    
+                    memberList.RemoveAt(i--);
+                }
+                
+                members = (MemberInfo[]) memberList.ToArray(typeof(MemberInfo));
             }
                         
             PropertyDescriptorCollection logicalProperties = new PropertyDescriptorCollection(null);
