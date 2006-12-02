@@ -28,7 +28,7 @@ namespace Jayrock
 
     #endregion
 
-    internal class Compat
+    internal sealed class Compat
     {
         public static Type FindType(string typeName)
         {
