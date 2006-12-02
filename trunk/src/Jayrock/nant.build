@@ -63,7 +63,7 @@
         <solution configuration="Debug">
             <projects>
                 <include name="Jayrock.csproj" />
-                <include name="Jayrock-JSON.csproj" />
+                <include name="Jayrock.Json.csproj" />
             </projects>
         </solution>
     </target>
@@ -73,7 +73,7 @@
         <solution configuration="Release">
             <projects>
                 <include name="Jayrock.csproj" />
-                <include name="Jayrock-JSON.csproj" />
+                <include name="Jayrock.Json.csproj" />
             </projects>
         </solution>
     </target>

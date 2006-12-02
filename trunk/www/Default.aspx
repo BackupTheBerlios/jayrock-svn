@@ -117,7 +117,7 @@
             <code>tools\nant-0.85-rc2\NAnt /f:src\Jayrock\nant.build</code></p>
         <p>
             A full build runs the unit tests, creates a code coverage report from the tests
-            and then goes on to compile the debug and release assemblies for Jayrock and Jayrock-JSON.</p>
+            and then goes on to compile the debug and release assemblies for Jayrock and Jayrock.Json.</p>
         <p>
             The Nant script can be used to build 5 different types of so-called <em><a href="http://nant.sourceforge.net/release/latest/help/fundamentals/targets.html">
                 targets</a></em>:</p>
@@ -127,8 +127,8 @@
                 Builds the test project and runs the unit tests using NUnit.
             </dd>
             <dt>debug</dt>
-            <dd>Builds the debug version of the Jayrock and Jayrock-JSON assemblies.</dd><dt>release</dt><dd>Builds
-                the release version of the Jayrock and Jayrock-JSON assemblies. Debug symbols are
+            <dd>Builds the debug version of the Jayrock and Jayrock.Json assemblies.</dd><dt>release</dt><dd>Builds
+                the release version of the Jayrock and Jayrock.Json assemblies. Debug symbols are
                 still included.</dd>
             <dt>cover</dt>
             <dd>
@@ -148,7 +148,7 @@
             <dt>Jayrock Test </dt>
             <dd>
                 Solution that contains a test-view of the project, containing references and sources
-                for unit tests.</dd><dt>Jayrock-JSON</dt><dd>Solution that builds the strictly JSON
+                for unit tests.</dd><dt>Jayrock.Json</dt><dd>Solution that builds the strictly JSON
                     subset of Jayrock, without all the JSON-RPC bells and whistles. If you are looking
                     to only work with the JSON data format then this is the right solution for you.</dd><dt>Jayrock</dt><dd>The
                         complete solution that includes JSON and JSON-RPC rolled into one.</dd></dl>
@@ -502,7 +502,7 @@ window.onload = function()
             <dt>What can I do with Jayrock?</dt><dd>
                 <ol>
                     <li>You can use just the Jayrock's JSON infrastructure for manipulating JSON data and text without
-                    all the JSON-RPC fuss. Whenever you see <em>Jayrock-JSON</em> mentioned, it's referring to
+                    all the JSON-RPC fuss. Whenever you see <em>Jayrock.Json</em> mentioned, it's referring to
                         just this piece of functionality and which is even provided as a stand-alone assembly.</li>
                         <li>In addition to the above, you can use Jayrock to expose light-weight services with procedures
                             from within your ASP.NET application. You can then invoke the procedures on those

@@ -1,5 +1,5 @@
 Microsoft Visual Studio Solution File, Format Version 8.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jayrock-JSON", "Jayrock\Jayrock-JSON.csproj", "{A178A4BB-CE12-4BF3-8B17-6DF0D82120C8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jayrock.Json", "Jayrock\Jayrock.Json.csproj", "{A178A4BB-CE12-4BF3-8B17-6DF0D82120C8}"
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
