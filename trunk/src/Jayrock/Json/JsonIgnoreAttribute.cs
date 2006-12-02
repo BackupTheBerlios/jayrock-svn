@@ -38,12 +38,5 @@ namespace Jayrock.Json
     [ AttributeUsage(AttributeTargets.Property | AttributeTargets.Field) ]
     public sealed class JsonIgnoreAttribute : Attribute
     {
-        public static bool IsDefined(ICustomAttributeProvider attributeProvider)
-        {
-            if (attributeProvider == null)
-                return false;
-
-            return CustomAttribute.IsDefined(attributeProvider, typeof(JsonIgnoreAttribute));
-        }
     }
 }
