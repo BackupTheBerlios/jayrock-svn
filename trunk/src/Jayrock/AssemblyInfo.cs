@@ -38,7 +38,7 @@ using ComVisible = System.Runtime.InteropServices.ComVisibleAttribute;
 [assembly: AssemblyCulture("")]
 
 #if NORPC
-    [assembly: AssemblyTitle("Jayrock-JSON")]
+    [assembly: AssemblyTitle("Jayrock.JSON")]
     [assembly: AssemblyDescription("JSON implementation for ASP.NET")]
 #else
     [assembly: AssemblyTitle("Jayrock")]
