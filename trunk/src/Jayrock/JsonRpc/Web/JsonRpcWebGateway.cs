@@ -126,7 +126,7 @@ namespace Jayrock.JsonRpc.Web
 
         protected virtual IDictionary GetBindings()
         {
-            object config = ConfigurationSettings.GetConfig("jayrock/json.rpc/bindings");
+            object config = ConfigurationSettings.GetConfig("jayrock/jsonrpc/bindings");
             
             if (config == null)
             {
