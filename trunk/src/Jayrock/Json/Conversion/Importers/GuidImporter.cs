@@ -39,7 +39,14 @@ namespace Jayrock.Json.Conversion.Importers
             Debug.Assert(context != null);
             Debug.Assert(reader != null);
 
-            return ReadReturning(reader, new Guid(reader.Text.Trim()));
+            try
+            {
+                return ReadReturning(reader, new Guid(reader.Text.Trim()));
+            }
+            catch (FormatException e)
+            {
+                throw new JsonException(e.Message, e);
+            }
         }
     }
 }
