@@ -41,7 +41,7 @@ namespace Jayrock.JsonRpc
         private readonly JsonRpcParameter[] _parameters;
         private readonly string[] _parameterNames;              // FIXME: [ NonSerialized ]
         private readonly JsonRpcParameter[] _sortedParameters;  // FIXME: [ NonSerialized ]
-        private readonly IDispatcher _dispatcher;
+        private readonly IMethodDispatcher _dispatcher;
         private readonly string _description;
         private readonly bool _idempotent;
         private readonly Attribute[] _attributes;

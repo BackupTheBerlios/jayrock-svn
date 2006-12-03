@@ -28,7 +28,7 @@ namespace Jayrock.JsonRpc
 
     #endregion
 
-    public interface IDispatcher
+    public interface IMethodDispatcher
     {
         object Invoke(IService service, object[] args);
         IAsyncResult BeginInvoke(IService service, object[] args, AsyncCallback callback, object asyncState);

@@ -98,7 +98,7 @@ namespace Jayrock.JsonRpc
         [ Test ]
         public void GetSetDispatcher()
         {
-            IDispatcher dispatcher = new StubDispatcher();
+            IMethodDispatcher dispatcher = new StubDispatcher();
             _builder.Dispatcher = dispatcher;
             Assert.AreSame(dispatcher, _builder.Dispatcher);
         }
@@ -151,7 +151,7 @@ namespace Jayrock.JsonRpc
             Assert.IsTrue(_builder.Idempotent);
         }
         
-        private class StubDispatcher : IDispatcher
+        private sealed class StubDispatcher : IMethodDispatcher
         {
             public object Invoke(IService service, object[] args)
             {

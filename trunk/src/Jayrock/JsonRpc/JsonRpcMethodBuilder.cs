@@ -37,7 +37,7 @@ namespace Jayrock.JsonRpc
         private string _internalName;
         private Type _resultType = typeof(void);
         private ArrayList _parameterList;
-        private IDispatcher _dispatcher;
+        private IMethodDispatcher _dispatcher;
         private string _description;
         private readonly JsonRpcServiceClassBuilder _serviceClass;
         private ArrayList _attributes;
@@ -79,7 +79,7 @@ namespace Jayrock.JsonRpc
             }
         }
 
-        public IDispatcher Dispatcher
+        public IMethodDispatcher Dispatcher
         {
             get { return _dispatcher; }
             set { _dispatcher = value; }

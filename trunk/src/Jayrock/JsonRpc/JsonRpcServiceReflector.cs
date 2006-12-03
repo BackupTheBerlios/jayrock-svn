@@ -88,7 +88,7 @@ namespace Jayrock.JsonRpc
 
             builder.InternalName = method.Name;
             builder.ResultType = method.ReturnType;
-            builder.Dispatcher = new Dispatcher(method);
+            builder.Dispatcher = new MethodDispatcher(method);
             
             //
             // Build via attributes.
@@ -145,11 +145,11 @@ namespace Jayrock.JsonRpc
         }
 
         [ Serializable ]
-        private sealed class Dispatcher : IDispatcher
+        private sealed class MethodDispatcher : IMethodDispatcher
         {
             private readonly MethodInfo _method;
 
-            public Dispatcher(MethodInfo method)
+            public MethodDispatcher(MethodInfo method)
             {
                 Debug.Assert(method != null);
                 

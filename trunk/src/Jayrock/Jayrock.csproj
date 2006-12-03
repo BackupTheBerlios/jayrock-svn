@@ -498,7 +498,7 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "JsonRpc\IDispatcher.cs"
+                    RelPath = "JsonRpc\IMethodDispatcher.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
