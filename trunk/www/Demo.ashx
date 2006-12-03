@@ -55,6 +55,13 @@ namespace JayrockWeb
             return strings;
         }
 
+        [ JsonRpcMethod("echoGuid", Idempotent = true)]
+        [ JsonRpcHelp("Echoes back the given GUID. This method demonstrates working with an argument typed as System.Guid.") ]
+        public Guid EchoGuid(Guid id)
+        {
+            return id;
+        }
+
         [ JsonRpcMethod("sum", Idempotent = true)]
         [ JsonRpcHelp("Return the sum of two integers.") ]
         [ JsonRpcObsolete("Use the total method instead.") ]

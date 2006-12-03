@@ -57,6 +57,7 @@ namespace Jayrock.Json.Conversion
             AssertInStock(typeof(ImportAwareImporter), typeof(JsonArray));
             AssertInStock(typeof(ImportAwareImporter), typeof(IList));
             AssertInStock(typeof(ImportAwareImporter), typeof(ImportableThing));
+            AssertInStock(typeof(GuidImporter), typeof(Guid));
         }
 
         private static void AssertInStock(Type expected, Type type)
