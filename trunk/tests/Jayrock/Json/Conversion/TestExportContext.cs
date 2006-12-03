@@ -53,7 +53,7 @@ namespace Jayrock.Json.Conversion
             AssertInStock(typeof(ComponentExporter), typeof(object));
             AssertInStock(typeof(EnumerableExporter), typeof(object[]));
             AssertInStock(typeof(NameValueCollectionExporter), typeof(NameValueCollection));
-            // FIXME: Add case AssertInStock(typeof(EnumExporter), typeof(System.Globalization.UnicodeCategory));
+            AssertInStock(typeof(StringExporter), typeof(System.Globalization.UnicodeCategory));
             AssertInStock(typeof(ExportAwareExporter), typeof(JsonObject));
             AssertInStock(typeof(DictionaryExporter), typeof(Hashtable));
             AssertInStock(typeof(ExportAwareExporter), typeof(JsonArray));
