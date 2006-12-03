@@ -31,7 +31,11 @@ namespace Jayrock.Json.Conversion.Exporters
 
     public sealed class StringExporter : TypeExporterBase
     {
-        public StringExporter() : base(typeof(string)) {}
+        public StringExporter() : 
+            this(typeof(string)) {}
+
+        public StringExporter(Type type) : 
+            base(type) {}
 
         protected override void ExportValue(ExportContext context, object value, JsonWriter writer)
         {

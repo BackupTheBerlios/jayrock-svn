@@ -69,6 +69,7 @@ namespace Jayrock.Json.Conversion
             AssertInStock(typeof(DataRowExporter), typeof(DataRow));
             AssertInStock(typeof(DataRowExporter), typeof(MyDataRow));
             AssertInStock(typeof(DataRowViewExporter), typeof(DataRowView));
+            AssertInStock(typeof(StringExporter), typeof(Guid));
         }
 
         private static void AssertInStock(Type expected, Type type)
@@ -76,6 +77,7 @@ namespace Jayrock.Json.Conversion
             ExportContext context = new ExportContext();
             ITypeExporter exporter = context.FindExporter(type);
             Assert.IsNotNull(exporter, "No exporter found for {0}", type.FullName);
+            Assert.AreSame(type, exporter.InputType, "{0} reported {1} when expecting {2}.", exporter, exporter.InputType, type);
             Assert.IsInstanceOfType(expected, exporter, type.FullName);
         }
         

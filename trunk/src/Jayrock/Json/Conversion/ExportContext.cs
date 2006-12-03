@@ -95,9 +95,9 @@ namespace Jayrock.Json.Conversion
             if (typeof(IJsonExportable).IsAssignableFrom(type))
                 return new ExportAwareExporter(type);
 
-            if (type.IsClass)
+            if (type.IsClass && type != typeof(object))
             {
-                ITypeExporter exporter = FindBaseExporter(type);
+                ITypeExporter exporter = FindBaseExporter(type.BaseType, type);
                 if (exporter != null)
                     return exporter;
             }
@@ -114,23 +114,23 @@ namespace Jayrock.Json.Conversion
                 return new ComponentExporter(type);
             }
 
-            return null;
+            return new StringExporter(type);
         }
 
-        private ITypeExporter FindBaseExporter(Type type)
+        private ITypeExporter FindBaseExporter(Type baseType, Type actualType)
         {
-            Debug.Assert(type != null);
+            Debug.Assert(baseType != null);
+            Debug.Assert(actualType != null);
 
-            if (type == typeof(object))
+            if (baseType == typeof(object))
                 return null;
 
-            Type baseType = type.BaseType;
             ITypeExporter exporter = Exporters[baseType];
 
             if (exporter == null)
-                return FindBaseExporter(baseType);
+                return FindBaseExporter(baseType.BaseType, actualType);
 
-            return (ITypeExporter) Activator.CreateInstance(exporter.GetType(), new object[] {type});
+            return (ITypeExporter) Activator.CreateInstance(exporter.GetType(), new object[] { actualType });
         }
  
         private TypeExporterCollection Exporters
