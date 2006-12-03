@@ -41,7 +41,7 @@ namespace Jayrock.JsonRpc
         private readonly JsonRpcParameter[] _parameters;
         private readonly string[] _parameterNames;              // FIXME: [ NonSerialized ]
         private readonly JsonRpcParameter[] _sortedParameters;  // FIXME: [ NonSerialized ]
-        private readonly IMethodDispatcher _dispatcher;
+        private readonly IMethodImpl _handler;
         private readonly string _description;
         private readonly bool _idempotent;
         private readonly Attribute[] _attributes;
@@ -55,7 +55,7 @@ namespace Jayrock.JsonRpc
             _internalName = Mask.EmptyString(methodBuilder.InternalName, methodBuilder.Name);
             _resultType = methodBuilder.ResultType;
             _description = methodBuilder.Description;
-            _dispatcher = methodBuilder.Dispatcher;
+            _handler = methodBuilder.Handler;
             _idempotent = methodBuilder.Idempotent;
             _attributes = DeepCopy(methodBuilder.GetCustomAttributes());
             _class = clazz;
@@ -150,7 +150,7 @@ namespace Jayrock.JsonRpc
             if (names != null)
                 args = MapArguments(names, args);
             
-            return _dispatcher.Invoke(service, TransposeVariableArguments(args));
+            return _handler.Invoke(service, TransposeVariableArguments(args));
         }
 
         /// <remarks>
@@ -163,12 +163,12 @@ namespace Jayrock.JsonRpc
 
         public IAsyncResult BeginInvoke(IService service, string[] names, object[] args, AsyncCallback callback, object asyncState)
         {
-            return _dispatcher.BeginInvoke(service, args, callback, asyncState);
+            return _handler.BeginInvoke(service, args, callback, asyncState);
         }
 
         public object EndInvoke(IAsyncResult asyncResult)
         {
-            return _dispatcher.EndInvoke(asyncResult);
+            return _handler.EndInvoke(asyncResult);
         }
 
         /// <summary>

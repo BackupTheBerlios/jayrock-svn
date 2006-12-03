@@ -48,7 +48,7 @@ namespace Jayrock.JsonRpc
             Assert.IsNotNull(_builder.Name);
             Assert.IsNotNull(_builder.InternalName);
             Assert.AreSame(typeof(void), _builder.ResultType);
-            Assert.IsNull(_builder.Dispatcher);
+            Assert.IsNull(_builder.Handler);
             Assert.IsNotNull(_builder.Description);
             Assert.AreEqual(0, _builder.Description.Length);
             Assert.IsNotNull(_builder.ServiceClass);
@@ -96,11 +96,11 @@ namespace Jayrock.JsonRpc
         }
         
         [ Test ]
-        public void GetSetDispatcher()
+        public void GetSetHandler()
         {
-            IMethodDispatcher dispatcher = new StubDispatcher();
-            _builder.Dispatcher = dispatcher;
-            Assert.AreSame(dispatcher, _builder.Dispatcher);
+            IMethodImpl handler = new StubMethod();
+            _builder.Handler = handler;
+            Assert.AreSame(handler, _builder.Handler);
         }
 
         [ Test ]
@@ -151,7 +151,7 @@ namespace Jayrock.JsonRpc
             Assert.IsTrue(_builder.Idempotent);
         }
         
-        private sealed class StubDispatcher : IMethodDispatcher
+        private sealed class StubMethod : IMethodImpl
         {
             public object Invoke(IService service, object[] args)
             {
