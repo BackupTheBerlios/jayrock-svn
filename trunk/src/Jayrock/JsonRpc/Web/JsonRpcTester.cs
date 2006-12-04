@@ -179,9 +179,9 @@ namespace Jayrock.JsonRpc.Web
 
                 function callSync(request)
                 {
-                    var http = window.ActiveXObject ? 
-                        new ActiveXObject('Microsoft.XMLHTTP') :
-                        new XMLHttpRequest();
+                    var http = window.XMLHttpRequest ?
+                        new XMLHttpRequest() :
+                        new ActiveXObject('Microsoft.XMLHTTP');
                     http.open('POST', '" + Request.FilePath + @"', false);
                     http.setRequestHeader('Content-Type', 'text/plain; charset=utf-8');
                     http.setRequestHeader('X-JSON-RPC', request.method);

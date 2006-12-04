@@ -204,9 +204,10 @@ namespace Jayrock.JsonRpc.Web
 
     function newHTTP()
     {
-        return typeof(ActiveXObject) === 'function' ? 
-            new ActiveXObject('Microsoft.XMLHTTP') : /* IE 5 */
-            new XMLHttpRequest(); /* Safari 1.2, Mozilla 1.0/Firefox, and Netscape 7 */
+        if (window.XMLHttpRequest)
+            return new XMLHttpRequest(); /* IE7, Safari 1.2, Mozilla 1.0/Firefox, and Netscape 7 */
+        if (window.ActiveXObject)
+            new ActiveXObject('Microsoft.XMLHTTP') : /* IE 5 to IE 6 */
     }");
     
             writer.Indent--;
