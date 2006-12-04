@@ -50,6 +50,13 @@ namespace Jayrock.Json
             Assert.IsTrue(_disposed);
         }
 
+        [ Test ]
+        public void CloseWithoutDisposedHandlerHarmless()
+        {
+            JsonWriter writer = new StubJsonWriter();   
+            writer.Close();
+        }
+
         private void Writer_Disposed(object sender, EventArgs e)
         {
             _disposed = true;
