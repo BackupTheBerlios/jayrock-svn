@@ -182,7 +182,7 @@ namespace Jayrock.Json
         private void EnterBracket(object bracket)
         {
             if (_stack == null)
-                _stack = new Stack(10);
+                _stack = new Stack(6);
 
             _stack.Push(_currentBracket);
             _currentBracket = bracket;
