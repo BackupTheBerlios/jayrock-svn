@@ -28,6 +28,7 @@ namespace Jayrock.JsonRpc.Web
     using System.IO;
     using System.Web;
     using Jayrock.Json;
+    using Jayrock.Json.Conversion;
 
     #endregion
 
@@ -74,31 +75,9 @@ namespace Jayrock.JsonRpc.Web
                 writer.WriteString(methodName.Substring(1));
             
             writer.WriteMember("params");
-            writer.WriteStartObject();
-
-            NameValueCollection query = Request.QueryString;
-            
-            if (query.HasKeys())
-            {
-                foreach (string name in query)
-                {
-                    if (Mask.NullString(name).Length == 0)
-                        continue;
-                
-                    writer.WriteMember(name);
-
-                    string[] values = query.GetValues(name);                    
-                    
-                    if (values.Length == 0)
-                        writer.WriteNull();
-                    else if (values.Length == 1)
-                        writer.WriteString(values[0]);
-                    else
-                        writer.WriteStringArray(values);
-                }
-            }
-            
-            writer.WriteEndObject();
+            NameValueCollection query = new NameValueCollection(Request.QueryString);
+            query.Remove(string.Empty);
+            JsonConvert.Export(Request.QueryString, writer);
             
             writer.WriteEndObject();
             
