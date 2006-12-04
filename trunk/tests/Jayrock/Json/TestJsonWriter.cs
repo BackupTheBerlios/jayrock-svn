@@ -69,12 +69,6 @@ namespace Jayrock.Json
                 get { throw new NotImplementedException(); }
             }
 
-            public override int MaxDepth
-            {
-                get { throw new NotImplementedException(); }
-                set { throw new NotImplementedException(); }
-            }
-
             public override void WriteStartObject()
             {
                 throw new NotImplementedException();
