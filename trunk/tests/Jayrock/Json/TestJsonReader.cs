@@ -50,6 +50,13 @@ namespace Jayrock.Json
             Assert.IsTrue(_disposed);
         }
 
+        [ Test ]
+        public void CloseWithoutDisposedHandlerHarmless()
+        {
+            JsonReader reader = new StubJsonReader();   
+            reader.Close();
+        }
+
         private void Reader_Disposed(object sender, EventArgs e)
         {
             _disposed = true;

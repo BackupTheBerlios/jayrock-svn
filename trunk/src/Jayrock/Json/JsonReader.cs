@@ -256,7 +256,7 @@ namespace Jayrock.Json
 
         private void OnDisposed(EventArgs e)
         {
-            EventHandler handler = new EventHandler(Disposed);
+            EventHandler handler = Disposed;
             
             if (handler != null)
                 handler(this, e);
