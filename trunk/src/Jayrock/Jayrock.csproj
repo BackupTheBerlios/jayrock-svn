@@ -503,7 +503,7 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "JsonRpc\IMethodDispatcher.cs"
+                    RelPath = "JsonRpc\IMethodImpl.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
