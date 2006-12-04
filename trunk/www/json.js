@@ -128,12 +128,12 @@ var JSON = function () {
 */
         eval: function (text) {
             try {
-                return !(/[^,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t]/.test(
-                        text.replace(/"(\\.|[^"\\])*"/g, ''))) &&
-                    eval('(' + text + ')');
+                if (/^("(\\.|[^"\\\n\r])*?"|[,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t])+?$/.test(text)) {
+                    return eval('(' + text + ')');
+                }
             } catch (e) {
-                return false;
             }
+            throw new SyntaxError("eval");
         },
 
         parse: function (text) {
