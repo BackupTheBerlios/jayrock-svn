@@ -121,7 +121,7 @@ namespace Jayrock.Json
                 _indent++;
             }
             
-            WriteString(name);
+            WriteStringImpl(name);
             PrettySpace();
             WriteDelimiter(':');
             PrettySpace();
@@ -162,7 +162,7 @@ namespace Jayrock.Json
             if (_currentBracket == _runningArrayBracket)
                 PrettySpace();
 
-            WriteDelimiter(']');            
+            WriteDelimiter(']');
             ExitBracket();
         }
 

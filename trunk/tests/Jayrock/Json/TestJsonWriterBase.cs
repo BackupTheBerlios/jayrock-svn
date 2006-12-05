@@ -51,6 +51,7 @@ namespace Jayrock.Json
         {
             _writer.WriteStartObject();
             Assert.AreEqual(1, _writer.Depth);
+            _writer.WriteMember(string.Empty);
             _writer.WriteStartObject();
             Assert.AreEqual(2, _writer.Depth);
             _writer.WriteEndObject();
@@ -108,7 +109,149 @@ namespace Jayrock.Json
             _writer.WriteStartArray();
             _writer.WriteEndObject();
         }
+        
+        [ Test, ExpectedException(typeof(JsonException)) ]
+        public void CannotWriteStringWithoutMember()
+        {
+            _writer.WriteStartObject();
+            _writer.WriteString("string");
+        }
 
+        [ Test, ExpectedException(typeof(JsonException)) ]
+        public void CannotWriteNullWithoutMember()
+        {
+            _writer.WriteStartObject();
+            _writer.WriteNull();
+        }
+
+        [ Test, ExpectedException(typeof(JsonException)) ]
+        public void CannotWriteNumberWithoutMember()
+        {
+            _writer.WriteStartObject();
+            _writer.WriteNumber(123);
+        }
+        
+        [ Test, ExpectedException(typeof(JsonException)) ]
+        public void CannotWriteBooleanWithoutMember()
+        {
+            _writer.WriteStartObject();
+            _writer.WriteBoolean(true);
+        }
+        
+        [ Test, ExpectedException(typeof(JsonException)) ]
+        public void CannotWriteNestedObjectWithoutMember()
+        {
+            _writer.WriteStartObject();
+            _writer.WriteStartObject();
+        }
+
+        [ Test, ExpectedException(typeof(JsonException)) ]
+        public void CannotWriteNestedArrayWithoutMember()
+        {
+            _writer.WriteStartObject();
+            _writer.WriteStartArray();
+        }
+
+        [ Test ]
+        public void WriteStringInsideArray()
+        {
+            _writer.WriteStartArray();
+            _writer.WriteString("string");
+        }
+
+        [ Test ]
+        public void WriteNumberInsideArray()
+        {
+            _writer.WriteStartArray();
+            _writer.WriteNumber(123);
+        }
+
+        [ Test ]
+        public void WriteBooleanInsideArray()
+        {
+            _writer.WriteStartArray();
+            _writer.WriteBoolean(true);
+        }
+        
+        [ Test ]
+        public void WriteNullInsideArray()
+        {
+            _writer.WriteStartArray();
+            _writer.WriteNull();
+        }
+     
+        [ Test ]
+        public void WriteObjectMemberString()
+        {
+            _writer.WriteStartObject();
+            _writer.WriteMember("member");
+            _writer.WriteString("string");
+        }
+
+        [ Test ]
+        public void WriteObjectMemberNumber()
+        {
+            _writer.WriteStartObject();
+            _writer.WriteMember("member");
+            _writer.WriteNumber(123);
+        }
+
+        [ Test ]
+        public void WriteObjectMemberBoolean()
+        {
+            _writer.WriteStartObject();
+            _writer.WriteMember("member");
+            _writer.WriteBoolean(true);
+        }
+        
+        [ Test ]
+        public void WriteObjectMemberNull()
+        {
+            _writer.WriteStartObject();
+            _writer.WriteMember("member");
+            _writer.WriteNull();
+        }
+
+        [ Test ]
+        public void WriteObjectWithNullMembers()
+        {
+            _writer.WriteStartObject();
+            _writer.WriteMember("member1");
+            _writer.WriteNull();
+            _writer.WriteMember("member2");
+            _writer.WriteNull();
+        }
+
+        [ Test ]
+        public void WriteObjectWithNumberMembers()
+        {
+            _writer.WriteStartObject();
+            _writer.WriteMember("member1");
+            _writer.WriteNumber(123);
+            _writer.WriteMember("member2");
+            _writer.WriteNumber(456);
+        }
+
+        [ Test ]
+        public void WriteObjectWithBooleanMembers()
+        {
+            _writer.WriteStartObject();
+            _writer.WriteMember("member1");
+            _writer.WriteBoolean(true);
+            _writer.WriteMember("member2");
+            _writer.WriteBoolean(false);
+        }
+
+        [ Test ]
+        public void WriteObjectWithStringMembers()
+        {
+            _writer.WriteStartObject();
+            _writer.WriteMember("member1");
+            _writer.WriteString("string1");
+            _writer.WriteMember("member2");
+            _writer.WriteString("string2");
+        }
+        
         private sealed class StubJsonWriter : JsonWriterBase
         {
             protected override void WriteStartObjectImpl()
@@ -121,7 +264,6 @@ namespace Jayrock.Json
 
             protected override void WriteMemberImpl(string name)
             {
-                throw new NotImplementedException();
             }
 
             protected override void WriteStartArrayImpl()
@@ -134,22 +276,18 @@ namespace Jayrock.Json
 
             protected override void WriteStringImpl(string value)
             {
-                throw new NotImplementedException();
             }
 
             protected override void WriteNumberImpl(string value)
             {
-                throw new NotImplementedException();
             }
 
             protected override void WriteBooleanImpl(bool value)
             {
-                throw new NotImplementedException();
             }
 
             protected override void WriteNullImpl()
             {
-                throw new NotImplementedException();
             }
         }
     }
