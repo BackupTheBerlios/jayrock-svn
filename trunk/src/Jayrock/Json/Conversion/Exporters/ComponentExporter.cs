@@ -27,6 +27,7 @@ namespace Jayrock.Json.Conversion.Exporters
     using System;
     using System.ComponentModel;
     using System.Diagnostics;
+    using CustomTypeDescriptor = Conversion.CustomTypeDescriptor;
 
     #endregion
     

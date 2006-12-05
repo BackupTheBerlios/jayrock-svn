@@ -30,6 +30,7 @@ namespace Jayrock.Json.Conversion.Exporters
     using System.IO;
     using System.Reflection;
     using NUnit.Framework;
+    using CustomTypeDescriptor = Conversion.CustomTypeDescriptor;
 
     #endregion
 
