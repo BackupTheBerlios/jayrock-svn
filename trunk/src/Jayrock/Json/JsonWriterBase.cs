@@ -149,8 +149,8 @@ namespace Jayrock.Json
         protected abstract void WriteNumberImpl(string value);
         protected abstract void WriteBooleanImpl(bool value);
         protected abstract void WriteNullImpl();
-        
-        public JsonTokenClass CurrentBracket
+
+        private JsonTokenClass CurrentBracket
         {
             get { return _currentBracket; }
             set { _currentBracket = value; }
