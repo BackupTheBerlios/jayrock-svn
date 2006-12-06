@@ -217,6 +217,7 @@ namespace Jayrock.Json
         {
             switch (NextClean())
             {
+                case ';':
                 case ',':
                 {
                     if (NextClean() == ']')

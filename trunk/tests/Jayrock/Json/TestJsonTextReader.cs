@@ -490,6 +490,105 @@ namespace Jayrock.Json
             Assert.IsFalse(reader.Read());
         }
 
+        [ Test ]
+        public void ExtraCommaAfterLastObjectMemberAllowded()
+        {
+            JsonReader reader = CreateReader("{ 'member':'value',}");
+            reader.ReadToken(JsonTokenClass.Object);
+            Assert.AreEqual("member", reader.ReadMember());
+            Assert.AreEqual("value", reader.ReadString());
+            Assert.AreSame(JsonTokenClass.EndObject, reader.TokenClass);
+        }
+
+        [ Test ]
+        public void ExtraCommaAfterLastArrayElementAllowed()
+        {
+            JsonReader reader = CreateReader("[4,2,]");
+            reader.ReadToken(JsonTokenClass.Array);
+            Assert.AreEqual(4, reader.ReadNumber().ToInt32());
+            Assert.AreEqual(2, reader.ReadNumber().ToInt32());
+            Assert.AreSame(JsonTokenClass.EndArray, reader.TokenClass);
+        }
+
+        [ Test ]
+        public void AlternateKeyDelimiters()
+        {
+            JsonReader reader = CreateReader("{ 'm1' = 'v1', 'm2' => 'v2' }");
+            reader.ReadToken(JsonTokenClass.Object);
+            Assert.AreEqual("m1", reader.ReadMember());
+            Assert.AreEqual("v1", reader.ReadString());
+            Assert.AreEqual("m2", reader.ReadMember());
+            Assert.AreEqual("v2", reader.ReadString());
+            Assert.AreSame(JsonTokenClass.EndObject, reader.TokenClass);
+        }
+
+        [ Test ]
+        public void MemberValuesMayBeDelimitedBySemiColon()
+        {
+            JsonReader reader = CreateReader("{ 'm1' = 'v1'; 'm2' => 'v2' }");
+            reader.ReadToken(JsonTokenClass.Object);
+            Assert.AreEqual("m1", reader.ReadMember());
+            Assert.AreEqual("v1", reader.ReadString());
+            Assert.AreEqual("m2", reader.ReadMember());
+            Assert.AreEqual("v2", reader.ReadString());
+            Assert.AreSame(JsonTokenClass.EndObject, reader.TokenClass);
+        }
+
+        [ Test ]
+        public void ArrayValuesMayBeDelimitedBySemiColon()
+        {
+            JsonReader reader = CreateReader("[1;2;3]");
+            reader.ReadToken(JsonTokenClass.Array);
+            Assert.AreEqual(1, reader.ReadNumber().ToInt32());
+            Assert.AreEqual(2, reader.ReadNumber().ToInt32());
+            Assert.AreEqual(3, reader.ReadNumber().ToInt32());
+            Assert.AreSame(JsonTokenClass.EndArray, reader.TokenClass);
+        }
+
+        [ Test ]
+        public void SlashSlashComment()
+        {
+            JsonReader reader = CreateReader(@"
+            [
+                1,
+                // 2, this is a single line comment
+                3
+            ]");
+            reader.ReadToken(JsonTokenClass.Array);
+            Assert.AreEqual(1, reader.ReadNumber().ToInt32());
+            Assert.AreEqual(3, reader.ReadNumber().ToInt32());
+            Assert.AreSame(JsonTokenClass.EndArray, reader.TokenClass);
+        }
+
+        [ Test ]
+        public void SlashStarComment()
+        {
+            JsonReader reader = CreateReader(@"
+            [ /*
+                1,
+                // 2, this is a single line comment
+                3 */
+            ]");
+            reader.ReadToken(JsonTokenClass.Array);
+            Assert.AreSame(JsonTokenClass.EndArray, reader.TokenClass);
+        }
+
+        [ Test ]
+        public void HashComment()
+        {
+            JsonReader reader = CreateReader(@"
+            [
+                1, # one
+                2, # two
+                3  # three
+            ]");
+            reader.ReadToken(JsonTokenClass.Array);
+            Assert.AreEqual(1, reader.ReadNumber().ToInt32());
+            Assert.AreEqual(2, reader.ReadNumber().ToInt32());
+            Assert.AreEqual(3, reader.ReadNumber().ToInt32());
+            Assert.AreSame(JsonTokenClass.EndArray, reader.TokenClass);
+        }
+
         private void AssertTokenText(JsonTokenClass token, string text)
         {
             Assert.IsTrue(_reader.Read());
