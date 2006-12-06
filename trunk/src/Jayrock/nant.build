@@ -89,9 +89,15 @@
     </target>
 
     <target name="all">
-        <call target="cover" />
+        
+        <echo message="NOTE: Code coverage has been disabled in the &apos;all&apos;" />
+        <echo message="target since NCover appears to fail on some machines." />
+        <echo message="To get code coverage, build the &apos;cover&apos; target." />
+        
+        <call target="test" />
         <call target="debug" />
         <call target="release" />
+
     </target>
 
     <target name="test" depends="compile-test">
