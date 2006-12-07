@@ -58,7 +58,7 @@ namespace Jayrock.Json
         [ Test ]
         public void GreaterThanEscaping()
         {
-            Assert.AreEqual("\"foo <b\\>bold</b\\> bar\"", JsonString.Enquote("foo <b>bold</b> bar"));
+            Assert.AreEqual("\"foo <b>bold<\\/b> bar\"", JsonString.Enquote("foo <b>bold</b> bar"));
         }
 
         [ Test ]

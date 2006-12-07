@@ -60,18 +60,29 @@ namespace Jayrock.Json
                 sb = new StringBuilder(length + 4);
             
             sb.Append('"');
-
+            
+            char last;
+            char ch = '\0';
+            
             for (int index = 0; index < length; index++)
             {
-                char ch = s[index];
+                last = ch;
+                ch = s[index];
 
                 switch (ch)
                 {
                     case '\\':
                     case '"':
-                    case '>':
                     {
                         sb.Append('\\');
+                        sb.Append(ch);
+                        break;
+                    }
+                        
+                    case '/':
+                    {
+                        if (last == '<')
+                            sb.Append('\\');
                         sb.Append(ch);
                         break;
                     }
