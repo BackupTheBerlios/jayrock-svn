@@ -125,8 +125,27 @@ namespace Jayrock.JsonRpc
 
         public JsonRpcMethod FindMethodByName(string name)
         {
+            //
+            // First make a quick, case-sensitive look-up.
+            //
+            
             int i = InvariantStringArray.BinarySearch(_methodNames, name);
-            return i >= 0 ? _sortedMethods[i] : null;
+            
+            if (i >= 0)
+                return _sortedMethods[i];
+            
+            //
+            // Failing, use a slower case-insensitive look-up.
+            // TODO: Consider speeding up FindMethodByName for case-insensitive look-ups.
+            //
+
+            foreach (JsonRpcMethod method in _methods)
+            {
+                if (CaselessString.Equals(method.Name, name))
+                    return method;
+            }
+            
+            return null;
         }
 
         public JsonRpcMethod GetMethodByName(string name)

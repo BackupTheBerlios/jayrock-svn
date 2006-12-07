@@ -68,11 +68,26 @@ namespace Jayrock.JsonRpc.Web
             writer.WriteNumber(0);
             
             writer.WriteMember("method");
+            
             string methodName = Mask.NullString(Request.PathInfo);
+            
             if (methodName.Length == 0)
+            {
                 writer.WriteNull();
+            }
             else
-                writer.WriteString(methodName.Substring(1));
+            {
+                //
+                // If the method name contains periods then we replace it
+                // with dashes to mean the one and same thing. This is
+                // done to provide dashes as an alternative to some periods
+                // since some web servers may block requests (for security
+                // reasons) if a path component of the URL contains more
+                // than one period.
+                //
+                
+                writer.WriteString(methodName.Substring(1).Replace('-', '.'));
+            }
             
             writer.WriteMember("params");
             NameValueCollection query = new NameValueCollection(Request.QueryString);

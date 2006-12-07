@@ -30,7 +30,7 @@ namespace Jayrock.JsonRpc
     #endregion
 
     [ TestFixture ]
-    public class TestRpcServiceClass
+    public class TestJsonRpcServiceClass
     {
         [ Test, ExpectedException(typeof(ArgumentNullException)) ]
         public void NullType()
@@ -64,6 +64,13 @@ namespace Jayrock.JsonRpc
         {
             JsonRpcServiceClass clazz = JsonRpcServiceClass.FromType(typeof(TestService));
             Assert.AreEqual("MyService", clazz.Name);
+        }
+
+        [ Test ]
+        public void MethodLookupIsCaseInsensitive()
+        {
+            JsonRpcServiceClass clazz = JsonRpcServiceClass.FromType(typeof(TestService));
+            Assert.IsNotNull(clazz.FindMethodByName("FOO"));
         }
         
         private sealed class EmptyService

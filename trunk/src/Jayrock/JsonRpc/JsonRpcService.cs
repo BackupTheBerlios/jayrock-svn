@@ -49,7 +49,7 @@ namespace Jayrock.JsonRpc
         /// See http://scripts.incutio.com/xmlrpc/introspection.html.
         /// </remarks>
 
-        [ JsonRpcMethod("system.listMethods") ]
+        [ JsonRpcMethod("system.listMethods", Idempotent = true) ]
         [ JsonRpcHelp("Returns an array of method names implemented by this service.") ]
         public virtual string[] SystemListMethods()
         {
@@ -62,15 +62,15 @@ namespace Jayrock.JsonRpc
             return names;
         }
 
-        [ JsonRpcMethod("system.version") ]
-        [ JsonRpcHelp("Returns the version JSON-RPC server implementation using the major, minor, build and revision format.") ]
+        [ JsonRpcMethod("system.version", Idempotent = true) ]
+        [ JsonRpcHelp("Returns the version server implementation using the major, minor, build and revision format.") ]
         public virtual string SystemVersion()
         {
             return typeof(JsonRpcService).Assembly.GetName().Version.ToString();
         }
 
-        [ JsonRpcMethod("system.about") ]
-        [ JsonRpcHelp("Returns a summary about the JSON-RPC server implementation for display purposes.") ]
+        [ JsonRpcMethod("system.about", Idempotent = true) ]
+        [ JsonRpcHelp("Returns a summary about the server implementation for display purposes.") ]
         public virtual string SystemAbout()
         {
             StringWriter writer = new StringWriter();
