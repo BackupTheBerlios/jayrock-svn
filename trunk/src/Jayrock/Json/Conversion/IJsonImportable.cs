@@ -22,6 +22,11 @@
 
 namespace Jayrock.Json.Conversion
 {
+    /// <summary>
+    /// This interface allows objects to provide their own implementation for
+    /// exporting as JSON.
+    /// </summary>
+
     public interface IJsonImportable
     {
         void Import(ImportContext context, JsonReader reader);
