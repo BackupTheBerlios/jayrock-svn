@@ -30,7 +30,7 @@ namespace Jayrock.Json
 
     #endregion
 
-    internal sealed class JsonString
+    public sealed class JsonString
     {
         /// <summary>
         /// Produces a string in double quotes with backslash sequences in all
@@ -40,9 +40,8 @@ namespace Jayrock.Json
         /// message.
         /// </returns>
         /// <remarks>
-        /// <para>
         /// Public Domain 2002 JSON.org, ported to C# by Are Bjolseth
-        /// (teleplan.no) and re-adapted by Atif Aziz (www.raboof.com)</para>
+        /// (teleplan.no) and nearly re-written by Atif Aziz (www.raboof.com)
         /// </remarks>
     
         public static string Enquote(string s)
@@ -50,48 +49,57 @@ namespace Jayrock.Json
             if (s == null || s.Length == 0)
                 return "\"\"";
 
-            int length = s.Length;
-            StringBuilder sb = new StringBuilder(length + 4);
-
+            return Enquote(s, null).ToString();
+        }
+        
+        public static StringBuilder Enquote(string s, StringBuilder sb)
+        {
+            int length = Mask.NullString(s).Length;
+            
+            if (sb == null)
+                sb = new StringBuilder(length + 4);
+            
             sb.Append('"');
 
             for (int index = 0; index < length; index++)
             {
                 char ch = s[index];
 
-                if ((ch == '\\') || (ch == '"') || (ch == '>'))
+                switch (ch)
                 {
-                    sb.Append('\\');
-                    sb.Append(ch);
-                }
-                else if (ch == '\b')
-                    sb.Append("\\b");
-                else if (ch == '\t')
-                    sb.Append("\\t");
-                else if (ch == '\n')
-                    sb.Append("\\n");
-                else if (ch == '\f')
-                    sb.Append("\\f");
-                else if (ch == '\r')
-                    sb.Append("\\r");
-                else
-                {
-                    if (ch < ' ')
+                    case '\\':
+                    case '"':
+                    case '>':
                     {
-                        //t = "000" + Integer.toHexString(c);
-                        //string tmp = new string(ch, 1);
-                        string t = "000" + ((int) ch).ToString(CultureInfo.InvariantCulture);
-                        sb.Append("\\u" + t.Substring(t.Length - 4));
-                    }
-                    else
-                    {
+                        sb.Append('\\');
                         sb.Append(ch);
+                        break;
+                    }
+                    
+                    case '\b': sb.Append("\\b"); break;
+                    case '\t': sb.Append("\\t"); break;
+                    case '\n': sb.Append("\\n"); break;
+                    case '\f': sb.Append("\\f"); break;
+                    case '\r': sb.Append("\\r"); break;
+                    
+                    default:
+                    {
+                        if (ch < ' ')
+                        {
+                            sb.Append("\\u");
+                            sb.Append(((int) ch).ToString("x4", CultureInfo.InvariantCulture));
+                        }
+                        else
+                        {
+                            sb.Append(ch);
+                        }
+                    
+                        break;
                     }
                 }
             }
 
-            sb.Append('"');
-            return sb.ToString();
+            return sb.Append('"');
         }
 
         private JsonString()
