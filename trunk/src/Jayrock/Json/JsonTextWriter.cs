@@ -42,12 +42,9 @@ namespace Jayrock.Json
         private readonly TextWriter _writer;
 
         private Stack _stack;
+        
         private object _currentBracket = _noBracket;
-
-        private bool _prettyPrint;
-        private bool _newLine;
-        private int _indent;
-
+        
         private static readonly object _noBracket = Bracket.None;
         private static readonly object _newObjectBracket = Bracket.NewObject;
         private static readonly object _runningObjectBracket = Bracket.RunningObject;
@@ -62,6 +59,22 @@ namespace Jayrock.Json
             NewArray,
             RunningArray
         }
+
+        //
+        // Pretty printing as per:
+        // http://developer.mozilla.org/es4/proposals/json_encoding_and_decoding.html
+        //
+        // <quote>
+        // ...linefeeds are inserted after each { and , and before } , and multiples 
+        // of 4 spaces are inserted to indicate the level of nesting, and one space 
+        // will be inserted after :. Otherwise, no whitespace is inserted between 
+        // the tokens.
+        // </quote>
+        //
+        
+        private bool _prettyPrint;
+        private bool _newLine;
+        private int _indent;
 
         public JsonTextWriter() :
             this(null) {}
@@ -171,7 +184,10 @@ namespace Jayrock.Json
             BeforeWrite();
 
             if (_prettyPrint && _newLine)
+            {
+                // TODO: Cache indentation string.
                 _writer.Write(new string(' ', _indent * 4));
+            }
 
             _newLine = false;
             
