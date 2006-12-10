@@ -20,14 +20,9 @@
 //
 #endregion
 
-namespace Jayrock.JsonRpc
+namespace Jayrock.Services
 {
-    #region Imports
-
     using System;
-    using Jayrock.Services;
-
-    #endregion
 
     public interface IMethodImpl
     {
@@ -36,3 +31,4 @@ namespace Jayrock.JsonRpc
         object EndInvoke(IAsyncResult asyncResult);
     }
 }
+

@@ -84,7 +84,7 @@ namespace Jayrock.JsonRpc
 
             builder.InternalName = method.Name;
             builder.ResultType = method.ReturnType;
-            builder.Handler = new MethodDispatcher(method);
+            builder.Handler = new TypeMethodImpl(method);
             
             //
             // Build via attributes.
@@ -138,132 +138,6 @@ namespace Jayrock.JsonRpc
         private JsonRpcServiceReflector()
         {
             throw new NotSupportedException();
-        }
-
-        [ Serializable ]
-        private sealed class MethodDispatcher : IMethodImpl
-        {
-            private readonly MethodInfo _method;
-
-            public MethodDispatcher(MethodInfo method)
-            {
-                Debug.Assert(method != null);
-                
-                _method = method;
-            }
-
-            public object Invoke(IService service, object[] args)
-            {
-                if (service == null)
-                    throw new ArgumentNullException("service");
-
-                try
-                {
-                    return _method.Invoke(service, args);
-                }
-                catch (ArgumentException e)
-                {
-                    throw TranslateException(e);
-                }
-                catch (TargetParameterCountException e)
-                {
-                    throw TranslateException(e);
-                }
-                catch (TargetInvocationException e)
-                {
-                    throw TranslateException(e);
-                }
-            }
-
-            public IAsyncResult BeginInvoke(IService service, object[] args, AsyncCallback callback, object asyncState)
-            {
-                if (service == null)
-                    throw new ArgumentNullException("service");
-
-                SynchronousAsyncResult asyncResult;
-
-                try
-                {
-                    object result = Invoke(service, args);
-                    asyncResult = SynchronousAsyncResult.Success(asyncState, result);
-                }
-                catch (Exception e)
-                {
-                    asyncResult = SynchronousAsyncResult.Failure(asyncState, e);
-                }
-
-                if (callback != null)
-                    callback(asyncResult);
-                
-                return asyncResult;
-            }
-
-            public object EndInvoke(IAsyncResult asyncResult)
-            {
-                if (asyncResult == null)
-                    throw new ArgumentException("asyncResult");
-
-                SynchronousAsyncResult ar = asyncResult as SynchronousAsyncResult;
-
-                if (ar == null)
-                    throw new ArgumentException("asyncResult", "IAsyncResult object did not come from the corresponding async method on this type.");
-
-                try
-                {
-                    //
-                    // IMPORTANT! The End method on SynchronousAsyncResult will 
-                    // throw an exception if that's what Invoke did when 
-                    // BeginInvoke called it. The unforunate side effect of this is
-                    // the stack trace information for the exception is lost and 
-                    // reset to this point. There seems to be a basic failure in the 
-                    // framework to accommodate for this case more generally. One 
-                    // could handle this through a custom exception that wraps the 
-                    // original exception, but this assumes that an invocation will 
-                    // only throw an exception of that custom type. We need to 
-                    // think more about this.
-                    //
-
-                    return ar.End("Invoke");
-                }
-                catch (ArgumentException e)
-                {
-                    throw TranslateException(e);
-                }
-                catch (TargetParameterCountException e)
-                {
-                    throw TranslateException(e);
-                }
-                catch (TargetInvocationException e)
-                {
-                    throw TranslateException(e);
-                }
-            }
-
-            private Exception TranslateException(ArgumentException e)
-            {
-                //
-                // The type of the parameter does not match the signature
-                // of the method or constructor reflected by this
-                // instance.
-                //
-
-                return new InvocationException(e);
-            }
-
-            private static Exception TranslateException(TargetParameterCountException e)
-            {
-                //
-                // The parameters array does not have the correct number of
-                // arguments.
-                //
-
-                return new InvocationException(e.Message, e);
-            }
-
-            private static Exception TranslateException(TargetInvocationException e)
-            {
-                return new TargetMethodException(e.InnerException);
-            }
         }
     }
 
