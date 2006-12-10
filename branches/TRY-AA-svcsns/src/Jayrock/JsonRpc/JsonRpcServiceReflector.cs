@@ -22,18 +22,38 @@
 
 namespace Jayrock.JsonRpc
 {
+    #region Imports
+
     using System;
+    using System.Collections;
     using System.Diagnostics;
     using System.Reflection;
     using Jayrock.Services;
 
+    #endregion
+
     internal sealed class JsonRpcServiceReflector
     {
+        private static readonly Hashtable _classByTypeCache = Hashtable.Synchronized(new Hashtable());
+        
         public static ServiceClass FromType(Type type)
         {
             if (type == null)
                 throw new ArgumentNullException("type");
-            
+
+            ServiceClass clazz = (ServiceClass) _classByTypeCache[type];
+
+            if (clazz == null)
+            {
+                clazz = BuildFromType(type);
+                _classByTypeCache[type] = clazz;
+            }
+
+            return clazz;
+        }
+
+        private static ServiceClass BuildFromType(Type type)
+        {
             ServiceClassBuilder builder = new ServiceClassBuilder();
             BuildClass(builder, type);
             return builder.CreateClass();

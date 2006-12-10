@@ -232,7 +232,7 @@ namespace Jayrock.JsonRpc
         {
             public ServiceClass GetClass()
             {
-                return ServiceClass.FromType(GetType());
+                return JsonRpcServices.GetClassFromType(GetType());
             }
             
             [ JsonRpcMethod ]

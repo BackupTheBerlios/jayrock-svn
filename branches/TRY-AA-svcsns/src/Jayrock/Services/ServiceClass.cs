@@ -27,7 +27,6 @@ namespace Jayrock.Services
     using System;
     using System.Collections;
     using System.Diagnostics;
-    using Jayrock.JsonRpc;
 
     #endregion
 
@@ -40,24 +39,6 @@ namespace Jayrock.Services
         private readonly string[] _methodNames;             // FIXME: [ NonSerialized ]
         private readonly Method[] _sortedMethods;    // FIXME: [ NonSerialized ]
         
-        private static readonly Hashtable _classByTypeCache = Hashtable.Synchronized(new Hashtable());
-        
-        public static ServiceClass FromType(Type type)
-        {
-            if (type == null)
-                throw new ArgumentNullException("type");
-
-            ServiceClass clazz = (ServiceClass) _classByTypeCache[type];
-
-            if (clazz == null)
-            {
-                clazz = JsonRpcServiceReflector.FromType(type);
-                _classByTypeCache[type] = clazz;
-            }
-
-            return clazz;
-        }
-
         internal ServiceClass(ServiceClassBuilder classBuilder)
         {
             Debug.Assert(classBuilder != null);

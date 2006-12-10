@@ -39,54 +39,54 @@ namespace Jayrock.JsonRpc
         [ Test, ExpectedException(typeof(ArgumentNullException)) ]
         public void NullType()
         {
-            ServiceClass.FromType(null);
+            JsonRpcServices.GetClassFromType(null);
         }
 
         [ Test ]
         public void ServiceNameIsTypeName()
         {
-            ServiceClass clazz = ServiceClass.FromType(typeof(EmptyService));
+            ServiceClass clazz = JsonRpcServices.GetClassFromType(typeof(EmptyService));
             Assert.AreEqual("EmptyService", clazz.Name);
         }
 
         [ Test ]
         public void UntaggedMethodsNotExported()
         {
-            ServiceClass clazz = ServiceClass.FromType(typeof(EmptyService));
+            ServiceClass clazz = JsonRpcServices.GetClassFromType(typeof(EmptyService));
             Assert.AreEqual(0, clazz.GetMethods().Length);
         }
 
         [ Test ]
         public void TaggedMethodsExported()
         {
-            ServiceClass clazz = ServiceClass.FromType(typeof(TestService));
+            ServiceClass clazz = JsonRpcServices.GetClassFromType(typeof(TestService));
             Assert.AreEqual(4, clazz.GetMethods().Length);
         }
 
         [ Test ]
         public void CustomServiceName()
         {
-            ServiceClass clazz = ServiceClass.FromType(typeof(TestService));
+            ServiceClass clazz = JsonRpcServices.GetClassFromType(typeof(TestService));
             Assert.AreEqual("MyService", clazz.Name);
         }
         
         [ Test, ExpectedException(typeof(ArgumentNullException)) ]
         public void NullService()
         {
-            ServiceClass.FromType(null);
+            JsonRpcServices.GetClassFromType(null);
         }
 
         [ Test ]
         public void DefaultNameIsMethodName()
         {
-            ServiceClass clazz = ServiceClass.FromType(typeof(TestService));
+            ServiceClass clazz = JsonRpcServices.GetClassFromType(typeof(TestService));
             Assert.AreEqual("Foo", clazz.FindMethodByName("Foo").Name);
         }
 
         [ Test ]
         public void AffliatedWithService()
         {
-            ServiceClass clazz = ServiceClass.FromType(typeof(TestService));
+            ServiceClass clazz = JsonRpcServices.GetClassFromType(typeof(TestService));
             foreach (Method method in clazz.GetMethods())
                 Assert.AreSame(clazz, method.ServiceClass);
         }
@@ -94,7 +94,7 @@ namespace Jayrock.JsonRpc
         [ Test ]
         public void CustomNameViaAttribute()
         {
-            ServiceClass clazz = ServiceClass.FromType(typeof(TestService));
+            ServiceClass clazz = JsonRpcServices.GetClassFromType(typeof(TestService));
             Method method = clazz.FindMethodByName("Foo");
             Assert.AreEqual("Foo", method.Name);
             Assert.AreEqual("Foo", method.InternalName);
@@ -103,7 +103,7 @@ namespace Jayrock.JsonRpc
         [ Test ]
         public void AttributeFromMethod()
         {
-            ServiceClass clazz = ServiceClass.FromType(typeof(TestService));
+            ServiceClass clazz = JsonRpcServices.GetClassFromType(typeof(TestService));
             Method method = clazz.FindMethodByName("Baz");
             Assert.AreEqual("Baz", method.Name);
             Assert.AreEqual("Bar", method.InternalName);
@@ -112,7 +112,7 @@ namespace Jayrock.JsonRpc
         [ Test ]
         public void ResultTypeIsMethodReturnType()
         {
-            ServiceClass clazz = ServiceClass.FromType(typeof(TestService));
+            ServiceClass clazz = JsonRpcServices.GetClassFromType(typeof(TestService));
             Assert.AreEqual(typeof(void), clazz.GetMethodByName("Foo").ResultType);
             Assert.AreEqual(typeof(void), clazz.GetMethodByName("Baz").ResultType);
             Assert.AreEqual(typeof(int), clazz.GetMethodByName("Sum").ResultType);
@@ -122,7 +122,7 @@ namespace Jayrock.JsonRpc
         [ Test ]
         public void Parameters()
         {
-            ServiceClass clazz = ServiceClass.FromType(typeof(TestService));
+            ServiceClass clazz = JsonRpcServices.GetClassFromType(typeof(TestService));
             Parameter[] parameters = clazz.GetMethodByName("Sum").GetParameters();
             Assert.AreEqual(2, parameters.Length);
 
@@ -142,7 +142,7 @@ namespace Jayrock.JsonRpc
         [ Test ]
         public void ParamArray()
         {
-            ServiceClass clazz = ServiceClass.FromType(typeof(TestService));
+            ServiceClass clazz = JsonRpcServices.GetClassFromType(typeof(TestService));
 
             Assert.IsFalse(clazz.GetMethodByName("Foo").HasParamArray);
             Assert.IsFalse(clazz.GetMethodByName("Baz").HasParamArray);
@@ -166,7 +166,7 @@ namespace Jayrock.JsonRpc
         [ Test ]
         public void ObsoletedMethods()
         {
-            ServiceClass clazz = ServiceClass.FromType(typeof(TestService));
+            ServiceClass clazz = JsonRpcServices.GetClassFromType(typeof(TestService));
             
             Method method;
             
@@ -188,7 +188,7 @@ namespace Jayrock.JsonRpc
         [ Test ]
         public void Invocation()
         {
-            ServiceClass clazz = ServiceClass.FromType(typeof(TestService));
+            ServiceClass clazz = JsonRpcServices.GetClassFromType(typeof(TestService));
             TestService service = new TestService();
             object result = clazz.GetMethodByName("Sum").Invoke(service, null, new object[] { 2, 3 });
             Assert.AreEqual(5, result);
@@ -197,7 +197,7 @@ namespace Jayrock.JsonRpc
         [ Test ]
         public void MethodDescriptions()
         {
-            ServiceClass clazz = ServiceClass.FromType(typeof(TestService));
+            ServiceClass clazz = JsonRpcServices.GetClassFromType(typeof(TestService));
             Assert.AreEqual(0, clazz.GetMethodByName("Foo").Description.Length);
             Assert.AreEqual(0, clazz.GetMethodByName("Baz").Description.Length);
             Assert.AreEqual(0, clazz.GetMethodByName("Sum").Description.Length);
@@ -207,14 +207,14 @@ namespace Jayrock.JsonRpc
         [ Test ]
         public void ServiceDescription()
         {
-            Assert.AreEqual("A test service.", ServiceClass.FromType(typeof(TestService)).Description);
+            Assert.AreEqual("A test service.", JsonRpcServices.GetClassFromType(typeof(TestService)).Description);
         }
         
         [ Test ]
         public void CustomAttributes()
         {
             ArrayList expectedValues = new ArrayList(new int[] { 12, 34, 56 });
-            Attribute[] attributes = ServiceClass.FromType(typeof(TestService)).GetMethodByName("Foo").GetCustomAttributes();
+            Attribute[] attributes = JsonRpcServices.GetClassFromType(typeof(TestService)).GetMethodByName("Foo").GetCustomAttributes();
             Assert.AreEqual(3, attributes.Length);
             foreach (MyAttribute attribute in attributes)
                 expectedValues.Remove(attribute.TestValue);
@@ -224,7 +224,7 @@ namespace Jayrock.JsonRpc
         [ Test ]
         public void CustomAttributesAreCopied()
         {
-            Method method = ServiceClass.FromType(typeof(TestService)).GetMethodByName("Foo");
+            Method method = JsonRpcServices.GetClassFromType(typeof(TestService)).GetMethodByName("Foo");
             Assert.AreNotSame(method.GetCustomAttributes()[0], method.GetCustomAttributes()[0]);
         }
 
@@ -232,7 +232,7 @@ namespace Jayrock.JsonRpc
         public void FindFirstCustomAttribute()
         {
             ArrayList expectedValues = new ArrayList(new int[] { 12, 34, 56 });
-            Method method = ServiceClass.FromType(typeof(TestService)).GetMethodByName("Foo");
+            Method method = JsonRpcServices.GetClassFromType(typeof(TestService)).GetMethodByName("Foo");
             MyAttribute attribute = (MyAttribute) method.FindFirstCustomAttribute(typeof(MyAttribute));
             expectedValues.Remove(attribute.TestValue);
             Assert.AreEqual(2, expectedValues.Count);
@@ -241,14 +241,14 @@ namespace Jayrock.JsonRpc
         [ Test ]
         public void FindFirstCustomAttributeYieldsCopy()
         {
-            Method method = ServiceClass.FromType(typeof(TestService)).GetMethodByName("Foo");
+            Method method = JsonRpcServices.GetClassFromType(typeof(TestService)).GetMethodByName("Foo");
             Assert.AreNotSame(method.FindFirstCustomAttribute(typeof(MyAttribute)), method.FindFirstCustomAttribute(typeof(MyAttribute)));
         }
 
         [ Test ]
         public void MethodIdempotency()
         {
-            ServiceClass clazz = ServiceClass.FromType(typeof(IdempotencyTestService));
+            ServiceClass clazz = JsonRpcServices.GetClassFromType(typeof(IdempotencyTestService));
             Assert.IsFalse(clazz.GetMethodByName("NonIdempotentMethod").Idempotent);
             Assert.IsTrue(clazz.GetMethodByName("IdempotentMethod").Idempotent);
         }

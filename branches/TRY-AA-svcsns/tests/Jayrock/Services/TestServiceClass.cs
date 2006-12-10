@@ -36,41 +36,41 @@ namespace Jayrock.Services
         [ Test, ExpectedException(typeof(ArgumentNullException)) ]
         public void NullType()
         {
-            ServiceClass.FromType(null);
+            JsonRpcServices.GetClassFromType(null);
         }
 
         [ Test ]
         public void ServiceNameIsTypeName()
         {
-            ServiceClass clazz = ServiceClass.FromType(typeof(EmptyService));
+            ServiceClass clazz = JsonRpcServices.GetClassFromType(typeof(EmptyService));
             Assert.AreEqual("EmptyService", clazz.Name);
         }
 
         [ Test ]
         public void UntaggedMethodsNotExported()
         {
-            ServiceClass clazz = ServiceClass.FromType(typeof(EmptyService));
+            ServiceClass clazz = JsonRpcServices.GetClassFromType(typeof(EmptyService));
             Assert.AreEqual(0, clazz.GetMethods().Length);
         }
 
         [ Test ]
         public void TaggedMethodsExported()
         {
-            ServiceClass clazz = ServiceClass.FromType(typeof(TestService));
+            ServiceClass clazz = JsonRpcServices.GetClassFromType(typeof(TestService));
             Assert.AreEqual(2, clazz.GetMethods().Length);
         }
 
         [ Test ]
         public void CustomServiceName()
         {
-            ServiceClass clazz = ServiceClass.FromType(typeof(TestService));
+            ServiceClass clazz = JsonRpcServices.GetClassFromType(typeof(TestService));
             Assert.AreEqual("MyService", clazz.Name);
         }
 
         [ Test ]
         public void MethodLookupIsCaseInsensitive()
         {
-            ServiceClass clazz = ServiceClass.FromType(typeof(TestService));
+            ServiceClass clazz = JsonRpcServices.GetClassFromType(typeof(TestService));
             Assert.IsNotNull(clazz.FindMethodByName("FOO"));
         }
         

@@ -40,7 +40,7 @@ namespace Jayrock.JsonRpc
         public virtual ServiceClass GetClass()
         {
             if (_class == null)
-                _class = ServiceClass.FromType(GetType());
+                _class = JsonRpcServices.GetClassFromType(GetType());
 
             return _class;
         }

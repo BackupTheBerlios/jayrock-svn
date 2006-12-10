@@ -34,6 +34,14 @@ namespace Jayrock.JsonRpc
 
     public sealed class JsonRpcServices
     {
+        public static ServiceClass GetClassFromType(Type type)
+        {
+            if (type == null)
+                throw new ArgumentNullException("type");
+            
+            return JsonRpcServiceReflector.FromType(type);
+        }
+
         public static string GetServiceName(IService service)
         {
             return GetServiceName(service, "(anonymous)");
