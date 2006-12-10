@@ -35,12 +35,12 @@ namespace Jayrock.JsonRpc
 
     public class JsonRpcService : Component, IService
     {
-        private JsonRpcServiceClass _class;
+        private ServiceClass _class;
 
-        public virtual JsonRpcServiceClass GetClass()
+        public virtual ServiceClass GetClass()
         {
             if (_class == null)
-                _class = JsonRpcServiceClass.FromType(GetType());
+                _class = ServiceClass.FromType(GetType());
 
             return _class;
         }
@@ -54,7 +54,7 @@ namespace Jayrock.JsonRpc
         [ JsonRpcHelp("Returns an array of method names implemented by this service.") ]
         public virtual string[] SystemListMethods()
         {
-            JsonRpcMethod[] methods = GetClass().GetMethods();
+            Method[] methods = GetClass().GetMethods();
             string[] names = new string[methods.Length];
             
             for (int i = 0; i < methods.Length; i++)

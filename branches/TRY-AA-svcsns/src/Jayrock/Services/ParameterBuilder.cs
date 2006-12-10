@@ -26,22 +26,22 @@ namespace Jayrock.Services
     using System.Diagnostics;
 
     [ Serializable ]
-    public sealed class JsonRpcParameterBuilder
+    public sealed class ParameterBuilder
     {
         private string _name;
         private int _position;
         private Type _parameterType = typeof(object);
         private bool _isParamArray;
-        private JsonRpcMethodBuilder _method;
+        private MethodBuilder _method;
 
-        internal JsonRpcParameterBuilder(JsonRpcMethodBuilder method)
+        internal ParameterBuilder(MethodBuilder method)
         {
             Debug.Assert(method != null);
                 
             _method = method;
         }
 
-        public JsonRpcMethodBuilder Method
+        public MethodBuilder Method
         {
             get { return _method; }
         }

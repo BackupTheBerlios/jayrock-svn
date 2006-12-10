@@ -29,21 +29,21 @@ namespace Jayrock.Services
     using Jayrock.JsonRpc;
 
     [ Serializable ]
-    public sealed class JsonRpcMethod
+    public sealed class Method
     {
-        private readonly JsonRpcServiceClass _class;
+        private readonly ServiceClass _class;
         private readonly string _name;
         private readonly string _internalName;
         private readonly Type _resultType;
-        private readonly JsonRpcParameter[] _parameters;
+        private readonly Parameter[] _parameters;
         private readonly string[] _parameterNames;              // FIXME: [ NonSerialized ]
-        private readonly JsonRpcParameter[] _sortedParameters;  // FIXME: [ NonSerialized ]
+        private readonly Parameter[] _sortedParameters;  // FIXME: [ NonSerialized ]
         private readonly IMethodImpl _handler;
         private readonly string _description;
         private readonly bool _idempotent;
         private readonly Attribute[] _attributes;
 
-        internal JsonRpcMethod(JsonRpcMethodBuilder methodBuilder, JsonRpcServiceClass clazz)
+        internal Method(MethodBuilder methodBuilder, ServiceClass clazz)
         {
             Debug.Assert(methodBuilder != null);
             Debug.Assert(clazz != null);
@@ -62,12 +62,12 @@ namespace Jayrock.Services
             //
             
             ICollection parameterBuilders = methodBuilder.Parameters;
-            _parameters = new JsonRpcParameter[parameterBuilders.Count];
+            _parameters = new Parameter[parameterBuilders.Count];
             _parameterNames = new string[parameterBuilders.Count];
 
-            foreach (JsonRpcParameterBuilder parameterBuilder in parameterBuilders)
+            foreach (ParameterBuilder parameterBuilder in parameterBuilders)
             {
-                JsonRpcParameter parameter = new JsonRpcParameter(parameterBuilder, this);
+                Parameter parameter = new Parameter(parameterBuilder, this);
                 int position = parameter.Position;
                 _parameters[position] = parameter;
                 _parameterNames[position] = parameter.Name;
@@ -78,7 +78,7 @@ namespace Jayrock.Services
             // do fast look ups using binary search.
             //
             
-            _sortedParameters = (JsonRpcParameter[]) _parameters.Clone();
+            _sortedParameters = (Parameter[]) _parameters.Clone();
             InvariantStringArray.Sort(_parameterNames, _sortedParameters);
         }
 
@@ -92,7 +92,7 @@ namespace Jayrock.Services
             get { return _internalName; }
         }
         
-        public JsonRpcParameter[] GetParameters()
+        public Parameter[] GetParameters()
         {
             //
             // IMPORTANT! Never return the private array instance since the
@@ -100,7 +100,7 @@ namespace Jayrock.Services
             // well as the assumptions made in this implementation.
             //
 
-            return (JsonRpcParameter[]) _parameters.Clone();
+            return (Parameter[]) _parameters.Clone();
         }
 
         public Type ResultType
@@ -118,7 +118,7 @@ namespace Jayrock.Services
             get { return _idempotent; }
         }
 
-        public JsonRpcServiceClass ServiceClass
+        public ServiceClass ServiceClass
         {
             get { return _class; }
         }

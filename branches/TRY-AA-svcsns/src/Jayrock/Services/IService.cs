@@ -24,7 +24,7 @@ namespace Jayrock.Services
 {
     public interface IService
     {
-        JsonRpcServiceClass GetClass();
+        ServiceClass GetClass();
     }
 }
 

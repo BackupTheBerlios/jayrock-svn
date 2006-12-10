@@ -51,7 +51,7 @@ namespace Jayrock.JsonRpc
 
             string name = null;
     
-            JsonRpcServiceClass clazz = service.GetClass();
+            ServiceClass clazz = service.GetClass();
     
             if (clazz != null)
                 name = clazz.Name;

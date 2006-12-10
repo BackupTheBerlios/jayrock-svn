@@ -27,22 +27,22 @@ namespace Jayrock.Services
     using System.Diagnostics;
 
     [ Serializable ]
-    public sealed class JsonRpcServiceClass
+    public sealed class ServiceClass
     {
         private readonly string _serviceName;
         private readonly string _description;
-        private readonly JsonRpcMethod[] _methods;
+        private readonly Method[] _methods;
         private readonly string[] _methodNames;             // FIXME: [ NonSerialized ]
-        private readonly JsonRpcMethod[] _sortedMethods;    // FIXME: [ NonSerialized ]
+        private readonly Method[] _sortedMethods;    // FIXME: [ NonSerialized ]
         
         private static readonly Hashtable _classByTypeCache = Hashtable.Synchronized(new Hashtable());
         
-        public static JsonRpcServiceClass FromType(Type type)
+        public static ServiceClass FromType(Type type)
         {
             if (type == null)
                 throw new ArgumentNullException("type");
 
-            JsonRpcServiceClass clazz = (JsonRpcServiceClass) _classByTypeCache[type];
+            ServiceClass clazz = (ServiceClass) _classByTypeCache[type];
 
             if (clazz == null)
             {
@@ -53,7 +53,7 @@ namespace Jayrock.Services
             return clazz;
         }
 
-        internal JsonRpcServiceClass(JsonRpcServiceClassBuilder classBuilder)
+        internal ServiceClass(ServiceClassBuilder classBuilder)
         {
             Debug.Assert(classBuilder != null);
             
@@ -65,13 +65,13 @@ namespace Jayrock.Services
             //
 
             ICollection methodBuilders = classBuilder.Methods;
-            _methods = new JsonRpcMethod[methodBuilders.Count];
+            _methods = new Method[methodBuilders.Count];
             _methodNames = new string[methodBuilders.Count];
             int methodIndex = 0;
 
-            foreach (JsonRpcMethodBuilder methodBuilder in methodBuilders)
+            foreach (MethodBuilder methodBuilder in methodBuilders)
             {
-                JsonRpcMethod method = new JsonRpcMethod(methodBuilder, this);
+                Method method = new Method(methodBuilder, this);
 
                 //
                 // Check for duplicates.
@@ -93,7 +93,7 @@ namespace Jayrock.Services
             // do fast look ups using binary search.
             //
             
-            _sortedMethods = (JsonRpcMethod[]) _methods.Clone();
+            _sortedMethods = (Method[]) _methods.Clone();
             InvariantStringArray.Sort(_methodNames, _sortedMethods);
         }
 
@@ -107,7 +107,7 @@ namespace Jayrock.Services
             get { return _description; }
         }
 
-        public JsonRpcMethod[] GetMethods()
+        public Method[] GetMethods()
         {
             //
             // IMPORTANT! Never return the private array instance since the
@@ -115,10 +115,10 @@ namespace Jayrock.Services
             // well as the assumptions made in this implementation.
             //
 
-            return (JsonRpcMethod[]) _methods.Clone();
+            return (Method[]) _methods.Clone();
         }
 
-        public JsonRpcMethod FindMethodByName(string name)
+        public Method FindMethodByName(string name)
         {
             //
             // First make a quick, case-sensitive look-up.
@@ -134,7 +134,7 @@ namespace Jayrock.Services
             // TODO: Consider speeding up FindMethodByName for case-insensitive look-ups.
             //
 
-            foreach (JsonRpcMethod method in _methods)
+            foreach (Method method in _methods)
             {
                 if (CaselessString.Equals(method.Name, name))
                     return method;
@@ -143,9 +143,9 @@ namespace Jayrock.Services
             return null;
         }
 
-        public JsonRpcMethod GetMethodByName(string name)
+        public Method GetMethodByName(string name)
         {
-            JsonRpcMethod method = FindMethodByName(name);
+            Method method = FindMethodByName(name);
 
             if (method == null)
                 throw new MethodNotFoundException();

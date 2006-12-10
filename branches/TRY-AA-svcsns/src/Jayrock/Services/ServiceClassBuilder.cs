@@ -23,54 +23,58 @@
 namespace Jayrock.Services
 {
     using System;
-    using System.Diagnostics;
+    using System.Collections;
 
     [ Serializable ]
-    public sealed class JsonRpcParameter
+    public sealed class ServiceClassBuilder
     {
-        private readonly string _name;
-        private readonly Type _parameterType;
-        private readonly int _position;
-        private readonly bool _isParamArray;
-        private readonly JsonRpcMethod _method;
+        private string _name;
+        private ArrayList _methodList;
+        private string _description;
 
-        internal JsonRpcParameter(JsonRpcParameterBuilder builder, JsonRpcMethod method)
-        {
-            Debug.Assert(builder != null);
-            Debug.Assert(builder.Position >= 0);
-            Debug.Assert(method != null);
-            
-            _name = builder.Name;
-            _parameterType = builder.ParameterType;
-            _position = builder.Position;
-            _isParamArray = builder.IsParamArray;
-            _method = method;
-        }
-        
         public string Name
         {
-            get { return _name; }
+            get { return Mask.NullString(_name); }
+            set { _name = value; }
         }
 
-        public Type ParameterType
+        public string Description
         {
-            get { return _parameterType; }
+            get { return Mask.NullString(_description); }
+            set { _description = value; }
         }
 
-        public int Position
+        public ServiceClass CreateClass()
         {
-            get { return _position; }
+            return new ServiceClass(this);
         }
 
-        public JsonRpcMethod Method
+        public MethodBuilder DefineMethod()
         {
-            get { return _method; }
+            MethodBuilder builder = new MethodBuilder(this);
+            MethodList.Add(builder);
+            return builder;
         }
 
-        public bool IsParamArray
+        public ICollection Methods
         {
-            get { return _isParamArray; }
+            get { return MethodList; }
+        }
+
+        public bool HasMethods
+        {
+            get { return _methodList != null && _methodList.Count > 0; }
+        }
+
+        private ArrayList MethodList
+        {
+            get
+            {
+                if (_methodList == null)
+                    _methodList = new ArrayList();
+                
+                return _methodList;
+            }
         }
     }
 }
-

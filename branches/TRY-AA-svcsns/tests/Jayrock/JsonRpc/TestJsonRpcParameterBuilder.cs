@@ -33,13 +33,13 @@ namespace Jayrock.JsonRpc
     [ TestFixture ]
     public class TestJsonRpcParameterBuilder
     {
-        private JsonRpcMethodBuilder _methodBuilder;
-        private JsonRpcParameterBuilder _builder;
+        private MethodBuilder _methodBuilder;
+        private ParameterBuilder _builder;
 
         [ SetUp ]
         public void Init()
         {
-            _methodBuilder = (new JsonRpcServiceClassBuilder()).DefineMethod();
+            _methodBuilder = (new ServiceClassBuilder()).DefineMethod();
             _builder = _methodBuilder.DefineParameter();
         }
 

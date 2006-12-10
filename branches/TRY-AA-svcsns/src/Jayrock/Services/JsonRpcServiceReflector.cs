@@ -29,17 +29,17 @@ namespace Jayrock.Services
 
     internal sealed class JsonRpcServiceReflector
     {
-        public static JsonRpcServiceClass FromType(Type type)
+        public static ServiceClass FromType(Type type)
         {
             if (type == null)
                 throw new ArgumentNullException("type");
             
-            JsonRpcServiceClassBuilder builder = new JsonRpcServiceClassBuilder();
+            ServiceClassBuilder builder = new ServiceClassBuilder();
             BuildClass(builder, type);
             return builder.CreateClass();
         }
 
-        private static void BuildClass(JsonRpcServiceClassBuilder builder, Type type)
+        private static void BuildClass(ServiceClassBuilder builder, Type type)
         {
             //
             // Build via attributes.
@@ -77,7 +77,7 @@ namespace Jayrock.Services
             return !method.IsAbstract && Attribute.IsDefined(method, typeof(JsonRpcMethodAttribute));
         }
 
-        private static void BuildMethod(JsonRpcMethodBuilder builder, MethodInfo method)
+        private static void BuildMethod(MethodBuilder builder, MethodInfo method)
         {
             Debug.Assert(method != null);
             Debug.Assert(builder != null);
@@ -116,7 +116,7 @@ namespace Jayrock.Services
                 BuildParameter(builder.DefineParameter(), parameter);
         }
 
-        private static void BuildParameter(JsonRpcParameterBuilder builder, ParameterInfo parameter)
+        private static void BuildParameter(ParameterBuilder builder, ParameterInfo parameter)
         {
             Debug.Assert(parameter != null);
             Debug.Assert(builder != null);
@@ -269,17 +269,17 @@ namespace Jayrock.Services
 
     internal interface IServiceClassReflector
     {
-        void Build(JsonRpcServiceClassBuilder builder, Type type);
+        void Build(ServiceClassBuilder builder, Type type);
     }
 
     internal interface IMethodReflector
     {
-        void Build(JsonRpcMethodBuilder builder, MethodInfo method);
+        void Build(MethodBuilder builder, MethodInfo method);
     }
 
     internal interface IParameterReflector
     {
-        void Build(JsonRpcParameterBuilder builder, ParameterInfo parameter);
+        void Build(ParameterBuilder builder, ParameterInfo parameter);
     }
 }
 

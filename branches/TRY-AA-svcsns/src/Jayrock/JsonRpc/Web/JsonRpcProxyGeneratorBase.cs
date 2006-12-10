@@ -74,10 +74,10 @@ namespace Jayrock.JsonRpc.Web
             
             WriteProlog(writer);
             
-            JsonRpcServiceClass serviceClass = Service.GetClass();
+            ServiceClass serviceClass = Service.GetClass();
             WriteClass(writer, serviceClass);
 
-            foreach (JsonRpcMethod method in serviceClass.GetMethods())
+            foreach (Method method in serviceClass.GetMethods())
                 WriteMethod(writer, method);
             
             WriteClassTail(writer, serviceClass);
@@ -100,9 +100,9 @@ namespace Jayrock.JsonRpc.Web
 
         protected abstract string ClientFileName { get; }
         
-        protected abstract void WriteClass(IndentedTextWriter writer, JsonRpcServiceClass serviceClass);
-        protected abstract void WriteMethod(IndentedTextWriter writer, JsonRpcMethod method);
-        protected abstract void WriteClassTail(IndentedTextWriter writer, JsonRpcServiceClass serviceClass);
+        protected abstract void WriteClass(IndentedTextWriter writer, ServiceClass serviceClass);
+        protected abstract void WriteMethod(IndentedTextWriter writer, Method method);
+        protected abstract void WriteClassTail(IndentedTextWriter writer, ServiceClass serviceClass);
 
         private bool Modified()
         {

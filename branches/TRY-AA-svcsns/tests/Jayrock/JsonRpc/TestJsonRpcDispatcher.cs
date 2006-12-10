@@ -230,9 +230,9 @@ namespace Jayrock.JsonRpc
 
         private class TestService2 : IService
         {
-            public JsonRpcServiceClass GetClass()
+            public ServiceClass GetClass()
             {
-                return JsonRpcServiceClass.FromType(GetType());
+                return ServiceClass.FromType(GetType());
             }
             
             [ JsonRpcMethod ]

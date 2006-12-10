@@ -28,7 +28,7 @@ namespace Jayrock.Services
     using Jayrock.JsonRpc;
 
     [ Serializable ]
-    public sealed class JsonRpcMethodBuilder
+    public sealed class MethodBuilder
     {
         private string _name;
         private string _internalName;
@@ -36,17 +36,17 @@ namespace Jayrock.Services
         private ArrayList _parameterList;
         private IMethodImpl _handler;
         private string _description;
-        private readonly JsonRpcServiceClassBuilder _serviceClass;
+        private readonly ServiceClassBuilder _serviceClass;
         private ArrayList _attributes;
         private bool _idempotent;
 
-        internal JsonRpcMethodBuilder(JsonRpcServiceClassBuilder serviceClass)
+        internal MethodBuilder(ServiceClassBuilder serviceClass)
         {
             Debug.Assert(serviceClass != null);
             _serviceClass = serviceClass;
         }
 
-        public JsonRpcServiceClassBuilder ServiceClass
+        public ServiceClassBuilder ServiceClass
         {
             get { return _serviceClass; }
         }
@@ -111,9 +111,9 @@ namespace Jayrock.Services
             set { _idempotent = value; }
         }
 
-        public JsonRpcParameterBuilder DefineParameter()
+        public ParameterBuilder DefineParameter()
         {
-            JsonRpcParameterBuilder builder = new JsonRpcParameterBuilder(this);
+            ParameterBuilder builder = new ParameterBuilder(this);
             builder.Position = ParameterList.Count;
             ParameterList.Add(builder);
             return builder;

@@ -49,12 +49,12 @@ namespace Jayrock.JsonRpc
             set { _text = value; }
         }
 
-        void IServiceClassReflector.Build(JsonRpcServiceClassBuilder builder, Type type)
+        void IServiceClassReflector.Build(ServiceClassBuilder builder, Type type)
         {
             builder.Description = Text;
         }
 
-        void IMethodReflector.Build(JsonRpcMethodBuilder builder, MethodInfo method)
+        void IMethodReflector.Build(MethodBuilder builder, MethodInfo method)
         {
             builder.Description = Text;
         }

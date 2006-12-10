@@ -54,7 +54,7 @@ namespace Jayrock.JsonRpc
             set { _message = value; }
         }
 
-        void IMethodReflector.Build(JsonRpcMethodBuilder builder, MethodInfo method)
+        void IMethodReflector.Build(MethodBuilder builder, MethodInfo method)
         {
             builder.AddCustomAttribute(this);
         }

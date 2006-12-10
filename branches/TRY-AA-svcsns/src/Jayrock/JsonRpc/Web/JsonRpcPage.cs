@@ -36,8 +36,8 @@ namespace Jayrock.JsonRpc.Web
     internal abstract class JsonRpcPage : Page, IServiceBinding
     {
         private readonly IService _service;
-        private JsonRpcServiceClass _serviceClass;
-        private JsonRpcMethod[] _methods;
+        private ServiceClass _serviceClass;
+        private Method[] _methods;
         private bool _serviceClassInitialized;
         private HtmlGenericControl _head;
         private HtmlGenericControl _body;
@@ -55,7 +55,7 @@ namespace Jayrock.JsonRpc.Web
             get { return _service; }
         }
 
-        protected JsonRpcServiceClass ServiceClass
+        protected ServiceClass ServiceClass
         {
             get
             {
@@ -69,13 +69,13 @@ namespace Jayrock.JsonRpc.Web
             }
         }
 
-        protected JsonRpcMethod[] SortedMethods
+        protected Method[] SortedMethods
         {
             get
             {
                 if (_methods == null)
                 {
-                    JsonRpcMethod[] methods = ServiceClass.GetMethods();
+                    Method[] methods = ServiceClass.GetMethods();
                     Array.Sort(methods, new MethodNameComparer());
                     _methods = methods;
                 }
@@ -150,8 +150,8 @@ namespace Jayrock.JsonRpc.Web
         {
             public int Compare(object x, object y)
             {
-                JsonRpcMethod methodX = (JsonRpcMethod) x;
-                JsonRpcMethod methodY = (JsonRpcMethod) y;
+                Method methodX = (Method) x;
+                Method methodY = (Method) y;
                 return string.Compare(methodX.Name, methodY.Name, false, CultureInfo.InvariantCulture);
             }
         }

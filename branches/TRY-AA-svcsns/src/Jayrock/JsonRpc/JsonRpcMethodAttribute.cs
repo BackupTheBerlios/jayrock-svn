@@ -56,7 +56,7 @@ namespace Jayrock.JsonRpc
             set { _idempotent = value; }
         }
 
-        void IMethodReflector.Build(JsonRpcMethodBuilder builder, MethodInfo method)
+        void IMethodReflector.Build(MethodBuilder builder, MethodInfo method)
         {
             builder.Name = Name;
             builder.Idempotent = Idempotent;
