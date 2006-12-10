@@ -20,18 +20,25 @@
 //
 #endregion
 
-namespace Jayrock.JsonRpc
+namespace Jayrock.Services
 {
-    #region Imports
-
     using System;
+    using System.Runtime.Serialization;
 
-    #endregion
-
-    public interface IMethodImpl
+    [ Serializable ]
+    public class DuplicateMethodException : System.ApplicationException
     {
-        object Invoke(IService service, object[] args);
-        IAsyncResult BeginInvoke(IService service, object[] args, AsyncCallback callback, object asyncState);
-        object EndInvoke(IAsyncResult asyncResult);
+        private const string _defaultMessage = "A method with the same name has been defined elsewhere on the service.";
+        
+        public DuplicateMethodException() : this(null) {}
+
+        public DuplicateMethodException(string message) : 
+            base(Mask.NullString(message, _defaultMessage)) {}
+
+        public DuplicateMethodException(string message, Exception innerException) :
+            base(Mask.NullString(message, _defaultMessage), innerException) {}
+
+        protected DuplicateMethodException(SerializationInfo info, StreamingContext context) :
+            base(info, context) {}
     }
 }

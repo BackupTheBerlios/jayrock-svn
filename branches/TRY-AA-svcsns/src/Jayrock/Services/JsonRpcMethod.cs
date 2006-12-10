@@ -20,16 +20,13 @@
 //
 #endregion
 
-namespace Jayrock.JsonRpc
+namespace Jayrock.Services
 {
-    #region Imports
-
     using System;
     using System.Collections;
     using System.Diagnostics;
     using System.Globalization;
-
-    #endregion
+    using Jayrock.JsonRpc;
 
     [ Serializable ]
     public sealed class JsonRpcMethod
@@ -352,8 +349,8 @@ namespace Jayrock.JsonRpc
             //
             
             return expected.IsSealed ? 
-                   expected.Equals(actual) : 
-                   expected.IsAssignableFrom(actual);
+                expected.Equals(actual) : 
+                expected.IsAssignableFrom(actual);
         }
 
         private static Attribute[] DeepCopy(Attribute[] originals)
@@ -373,3 +370,4 @@ namespace Jayrock.JsonRpc
         }
     }
 }
+

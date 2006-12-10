@@ -30,6 +30,7 @@ namespace Jayrock.JsonRpc.Web
     using System.Security;
     using System.Web;
     using Jayrock.Json;
+    using Jayrock.Services;
 
     #endregion
 

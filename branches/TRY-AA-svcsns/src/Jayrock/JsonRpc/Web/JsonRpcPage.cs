@@ -29,6 +29,7 @@ namespace Jayrock.JsonRpc.Web
     using System.Globalization;
     using System.Web.UI;
     using System.Web.UI.HtmlControls;
+    using Jayrock.Services;
 
     #endregion
 

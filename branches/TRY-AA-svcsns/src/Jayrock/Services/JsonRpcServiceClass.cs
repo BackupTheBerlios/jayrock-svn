@@ -20,16 +20,11 @@
 //
 #endregion
 
-namespace Jayrock.JsonRpc
+namespace Jayrock.Services
 {
-    #region Imports
-
     using System;
     using System.Collections;
     using System.Diagnostics;
-    using System.Globalization;
-
-    #endregion
 
     [ Serializable ]
     public sealed class JsonRpcServiceClass
@@ -159,3 +154,4 @@ namespace Jayrock.JsonRpc
         }
     }
 }
+

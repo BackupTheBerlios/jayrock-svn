@@ -28,6 +28,7 @@ namespace Jayrock.JsonRpc
     using System.Collections;
     using Jayrock.Json;
     using Jayrock.Json.Conversion;
+    using Jayrock.Services;
 
     #endregion
 

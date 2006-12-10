@@ -20,16 +20,12 @@
 //
 #endregion
 
-namespace Jayrock.JsonRpc
+namespace Jayrock.Services
 {
-    #region Imports
-
     using System;
     using System.Diagnostics;
     using System.Reflection;
-    using System.Xml.Schema;
-
-    #endregion
+    using Jayrock.JsonRpc;
 
     internal sealed class JsonRpcServiceReflector
     {
@@ -286,3 +282,4 @@ namespace Jayrock.JsonRpc
         void Build(JsonRpcParameterBuilder builder, ParameterInfo parameter);
     }
 }
+

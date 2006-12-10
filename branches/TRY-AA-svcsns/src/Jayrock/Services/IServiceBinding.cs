@@ -20,31 +20,11 @@
 //
 #endregion
 
-namespace Jayrock.JsonRpc
+namespace Jayrock.Services
 {
-    #region Imports
-
-    using System;
-
-    using SerializationInfo = System.Runtime.Serialization.SerializationInfo;
-    using StreamingContext = System.Runtime.Serialization.StreamingContext;
-
-    #endregion
-
-    [ Serializable ]
-    public class MethodNotFoundException : System.ApplicationException
+    public interface IServiceBinding
     {
-        private const string _defaultMessage = "Method not found.";
-
-        public MethodNotFoundException() : this(null) {}
-
-        public MethodNotFoundException(string message) : 
-            base(Mask.NullString(message, _defaultMessage)) {}
-
-        public MethodNotFoundException(string message, Exception innerException) :
-            base(Mask.NullString(message, _defaultMessage), innerException) {}
-
-        protected MethodNotFoundException(SerializationInfo info, StreamingContext context) :
-            base(info, context) {}
+        IService Service { get; }
     }
 }
+

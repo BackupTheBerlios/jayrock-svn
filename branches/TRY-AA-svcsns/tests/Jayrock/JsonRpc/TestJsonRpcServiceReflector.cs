@@ -28,6 +28,7 @@ namespace Jayrock.JsonRpc
     using System.Collections;
     using System.Diagnostics;
     using System.Reflection;
+    using Jayrock.Services;
     using NUnit.Framework;
 
     #endregion

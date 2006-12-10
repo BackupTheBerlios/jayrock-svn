@@ -20,16 +20,31 @@
 //
 #endregion
 
-namespace Jayrock.JsonRpc
+namespace Jayrock.Services
 {
-    #region Imports
+    using System;
+    using System.Runtime.Serialization;
 
-    using System.ComponentModel;
+    /// <summary>
+    /// The exception that is thrown when <see cref="IService.Invoke"/>
+    /// or <see cref="IRpcMethod.Invoke"/> fails.
+    /// </summary>
 
-    #endregion
-
-    public interface IServiceBinding
+    [ Serializable ]
+    public class TargetMethodException : System.ApplicationException
     {
-        IService Service { get; }
+        private const string _defaultMessage = "Exception has been thrown by the target of the JSON-RPC invocation.";
+
+        public TargetMethodException(Exception innerException) :
+            base(_defaultMessage, innerException) {}
+
+        public TargetMethodException(string message) : 
+            base(Mask.NullString(message, _defaultMessage)) {}
+
+        public TargetMethodException(string message, Exception innerException) :
+            base(Mask.NullString(message, _defaultMessage), innerException) {}
+
+        protected TargetMethodException(SerializationInfo info, StreamingContext context) :
+            base(info, context) {}
     }
 }

@@ -25,6 +25,7 @@ namespace Jayrock.JsonRpc
     #region Imports
 
     using System;
+    using Jayrock.Services;
     using NUnit.Framework;
 
     #endregion

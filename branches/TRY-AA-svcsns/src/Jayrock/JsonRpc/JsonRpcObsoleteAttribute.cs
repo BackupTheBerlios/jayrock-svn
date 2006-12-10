@@ -26,6 +26,7 @@ namespace Jayrock.JsonRpc
 
     using System;
     using System.Reflection;
+    using Jayrock.Services;
 
     #endregion
 

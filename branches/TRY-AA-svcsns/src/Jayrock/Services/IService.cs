@@ -20,17 +20,11 @@
 //
 #endregion
 
-namespace Jayrock.JsonRpc
+namespace Jayrock.Services
 {
-    #region Imports
-
-    using System;
-    using System.Collections;
-
-    #endregion
-
     public interface IService
     {
         JsonRpcServiceClass GetClass();
     }
 }
+

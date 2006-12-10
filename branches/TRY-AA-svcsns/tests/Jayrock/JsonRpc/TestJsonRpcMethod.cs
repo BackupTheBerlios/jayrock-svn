@@ -26,6 +26,7 @@ namespace Jayrock.JsonRpc
 
     using System;
     using Jayrock.Json;
+    using Jayrock.Services;
     using NUnit.Framework;
 
     #endregion
