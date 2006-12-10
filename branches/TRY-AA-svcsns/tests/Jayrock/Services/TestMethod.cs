@@ -20,19 +20,15 @@
 //
 #endregion
 
-namespace Jayrock.JsonRpc
+namespace Jayrock.Services
 {
-    #region Imports
-
     using System;
     using Jayrock.Json;
-    using Jayrock.Services;
+    using Jayrock.JsonRpc;
     using NUnit.Framework;
 
-    #endregion
-
     [ TestFixture ]
-    public class TestJsonRpcService
+    public class TestMethodl
     {
         [ Test ]
         public void FailedMethodYieldsInvocationException()
@@ -152,3 +148,4 @@ namespace Jayrock.JsonRpc
         }
     }
 }
+

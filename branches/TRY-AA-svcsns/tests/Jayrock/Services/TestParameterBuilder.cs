@@ -20,18 +20,13 @@
 //
 #endregion
 
-namespace Jayrock.JsonRpc
+namespace Jayrock.Services
 {
-    #region Imports
-
     using System;
-    using Jayrock.Services;
     using NUnit.Framework;
 
-    #endregion
-
     [ TestFixture ]
-    public class TestJsonRpcParameterBuilder
+    public class TestParameterBuilder
     {
         private MethodBuilder _methodBuilder;
         private ParameterBuilder _builder;
@@ -102,3 +97,4 @@ namespace Jayrock.JsonRpc
         }
     }
 }
+

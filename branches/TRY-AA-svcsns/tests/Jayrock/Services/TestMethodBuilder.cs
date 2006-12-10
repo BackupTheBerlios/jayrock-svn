@@ -20,18 +20,13 @@
 //
 #endregion
 
-namespace Jayrock.JsonRpc
+namespace Jayrock.Services
 {
-    #region Imports
-
     using System;
-    using Jayrock.Services;
     using NUnit.Framework;
 
-    #endregion
-
     [ TestFixture ]
-    public class TestJsonRpcMethodBuilder
+    public class TestMethodBuilder
     {
         private MethodBuilder _builder;
         private ServiceClassBuilder _classBuilder;
@@ -160,7 +155,7 @@ namespace Jayrock.JsonRpc
             }
 
             public IAsyncResult BeginInvoke(IService service, object[] args, AsyncCallback callback,
-                                            object asyncState)
+                object asyncState)
             {
                 throw new NotImplementedException();
             }
@@ -176,3 +171,4 @@ namespace Jayrock.JsonRpc
         }
     }
 }
+

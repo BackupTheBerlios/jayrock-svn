@@ -20,18 +20,14 @@
 //
 #endregion
 
-namespace Jayrock.JsonRpc
+namespace Jayrock.Services
 {
-    #region Imports
-
     using System;
-    using Jayrock.Services;
+    using Jayrock.JsonRpc;
     using NUnit.Framework;
 
-    #endregion
-
     [ TestFixture ]
-    public class TestJsonRpcServiceClass
+    public class TestServiceClass
     {
         [ Test, ExpectedException(typeof(ArgumentNullException)) ]
         public void NullType()
@@ -89,3 +85,4 @@ namespace Jayrock.JsonRpc
         }
     }
 }
+
