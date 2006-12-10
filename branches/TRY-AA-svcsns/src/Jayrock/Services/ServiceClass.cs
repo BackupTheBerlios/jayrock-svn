@@ -25,6 +25,7 @@ namespace Jayrock.Services
     using System;
     using System.Collections;
     using System.Diagnostics;
+    using Jayrock.JsonRpc;
 
     [ Serializable ]
     public sealed class ServiceClass

@@ -538,6 +538,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "JsonRpc\JsonRpcServiceReflector.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "JsonRpc\JsonRpcServices.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -639,11 +644,6 @@
                 />
                 <File
                     RelPath = "Services\IServiceBinding.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Services\JsonRpcServiceReflector.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

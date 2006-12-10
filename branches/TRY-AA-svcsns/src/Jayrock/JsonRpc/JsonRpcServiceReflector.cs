@@ -20,12 +20,12 @@
 //
 #endregion
 
-namespace Jayrock.Services
+namespace Jayrock.JsonRpc
 {
     using System;
     using System.Diagnostics;
     using System.Reflection;
-    using Jayrock.JsonRpc;
+    using Jayrock.Services;
 
     internal sealed class JsonRpcServiceReflector
     {
