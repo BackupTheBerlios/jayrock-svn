@@ -22,8 +22,12 @@
 
 namespace Jayrock.Services
 {
+    #region Imports
+
     using System;
     using System.Diagnostics;
+
+    #endregion
 
     [ Serializable ]
     public sealed class Parameter

@@ -22,8 +22,12 @@
 
 namespace Jayrock.Services
 {
+    #region Imports
+
     using System;
     using System.Runtime.Serialization;
+
+    #endregion
 
     [ Serializable ]
     public class DuplicateMethodException : System.ApplicationException

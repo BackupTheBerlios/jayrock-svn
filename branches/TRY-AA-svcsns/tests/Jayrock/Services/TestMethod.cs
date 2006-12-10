@@ -22,10 +22,14 @@
 
 namespace Jayrock.Services
 {
+    #region Imports
+
     using System;
     using Jayrock.Json;
     using Jayrock.JsonRpc;
     using NUnit.Framework;
+
+    #endregion
 
     [ TestFixture ]
     public class TestMethodl

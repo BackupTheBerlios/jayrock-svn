@@ -22,11 +22,14 @@
 
 namespace Jayrock.Services
 {
+    #region Imports
+
     using System;
     using System.Collections;
     using System.Diagnostics;
     using System.Globalization;
-    using Jayrock.JsonRpc;
+
+    #endregion
 
     [ Serializable ]
     public sealed class Method

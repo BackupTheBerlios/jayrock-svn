@@ -22,7 +22,11 @@
 
 namespace Jayrock.Services
 {
+    #region Imports
+
     using NUnit.Framework;
+
+    #endregion
 
     [ TestFixture ]
     public class TestServiceClassBuilder

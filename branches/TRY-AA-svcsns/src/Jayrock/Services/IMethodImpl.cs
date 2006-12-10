@@ -22,7 +22,11 @@
 
 namespace Jayrock.Services
 {
+    #region Imports
+
     using System;
+
+    #endregion
 
     public interface IMethodImpl
     {

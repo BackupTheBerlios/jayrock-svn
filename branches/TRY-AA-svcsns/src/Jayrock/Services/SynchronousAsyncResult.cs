@@ -22,9 +22,13 @@
 
 namespace Jayrock.Services
 {
+    #region Imports
+
     using System;
     using System.Diagnostics;
     using System.Threading;
+
+    #endregion
 
     internal sealed class SynchronousAsyncResult : IAsyncResult
     {

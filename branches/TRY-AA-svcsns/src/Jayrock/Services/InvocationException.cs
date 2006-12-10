@@ -22,8 +22,12 @@
 
 namespace Jayrock.Services
 {
+    #region Imports
+
     using System;
     using System.Runtime.Serialization;
+
+    #endregion
 
     /// <summary>
     /// The exception that is thrown when <see cref="IRpcMethod.Invoke"/> 
