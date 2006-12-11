@@ -51,7 +51,8 @@
             <li><a href="http://developer.berlios.de/project/showfiles.php?group_id=4638">Download
                 Jayrock 0.9 now!</a></li>
             <li><a href="http://groups.google.com/group/jayrock">Discuss Jayrock</a></li>
-            <li><a href="http://jayrock.berlios.de/coverage-report.html">Code coverage report</a></li>
+            <li><a href="http://jayrock.berlios.de/">Code coverage report</a></li>
+            <li><a href="http://developer.berlios.de/projects/jayrock/">Project foundry on BerliOS</a></li>
         </ul>
         <p>
             Compatibility &amp; compliance:</p>
@@ -70,7 +71,7 @@
             <a id="get-source" name="get-source">Where is the Source, Luke?</a></h1>
         <p>
             You can obtain the latest source of code of Jayrock from the <a href="http://subversion.tigris.org/">
-                Subversion</a> repository hosted at <a href="http://www.berlios.de">berliOS</a>.
+                Subversion</a> repository hosted at <a href="http://www.berlios.de">BerliOS</a>.
             Needless to say, you will need a <a href="http://subversion.tigris.org/project_packages.html">
                 Subversion client</a> for your platform (Windows users may also want to check
             out <a href="http://tortoisesvn.tigris.org/">TortoiseSVN</a>, which is a Windows
@@ -79,8 +80,9 @@
             either <a href="http://svn.berlios.de/wsvn/jayrock">WebSVN</a> or <a href="http://svn.berlios.de/viewcvs/jayrock">
                 ViewCVS</a>.</p>
         <p>
-            For anonymous access to the respository trunk, use <code>svn://svn.berlios.de/jayrock/trunk</code>.
-            The commnad-line for the Subversion client would therefore be:</p>
+            For anonymous access to the respository trunk, use <code>svn://svn.berlios.de/jayrock/trunk</code>
+            (or <code>http://svn.berlios.de/svnroot/repos/jayrock/trunk</code> for access via HTTP).
+            The command-line for the Subversion client would therefore be:</p>
         <p>
             <code>svn checkout svn://svn.berlios.de/jayrock/trunk jayrock</code></p>
         <p>
@@ -202,7 +204,7 @@
         </ul>
         <p>
             For more information, see <a href="http://developer.berlios.de/projects/jayrock/">Jayrock
-                on berliOS</a>.</p>
+                on BerliOS</a>.</p>
         <h2>
             How Else?</h2>
         <p>
