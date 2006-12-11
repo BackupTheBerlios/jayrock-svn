@@ -69,6 +69,11 @@ namespace Jayrock.Json
                 get { throw new NotImplementedException(); }
             }
 
+            public override JsonWriterBracket Bracket
+            {
+                get { throw new NotImplementedException(); }
+            }
+
             public override void WriteStartObject()
             {
                 throw new NotImplementedException();

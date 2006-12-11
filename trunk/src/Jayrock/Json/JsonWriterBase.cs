@@ -38,33 +38,38 @@ namespace Jayrock.Json
 
     public abstract class JsonWriterBase : JsonWriter
     {
-        private JsonTokenClass _currentBracket;
         private Stack _brackets;
+        private JsonWriterBracket _currentBracket;
         
         public JsonWriterBase()
         {
-            CurrentBracket = JsonTokenClass.BOF;
+            CurrentBracket = JsonWriterBracket.Pending;
         }
-        
+
         public sealed override int Depth
         {
             get { return Brackets.Count; }
+        }
+
+        public sealed override JsonWriterBracket Bracket
+        {
+            get { return CurrentBracket; }
         }
 
         public sealed override void WriteStartObject()
         {
             EnsureNotEnded();
 
-            if (CurrentBracket != JsonTokenClass.BOF)
+            if (CurrentBracket != JsonWriterBracket.Pending)
                 EnsureMemberOnObjectBracket();
             
-            PushBracket(JsonTokenClass.Object);
+            PushBracket(JsonWriterBracket.Object);
             WriteStartObjectImpl();
         }
 
         public sealed override void WriteEndObject()
         {
-            if (CurrentBracket != JsonTokenClass.Object)
+            if (CurrentBracket != JsonWriterBracket.Object)
                 throw new JsonException("JSON Object tail not expected at this time.");
             
             WriteEndObjectImpl();
@@ -73,27 +78,27 @@ namespace Jayrock.Json
 
         public sealed override void WriteMember(string name)
         {
-            if (CurrentBracket != JsonTokenClass.Object)
+            if (CurrentBracket != JsonWriterBracket.Object)
                 throw new JsonException("A JSON Object member is not valid inside a JSON Array.");
 
             WriteMemberImpl(name);
-            CurrentBracket = JsonTokenClass.Member;
+            CurrentBracket = JsonWriterBracket.Member;
         }
 
         public sealed override void WriteStartArray()
         {
             EnsureNotEnded();
 
-            if (CurrentBracket != JsonTokenClass.BOF)
+            if (CurrentBracket != JsonWriterBracket.Pending)
                 EnsureMemberOnObjectBracket();
             
-            PushBracket(JsonTokenClass.Array);
+            PushBracket(JsonWriterBracket.Array);
             WriteStartArrayImpl();
         }
 
         public sealed override void WriteEndArray()
         {
-            if (_currentBracket != JsonTokenClass.Array)
+            if (_currentBracket != JsonWriterBracket.Array)
                 throw new JsonException("JSON Array tail not expected at this time.");
             
             WriteEndArrayImpl();
@@ -109,8 +114,8 @@ namespace Jayrock.Json
 
         private void PostScalarWrite()
         {
-            if (CurrentBracket == JsonTokenClass.Member) 
-                CurrentBracket = JsonTokenClass.Object;
+            if (CurrentBracket == JsonWriterBracket.Member) 
+                CurrentBracket = JsonWriterBracket.Object;
         }
 
         public sealed override void WriteNumber(string value)
@@ -150,7 +155,7 @@ namespace Jayrock.Json
         protected abstract void WriteBooleanImpl(bool value);
         protected abstract void WriteNullImpl();
 
-        private JsonTokenClass CurrentBracket
+        private JsonWriterBracket CurrentBracket
         {
             get { return _currentBracket; }
             set { _currentBracket = value; }
@@ -167,33 +172,33 @@ namespace Jayrock.Json
             }
         }
 
-        private void PushBracket(JsonTokenClass newBracket)
+        private void PushBracket(JsonWriterBracket newBracket)
         {
-            Debug.Assert(newBracket == JsonTokenClass.Array || newBracket == JsonTokenClass.Object);
+            Debug.Assert(newBracket == JsonWriterBracket.Array || newBracket == JsonWriterBracket.Object);
             
-            Brackets.Push(CurrentBracket == JsonTokenClass.Member ? JsonTokenClass.Object : CurrentBracket);
+            Brackets.Push(CurrentBracket == JsonWriterBracket.Member ? JsonWriterBracket.Object : CurrentBracket);
             CurrentBracket = newBracket;
         }
         
         private void PopBracket()
         {
-            JsonTokenClass bracket = (JsonTokenClass) Brackets.Pop();
+            JsonWriterBracket bracket = (JsonWriterBracket) Brackets.Pop();
 
-            if (bracket == JsonTokenClass.BOF)
-                bracket = JsonTokenClass.EOF;
+            if (bracket == JsonWriterBracket.Pending)
+                bracket = JsonWriterBracket.EOF;
             
             CurrentBracket = bracket;
         }
 
         private void EnsureMemberOnObjectBracket() 
         {
-            if (CurrentBracket == JsonTokenClass.Object)
+            if (CurrentBracket == JsonWriterBracket.Object)
                 throw new JsonException("A JSON member value inside a JSON object must be preceded by its member name.");
         }
 
         private void EnsureNotEnded()
         {
-            if (CurrentBracket == JsonTokenClass.EOF)
+            if (CurrentBracket == JsonWriterBracket.EOF)
                 throw new JsonException("JSON text has already been ended.");
         }
     }

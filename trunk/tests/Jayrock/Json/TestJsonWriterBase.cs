@@ -37,7 +37,7 @@ namespace Jayrock.Json
         [ SetUp ]
         public void Init()
         {
-            _writer = new StubJsonWriter();
+            _writer = new EmptyJsonWriter();
         }
 
         [ Test ]
@@ -251,44 +251,72 @@ namespace Jayrock.Json
             _writer.WriteMember("member2");
             _writer.WriteString("string2");
         }
-        
-        private sealed class StubJsonWriter : JsonWriterBase
+
+        [ Test ]
+        public void InitialBracket()
         {
-            protected override void WriteStartObjectImpl()
-            {
-            }
+            Assert.AreEqual(JsonWriterBracket.Pending, _writer.Bracket);
+        }
 
-            protected override void WriteEndObjectImpl()
-            {
-            }
+        [ Test ]
+        public void BracketAfterStartingObject()
+        {
+            _writer.WriteStartObject();
+            Assert.AreEqual(JsonWriterBracket.Object, _writer.Bracket);
+        }
 
-            protected override void WriteMemberImpl(string name)
-            {
-            }
+        [ Test ]
+        public void BracketAfterStartingArray()
+        {
+            _writer.WriteStartArray();
+            Assert.AreEqual(JsonWriterBracket.Array, _writer.Bracket);
+        }
 
-            protected override void WriteStartArrayImpl()
-            {
-            }
+        [ Test ]
+        public void BracketAfterWritingMember()
+        {
+            _writer.WriteStartObject();
+            _writer.WriteMember("test");
+            Assert.AreEqual(JsonWriterBracket.Member, _writer.Bracket);
+        }
 
-            protected override void WriteEndArrayImpl()
-            {
-            }
+        [ Test ]
+        public void BracketAfterWritingMemberValue()
+        {
+            _writer.WriteStartObject();
+            _writer.WriteMember("test");
+            _writer.WriteNull();
+            Assert.AreEqual(JsonWriterBracket.Object, _writer.Bracket);
+        }
 
-            protected override void WriteStringImpl(string value)
-            {
-            }
+        [ Test ]
+        public void BracketAfterEndingObject()
+        {
+            _writer.WriteStartObject();
+            _writer.WriteEndObject();
+            Assert.AreEqual(JsonWriterBracket.EOF, _writer.Bracket);
+        }
 
-            protected override void WriteNumberImpl(string value)
-            {
-            }
+        [ Test ]
+        public void BracketAfterEndingArray()
+        {
+            _writer.WriteStartArray();
+            _writer.WriteEndArray();
+            Assert.AreEqual(JsonWriterBracket.EOF, _writer.Bracket);
+        }
 
-            protected override void WriteBooleanImpl(bool value)
-            {
-            }
-
-            protected override void WriteNullImpl()
-            {
-            }
+        [ Test ]
+        public void NestedBracketing()
+        {
+            Assert.AreEqual(JsonWriterBracket.Pending, _writer.Bracket);
+            _writer.WriteStartArray();
+            Assert.AreEqual(JsonWriterBracket.Array, _writer.Bracket);
+            _writer.WriteStartObject();
+            Assert.AreEqual(JsonWriterBracket.Object, _writer.Bracket);
+            _writer.WriteEndObject();
+            Assert.AreEqual(JsonWriterBracket.Array, _writer.Bracket);
+            _writer.WriteEndArray();
+            Assert.AreEqual(JsonWriterBracket.EOF, _writer.Bracket);
         }
     }
 }

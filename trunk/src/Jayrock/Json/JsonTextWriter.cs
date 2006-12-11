@@ -31,7 +31,7 @@ namespace Jayrock.Json
     using System.IO;
 
     #endregion
-
+    
     /// <summary>
     /// Represents a writer that provides a fast, non-cached, forward-only means of 
     /// emitting JSON data formatted as JSON text (RFC 4627).

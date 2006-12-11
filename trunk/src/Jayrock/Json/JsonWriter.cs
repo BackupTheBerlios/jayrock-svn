@@ -43,7 +43,13 @@ namespace Jayrock.Json
         /// </summary>
 
         public abstract int Depth { get; }
-        
+                
+        /// <summary>
+        /// Determines the current bracket of the writer.
+        /// </summary>
+
+        public abstract JsonWriterBracket Bracket { get; }
+
         /// <summary>
         /// When overridden in a derived class, writes out the start of a 
         /// JSON object.

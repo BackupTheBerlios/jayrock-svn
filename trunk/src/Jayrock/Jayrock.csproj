@@ -183,6 +183,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Json\EmptyJsonWriter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\InvalidMemberException.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -269,6 +274,11 @@
                 />
                 <File
                     RelPath = "Json\JsonWriterBase.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\JsonWriterBracket.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
