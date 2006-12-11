@@ -20,28 +20,34 @@
 //
 #endregion
 
-namespace Jayrock.JsonRpc
+namespace Jayrock.Services
 {
     #region Imports
 
     using System;
-    using System.Reflection;
-    using Jayrock.Services;
+    using System.Diagnostics;
 
     #endregion
 
     [ Serializable ]
-    [ AttributeUsage(AttributeTargets.Method) ]
-    public sealed class JsonRpcMethodAttribute : Attribute, IMethodReflector
+    public sealed class ParameterBuilder
     {
         private string _name;
-        private bool _idempotent;
+        private int _position;
+        private Type _parameterType = typeof(object);
+        private bool _isParamArray;
+        private MethodBuilder _method;
 
-        public JsonRpcMethodAttribute() {}
-
-        public JsonRpcMethodAttribute(string name)
+        internal ParameterBuilder(MethodBuilder method)
         {
-            _name = name;
+            Debug.Assert(method != null);
+                
+            _method = method;
+        }
+
+        public MethodBuilder Method
+        {
+            get { return _method; }
         }
 
         public string Name
@@ -50,16 +56,36 @@ namespace Jayrock.JsonRpc
             set { _name = value; }
         }
 
-        public bool Idempotent
+        public int Position
         {
-            get { return _idempotent; }
-            set { _idempotent = value; }
+            get { return _position; }
+                
+            set
+            {
+                if (value < 0)
+                    throw new ArgumentOutOfRangeException("value");
+
+                _position = value;
+            }
+        }
+            
+        public Type ParameterType
+        {
+            get { return _parameterType; }
+                
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+                    
+                _parameterType = value;
+            }
         }
 
-        void IMethodReflector.Build(MethodBuilder builder, MethodInfo method)
+        public bool IsParamArray
         {
-            builder.Name = Name;
-            builder.Idempotent = Idempotent;
+            get { return _isParamArray; }
+            set { _isParamArray = value; }
         }
     }
 }

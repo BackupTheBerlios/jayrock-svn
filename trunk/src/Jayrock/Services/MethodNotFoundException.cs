@@ -20,37 +20,29 @@
 //
 #endregion
 
-namespace Jayrock.JsonRpc
+namespace Jayrock.Services
 {
     #region Imports
 
     using System;
-
-    using SerializationInfo = System.Runtime.Serialization.SerializationInfo;
-    using StreamingContext = System.Runtime.Serialization.StreamingContext;
+    using System.Runtime.Serialization;
 
     #endregion
 
-    /// <summary>
-    /// The exception that is thrown when <see cref="IRpcMethod.Invoke"/> 
-    /// fails.
-    /// </summary>
-
     [ Serializable ]
-    public class InvocationException : System.ApplicationException
+    public class MethodNotFoundException : System.ApplicationException
     {
-        private const string _defaultMessage = "Failed to invoke the target method.";
+        private const string _defaultMessage = "Method not found.";
 
-        public InvocationException(Exception innerException) :
-            base(_defaultMessage, innerException) {}
+        public MethodNotFoundException() : this(null) {}
 
-        public InvocationException(string message) : 
+        public MethodNotFoundException(string message) : 
             base(Mask.NullString(message, _defaultMessage)) {}
 
-        public InvocationException(string message, Exception innerException) :
+        public MethodNotFoundException(string message, Exception innerException) :
             base(Mask.NullString(message, _defaultMessage), innerException) {}
 
-        protected InvocationException(SerializationInfo info, StreamingContext context) :
+        protected MethodNotFoundException(SerializationInfo info, StreamingContext context) :
             base(info, context) {}
     }
 }

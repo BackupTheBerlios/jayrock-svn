@@ -29,6 +29,7 @@ namespace Jayrock.JsonRpc.Web
     using System.Web.UI;
     using System.Web.UI.HtmlControls;
     using System.Web.UI.WebControls;
+    using Jayrock.Services;
 
     #endregion
 
@@ -65,10 +66,10 @@ namespace Jayrock.JsonRpc.Web
             Control dl = AddGeneric(content, "dl", null);
             content.Controls.Add(dl);
 
-            JsonRpcMethod[] methods = SortedMethods;
+            Method[] methods = SortedMethods;
             ArrayList idemList = new ArrayList(methods.Length);
 
-            foreach (JsonRpcMethod method in methods)
+            foreach (Method method in methods)
             {
                 AddMethod(dl, method);
                 
@@ -82,14 +83,14 @@ namespace Jayrock.JsonRpc.Web
                 AddPara(content, null, "The following method(s) of this service are marked as idempotent and therefore safe for use with HTTP GET:");
 
                 Control idemMethodList = AddGeneric(content, "ul", null);
-                foreach (JsonRpcMethod method in idemList)
+                foreach (Method method in idemList)
                     AddGeneric(idemMethodList, "li", null, method.Name);
             }
 
             base.AddContent ();
         }
 
-        private void AddMethod(Control parent, JsonRpcMethod method)
+        private void AddMethod(Control parent, Method method)
         {
             JsonRpcObsoleteAttribute obsolete = (JsonRpcObsoleteAttribute) method.FindFirstCustomAttribute(typeof(JsonRpcObsoleteAttribute));
             
@@ -104,13 +105,13 @@ namespace Jayrock.JsonRpc.Web
                 AddGeneric(parent, "dd", "obsolete-message", " This method has been obsoleted. " + obsolete.Message);
         }
 
-        private static void AddSignature(Control parent, JsonRpcMethod method)
+        private static void AddSignature(Control parent, Method method)
         {
             Control methodSignatureSpan = AddSpan(parent, "method-sig", null);
             AddSpan(methodSignatureSpan, "method-param-open", "(");
     
-            JsonRpcParameter[] parameters = method.GetParameters();
-            foreach (JsonRpcParameter parameter in parameters)
+            Parameter[] parameters = method.GetParameters();
+            foreach (Parameter parameter in parameters)
             {
                 if (parameter.Position > 0)
                     AddSpan(methodSignatureSpan, "method-param-delim", ", ");

@@ -31,6 +31,7 @@ namespace Jayrock.JsonRpc
     using System.IO;
     using Jayrock.Json;
     using Jayrock.Json.Conversion;
+    using Jayrock.Services;
 
     #endregion
 
@@ -184,7 +185,7 @@ namespace Jayrock.JsonRpc
 
             try
             {
-                JsonRpcMethod method = _service.GetClass().GetMethodByName(methodName);
+                Method method = _service.GetClass().GetMethodByName(methodName);
                 
                 if (RequireIdempotency && !method.Idempotent)
                     throw new JsonRpcException(string.Format("Method {1} on service {0} is not allowed for idempotent type of requests.", ServiceName, methodName));
@@ -263,7 +264,7 @@ namespace Jayrock.JsonRpc
             ImportContext importContext = new ImportContext();
             
             JsonObject request = new JsonObject();
-            JsonRpcMethod method = null;
+            Method method = null;
             JsonReader paramsReader = null;
             object args = null;
             
@@ -358,7 +359,7 @@ namespace Jayrock.JsonRpc
             return JsonRpcError.FromException(e, _localExecution);
         }
 
-        private static object ReadParameters(JsonRpcMethod method, JsonReader reader, ImportContext importContext)
+        private static object ReadParameters(Method method, JsonReader reader, ImportContext importContext)
         {
             Debug.Assert(method != null);
             Debug.Assert(reader != null);
@@ -366,7 +367,7 @@ namespace Jayrock.JsonRpc
             
             reader.MoveToContent();
             
-            JsonRpcParameter[] parameters = method.GetParameters();
+            Parameter[] parameters = method.GetParameters();
                             
             if (reader.TokenClass == JsonTokenClass.Array)
             {
@@ -394,7 +395,7 @@ namespace Jayrock.JsonRpc
                     Type parameterType = AnyType.Value;
                     string name = reader.ReadMember();
 
-                    foreach (JsonRpcParameter parameter in parameters)
+                    foreach (Parameter parameter in parameters)
                     {
                         if (parameter.Name.Equals(name))
                         {

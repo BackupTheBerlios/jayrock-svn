@@ -20,37 +20,29 @@
 //
 #endregion
 
-namespace Jayrock.JsonRpc
+namespace Jayrock.Services
 {
     #region Imports
 
     using System;
-
-    using SerializationInfo = System.Runtime.Serialization.SerializationInfo;
-    using StreamingContext = System.Runtime.Serialization.StreamingContext;
+    using System.Runtime.Serialization;
 
     #endregion
 
-    /// <summary>
-    /// The exception that is thrown when <see cref="IService.Invoke"/>
-    /// or <see cref="IRpcMethod.Invoke"/> fails.
-    /// </summary>
-
     [ Serializable ]
-    public class TargetMethodException : System.ApplicationException
+    public class DuplicateMethodException : System.ApplicationException
     {
-        private const string _defaultMessage = "Exception has been thrown by the target of the JSON-RPC invocation.";
+        private const string _defaultMessage = "A method with the same name has been defined elsewhere on the service.";
+        
+        public DuplicateMethodException() : this(null) {}
 
-        public TargetMethodException(Exception innerException) :
-            base(_defaultMessage, innerException) {}
-
-        public TargetMethodException(string message) : 
+        public DuplicateMethodException(string message) : 
             base(Mask.NullString(message, _defaultMessage)) {}
 
-        public TargetMethodException(string message, Exception innerException) :
+        public DuplicateMethodException(string message, Exception innerException) :
             base(Mask.NullString(message, _defaultMessage), innerException) {}
 
-        protected TargetMethodException(SerializationInfo info, StreamingContext context) :
+        protected DuplicateMethodException(SerializationInfo info, StreamingContext context) :
             base(info, context) {}
     }
 }

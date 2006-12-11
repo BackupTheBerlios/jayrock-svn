@@ -20,7 +20,7 @@
 //
 #endregion
 
-namespace Jayrock.JsonRpc
+namespace Jayrock.Services
 {
     #region Imports
 
@@ -30,15 +30,15 @@ namespace Jayrock.JsonRpc
     #endregion
 
     [ TestFixture ]
-    public class TestJsonRpcMethodBuilder
+    public class TestMethodBuilder
     {
-        private JsonRpcMethodBuilder _builder;
-        private JsonRpcServiceClassBuilder _classBuilder;
+        private MethodBuilder _builder;
+        private ServiceClassBuilder _classBuilder;
 
         [ SetUp ]
         public void Init()
         {
-            _classBuilder = new JsonRpcServiceClassBuilder();
+            _classBuilder = new ServiceClassBuilder();
             _builder = _classBuilder.DefineMethod();
         }
 
@@ -90,7 +90,7 @@ namespace Jayrock.JsonRpc
         {
             Assert.IsNotNull(_builder.DefineParameter());
             Assert.IsNotNull(_builder.DefineParameter());
-            JsonRpcParameterBuilder[] parameters = (JsonRpcParameterBuilder[]) CollectionHelper.ToArray(_builder.Parameters, typeof(JsonRpcParameterBuilder));
+            ParameterBuilder[] parameters = (ParameterBuilder[]) CollectionHelper.ToArray(_builder.Parameters, typeof(ParameterBuilder));
             Assert.IsNotNull(parameters);
             Assert.AreEqual(2, parameters.Length);
         }
@@ -159,7 +159,7 @@ namespace Jayrock.JsonRpc
             }
 
             public IAsyncResult BeginInvoke(IService service, object[] args, AsyncCallback callback,
-                                            object asyncState)
+                object asyncState)
             {
                 throw new NotImplementedException();
             }
@@ -175,3 +175,4 @@ namespace Jayrock.JsonRpc
         }
     }
 }
+

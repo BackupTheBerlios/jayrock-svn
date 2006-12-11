@@ -20,7 +20,7 @@
 //
 #endregion
 
-namespace Jayrock.JsonRpc
+namespace Jayrock.Services
 {
     #region Imports
 
@@ -40,14 +40,11 @@ namespace Jayrock.JsonRpc
 
         public static SynchronousAsyncResult Success(object asyncState, object result)
         {
-            Debug.Assert(asyncState != null);
-
             return new SynchronousAsyncResult(asyncState, result, null);
         }
 
         public static SynchronousAsyncResult Failure(object asyncState, Exception e)
         {
-            Debug.Assert(asyncState != null);
             Debug.Assert(e != null);
 
             return new SynchronousAsyncResult(asyncState, null, e);
@@ -55,8 +52,6 @@ namespace Jayrock.JsonRpc
 
         private SynchronousAsyncResult(object asyncState, object result, Exception e)
         {
-            Debug.Assert(asyncState != null);
-
             _asyncState = asyncState;
             _result = result;
             _exception = e;
@@ -108,3 +103,4 @@ namespace Jayrock.JsonRpc
         }
     }
 }
+

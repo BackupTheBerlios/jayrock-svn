@@ -28,11 +28,20 @@ namespace Jayrock.JsonRpc
     using System.Collections;
     using Jayrock.Json;
     using Jayrock.Json.Conversion;
+    using Jayrock.Services;
 
     #endregion
 
     public sealed class JsonRpcServices
     {
+        public static ServiceClass GetClassFromType(Type type)
+        {
+            if (type == null)
+                throw new ArgumentNullException("type");
+            
+            return JsonRpcServiceReflector.FromType(type);
+        }
+
         public static string GetServiceName(IService service)
         {
             return GetServiceName(service, "(anonymous)");
@@ -50,7 +59,7 @@ namespace Jayrock.JsonRpc
 
             string name = null;
     
-            JsonRpcServiceClass clazz = service.GetClass();
+            ServiceClass clazz = service.GetClass();
     
             if (clazz != null)
                 name = clazz.Name;

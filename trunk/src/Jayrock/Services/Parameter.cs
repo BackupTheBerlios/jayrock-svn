@@ -20,7 +20,7 @@
 //
 #endregion
 
-namespace Jayrock.JsonRpc
+namespace Jayrock.Services
 {
     #region Imports
 
@@ -30,62 +30,51 @@ namespace Jayrock.JsonRpc
     #endregion
 
     [ Serializable ]
-    public sealed class JsonRpcParameterBuilder
+    public sealed class Parameter
     {
-        private string _name;
-        private int _position;
-        private Type _parameterType = typeof(object);
-        private bool _isParamArray;
-        private JsonRpcMethodBuilder _method;
+        private readonly string _name;
+        private readonly Type _parameterType;
+        private readonly int _position;
+        private readonly bool _isParamArray;
+        private readonly Method _method;
 
-        internal JsonRpcParameterBuilder(JsonRpcMethodBuilder method)
+        internal Parameter(ParameterBuilder builder, Method method)
         {
+            Debug.Assert(builder != null);
+            Debug.Assert(builder.Position >= 0);
             Debug.Assert(method != null);
-                
+            
+            _name = builder.Name;
+            _parameterType = builder.ParameterType;
+            _position = builder.Position;
+            _isParamArray = builder.IsParamArray;
             _method = method;
         }
-
-        public JsonRpcMethodBuilder Method
-        {
-            get { return _method; }
-        }
-
+        
         public string Name
         {
-            get { return Mask.NullString(_name); }
-            set { _name = value; }
+            get { return _name; }
+        }
+
+        public Type ParameterType
+        {
+            get { return _parameterType; }
         }
 
         public int Position
         {
             get { return _position; }
-                
-            set
-            {
-                if (value < 0)
-                    throw new ArgumentOutOfRangeException("value");
-
-                _position = value;
-            }
         }
-            
-        public Type ParameterType
+
+        public Method Method
         {
-            get { return _parameterType; }
-                
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException("value");
-                    
-                _parameterType = value;
-            }
+            get { return _method; }
         }
 
         public bool IsParamArray
         {
             get { return _isParamArray; }
-            set { _isParamArray = value; }
         }
     }
 }
+

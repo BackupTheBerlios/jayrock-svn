@@ -25,25 +25,41 @@ namespace Jayrock.JsonRpc
     #region Imports
 
     using System;
+    using System.Collections;
     using System.Diagnostics;
     using System.Reflection;
-    using System.Xml.Schema;
+    using Jayrock.Services;
 
     #endregion
 
     internal sealed class JsonRpcServiceReflector
     {
-        public static JsonRpcServiceClass FromType(Type type)
+        private static readonly Hashtable _classByTypeCache = Hashtable.Synchronized(new Hashtable());
+        
+        public static ServiceClass FromType(Type type)
         {
             if (type == null)
                 throw new ArgumentNullException("type");
-            
-            JsonRpcServiceClassBuilder builder = new JsonRpcServiceClassBuilder();
+
+            ServiceClass clazz = (ServiceClass) _classByTypeCache[type];
+
+            if (clazz == null)
+            {
+                clazz = BuildFromType(type);
+                _classByTypeCache[type] = clazz;
+            }
+
+            return clazz;
+        }
+
+        private static ServiceClass BuildFromType(Type type)
+        {
+            ServiceClassBuilder builder = new ServiceClassBuilder();
             BuildClass(builder, type);
             return builder.CreateClass();
         }
 
-        private static void BuildClass(JsonRpcServiceClassBuilder builder, Type type)
+        private static void BuildClass(ServiceClassBuilder builder, Type type)
         {
             //
             // Build via attributes.
@@ -81,14 +97,14 @@ namespace Jayrock.JsonRpc
             return !method.IsAbstract && Attribute.IsDefined(method, typeof(JsonRpcMethodAttribute));
         }
 
-        private static void BuildMethod(JsonRpcMethodBuilder builder, MethodInfo method)
+        private static void BuildMethod(MethodBuilder builder, MethodInfo method)
         {
             Debug.Assert(method != null);
             Debug.Assert(builder != null);
 
             builder.InternalName = method.Name;
             builder.ResultType = method.ReturnType;
-            builder.Handler = new MethodDispatcher(method);
+            builder.Handler = new TypeMethodImpl(method);
             
             //
             // Build via attributes.
@@ -120,7 +136,7 @@ namespace Jayrock.JsonRpc
                 BuildParameter(builder.DefineParameter(), parameter);
         }
 
-        private static void BuildParameter(JsonRpcParameterBuilder builder, ParameterInfo parameter)
+        private static void BuildParameter(ParameterBuilder builder, ParameterInfo parameter)
         {
             Debug.Assert(parameter != null);
             Debug.Assert(builder != null);
@@ -143,146 +159,21 @@ namespace Jayrock.JsonRpc
         {
             throw new NotSupportedException();
         }
-
-        [ Serializable ]
-        private sealed class MethodDispatcher : IMethodImpl
-        {
-            private readonly MethodInfo _method;
-
-            public MethodDispatcher(MethodInfo method)
-            {
-                Debug.Assert(method != null);
-                
-                _method = method;
-            }
-
-            public object Invoke(IService service, object[] args)
-            {
-                if (service == null)
-                    throw new ArgumentNullException("service");
-
-                try
-                {
-                    return _method.Invoke(service, args);
-                }
-                catch (ArgumentException e)
-                {
-                    throw TranslateException(e);
-                }
-                catch (TargetParameterCountException e)
-                {
-                    throw TranslateException(e);
-                }
-                catch (TargetInvocationException e)
-                {
-                    throw TranslateException(e);
-                }
-            }
-
-            public IAsyncResult BeginInvoke(IService service, object[] args, AsyncCallback callback, object asyncState)
-            {
-                if (service == null)
-                    throw new ArgumentNullException("service");
-
-                SynchronousAsyncResult asyncResult;
-
-                try
-                {
-                    object result = Invoke(service, args);
-                    asyncResult = SynchronousAsyncResult.Success(asyncState, result);
-                }
-                catch (Exception e)
-                {
-                    asyncResult = SynchronousAsyncResult.Failure(asyncState, e);
-                }
-
-                if (callback != null)
-                    callback(asyncResult);
-                
-                return asyncResult;
-            }
-
-            public object EndInvoke(IAsyncResult asyncResult)
-            {
-                if (asyncResult == null)
-                    throw new ArgumentException("asyncResult");
-
-                SynchronousAsyncResult ar = asyncResult as SynchronousAsyncResult;
-
-                if (ar == null)
-                    throw new ArgumentException("asyncResult", "IAsyncResult object did not come from the corresponding async method on this type.");
-
-                try
-                {
-                    //
-                    // IMPORTANT! The End method on SynchronousAsyncResult will 
-                    // throw an exception if that's what Invoke did when 
-                    // BeginInvoke called it. The unforunate side effect of this is
-                    // the stack trace information for the exception is lost and 
-                    // reset to this point. There seems to be a basic failure in the 
-                    // framework to accommodate for this case more generally. One 
-                    // could handle this through a custom exception that wraps the 
-                    // original exception, but this assumes that an invocation will 
-                    // only throw an exception of that custom type. We need to 
-                    // think more about this.
-                    //
-
-                    return ar.End("Invoke");
-                }
-                catch (ArgumentException e)
-                {
-                    throw TranslateException(e);
-                }
-                catch (TargetParameterCountException e)
-                {
-                    throw TranslateException(e);
-                }
-                catch (TargetInvocationException e)
-                {
-                    throw TranslateException(e);
-                }
-            }
-
-            private Exception TranslateException(ArgumentException e)
-            {
-                //
-                // The type of the parameter does not match the signature
-                // of the method or constructor reflected by this
-                // instance.
-                //
-
-                return new InvocationException(e);
-            }
-
-            private static Exception TranslateException(TargetParameterCountException e)
-            {
-                //
-                // The parameters array does not have the correct number of
-                // arguments.
-                //
-
-                return new InvocationException(e.Message, e);
-            }
-
-            private static Exception TranslateException(TargetInvocationException e)
-            {
-                return new TargetMethodException(e.InnerException);
-            }
-        }
     }
 
     internal interface IServiceClassReflector
     {
-        void Build(JsonRpcServiceClassBuilder builder, Type type);
+        void Build(ServiceClassBuilder builder, Type type);
     }
 
     internal interface IMethodReflector
     {
-        void Build(JsonRpcMethodBuilder builder, MethodInfo method);
+        void Build(MethodBuilder builder, MethodInfo method);
     }
 
     internal interface IParameterReflector
     {
-        void Build(JsonRpcParameterBuilder builder, ParameterInfo parameter);
+        void Build(ParameterBuilder builder, ParameterInfo parameter);
     }
 }
+

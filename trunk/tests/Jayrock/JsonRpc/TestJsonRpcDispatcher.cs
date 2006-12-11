@@ -30,6 +30,7 @@ namespace Jayrock.JsonRpc
     using System.Reflection;
     using Jayrock.Json;
     using Jayrock.Json.Conversion;
+    using Jayrock.Services;
     using NUnit.Framework;
 
     #endregion
@@ -229,9 +230,9 @@ namespace Jayrock.JsonRpc
 
         private class TestService2 : IService
         {
-            public JsonRpcServiceClass GetClass()
+            public ServiceClass GetClass()
             {
-                return JsonRpcServiceClass.FromType(GetType());
+                return JsonRpcServices.GetClassFromType(GetType());
             }
             
             [ JsonRpcMethod ]

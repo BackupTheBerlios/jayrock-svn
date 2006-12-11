@@ -30,6 +30,7 @@ namespace Jayrock.JsonRpc.Web
     using System.Web.UI.HtmlControls;
     using System.Web.UI.WebControls;
     using Jayrock.Json;
+    using Jayrock.Services;
 
     #endregion
 
@@ -70,7 +71,7 @@ namespace Jayrock.JsonRpc.Web
             methodSelector.ID = "Method";
             methodSelector.Attributes.Add("onchange", "return Method_onchange(this)");
 
-            foreach (JsonRpcMethod method in SortedMethods)
+            foreach (Method method in SortedMethods)
                 methodSelector.Items.Add(method.Name);
     
             selectionPara.Controls.Add(methodSelector);
@@ -221,12 +222,12 @@ namespace Jayrock.JsonRpc.Web
             JsonObject info = new JsonObject();
             StringBuilder sb = new StringBuilder();
     
-            foreach (JsonRpcMethod method in ServiceClass.GetMethods())
+            foreach (Method method in ServiceClass.GetMethods())
             {
                 sb.Length = 0;
                 sb.Append("[ ");
 
-                JsonRpcParameter[] parameters = method.GetParameters();
+                Parameter[] parameters = method.GetParameters();
                 
                 if (parameters.Length == 0)
                 {
@@ -234,7 +235,7 @@ namespace Jayrock.JsonRpc.Web
                 }
                 else
                 {
-                    foreach (JsonRpcParameter parameter in parameters)
+                    foreach (Parameter parameter in parameters)
                     {
                         if (parameter.Position > 0) 
                             sb.Append(", ");

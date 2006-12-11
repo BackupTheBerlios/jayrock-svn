@@ -20,16 +20,19 @@
 //
 #endregion
 
-namespace Jayrock.JsonRpc
+namespace Jayrock.Services
 {
     #region Imports
 
-    using System.ComponentModel;
+    using System;
 
     #endregion
 
-    public interface IServiceBinding
+    public interface IMethodImpl
     {
-        IService Service { get; }
+        object Invoke(IService service, object[] args);
+        IAsyncResult BeginInvoke(IService service, object[] args, AsyncCallback callback, object asyncState);
+        object EndInvoke(IAsyncResult asyncResult);
     }
 }
+

@@ -28,6 +28,7 @@ namespace Jayrock.JsonRpc.Web
     using System.IO;
     using System.Security;
     using System.Web;
+    using Jayrock.Services;
 
     #endregion
 
@@ -50,7 +51,7 @@ namespace Jayrock.JsonRpc.Web
             writer.WriteLine();
         }
 
-        protected override void WriteClass(IndentedTextWriter writer, JsonRpcServiceClass serviceClass)
+        protected override void WriteClass(IndentedTextWriter writer, ServiceClass serviceClass)
         {
             writer.Write("class ");
             writer.Write(serviceClass.Name);
@@ -92,7 +93,7 @@ namespace Jayrock.JsonRpc.Web
             writer.WriteLine();
         }
 
-        protected override void WriteMethod(IndentedTextWriter writer, JsonRpcMethod method)
+        protected override void WriteMethod(IndentedTextWriter writer, Method method)
         {
             string clientMethodName = method.Name.Replace(".", "_");
 
@@ -100,9 +101,9 @@ namespace Jayrock.JsonRpc.Web
             writer.Write(clientMethodName);
             writer.Write("(self");
 
-            JsonRpcParameter[] parameters = method.GetParameters();
+            Parameter[] parameters = method.GetParameters();
                 
-            foreach (JsonRpcParameter parameter in parameters)
+            foreach (Parameter parameter in parameters)
             {
                 writer.Write(", ");
                 writer.Write(parameter.Name);
@@ -124,7 +125,7 @@ namespace Jayrock.JsonRpc.Web
             writer.Write(method.Name);
             writer.Write("', (");
 
-            foreach (JsonRpcParameter parameter in parameters)
+            foreach (Parameter parameter in parameters)
             {
                 writer.Write(parameter.Name);
                 writer.Write(", ");
@@ -135,7 +136,7 @@ namespace Jayrock.JsonRpc.Web
             writer.WriteLine();
         }
 
-        protected override void WriteClassTail(IndentedTextWriter writer, JsonRpcServiceClass serviceClass)
+        protected override void WriteClassTail(IndentedTextWriter writer, ServiceClass serviceClass)
         {
             Uri url = new Uri(Request.Url.GetLeftPart(UriPartial.Path));
             writer.Indent--;

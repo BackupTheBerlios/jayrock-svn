@@ -20,56 +20,57 @@
 //
 #endregion
 
-namespace Jayrock.JsonRpc
+namespace Jayrock.Services
 {
     #region Imports
 
     using System;
+    using Jayrock.JsonRpc;
     using NUnit.Framework;
 
     #endregion
 
     [ TestFixture ]
-    public class TestJsonRpcServiceClass
+    public class TestServiceClass
     {
         [ Test, ExpectedException(typeof(ArgumentNullException)) ]
         public void NullType()
         {
-            JsonRpcServiceClass.FromType(null);
+            JsonRpcServices.GetClassFromType(null);
         }
 
         [ Test ]
         public void ServiceNameIsTypeName()
         {
-            JsonRpcServiceClass clazz = JsonRpcServiceClass.FromType(typeof(EmptyService));
+            ServiceClass clazz = JsonRpcServices.GetClassFromType(typeof(EmptyService));
             Assert.AreEqual("EmptyService", clazz.Name);
         }
 
         [ Test ]
         public void UntaggedMethodsNotExported()
         {
-            JsonRpcServiceClass clazz = JsonRpcServiceClass.FromType(typeof(EmptyService));
+            ServiceClass clazz = JsonRpcServices.GetClassFromType(typeof(EmptyService));
             Assert.AreEqual(0, clazz.GetMethods().Length);
         }
 
         [ Test ]
         public void TaggedMethodsExported()
         {
-            JsonRpcServiceClass clazz = JsonRpcServiceClass.FromType(typeof(TestService));
+            ServiceClass clazz = JsonRpcServices.GetClassFromType(typeof(TestService));
             Assert.AreEqual(2, clazz.GetMethods().Length);
         }
 
         [ Test ]
         public void CustomServiceName()
         {
-            JsonRpcServiceClass clazz = JsonRpcServiceClass.FromType(typeof(TestService));
+            ServiceClass clazz = JsonRpcServices.GetClassFromType(typeof(TestService));
             Assert.AreEqual("MyService", clazz.Name);
         }
 
         [ Test ]
         public void MethodLookupIsCaseInsensitive()
         {
-            JsonRpcServiceClass clazz = JsonRpcServiceClass.FromType(typeof(TestService));
+            ServiceClass clazz = JsonRpcServices.GetClassFromType(typeof(TestService));
             Assert.IsNotNull(clazz.FindMethodByName("FOO"));
         }
         
@@ -88,3 +89,4 @@ namespace Jayrock.JsonRpc
         }
     }
 }
+

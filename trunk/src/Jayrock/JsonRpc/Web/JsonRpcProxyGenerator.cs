@@ -30,6 +30,7 @@ namespace Jayrock.JsonRpc.Web
     using System.Security;
     using System.Web;
     using Jayrock.Json;
+    using Jayrock.Services;
 
     #endregion
 
@@ -78,7 +79,7 @@ namespace Jayrock.JsonRpc.Web
                 Version1(Service.GetClass(), url, writer);
         }
 
-        private static void Version1(JsonRpcServiceClass service, Uri url, IndentedTextWriter writer)
+        private static void Version1(ServiceClass service, Uri url, IndentedTextWriter writer)
         {
             Debug.Assert(service != null);
             Debug.Assert(url!= null);
@@ -94,12 +95,12 @@ namespace Jayrock.JsonRpc.Web
             writer.WriteLine("{");
             writer.Indent++;
     
-            JsonRpcMethod[] methods = service.GetMethods();
+            Method[] methods = service.GetMethods();
             string[] methodNames = new string[methods.Length];
     
             for (int i = 0; i < methods.Length; i++)
             {
-                JsonRpcMethod method = methods[i];
+                Method method = methods[i];
                 methodNames[i] = method.Name;
 
                 if (method.Description.Length > 0)
@@ -116,9 +117,9 @@ namespace Jayrock.JsonRpc.Web
                 writer.Write(method.Name);
                 writer.Write("\"] = function(");
 
-                JsonRpcParameter[] parameters = method.GetParameters();
+                Parameter[] parameters = method.GetParameters();
                 
-                foreach (JsonRpcParameter parameter in parameters)
+                foreach (Parameter parameter in parameters)
                 {
                     writer.Write(parameter.Name);
                     writer.Write(", ");
@@ -132,7 +133,7 @@ namespace Jayrock.JsonRpc.Web
                 writer.Write(method.Name);
                 writer.Write("\", [");
 
-                foreach (JsonRpcParameter parameter in parameters)
+                foreach (Parameter parameter in parameters)
                 {
                     if (parameter.Position > 0)
                         writer.Write(',');
@@ -221,7 +222,7 @@ namespace Jayrock.JsonRpc.Web
             writer.WriteLine(";");
         }
 
-        private void Version2(JsonRpcServiceClass service, Uri url, IndentedTextWriter writer)
+        private void Version2(ServiceClass service, Uri url, IndentedTextWriter writer)
         {
             Debug.Assert(service != null);
             Debug.Assert(url!= null);
@@ -246,7 +247,7 @@ namespace Jayrock.JsonRpc.Web
             writer.WriteLine();
             writer.Indent += 3;
     
-            JsonRpcMethod[] methods = service.GetMethods();
+            Method[] methods = service.GetMethods();
             
             string[] methodNames = new string[methods.Length];
             for (int i = 0; i < methods.Length; i++)
@@ -256,7 +257,7 @@ namespace Jayrock.JsonRpc.Web
     
             for (int i = 0; i < methods.Length; i++)
             {
-                JsonRpcMethod method = methods[i];
+                Method method = methods[i];
 
                 writer.WriteLine();
 
@@ -274,9 +275,9 @@ namespace Jayrock.JsonRpc.Web
                 writer.Write(method.Name);
                 writer.Write("\" : function(");
 
-                JsonRpcParameter[] parameters = method.GetParameters();
+                Parameter[] parameters = method.GetParameters();
                 
-                foreach (JsonRpcParameter parameter in parameters)
+                foreach (Parameter parameter in parameters)
                 {
                     writer.Write(parameter.Name);
                     writer.Write(", ");
@@ -289,7 +290,7 @@ namespace Jayrock.JsonRpc.Web
                 writer.Write(method.Name);
                 writer.Write("\", [");
 
-                foreach (JsonRpcParameter parameter in parameters)
+                foreach (Parameter parameter in parameters)
                 {
                     if (parameter.Position > 0)
                         writer.Write(',');
@@ -330,17 +331,17 @@ namespace Jayrock.JsonRpc.Web
             writer.Indent--;
         }
 
-        protected override void WriteClass(IndentedTextWriter writer, JsonRpcServiceClass serviceClass)
+        protected override void WriteClass(IndentedTextWriter writer, ServiceClass serviceClass)
         {
             throw new NotImplementedException();
         }
 
-        protected override void WriteMethod(IndentedTextWriter writer, JsonRpcMethod method)
+        protected override void WriteMethod(IndentedTextWriter writer, Method method)
         {
             throw new NotImplementedException();
         }
 
-        protected override void WriteClassTail(IndentedTextWriter writer, JsonRpcServiceClass serviceClass)
+        protected override void WriteClassTail(IndentedTextWriter writer, ServiceClass serviceClass)
         {
             throw new NotImplementedException();
         }

@@ -20,18 +20,19 @@
 //
 #endregion
 
-namespace Jayrock.JsonRpc
+namespace Jayrock.Services
 {
     #region Imports
 
     using System;
     using Jayrock.Json;
+    using Jayrock.JsonRpc;
     using NUnit.Framework;
 
     #endregion
 
     [ TestFixture ]
-    public class TestJsonRpcService
+    public class TestMethodl
     {
         [ Test ]
         public void FailedMethodYieldsInvocationException()
@@ -52,7 +53,7 @@ namespace Jayrock.JsonRpc
         public void VariableArguments()
         {
             TestService service = new TestService();
-            JsonRpcMethod method = service.GetClass().FindMethodByName("VarMethod");
+            Method method = service.GetClass().FindMethodByName("VarMethod");
             object[] args = new object[] { 1, 2, 3, 4 };
             object[] invokeArgs = method.TransposeVariableArguments(args);
             Assert.AreEqual(1, invokeArgs.Length);
@@ -63,7 +64,7 @@ namespace Jayrock.JsonRpc
         public void FixedAndVariableArguments()
         {
             TestService service = new TestService();
-            JsonRpcMethod method = service.GetClass().FindMethodByName("FixedVarMethod");
+            Method method = service.GetClass().FindMethodByName("FixedVarMethod");
             object[] args = new object[] { 1, 2, 3, 4 };
             args = method.TransposeVariableArguments(args);
             Assert.AreEqual(3, args.Length);
@@ -76,7 +77,7 @@ namespace Jayrock.JsonRpc
         public void RetransposingYieldsTheSame()
         {
             TestService service = new TestService();
-            JsonRpcMethod method = service.GetClass().FindMethodByName("FixedVarMethod");
+            Method method = service.GetClass().FindMethodByName("FixedVarMethod");
             object[] args = new object[] { 1, 2, 3, 4 };
             args = method.TransposeVariableArguments(args);
             args = method.TransposeVariableArguments(args);
@@ -95,7 +96,7 @@ namespace Jayrock.JsonRpc
             //
             
             TestService service = new TestService();
-            JsonRpcMethod method = service.GetClass().FindMethodByName("VarMethod");
+            Method method = service.GetClass().FindMethodByName("VarMethod");
             object[] args = new object[] { 1, 2, new int[] { 3, 4 } };
             args = method.TransposeVariableArguments(args);
             Assert.AreEqual(1, args.Length);
@@ -115,7 +116,7 @@ namespace Jayrock.JsonRpc
             //
             
             TestService service = new TestService();
-            JsonRpcMethod method = service.GetClass().FindMethodByName("FixedVarMethod");
+            Method method = service.GetClass().FindMethodByName("FixedVarMethod");
             object[] args = new object[] { 1, 2, 
                 new int[] { 3, 4 }, 
                 new JsonObject(new string[] { "five", "six" }, new object[] { 5, 6 }) };
@@ -151,3 +152,4 @@ namespace Jayrock.JsonRpc
         }
     }
 }
+

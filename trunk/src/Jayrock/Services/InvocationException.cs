@@ -20,17 +20,35 @@
 //
 #endregion
 
-namespace Jayrock.JsonRpc
+namespace Jayrock.Services
 {
     #region Imports
 
     using System;
-    using System.Collections;
+    using System.Runtime.Serialization;
 
     #endregion
 
-    public interface IService
+    /// <summary>
+    /// The exception that is thrown when <see cref="IRpcMethod.Invoke"/> 
+    /// fails.
+    /// </summary>
+
+    [ Serializable ]
+    public class InvocationException : System.ApplicationException
     {
-        JsonRpcServiceClass GetClass();
+        private const string _defaultMessage = "Failed to invoke the target method.";
+
+        public InvocationException(Exception innerException) :
+            base(_defaultMessage, innerException) {}
+
+        public InvocationException(string message) : 
+            base(Mask.NullString(message, _defaultMessage)) {}
+
+        public InvocationException(string message, Exception innerException) :
+            base(Mask.NullString(message, _defaultMessage), innerException) {}
+
+        protected InvocationException(SerializationInfo info, StreamingContext context) :
+            base(info, context) {}
     }
 }
