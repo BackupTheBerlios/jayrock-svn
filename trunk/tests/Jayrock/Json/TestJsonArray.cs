@@ -65,7 +65,7 @@ namespace Jayrock.Json
             Assert.AreEqual(a[0], reader.ReadNumber().ToInt32());
             Assert.AreEqual(a[1], reader.ReadString());
             Assert.AreEqual(a[2], reader.ReadBoolean());
-            Assert.AreEqual(JsonTokenClass.EndArray, reader.TokenClass);
+            reader.ReadToken(JsonTokenClass.EndArray);
         }
         
         [ Test ]

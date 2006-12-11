@@ -189,8 +189,7 @@ namespace Jayrock.Json.Conversion.Exporters
             for (int i = 0; i < expectations.Length; i++)
                 TestValue(expectations.GetValue(i), reader, path + "/" + i);
 
-            Assert.AreEqual(JsonTokenClass.EndArray, reader.TokenClass);
-            reader.Read();
+            reader.ReadToken(JsonTokenClass.EndArray);
         }
 
         private static void TestValue(object expected, JsonReader reader, string path)

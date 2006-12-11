@@ -507,7 +507,7 @@ namespace Jayrock.Json
             reader.ReadToken(JsonTokenClass.Array);
             Assert.AreEqual(4, reader.ReadNumber().ToInt32());
             Assert.AreEqual(2, reader.ReadNumber().ToInt32());
-            Assert.AreSame(JsonTokenClass.EndArray, reader.TokenClass);
+            reader.ReadToken(JsonTokenClass.EndArray);
         }
 
         [ Test ]
@@ -542,7 +542,7 @@ namespace Jayrock.Json
             Assert.AreEqual(1, reader.ReadNumber().ToInt32());
             Assert.AreEqual(2, reader.ReadNumber().ToInt32());
             Assert.AreEqual(3, reader.ReadNumber().ToInt32());
-            Assert.AreSame(JsonTokenClass.EndArray, reader.TokenClass);
+            reader.ReadToken(JsonTokenClass.EndArray);
         }
 
         [ Test ]
@@ -557,7 +557,7 @@ namespace Jayrock.Json
             reader.ReadToken(JsonTokenClass.Array);
             Assert.AreEqual(1, reader.ReadNumber().ToInt32());
             Assert.AreEqual(3, reader.ReadNumber().ToInt32());
-            Assert.AreSame(JsonTokenClass.EndArray, reader.TokenClass);
+            reader.ReadToken(JsonTokenClass.EndArray);
         }
 
         [ Test ]
@@ -570,7 +570,7 @@ namespace Jayrock.Json
                 3 */
             ]");
             reader.ReadToken(JsonTokenClass.Array);
-            Assert.AreSame(JsonTokenClass.EndArray, reader.TokenClass);
+            reader.ReadToken(JsonTokenClass.EndArray);
         }
 
         [ Test ]
@@ -586,7 +586,7 @@ namespace Jayrock.Json
             Assert.AreEqual(1, reader.ReadNumber().ToInt32());
             Assert.AreEqual(2, reader.ReadNumber().ToInt32());
             Assert.AreEqual(3, reader.ReadNumber().ToInt32());
-            Assert.AreSame(JsonTokenClass.EndArray, reader.TokenClass);
+            reader.ReadToken(JsonTokenClass.EndArray);
         }
 
         private void AssertTokenText(JsonTokenClass token, string text)

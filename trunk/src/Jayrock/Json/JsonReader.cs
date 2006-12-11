@@ -109,7 +109,8 @@ namespace Jayrock.Json
 
         public string ReadToken(JsonTokenClass token)
         {
-            MoveToContent();
+            if (!token.IsTerminator)
+                MoveToContent();
             
             if (TokenClass != token)
                 throw new JsonException(string.Format("Found {0} where {1} was expected.", TokenClass, token));
@@ -229,12 +230,17 @@ namespace Jayrock.Json
 
         public bool MoveToContent()
         {
-            JsonTokenClass current = TokenClass;
+            if (!EOF)
+            {
+                if (TokenClass.IsTerminator)
+                    return Read();
 
-            if (current == JsonTokenClass.BOF || current == JsonTokenClass.EndArray || current == JsonTokenClass.EndObject)
-                return Read();
-
-            return !EOF;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         /// <summary>

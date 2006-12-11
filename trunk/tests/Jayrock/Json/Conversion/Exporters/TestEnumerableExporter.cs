@@ -52,7 +52,7 @@ namespace Jayrock.Json.Conversion.Exporters
         {
             JsonReader reader = Export(new object[] {});
             reader.ReadToken(JsonTokenClass.Array);
-            Assert.AreEqual(JsonTokenClass.EndArray, reader.TokenClass);
+            reader.ReadToken(JsonTokenClass.EndArray);
         }
 
         [ Test ]
@@ -63,7 +63,7 @@ namespace Jayrock.Json.Conversion.Exporters
             Assert.AreEqual(11, reader.ReadNumber().ToInt32());
             Assert.AreEqual(22, reader.ReadNumber().ToInt32());
             Assert.AreEqual(33, reader.ReadNumber().ToInt32());
-            Assert.AreEqual(JsonTokenClass.EndArray, reader.TokenClass);
+            reader.ReadToken(JsonTokenClass.EndArray);
         }
 
         [ Test ]
@@ -74,7 +74,7 @@ namespace Jayrock.Json.Conversion.Exporters
             Assert.AreEqual(11, reader.ReadNumber().ToInt32());
             Assert.AreEqual(22, reader.ReadNumber().ToInt32());
             Assert.AreEqual(33, reader.ReadNumber().ToInt32());
-            Assert.AreEqual(JsonTokenClass.EndArray, reader.TokenClass);
+            reader.ReadToken(JsonTokenClass.EndArray);
         }
 
         [ Test ]
@@ -87,9 +87,9 @@ namespace Jayrock.Json.Conversion.Exporters
             reader.ReadToken(JsonTokenClass.Array);
             Assert.AreEqual(33, reader.ReadNumber().ToInt32());
             Assert.AreEqual(44, reader.ReadNumber().ToInt32());
-            Assert.AreEqual(JsonTokenClass.EndArray, reader.TokenClass);
+            reader.ReadToken(JsonTokenClass.EndArray);
             Assert.AreEqual(55, reader.ReadNumber().ToInt32());
-            Assert.AreEqual(JsonTokenClass.EndArray, reader.TokenClass);
+            reader.ReadToken(JsonTokenClass.EndArray);
         }
 
         private static JsonReader Export(IEnumerable values)

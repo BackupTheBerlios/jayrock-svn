@@ -132,7 +132,7 @@ namespace Jayrock.Json
             Assert.AreEqual(2.5f, (float) reader.ReadNumber());
             Assert.AreEqual(4.2, (double) reader.ReadNumber());
             Assert.AreEqual(9.99m, (decimal) reader.ReadNumber());
-            Assert.AreEqual(JsonTokenClass.EndArray, reader.TokenClass);
+            reader.ReadToken(JsonTokenClass.EndArray);
             Assert.IsFalse(reader.Read());
         }
         
@@ -297,7 +297,7 @@ namespace Jayrock.Json
             reader.Skip();
             Assert.AreEqual(JsonTokenClass.Object, reader.TokenClass);
             reader.Skip();
-            Assert.AreEqual(JsonTokenClass.EndArray, reader.TokenClass);
+            reader.ReadToken(JsonTokenClass.EndArray);
         }
         
         private sealed class MockedJsonReader : JsonReaderBase
