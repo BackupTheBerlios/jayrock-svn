@@ -363,6 +363,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Json\Conversion\Exporters\ByteArrayExporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\Conversion\Exporters\ComponentExporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -449,6 +454,11 @@
                 />
                 <File
                     RelPath = "Json\Conversion\Importers\BooleanImporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Conversion\Importers\ByteArrayImporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

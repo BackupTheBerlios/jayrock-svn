@@ -12,6 +12,7 @@ namespace JayrockWeb
     using System.Web.SessionState;
     using System.Web.UI;
     using System.Web.UI.WebControls;
+    using System.Drawing;
     using Jayrock.Json;
     using Jayrock.JsonRpc;
     using Jayrock.JsonRpc.Web;
@@ -239,6 +240,20 @@ namespace JayrockWeb
                 counter = (int) counterObject;
             Session["Counter"] = ++counter;
             return counter;
+        }
+
+        [ JsonRpcMethod("encode", Idempotent = true)]
+        [ JsonRpcHelp("Returns the bytes of a string in a given encoding that are transmitted as a Base64 string.") ]
+        public byte[] EncodeBytes(string s, string encoding)
+        {
+            return System.Text.Encoding.GetEncoding(encoding).GetBytes(s);
+        }
+
+        [JsonRpcMethod("decode", Idempotent = true)]
+        [JsonRpcHelp("Returns the string from encoded bytes (transmitted as a Base64 string).")]
+        public string DecodeString(byte[] bytes, string encoding)
+        {
+            return System.Text.Encoding.GetEncoding(encoding).GetString(bytes);
         }
     }
 }

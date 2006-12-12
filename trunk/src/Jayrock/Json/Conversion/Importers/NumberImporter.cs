@@ -64,6 +64,11 @@ namespace Jayrock.Json.Conversion.Importers
             }
         }
 
+        protected override object ImportFromBoolean(ImportContext context, JsonReader reader)
+        {
+            return Convert.ChangeType(BooleanObject.Box(reader.ReadBoolean()), OutputType);
+        }
+
         protected abstract object ConvertFromString(string s);
 
         private Exception NumberError(Exception e, string text)

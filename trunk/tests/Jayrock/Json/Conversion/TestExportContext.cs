@@ -70,6 +70,7 @@ namespace Jayrock.Json.Conversion
             AssertInStock(typeof(DataRowExporter), typeof(MyDataRow));
             AssertInStock(typeof(DataRowViewExporter), typeof(DataRowView));
             AssertInStock(typeof(StringExporter), typeof(Guid));
+            AssertInStock(typeof(ByteArrayExporter), typeof(byte[]));
         }
 
         private static void AssertInStock(Type expected, Type type)

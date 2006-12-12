@@ -130,6 +130,7 @@ namespace Jayrock.Json.Conversion
                     importers.Add(new BooleanImporter());
                     importers.Add(new DateTimeImporter());
                     importers.Add(new GuidImporter());
+                    importers.Add(new ByteArrayImporter());
                     importers.Add(new AnyImporter());
                     importers.Add(new DictionaryImporter());
                     importers.Add(new ListImporter());

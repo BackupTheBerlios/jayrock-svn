@@ -51,6 +51,7 @@ namespace Jayrock.Json.Conversion
             AssertInStock(typeof(BooleanImporter), typeof(bool));
             AssertInStock(typeof(AnyImporter), typeof(object));
             AssertInStock(typeof(ArrayImporter), typeof(object[]));
+            AssertInStock(typeof(ByteArrayImporter), typeof(byte[]));
             AssertInStock(typeof(EnumImporter), typeof(System.Globalization.UnicodeCategory));
             AssertInStock(typeof(ImportAwareImporter), typeof(JsonObject));
             AssertInStock(typeof(ImportAwareImporter), typeof(IDictionary));
