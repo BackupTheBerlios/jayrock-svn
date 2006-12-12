@@ -25,6 +25,8 @@ namespace Jayrock.Json
     #region Imports
 
     using System;
+    using System.Collections;
+    using System.Text;
     using NUnit.Framework;
 
     #endregion
@@ -55,6 +57,32 @@ namespace Jayrock.Json
         {
             JsonWriter writer = new StubJsonWriter();   
             writer.Close();
+        }
+
+        [ Test ]
+        public void AutoCompletion()
+        {
+            JsonRecorder writer = new JsonRecorder();
+            
+            writer.WriteStartArray();
+            writer.WriteStartObject();
+            writer.WriteMember("outer");
+            writer.WriteStartObject();
+            writer.WriteMember("inner");
+            writer.AutoComplete();
+            
+            JsonReader reader = writer.CreatePlayer();
+            
+            reader.ReadToken(JsonTokenClass.Array);
+            reader.ReadToken(JsonTokenClass.Object);
+            Assert.AreEqual("outer", reader.ReadMember());
+            reader.ReadToken(JsonTokenClass.Object);
+            Assert.AreEqual("inner", reader.ReadMember());
+            reader.ReadNull();
+            reader.ReadToken(JsonTokenClass.EndObject);
+            reader.ReadToken(JsonTokenClass.EndObject);
+            reader.ReadToken(JsonTokenClass.EndArray);
+            Assert.IsTrue(reader.EOF);
         }
 
         private void Writer_Disposed(object sender, EventArgs e)

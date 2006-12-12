@@ -330,6 +330,25 @@ namespace Jayrock.Json
 
             reader.Read();
         }
+        
+        public void AutoComplete()
+        {
+            if (Depth == 0)
+                throw new InvalidOperationException();
+            
+            if (Bracket == JsonWriterBracket.Member)
+                WriteNull();
+            
+            while (Depth > 0)
+            {
+                if (Bracket == JsonWriterBracket.Object)
+                    WriteEndObject();
+                else if (Bracket == JsonWriterBracket.Array)
+                    WriteEndArray();
+                else 
+                    throw new Exception("Implementation error.");
+            }
+        }
 
         /// <summary>
         /// Represents the method that handles the Disposed event of a reader.
