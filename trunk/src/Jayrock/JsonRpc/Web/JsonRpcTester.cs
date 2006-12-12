@@ -24,13 +24,13 @@ namespace Jayrock.JsonRpc.Web
 {
     #region Imports
 
-    using System;
     using System.Text;
     using System.Web.UI;
     using System.Web.UI.HtmlControls;
-    using System.Web.UI.WebControls;
     using Jayrock.Json;
     using Jayrock.Services;
+
+    using HyperLink = System.Web.UI.WebControls.HyperLink;
 
     #endregion
 
