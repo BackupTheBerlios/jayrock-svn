@@ -28,39 +28,11 @@ using ComVisible = System.Runtime.InteropServices.ComVisibleAttribute;
 
 #endregion
 
-//
-// General description
-//
-
-[assembly: AssemblyProduct("Jayrock")]
-[assembly: AssemblyCompany("http://jayrock.berlios.de")]
-[assembly: AssemblyCopyright("Copyright (c) 2005-6, Atif Aziz. All rights reserved.")]
-[assembly: AssemblyCulture("")]
+[assembly: AssemblyTitle("Jayrock")]
+[assembly: AssemblyDescription("JSON-RPC for ASP.NET/XSP")]
 
 //
 // Version information
 //
 
-[assembly: AssemblyVersion("0.9.8312.0")]
-
-//
-// Configuration (test, debug, release)
-//
-
-#if TEST
-    #if !DEBUG
-    #warning Test builds should be compiled using the DEBUG configuration.
-    #endif
-    [assembly: AssemblyConfiguration("Test")]
-#elif DEBUG
-    [assembly: AssemblyConfiguration("Debug")]
-#else
-    [assembly: AssemblyConfiguration("Release")]
-#endif
-
-//
-// COM visibility and CLS compliance
-//
-
-[assembly: ComVisible(false)]
-[assembly: CLSCompliant(true)]
+[assembly: AssemblyFileVersion("0.9.8312.1025")]

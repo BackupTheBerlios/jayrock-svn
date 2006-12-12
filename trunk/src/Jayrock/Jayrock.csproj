@@ -121,6 +121,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "PrivateAssemblyInfo.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "JsonRpc\JsonRpcDispatcher.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
