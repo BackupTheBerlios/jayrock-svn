@@ -281,6 +281,7 @@ namespace Jayrock.JsonRpc
                         request["id"] = importContext.Import(reader);
                         break;
                     }
+                    
                     case "method" :
                     {
                         string methodName = reader.ReadString();
@@ -301,6 +302,7 @@ namespace Jayrock.JsonRpc
                         
                         break;
                     }
+                    
                     case "params" :
                     {
                         //
@@ -321,6 +323,12 @@ namespace Jayrock.JsonRpc
                             paramsReader = recorder.CreatePlayer();
                         }
 
+                        break;
+                    }
+                        
+                    default:
+                    {
+                        reader.Skip();
                         break;
                     }
                 }

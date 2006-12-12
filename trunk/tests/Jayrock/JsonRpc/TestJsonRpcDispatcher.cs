@@ -182,6 +182,13 @@ namespace Jayrock.JsonRpc
             JsonRpcServices.GetResult((IDictionary) Parse(server.Process("{ id : 1, method : 'Idem', params : [] }")));
         }
 
+        [ Test ]
+        public void UnknownRequestMembersSkipped()
+        {
+            JsonRpcDispatcher server = new JsonRpcDispatcher(new TestService());
+            JsonRpcServices.GetResult((IDictionary) Parse(server.Process("{ id : 1, foo : [bar], method : 'Dummy', params : [] }")));
+        }
+
         private object Parse(string source)
         {
             return JsonConvert.Import(source);
