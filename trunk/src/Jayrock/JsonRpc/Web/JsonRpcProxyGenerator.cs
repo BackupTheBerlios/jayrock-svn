@@ -205,10 +205,10 @@ namespace Jayrock.JsonRpc.Web
 
     function newHTTP()
     {
-        if (window.XMLHttpRequest)
+        if (typeof(window) != 'undefined' && window.XMLHttpRequest)
             return new XMLHttpRequest(); /* IE7, Safari 1.2, Mozilla 1.0/Firefox, and Netscape 7 */
-        if (window.ActiveXObject)
-            new ActiveXObject('Microsoft.XMLHTTP') : /* IE 5 to IE 6 */
+        else
+            return new ActiveXObject('Microsoft.XMLHTTP'); /* WSH and IE 5 to IE 6 */
     }");
     
             writer.Indent--;
