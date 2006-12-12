@@ -80,9 +80,8 @@
             </projects>
         </solution>
     </target>
-
+    
     <target name="compile-test">
-        <property name="my.output.dir.path" value="${path::combine(my.bin.dir.path, 'Test')}" />
         <solution configuration="Debug">
             <projects>
                 <include name="Jayrock\Jayrock.csproj" />
@@ -105,11 +104,13 @@
     </target>
 
     <target name="test" depends="compile-test">
+        <call target="set-binpath-test" />
         <property name="my.output.testassembly.path" value="${path::combine(my.output.dir.path, my.output.testassembly.filename)}" />
         <exec program="${my.nunit.console.exe.path}" commandline='"${my.output.testassembly.path}"' />
     </target>
     
     <target name="cover" depends="compile-test">
+        <call target="set-binpath-test" />
         <property name="my.output.testassembly.path" value="${path::combine(my.output.dir.path, my.output.testassembly.filename)}" />
         <exec program="${my.ncover.console.exe.path}" commandline='/q /w "${my.output.dir.path}" /o "${nant.project.basedir}\coverage.xml" /a ${my.output.assembly.name} /a ${my.output.jsonassembly.name} /c "${my.nunit.console.exe.path}" "\"${my.output.testassembly.path}\""' />
         <exec program="${my.ncoverexplorer.console.exe.path}" commandline='"${nant.project.basedir}\coverage.xml" /html:coverage-report.html /report:2 /excluded /p:${my.project.name} /minCoverage:85 "/c:${nant.project.basedir}\NCoverExplorer.config"' />
@@ -129,6 +130,10 @@
                 <include name="${nant.project.basedir}\coverage-report.htm" />
             </files>
         </mail>
+    </target>
+    
+    <target name="set-binpath-test">
+        <property name="my.output.dir.path" value="${path::combine(my.bin.dir.path, 'Test')}" />
     </target>
     
     <target name="props">
