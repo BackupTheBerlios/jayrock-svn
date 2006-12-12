@@ -60,7 +60,6 @@ namespace Jayrock.Json
             Assert.IsFalse(JsonNull.LogicallyEquals(new object()), "Equals non-nullable?");
             Assert.IsTrue(JsonNull.LogicallyEquals(null), "Equals null reference?");
             Assert.IsTrue(JsonNull.LogicallyEquals(DBNull.Value), "Equals DBNull?");
-            Assert.IsTrue(JsonNull.LogicallyEquals(SqlInt32.Null), "Equals nullable type?");
         }
 
         [ Test ]
@@ -71,6 +70,12 @@ namespace Jayrock.Json
             JsonReader reader = writer.CreatePlayer();
             reader.ReadNull();
             Assert.IsTrue(reader.EOF);
+        }
+
+        [ Test ]
+        public void StringRepresentation()
+        {
+            Assert.AreEqual("null", JsonNull.Value.ToString());
         }
     }
 }

@@ -25,7 +25,6 @@ namespace Jayrock.Json
     #region Imports
 
     using System;
-    using System.Data.SqlTypes;
     using System.Runtime.Serialization;
     using Jayrock.Json.Conversion;
 
@@ -51,37 +50,31 @@ namespace Jayrock.Json
         public static bool LogicallyEquals(object o)
         {
             //
-            // Equals a null reference.
+            // Equals a null reference?
             //
 
             if (o == null)
                 return true;
 
             //
-            // Equals self, of course.
+            // Equals self, of course?
             //
 
             if (o.Equals(JsonNull.Value))
                 return true;
 
             //
-            // Equals the logical null value used in database applications.
+            // Equals the logical null value used in database applications?
             //
 
             if (Convert.IsDBNull(o))
                 return true;
-
-            //
-            // Equals any type that supports logical nullability and whose
-            // current state is logically null.
-            //
-
-            INullable nullable = o as INullable;
             
-            if (nullable == null)
-                return false;
+            //
+            // Instance is not one of the known logical null values.
+            //
 
-            return nullable.IsNull;
+            return false;
         }
         
         void IJsonExportable.Export(ExportContext context, JsonWriter writer)
@@ -95,8 +88,6 @@ namespace Jayrock.Json
             writer.WriteNull();
         }
         
-        // TODO: Add ToString();
-
         object IObjectReference.GetRealObject(StreamingContext context)
         {
             return JsonNull.Value;
