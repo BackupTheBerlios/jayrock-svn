@@ -112,7 +112,7 @@
     <target name="cover" depends="compile-test">
         <call target="set-binpath-test" />
         <property name="my.output.testassembly.path" value="${path::combine(my.output.dir.path, my.output.testassembly.filename)}" />
-        <exec program="${my.ncover.console.exe.path}" commandline='/q /w "${my.output.dir.path}" /o "${nant.project.basedir}\coverage.xml" /a ${my.output.assembly.name} /a ${my.output.jsonassembly.name} /c "${my.nunit.console.exe.path}" "\"${my.output.testassembly.path}\""' />
+        <exec program="${my.ncover.console.exe.path}" commandline='/q /w "${my.output.dir.path}" /o "${nant.project.basedir}\coverage.xml" /a ${my.output.assembly.name};${my.output.jsonassembly.name} /c "${my.nunit.console.exe.path}" "\"${my.output.testassembly.path}\""' />
         <exec program="${my.ncoverexplorer.console.exe.path}" commandline='"${nant.project.basedir}\coverage.xml" /html:coverage-report.html /report:2 /excluded /p:${my.project.name} /minCoverage:85 "/c:${nant.project.basedir}\NCoverExplorer.config"' />
         <call target="draco" if="${draco}" />
     </target>
