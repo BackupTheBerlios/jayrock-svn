@@ -30,10 +30,13 @@
     <property name="my.bin.dir.name" value="..\..\bin" />
     <property name="my.bin.dir.path" value="${path::combine(nant.project.basedir, my.bin.dir.name)}" />
    
-    <property name="my.output.assembly.name" value="Jayrock" />
+    <property name="my.output.assembly.name" value="${my.project.name}" />
     <property name="my.output.assembly.filename" value="${my.output.assembly.name + '.dll'}" />
+    
+    <property name="my.output.jsonassembly.name" value="${my.project.name + '.Json'}" />
+    <property name="my.output.jsonassembly.filename" value="${my.output.jsonassembly.name + '.dll'}" />
 
-    <property name="my.output.testassembly.name" value="Jayrock.Tests" />
+    <property name="my.output.testassembly.name" value="${my.project.name + '.Tests'}" />
     <property name="my.output.testassembly.filename" value="${my.output.testassembly.name + '.dll'}" />
     
     <!-- Mailing -->
@@ -108,7 +111,7 @@
     
     <target name="cover" depends="compile-test">
         <property name="my.output.testassembly.path" value="${path::combine(my.output.dir.path, my.output.testassembly.filename)}" />
-        <exec program="${my.ncover.console.exe.path}" commandline='/q /w "${my.output.dir.path}" /o "${nant.project.basedir}\coverage.xml" /a ${my.output.assembly.name} /c "${my.nunit.console.exe.path}" "\"${my.output.testassembly.path}\""' />
+        <exec program="${my.ncover.console.exe.path}" commandline='/q /w "${my.output.dir.path}" /o "${nant.project.basedir}\coverage.xml" /a ${my.output.assembly.name} /a ${my.output.jsonassembly.name} /c "${my.nunit.console.exe.path}" "\"${my.output.testassembly.path}\""' />
         <exec program="${my.ncoverexplorer.console.exe.path}" commandline='"${nant.project.basedir}\coverage.xml" /html:coverage-report.html /report:2 /excluded /p:${my.project.name} /minCoverage:85 "/c:${nant.project.basedir}\NCoverExplorer.config"' />
         <call target="draco" if="${draco}" />
     </target>
@@ -166,6 +169,8 @@
        
         <echo message="my.output.assembly.name = ${my.output.assembly.name}" />
         <echo message="my.output.assembly.filename = ${my.output.assembly.filename}" />
+        <echo message="my.output.jsonassembly.name= ${my.output.jsonassembly.name}" />
+        <echo message="my.output.jsonassembly.filename = ${my.output.jsonassembly.filename}" />
         <echo message="my.output.testassembly.name = ${my.output.testassembly.name}" />
         <echo message="my.output.testassembly.filename = ${my.output.testassembly.filename}" />
         
