@@ -589,6 +589,41 @@ namespace Jayrock.Json
             reader.ReadToken(JsonTokenClass.EndArray);
         }
 
+        [ Test ]
+        public void StringWithHexEncodedChars()
+        {
+            Assert.AreEqual("1234\x1234\x56781234\xffff", CreateReader("'1234\\u1234\u56781234\uffff'").ReadString());
+        }
+
+        [ Test ]
+        public void StringWithEscapedBackspace()
+        {
+            Assert.AreEqual("\b", CreateReader("'\\b'").ReadString());
+        }
+
+        [ Test ]
+        public void StringWithEscapedTab()
+        {
+            Assert.AreEqual("\t", CreateReader("'\\t'").ReadString());
+        }
+
+        [ Test ]
+        public void StringWithEscapedLineFeed()
+        {
+            Assert.AreEqual("\n", CreateReader("'\\n'").ReadString());
+        }
+        
+        [ Test ]
+        public void StringWithEscapedFormFeed()
+        {
+            Assert.AreEqual("\f", CreateReader("'\\f'").ReadString());
+        }
+        [ Test ]
+        public void StringWithEscapedCarriageReturn()
+        {
+            Assert.AreEqual("\r", CreateReader("'\\r'").ReadString());
+        }
+        
         private void AssertTokenText(JsonTokenClass token, string text)
         {
             Assert.IsTrue(_reader.Read());

@@ -71,31 +71,6 @@ namespace Jayrock.Json
         }
 
         /// <summary>
-        /// Get the text up but not including the specified character or the
-        /// end of line, whichever comes first.
-        /// </summary>
-
-        public string NextTo(char delimiter) 
-        {
-            StringBuilder sb = new StringBuilder();
-            
-            while (true)
-            {
-                char ch = Next();
-                
-                if (ch == delimiter || ch == EOF || ch == '\n' || ch == '\r') 
-                {
-                    if (ch != 0) 
-                        Back();
-                    
-                    return sb.ToString().Trim();
-                }
-                
-                sb.Append(ch);
-            }
-        }
-
-        /// <summary>
         /// Back up one character. This provides a sort of lookahead capability,
         /// so that you can test for a digit or letter before attempting to
         /// parse the next number or identifier.
@@ -191,10 +166,7 @@ namespace Jayrock.Json
                             sb.Append('\r');
                             break;
                         case 'u':
-                            // TODO: Review
-                            //sb.append((char)Integer.parseInt(next(4), 16)); // 16 == radix, ie. hex
-                            int iascii = int.Parse(Next(4),NumberStyles.HexNumber);
-                            sb.Append((char)iascii);
+                            sb.Append((char) uint.Parse(Next(4), NumberStyles.HexNumber));
                             break;
                         default:
                             sb.Append(ch);
