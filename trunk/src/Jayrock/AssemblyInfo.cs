@@ -37,19 +37,19 @@ using ComVisible = System.Runtime.InteropServices.ComVisibleAttribute;
 [assembly: AssemblyCopyright("Copyright (c) 2005-6, Atif Aziz. All rights reserved.")]
 [assembly: AssemblyCulture("")]
 
-#if NORPC
-    [assembly: AssemblyTitle("Jayrock.JSON")]
-    [assembly: AssemblyDescription("JSON implementation for ASP.NET")]
+#if JSONONLY
+    [assembly: AssemblyTitle("Jayrock.Json")]
+    [assembly: AssemblyDescription("JSON Library")]
 #else
     [assembly: AssemblyTitle("Jayrock")]
-    [assembly: AssemblyDescription("JSON and JSON-RPC implementation for ASP.NET")]
+    [assembly: AssemblyDescription("JSON-RPC for ASP.NET/XSP")]
 #endif
 
 //
 // Version information
 //
 
-[assembly: AssemblyVersion("0.9.8304.0")]
+[assembly: AssemblyVersion("0.9.8312.0")]
 [assembly: AssemblyFileVersion("0.9.8312.1437")]
 
 //

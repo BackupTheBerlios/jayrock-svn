@@ -83,6 +83,7 @@
         <solution configuration="Debug">
             <projects>
                 <include name="Jayrock.csproj" />
+                <include name="Jayrock.Json.csproj" />
                 <include name="${path::combine(my.tests, 'Jayrock\Jayrock Test.csproj')}" />
             </projects>
         </solution>

@@ -99,6 +99,11 @@
                     Project = "{A178A4BB-CE12-4BF3-8B17-6DF0D82120C8}"
                     Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
+                <Reference
+                    Name = "Jayrock.Json"
+                    Project = "{F10A6A7D-B8E4-4F8B-8BD9-5B42ACE5520E}"
+                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
+                />
             </References>
         </Build>
         <Files>

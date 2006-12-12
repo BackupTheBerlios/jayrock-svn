@@ -28,7 +28,7 @@
                     BaseAddress = "285212672"
                     CheckForOverflowUnderflow = "false"
                     ConfigurationOverrideFile = ""
-                    DefineConstants = "NORPC;DEBUG;TRACE"
+                    DefineConstants = "JSONONLY;DEBUG;TRACE"
                     DocumentationFile = ""
                     DebugSymbols = "true"
                     FileAlignment = "4096"
@@ -109,12 +109,17 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "EnumeratorHelper.cs"
+                    RelPath = "ICollector.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "ICollector.cs"
+                    RelPath = "IndentedTextWriter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "InternetDate.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

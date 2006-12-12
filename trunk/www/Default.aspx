@@ -102,18 +102,18 @@
             from the respository, you can compile Jayrock in one of two ways. You can either
             open the included <a href="http://msdn.microsoft.com/vstudio/">Microsoft Visual Studio</a>
             solution files and use the IDE to compile the projects or you can use the included
-            <a href="http://nant.sourceforge.net/">Nant</a> build script to compile from the
+            <a href="http://nant.sourceforge.net/">NAnt</a> build script to compile from the
             command-line.</p>
         <h2>
-            Compiling with Nant</h2>
+            Compiling with NAnt</h2>
         <p>
-            You do not need Nant installed on your machine to compile Jayrock. The right and
-            required version of all required tools (<a href="http://nant.sourceforge.net/">Nant</a>,
+            You do not need NAnt installed on your machine to compile Jayrock. The right and
+            required version of all required tools (<a href="http://nant.sourceforge.net/">NAnt</a>,
             <a href="http://www.nunit.org/">NUnit</a>, <a href="http://ncover.org/">NCover</a> and 
             <a href="http://www.kiwidude.com/blog/2006/01/ncoverexplorer-debut.html">NCoverExplorer</a>)
             is already included under the <code>tools</code> directory under Jayrock. If you
             are on the Windows platform, you can simply run the batch file <code>src\Jayrock\build.bat</code>
-            to invoke Nant and have it build all the targets. To invoke Nant explicitly, otherwise,
+            to invoke NAnt and have it build all the targets. To invoke NAnt explicitly, otherwise,
             use the following command (assuming you are in the root of the working directory):</p>
         <p>
             <code>tools\nant-0.85-rc2\NAnt /f:src\Jayrock\nant.build</code></p>
@@ -121,7 +121,7 @@
             A full build runs the unit tests, creates a code coverage report from the tests
             and then goes on to compile the debug and release assemblies for Jayrock and Jayrock.Json.</p>
         <p>
-            The Nant script can be used to build 5 different types of so-called <em><a href="http://nant.sourceforge.net/release/latest/help/fundamentals/targets.html">
+            The NAnt script can be used to build 5 different types of so-called <em><a href="http://nant.sourceforge.net/release/latest/help/fundamentals/targets.html">
                 targets</a></em>:</p>
         <dl>
             <dt>test </dt>
@@ -147,13 +147,17 @@
             in Visual Studio and build away! The three solutions that you will find under <code>
                 src</code> are:</p>
         <dl>
+            <dt>Jayrock.Json</dt>
+            <dd>Solution that builds and contains functionality related to JSON only, 
+                without all the JSON-RPC bells and whistles. If you are looking
+                to only work with the JSON data format then this is the right solution for you.</dd>
+            <dt>Jayrock</dt>
+            <dd>The complete solution that includes and build the JSON-RPC and JSON bits.</dd>
             <dt>Jayrock Test </dt>
             <dd>
                 Solution that contains a test-view of the project, containing references and sources
-                for unit tests.</dd><dt>Jayrock.Json</dt><dd>Solution that builds the strictly JSON
-                    subset of Jayrock, without all the JSON-RPC bells and whistles. If you are looking
-                    to only work with the JSON data format then this is the right solution for you.</dd><dt>Jayrock</dt><dd>The
-                        complete solution that includes JSON and JSON-RPC rolled into one.</dd></dl>
+                for unit tests.</dd>
+        </dl>
         <h2>
             Notes for Visual Studio 2002 &amp; 2005</h2>
         <p>
@@ -253,20 +257,25 @@
             <a id="setup" name="setup">Setting Up Jayrock</a></h1>
         <ol>
             <li>Setup a virtual directory and application in IIS called <code>jayrock</code> that
-                points to the directory <code>src\Web</code> under your working copy of Jayrock.</li>
-            <li>Open the Visual Studio .NET 2003 solution and compile all projects. There is also
-                a <a href="http://nant.sourceforge.net/">NAnt</a> 0.85 RC2 build script included,
-                but this only builds the main Jayrock assembly at the moment and not all other projects.</li>
-            <li>Open up a browser window (Internet Explorer and FireFox tested) and navigate to
-                the virtual root created in the first step (most probably <code><span class="fake-a">
-                    http://localhost/jayrock/</span></code>).</li>
+                points to the directory <code>www</code> under your working copy of Jayrock.</li>
+            <li>Open the Visual Studio .NET 2003 solution called <code>Jayrock Web</code> to compile all 
+                projects. There is also a <a href="http://nant.sourceforge.net/">NAnt</a> 
+                0.85 RC2 build script but this builds all other projects except the web project. If you 
+                compile from the command-line, the only additional step required at the moment is to 
+                manually copy the <code>Jayrock.dll</code> and <code>Jayrock.Json.dll</code> from the
+                <code>bin</code> directory in the root of your working copy to <code>bin</code>
+                directory under <code>www</code>.</li>
+            <li>Open up a browser window and navigate to
+                the virtual root created in the first step, which most probably reads something like 
+                <code><span class="fake-a">http://localhost/jayrock/</span></code>).</li>
         </ol>
         <h1>
             <a id="quick-start" name="quick-start">ASP.NET Quick Start</a></h1>
         <p>
-            To use Jayrock in your ASP.NET project, add a reference to the principal assembly
-            <code>Jayrock.dll</code> and add a copy of <code>json.js</code> (distributed with
-            Jayrock) to the root of your web. A JSON-RPC service is best exposed using Jayrock
+            To use Jayrock in your ASP.NET project, add a reference to the 
+            <code>Jayrock.dll</code> and <code>Jayrock.Json.dll</code> assemblies add a copy of 
+            <code>json.js</code> (distributed with Jayrock and found in <code>www</code>
+            subdirectory) to the root of your web. A JSON-RPC service is best exposed using Jayrock
             by creating an <a href="http://msdn.microsoft.com/library/en-us/cpguide/html/cpconhttpruntimesupport.asp">
                 ASP.NET HTTP handler</a>. In this quick start, we will create a JSON-RPC service
             called <code>HelloWorld</code>. Begin by creating a file called <code>helloworld.ashx</code>
@@ -274,7 +283,8 @@
         </p>
         <p>
             <strong>IMPORTANT!</strong> This quick start tutorial and its code illustrations are
-            based on version <% = typeof(Jayrock.Json.JsonReader).Assembly.GetName().Version %> of Jayrock.</p>
+            based on version <% = typeof(Jayrock.Json.JsonReader).Assembly.GetName().Version %> of Jayrock.
+            If you are using an older build then some of this may not make sense or work for you.</p>
         <pre class="code">&lt;%@ WebHandler Class="JayrockWeb.HelloWorld" %&gt;
 
 namespace JayrockWeb
@@ -486,7 +496,8 @@ window.onload = function()
             <dt><a href="Jayrock.pdf">Jayrock Project Presentation</a></dt>
             <dd>
                 This presentation contains illustrations that briefly cover the architecture of
-                Jayrock's JSON and JSON-RPC implementations.
+                Jayrock's JSON and JSON-RPC implementations. Beware, however, that some bits
+                may be obsolete now since the presentation is based on a very early build.
             </dd>
         </dl>
         <h1>
@@ -501,11 +512,13 @@ window.onload = function()
                     What's so <em>modest</em> about it? Well, modest as in plain and basic and
                     no work of genius.
             </dd>
-            <dt>What can I do with Jayrock?</dt><dd>
+            <dt>What can I do with Jayrock?</dt>
+            <dd>
+                Two things come to mind:
                 <ol>
                     <li>You can use just the Jayrock's JSON infrastructure for manipulating JSON data and text without
                     all the JSON-RPC fuss. Whenever you see <em>Jayrock.Json</em> mentioned, it's referring to
-                        just this piece of functionality and which is even provided as a stand-alone assembly.</li>
+                        just this piece of functionality and which is provided as a stand-alone assembly.</li>
                         <li>In addition to the above, you can use Jayrock to expose light-weight services with procedures
                             from within your ASP.NET application. You can then invoke the procedures on those
                             services over HTTP using JSON-RPC as the protocol. A typical use case would be some
@@ -534,7 +547,7 @@ window.onload = function()
       is compiled and delivered for Microsoft .NET Framework 1.1, but it can
       be run against any version of Microsoft .NET Framework, including 1.0 and 2.0. For
       version 1.0, you will have to recompile the binaries. For version 2.0, on the other
-      hand, you don't need to do anything. Just toss the assembly at your application
+      hand, you don't need to do anything. Just toss the assemblies at your application
       and you are good to go.</dd><dt>What is JSON?</dt><dd><a href="http://www.json.org/"><acronym title="JavaScript Object Notation">JSON</acronym></a> stands for JavaScript Object Notation. It is a simple, human-readable,
                 text-based and portable data format that is ideal for representing and exchanging
                 application data. It has only 6 data types (Null, Boolean, Number, String, Object
