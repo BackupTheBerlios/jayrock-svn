@@ -117,32 +117,16 @@
     </target>
     
     <target name="draco">
-
         <fail if="${string::get-length(my.smtp.server) == 0}" 
             message="You must specify an SMTP server host value via the SMTPSERVER environment variable for this build target to succeed." />
-        
-        <!-- 
-        NOTE:   This sleep seems to be needed because the <style> task in the cover 
-                target appears to leak a file handle, causing a share violation error
-                when the report has to be zipped.
-        -->
-        <sleep seconds="3" />
-        <zip zipfile="${nant.project.basedir}\coverage.zip" ziplevel="9">
-            <fileset>
-                <include name="${nant.project.basedir}\coverage.*" />
-            </fileset>
-        </zip>
         <mail 
             from="${my.mail.from}" 
             tolist="${my.mail.to}" 
             subject="Jayrock coverage for build ${build.id}"
             format="Html"
             mailhost="${my.smtp.server}">
-            <attachments>
-                <include name="${nant.project.basedir}\coverage.zip" />
-            </attachments>
             <files>
-                <include name="${nant.project.basedir}\coverage.htm" />
+                <include name="${nant.project.basedir}\coverage-report.htm" />
             </files>
         </mail>
     </target>
