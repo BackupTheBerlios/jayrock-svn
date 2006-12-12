@@ -32,49 +32,12 @@ namespace Jayrock.Json
     #endregion
 
     [ Serializable ]
-    public sealed class JsonWriterBracket : IObjectReference
+    public enum JsonWriterBracket 
     {
-        public static readonly JsonWriterBracket Pending = new JsonWriterBracket("Pending");
-        public static readonly JsonWriterBracket Array = new JsonWriterBracket("Array");
-        public static readonly JsonWriterBracket Object = new JsonWriterBracket("Object");
-        public static readonly JsonWriterBracket Member = new JsonWriterBracket("Member");
-        public static readonly JsonWriterBracket Closed = new JsonWriterBracket("Closed");
-            
-        public static readonly ICollection All = new JsonWriterBracket[] { Pending, Array, Object, Member, Closed };
-            
-        private readonly string _name;
-          
-        private JsonWriterBracket(string name) 
-        {
-            Debug.Assert(name != null);
-                
-            _name = name;
-        }
-
-        public string Name
-        {
-            get { return _name; }
-        }
-
-        public override int GetHashCode()
-        {
-            return Name.GetHashCode();
-        }
-            
-        public override string ToString()
-        {
-            return Name;
-        }
-            
-        object IObjectReference.GetRealObject(StreamingContext context)
-        {
-            foreach (JsonWriterBracket bracket in All)
-            {
-                if (string.CompareOrdinal(bracket.Name, Name) == 0)
-                    return bracket;
-            }
-                
-            throw new SerializationException(string.Format("{0} is not a valid {1} instance.", Name, typeof(JsonWriterBracket).FullName));
-        }
-    }
+        Pending,
+        Array,
+        Object,
+        Member,
+        Closed
+    };
 }
