@@ -116,7 +116,7 @@ namespace Jayrock.Json
             if (writer == null)
                 throw new ArgumentNullException("writer");
 
-            writer.WriteValueFromReader(CreatePlayer());
+            writer.WriteFromReader(CreatePlayer());
         }
 
         public static JsonRecorder Record(JsonReader reader)
@@ -125,7 +125,7 @@ namespace Jayrock.Json
                 throw new ArgumentNullException("reader");
 
             JsonRecorder recorder = new JsonRecorder();
-            recorder.WriteValueFromReader(reader);
+            recorder.WriteFromReader(reader);
             return recorder;
         }
 

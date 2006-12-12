@@ -179,7 +179,7 @@ namespace Jayrock.Json
                 }}"));
 
             JsonTextWriter writer = new JsonTextWriter();
-            writer.WriteValueFromReader(reader);
+            writer.WriteFromReader(reader);
             Assert.AreEqual("{\"menu\":{\"id\":\"file\",\"value\":\"File:\",\"popup\":{\"menuitem\":[{\"value\":\"New\",\"onclick\":\"CreateNewDoc()\"},{\"value\":\"Open\",\"onclick\":\"OpenDoc()\"},{\"value\":\"Close\",\"onclick\":\"CloseDoc()\"}]}}}", writer.ToString());
         }
 
@@ -188,7 +188,7 @@ namespace Jayrock.Json
         {
             JsonTextWriter writer = new JsonTextWriter();
             writer.PrettyPrint = true;
-            writer.WriteValueFromReader(new JsonTextReader(new StringReader("{'menu':{'id':'file','value':'File:','popup':{'menuitem':[{'value':'New','onclick':'CreateNewDoc()'},{'value':'Open','onclick':'OpenDoc()'},{'value':'Close','onclick':'CloseDoc()'}]}}}")));
+            writer.WriteFromReader(new JsonTextReader(new StringReader("{'menu':{'id':'file','value':'File:','popup':{'menuitem':[{'value':'New','onclick':'CreateNewDoc()'},{'value':'Open','onclick':'OpenDoc()'},{'value':'Close','onclick':'CloseDoc()'}]}}}")));
             Assert.AreEqual(@"{ 
     ""menu"" : { 
         ""id"" : ""file"",

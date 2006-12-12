@@ -317,7 +317,7 @@ namespace Jayrock.JsonRpc
                         else
                         {
                             JsonRecorder recorder = new JsonRecorder();
-                            recorder.WriteValueFromReader(reader);
+                            recorder.WriteFromReader(reader);
                             paramsReader = recorder.CreatePlayer();
                         }
 

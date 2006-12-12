@@ -276,7 +276,7 @@ namespace Jayrock.Json
         /// written.
         /// </summary>
 
-        public virtual void WriteValueFromReader(JsonReader reader)
+        public virtual void WriteFromReader(JsonReader reader)
         {
             if (reader == null)            
                 throw new ArgumentNullException("reader");
@@ -306,7 +306,7 @@ namespace Jayrock.Json
                 reader.Read();
 
                 while (reader.TokenClass != JsonTokenClass.EndArray)
-                    WriteValueFromReader(reader);
+                    WriteFromReader(reader);
 
                 WriteEndArray();
             }
@@ -318,7 +318,7 @@ namespace Jayrock.Json
                 while (reader.TokenClass != JsonTokenClass.EndObject)
                 {
                     WriteMember(reader.ReadMember());
-                    WriteValueFromReader(reader);
+                    WriteFromReader(reader);
                 }
 
                 WriteEndObject();
