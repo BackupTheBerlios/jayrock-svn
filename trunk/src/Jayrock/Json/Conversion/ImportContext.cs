@@ -60,6 +60,15 @@ namespace Jayrock.Json.Conversion
             return importer.Import(this, reader);
         }
 
+#if NET_2_0
+
+        public virtual T Import<T>(JsonReader reader)
+        {
+            return (T) Import(typeof(T), reader);
+        }
+
+#endif
+
         public virtual void Register(IImporter importer)
         {
             if (importer == null)

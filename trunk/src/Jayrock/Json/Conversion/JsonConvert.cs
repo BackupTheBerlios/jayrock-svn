@@ -105,7 +105,30 @@ namespace Jayrock.Json.Conversion
             ImportContext context = new ImportContext();
             return context.Import(type, reader);
         }
-        
+
+#if NET_2_0
+
+        //
+        // Generic versions of Import methods.
+        //
+
+        public static T Import<T>(string text)
+        {
+            return (T) Import(typeof(T), text);
+        }
+
+        public static T Import<T>(TextReader reader)
+        {
+            return (T) Import(typeof(T), reader);
+        }
+
+        public static T Import<T>(JsonReader reader)
+        {
+            return (T) Import(typeof(T), reader);
+        }
+
+#endif
+
         private JsonConvert()
         {
             throw new NotSupportedException();
