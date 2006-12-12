@@ -183,6 +183,32 @@ namespace Jayrock.Json
             Assert.AreEqual("{\"menu\":{\"id\":\"file\",\"value\":\"File:\",\"popup\":{\"menuitem\":[{\"value\":\"New\",\"onclick\":\"CreateNewDoc()\"},{\"value\":\"Open\",\"onclick\":\"OpenDoc()\"},{\"value\":\"Close\",\"onclick\":\"CloseDoc()\"}]}}}", writer.ToString());
         }
 
+        [ Test ]
+        public void PrettyPrinting()
+        {
+            JsonTextWriter writer = new JsonTextWriter();
+            writer.PrettyPrint = true;
+            writer.WriteValueFromReader(new JsonTextReader(new StringReader("{'menu':{'id':'file','value':'File:','popup':{'menuitem':[{'value':'New','onclick':'CreateNewDoc()'},{'value':'Open','onclick':'OpenDoc()'},{'value':'Close','onclick':'CloseDoc()'}]}}}")));
+            Assert.AreEqual(@"{ 
+    ""menu"" : { 
+        ""id"" : ""file"",
+        ""value"" : ""File:"",
+        ""popup"" : { 
+            ""menuitem"" : [ { 
+                ""value"" : ""New"",
+                ""onclick"" : ""CreateNewDoc()""
+            }, { 
+                ""value"" : ""Open"",
+                ""onclick"" : ""OpenDoc()""
+            }, { 
+                ""value"" : ""Close"",
+                ""onclick"" : ""CloseDoc()""
+            } ]
+        }
+    }
+}", writer.ToString());
+        }
+
         private sealed class StringArrayExporter : TypeExporterBase
         {
             public StringArrayExporter() : 

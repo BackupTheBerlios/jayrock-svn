@@ -25,9 +25,6 @@ namespace Jayrock.Json
     #region Imports
 
     using System;
-    using System.Collections;
-    using System.Diagnostics;
-    using System.Globalization;
     using System.IO;
 
     #endregion
@@ -40,25 +37,6 @@ namespace Jayrock.Json
     public class JsonTextWriter : JsonWriterBase
     {
         private readonly TextWriter _writer;
-
-        private Stack _stack;
-        
-        private object _currentBracket = _noBracket;
-        
-        private static readonly object _noBracket = Bracket.None;
-        private static readonly object _newObjectBracket = Bracket.NewObject;
-        private static readonly object _runningObjectBracket = Bracket.RunningObject;
-        private static readonly object _newArrayBracket = Bracket.NewArray;
-        private static readonly object _runningArrayBracket = Bracket.RunningArray;
-
-        private enum Bracket
-        {
-            None,
-            NewObject,
-            RunningObject,
-            NewArray,
-            RunningArray
-        }
 
         //
         // Pretty printing as per:
@@ -75,6 +53,7 @@ namespace Jayrock.Json
         private bool _prettyPrint;
         private bool _newLine;
         private int _indent;
+        private char[] _indentBuffer;
 
         public JsonTextWriter() :
             this(null) {}
@@ -102,28 +81,25 @@ namespace Jayrock.Json
 
         protected override void WriteStartObjectImpl()
         {
-            BeforeWrite();
-            EnterBracket(_newObjectBracket);
-
+            OnWritingValue();
             WriteDelimiter('{');
             PrettySpace();
         }
-
+        
         protected override void WriteEndObjectImpl()
         {
-            if (_currentBracket == _runningObjectBracket)
+            if (Index > 0)
             {
                 PrettyLine();
                 _indent--;
             }
 
             WriteDelimiter('}');
-            ExitBracket();
         }
 
         protected override void WriteMemberImpl(string name)
         {
-            if (_currentBracket == _runningObjectBracket)
+            if (Index > 0)
             {
                 WriteDelimiter(',');
                 PrettyLine();
@@ -138,100 +114,67 @@ namespace Jayrock.Json
             PrettySpace();
             WriteDelimiter(':');
             PrettySpace();
-            _currentBracket = _runningObjectBracket;
         }
 
         protected override void WriteStringImpl(string value)
         {
-            BracketedWrite(JsonString.Enquote(value));
+            WriteScalar(JsonString.Enquote(value));
         }
 
         protected override void WriteNumberImpl(string value)
         {
-            BracketedWrite(value);
+            WriteScalar(value);
         }
 
         protected override void WriteBooleanImpl(bool value)
         {
-            BracketedWrite(value ? JsonBoolean.TrueText : JsonBoolean.FalseText);
+            WriteScalar(value ? JsonBoolean.TrueText : JsonBoolean.FalseText);
         }
 
         protected override void WriteNullImpl()
         {
-            BracketedWrite(JsonNull.Text);
+            WriteScalar(JsonNull.Text);
         }
 
         protected override void WriteStartArrayImpl()
         {
-            BeforeWrite();
-            EnterBracket(_newArrayBracket);
-
+            OnWritingValue();
             WriteDelimiter('[');
             PrettySpace();
         }
 
         protected override void WriteEndArrayImpl()
         {
-            if (_currentBracket == _runningArrayBracket)
+            if (IsNonEmptyArray())
                 PrettySpace();
 
             WriteDelimiter(']');
-            ExitBracket();
         }
 
-        private void BracketedWrite(string text)
+        private void WriteScalar(string text)
         {
-            BeforeWrite();
-
-            if (_prettyPrint && _newLine)
-            {
-                // TODO: Cache indentation string.
-                _writer.Write(new string(' ', _indent * 4));
-            }
-
-            _newLine = false;
-            
+            OnWritingValue();
+            PrettyIndent();
             _writer.Write(text);
-            AfterWrite();
         }
 
-        private void EnterBracket(object bracket)
+        private bool IsNonEmptyArray()
         {
-            if (_stack == null)
-                _stack = new Stack(6);
-
-            _stack.Push(_currentBracket);
-            _currentBracket = bracket;
+            return Bracket == JsonWriterBracket.Array && Index > 0;
         }
 
-        private void ExitBracket()
+        private void OnWritingValue()
         {
-            _currentBracket = _stack.Pop();
-            AfterWrite();
-        }
-
-        private void BeforeWrite()
-        {
-            if (_currentBracket == _runningArrayBracket)
+            if (IsNonEmptyArray())
             {
                 WriteDelimiter(',');
                 PrettySpace();
             }
         }
 
-        private void AfterWrite()
-        {
-            if (_currentBracket == _newObjectBracket)
-                _currentBracket = _runningObjectBracket;
-            else if (_currentBracket == _newArrayBracket)
-                _currentBracket = _runningArrayBracket;
-        }
-
         private void WriteDelimiter(char ch)
         {
-            if (_prettyPrint && _newLine)
-                _writer.Write(new string(' ', _indent * 4));
-            _newLine = false;
+            PrettyIndent();
             _writer.Write(ch);
         }
 
@@ -246,6 +189,27 @@ namespace Jayrock.Json
             if (!_prettyPrint) return;
             _writer.WriteLine();
             _newLine = true;
+        }
+
+        private void PrettyIndent() 
+        {
+            if (!_prettyPrint)
+                return;
+            
+            if (_newLine)
+            {
+                if (_indent > 0)
+                {
+                    int spaces = _indent * 4;
+                    
+                    if (_indentBuffer == null || _indentBuffer.Length < spaces)
+                        _indentBuffer = new string(' ', spaces * 4).ToCharArray();
+                    
+                    _writer.Write(_indentBuffer, 0, spaces);
+                }
+                
+                _newLine = false;
+            }
         }
 
         public override string ToString()

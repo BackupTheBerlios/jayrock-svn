@@ -29,7 +29,7 @@ namespace Jayrock.Json
     using System.Globalization;
 
     #endregion
-
+    
     /// <summary>
     /// Represents a writer that provides a fast, non-cached, forward-only means of 
     /// emitting JSON data.
@@ -43,6 +43,20 @@ namespace Jayrock.Json
         /// </summary>
 
         public abstract int Depth { get; }
+        
+        /// <summary>
+        /// Return the current index within a JSON Array 
+        /// (also valid for a JSON Object but indicates member count).
+        /// </summary>
+        
+        public int Index { get { return (int) LongIndex; } }
+        
+        /// <summary>
+        /// Return the current 64-bit index within a JSON Array
+        /// (also valid for a JSON Object but indicates member count).
+        /// </summary>
+        
+        public abstract long LongIndex { get; }
                 
         /// <summary>
         /// Determines the current bracket of the writer.

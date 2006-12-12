@@ -74,6 +74,11 @@ namespace Jayrock.Json
                 get { throw new NotImplementedException(); }
             }
 
+            public override long LongIndex
+            {
+                get { throw new NotImplementedException(); }
+            }
+
             public override void WriteStartObject()
             {
                 throw new NotImplementedException();

@@ -38,9 +38,9 @@ namespace Jayrock.Json
         public static readonly JsonWriterBracket Array = new JsonWriterBracket("Array");
         public static readonly JsonWriterBracket Object = new JsonWriterBracket("Object");
         public static readonly JsonWriterBracket Member = new JsonWriterBracket("Member");
-        public static readonly JsonWriterBracket EOF = new JsonWriterBracket("EOF");
+        public static readonly JsonWriterBracket Closed = new JsonWriterBracket("Closed");
             
-        public static readonly ICollection All = new JsonWriterBracket[] { Pending, Array, Object, Member, EOF };
+        public static readonly ICollection All = new JsonWriterBracket[] { Pending, Array, Object, Member, Closed };
             
         private readonly string _name;
           

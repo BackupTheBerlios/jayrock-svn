@@ -294,7 +294,7 @@ namespace Jayrock.Json
         {
             _writer.WriteStartObject();
             _writer.WriteEndObject();
-            Assert.AreEqual(JsonWriterBracket.EOF, _writer.Bracket);
+            Assert.AreEqual(JsonWriterBracket.Closed, _writer.Bracket);
         }
 
         [ Test ]
@@ -302,7 +302,7 @@ namespace Jayrock.Json
         {
             _writer.WriteStartArray();
             _writer.WriteEndArray();
-            Assert.AreEqual(JsonWriterBracket.EOF, _writer.Bracket);
+            Assert.AreEqual(JsonWriterBracket.Closed, _writer.Bracket);
         }
 
         [ Test ]
@@ -316,7 +316,100 @@ namespace Jayrock.Json
             _writer.WriteEndObject();
             Assert.AreEqual(JsonWriterBracket.Array, _writer.Bracket);
             _writer.WriteEndArray();
-            Assert.AreEqual(JsonWriterBracket.EOF, _writer.Bracket);
+            Assert.AreEqual(JsonWriterBracket.Closed, _writer.Bracket);
+        }
+
+        [ Test ]
+        public void InitialIndex()
+        {
+            Assert.AreEqual(-1, _writer.Index);
+        }
+
+        [ Test ]
+        public void IndexZeroOnStartingObject()
+        {
+            _writer.WriteStartObject();
+            Assert.AreEqual(0, _writer.Index);
+        }
+
+        [ Test ]
+        public void IndexZeroAfertStartingArray()
+        {
+            _writer.WriteStartArray();
+            Assert.AreEqual(0, _writer.Index);
+        }
+
+        [ Test ]
+        public void IndexRunInsideArray()
+        {
+            _writer.WriteStartArray();
+            Assert.AreEqual(0, _writer.Index);
+            _writer.WriteNull();
+            Assert.AreEqual(1, _writer.Index);
+            _writer.WriteString("foo");
+            Assert.AreEqual(2, _writer.Index);
+            _writer.WriteNumber(42);
+            Assert.AreEqual(3, _writer.Index);
+            _writer.WriteBoolean(true);
+            Assert.AreEqual(4, _writer.Index);
+            _writer.WriteEndArray();
+            Assert.AreEqual(-1, _writer.Index);
+        }
+
+        [ Test ]
+        public void IndexRunInsideObject()
+        {
+            _writer.WriteStartObject();
+            Assert.AreEqual(0, _writer.Index);
+            
+            _writer.WriteMember("m1");
+            Assert.AreEqual(0, _writer.Index);
+            _writer.WriteNull();
+            Assert.AreEqual(1, _writer.Index);
+            
+            _writer.WriteMember("m2");
+            Assert.AreEqual(1, _writer.Index);
+            _writer.WriteString("foo");
+            Assert.AreEqual(2, _writer.Index);
+            
+            _writer.WriteMember("m3");
+            Assert.AreEqual(2, _writer.Index);
+            _writer.WriteNumber(42);
+            Assert.AreEqual(3, _writer.Index);
+
+            _writer.WriteMember("m4");
+            Assert.AreEqual(3, _writer.Index);
+            _writer.WriteBoolean(true);
+            Assert.AreEqual(4, _writer.Index);
+            
+            _writer.WriteEndObject();
+            Assert.AreEqual(-1, _writer.Index);
+        }
+
+        [ Test ]
+        public void IndexingAcrossNestings()
+        {
+            _writer.WriteStartObject();
+            
+            _writer.WriteMember("m1");
+            _writer.WriteNull();
+            Assert.AreEqual(1, _writer.Index);
+            
+            _writer.WriteMember("m2");
+            _writer.WriteStartArray();
+            Assert.AreEqual(0, _writer.Index);
+        
+            _writer.WriteNull();
+            Assert.AreEqual(1, _writer.Index);
+
+            _writer.WriteNull();
+            Assert.AreEqual(2, _writer.Index);
+            
+            _writer.WriteNull();
+            Assert.AreEqual(3, _writer.Index);
+
+            _writer.WriteEndArray();
+            Assert.AreEqual(2, _writer.Index);
         }
     }
 }
