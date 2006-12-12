@@ -66,7 +66,7 @@ namespace Jayrock.JsonRpc.Web
             writer.WriteStartObject();
             
             writer.WriteMember("id");
-            writer.WriteNumber(0);
+            writer.WriteNumber(-1);
             
             writer.WriteMember("method");
             
