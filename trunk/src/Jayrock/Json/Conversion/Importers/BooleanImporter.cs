@@ -30,7 +30,7 @@ namespace Jayrock.Json.Conversion.Importers
 
     #endregion
 
-    public sealed class BooleanImporter : TypeImporterBase
+    public sealed class BooleanImporter : ImporterBase
     {
         public BooleanImporter() : 
             base(typeof(bool)) { }

@@ -209,7 +209,7 @@ namespace Jayrock.Json
 }", writer.ToString());
         }
 
-        private sealed class StringArrayExporter : TypeExporterBase
+        private sealed class StringArrayExporter : ExporterBase
         {
             public StringArrayExporter() : 
                 base(typeof(object[])) {}

@@ -36,7 +36,7 @@ namespace Jayrock.Json.Conversion
     [ Serializable ]
     public class ImportContext
     {
-        private TypeImporterCollection _importers;
+        private ImporterCollection _importers;
 
         public virtual object Import(JsonReader reader)
         {
@@ -51,7 +51,7 @@ namespace Jayrock.Json.Conversion
             if (reader == null)
                 throw new ArgumentNullException("reader");
 
-            ITypeImporter importer = FindImporter(type);
+            IImporter importer = FindImporter(type);
 
             if (importer == null)
                 throw new JsonException(string.Format("Don't know how to import {0} from JSON.", type.FullName));
@@ -60,7 +60,7 @@ namespace Jayrock.Json.Conversion
             return importer.Import(this, reader);
         }
 
-        public virtual void Register(ITypeImporter importer)
+        public virtual void Register(IImporter importer)
         {
             if (importer == null)
                 throw new ArgumentNullException("importer");
@@ -68,12 +68,12 @@ namespace Jayrock.Json.Conversion
             Importers.Put(importer);
         }
 
-        public virtual ITypeImporter FindImporter(Type type) 
+        public virtual IImporter FindImporter(Type type) 
         {
             if (type == null)
                 throw new ArgumentNullException("type");
 
-            ITypeImporter importer = Importers[type];
+            IImporter importer = Importers[type];
             
             if (importer != null)
                 return importer;
@@ -89,7 +89,7 @@ namespace Jayrock.Json.Conversion
             return null;
         }
 
-        private static ITypeImporter FindCompatibleImporter(Type type) 
+        private static IImporter FindCompatibleImporter(Type type) 
         {
             Debug.Assert(type != null);
 
@@ -111,13 +111,13 @@ namespace Jayrock.Json.Conversion
             return null;
         }
  
-        private TypeImporterCollection Importers
+        private ImporterCollection Importers
         {
             get
             {
                 if (_importers == null)
                 {
-                    TypeImporterCollection importers = new TypeImporterCollection();
+                    ImporterCollection importers = new ImporterCollection();
 
                     importers.Add(new ByteImporter());
                     importers.Add(new Int16Importer());
@@ -139,7 +139,7 @@ namespace Jayrock.Json.Conversion
                     if (typeList != null && typeList.Count > 0)
                     {
                         foreach (Type type in typeList)
-                            importers.Add((ITypeImporter) Activator.CreateInstance(type));
+                            importers.Add((IImporter) Activator.CreateInstance(type));
                     }
 
                     _importers = importers;

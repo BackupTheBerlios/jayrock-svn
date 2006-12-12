@@ -22,17 +22,15 @@
 
 namespace Jayrock.Json.Conversion
 {
-    #region Imports
-
     using System;
-    using System.Collections;
-    using Jayrock.Json.Conversion.Importers;
 
-    #endregion
-
-    public interface ITypeImporter
+    /// <summary>
+    /// Defines the contract for exporting an object as JSON.
+    /// </summary>
+    
+    public interface IExporter
     {
-        Type OutputType { get; }
-        object Import(ImportContext context, JsonReader reader);
+        Type InputType { get; }
+        void Export(ExportContext context, object value, JsonWriter writer);
     }
 }

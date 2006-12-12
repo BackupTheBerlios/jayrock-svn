@@ -31,7 +31,7 @@ namespace Jayrock.Json.Conversion.Importers
 
     #endregion
     
-    public sealed class ComponentImporter : TypeImporterBase
+    public sealed class ComponentImporter : ImporterBase
     {
         private readonly PropertyDescriptorCollection _properties; // TODO: Review thread-safety of PropertyDescriptorCollection
 

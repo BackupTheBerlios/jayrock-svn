@@ -30,7 +30,7 @@ namespace Jayrock.Json.Conversion.Exporters
 
     #endregion
     
-    public sealed class DictionaryExporter : TypeExporterBase
+    public sealed class DictionaryExporter : ExporterBase
     {
         public DictionaryExporter(Type inputType) : 
             base(inputType) {}

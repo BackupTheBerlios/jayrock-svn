@@ -32,6 +32,6 @@ namespace Jayrock.Json.Conversion
     internal sealed class ImporterListSectionHandler : TypeListSectionHandler
     {
         public ImporterListSectionHandler() : 
-            base("importer", typeof(ITypeImporter)) {}
+            base("importer", typeof(IImporter)) {}
     }
 }

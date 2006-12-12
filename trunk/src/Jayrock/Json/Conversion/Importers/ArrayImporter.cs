@@ -32,7 +32,7 @@ namespace Jayrock.Json.Conversion.Importers
 
     #endregion
     
-    public sealed class ArrayImporter : TypeImporterBase
+    public sealed class ArrayImporter : ImporterBase
     {
         public ArrayImporter() : this(null) {}
 

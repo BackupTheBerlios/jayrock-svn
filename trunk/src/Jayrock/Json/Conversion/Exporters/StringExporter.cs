@@ -29,7 +29,7 @@ namespace Jayrock.Json.Conversion.Exporters
 
     #endregion
 
-    public sealed class StringExporter : TypeExporterBase
+    public sealed class StringExporter : ExporterBase
     {
         public StringExporter() : 
             this(typeof(string)) {}

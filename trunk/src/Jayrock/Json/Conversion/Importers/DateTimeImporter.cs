@@ -31,7 +31,7 @@ namespace Jayrock.Json.Conversion.Importers
 
     #endregion
 
-    public sealed class DateTimeImporter : TypeImporterBase
+    public sealed class DateTimeImporter : ImporterBase
     {
         public DateTimeImporter() : 
             base(typeof(DateTime)) {}

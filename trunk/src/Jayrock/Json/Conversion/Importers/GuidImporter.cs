@@ -29,7 +29,7 @@ namespace Jayrock.Json.Conversion.Importers
 
     #endregion
 
-    public sealed class GuidImporter : TypeImporterBase
+    public sealed class GuidImporter : ImporterBase
     {
         public GuidImporter() : 
             base(typeof(Guid)) { }

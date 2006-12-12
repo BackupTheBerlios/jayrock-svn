@@ -63,7 +63,7 @@ namespace Jayrock.Json.Conversion.Exporters
         {
         }
 
-        private class ThingExporter : TypeExporterBase
+        private class ThingExporter : ExporterBase
         {
             public ThingExporter() : base(typeof(Thing)) {}
             

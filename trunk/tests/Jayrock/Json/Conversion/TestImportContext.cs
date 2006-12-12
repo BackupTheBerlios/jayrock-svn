@@ -63,7 +63,7 @@ namespace Jayrock.Json.Conversion
         private static void AssertInStock(Type expected, Type type)
         {
             ImportContext context = new ImportContext();
-            ITypeImporter importer = context.FindImporter(type);
+            IImporter importer = context.FindImporter(type);
             Assert.IsNotNull(importer, "No importer found for {0}", type.FullName);
             Assert.IsInstanceOfType(expected, importer, type.FullName);
         }

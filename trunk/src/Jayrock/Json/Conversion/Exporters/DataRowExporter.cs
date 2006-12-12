@@ -31,7 +31,7 @@ namespace Jayrock.Json.Conversion.Exporters
 
     #endregion
 
-    public sealed class DataRowExporter : TypeExporterBase
+    public sealed class DataRowExporter : ExporterBase
     {
         public DataRowExporter() :
             this(typeof(DataRow)) {}

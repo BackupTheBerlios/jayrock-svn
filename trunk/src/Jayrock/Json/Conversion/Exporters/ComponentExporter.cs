@@ -31,7 +31,7 @@ namespace Jayrock.Json.Conversion.Exporters
 
     #endregion
     
-    public sealed class ComponentExporter : TypeExporterBase
+    public sealed class ComponentExporter : ExporterBase
     {
         private readonly PropertyDescriptorCollection _properties; // TODO: Review thread-safety of PropertyDescriptorCollection
 

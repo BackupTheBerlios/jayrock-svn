@@ -138,7 +138,7 @@ namespace Jayrock.Json.Conversion.Importers
             return new JsonTextReader(new StringReader(s));
         }
         
-        private class TestImporter : TypeImporterBase
+        private class TestImporter : ImporterBase
         {
             public TestImporter() : 
                 base(typeof(object)) {}

@@ -57,7 +57,7 @@ namespace Jayrock.Json.Conversion.Exporters
         }
 
         protected abstract object SampleValue { get; }
-        protected abstract ITypeExporter CreateExporter();
+        protected abstract IExporter CreateExporter();
     }
 
     [ TestFixture ]
@@ -68,7 +68,7 @@ namespace Jayrock.Json.Conversion.Exporters
             get { return (byte) 123; }
         }
 
-        protected override ITypeExporter CreateExporter()
+        protected override IExporter CreateExporter()
         {
             return new ByteExporter();
         }
@@ -82,7 +82,7 @@ namespace Jayrock.Json.Conversion.Exporters
             get { return (short) 1234; }
         }
 
-        protected override ITypeExporter CreateExporter()
+        protected override IExporter CreateExporter()
         {
             return new Int16Exporter();
         }
@@ -96,7 +96,7 @@ namespace Jayrock.Json.Conversion.Exporters
             get { return 123456; }
         }
 
-        protected override ITypeExporter CreateExporter()
+        protected override IExporter CreateExporter()
         {
             return new Int32Exporter();
         }
@@ -110,7 +110,7 @@ namespace Jayrock.Json.Conversion.Exporters
             get { return 9876543210L; }
         }
 
-        protected override ITypeExporter CreateExporter()
+        protected override IExporter CreateExporter()
         {
             return new Int64Exporter();
         }
@@ -124,7 +124,7 @@ namespace Jayrock.Json.Conversion.Exporters
             get { return 12.345f; }
         }
 
-        protected override ITypeExporter CreateExporter()
+        protected override IExporter CreateExporter()
         {
             return new SingleExporter();
         }
@@ -138,7 +138,7 @@ namespace Jayrock.Json.Conversion.Exporters
             get { return 12.345m; }
         }
 
-        protected override ITypeExporter CreateExporter()
+        protected override IExporter CreateExporter()
         {
             return new DecimalExporter();
         }

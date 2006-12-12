@@ -33,7 +33,7 @@ namespace Jayrock.Json.Conversion.Exporters
 
     #endregion
 
-    public sealed class ControlExporter : TypeExporterBase
+    public sealed class ControlExporter : ExporterBase
     {
         public ControlExporter() : 
             this(typeof(Control)) {}

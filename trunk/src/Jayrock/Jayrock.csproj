@@ -303,7 +303,22 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Json\Conversion\ExporterCollection.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\Conversion\ExporterListSectionHandler.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Conversion\IExporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Conversion\IImporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -323,17 +338,12 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Json\Conversion\ImporterCollection.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\Conversion\ImporterListSectionHandler.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Json\Conversion\ITypeExporter.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Json\Conversion\ITypeImporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -344,16 +354,6 @@
                 />
                 <File
                     RelPath = "Json\Conversion\JsonIgnoreAttribute.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Json\Conversion\TypeExporterCollection.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Json\Conversion\TypeImporterCollection.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -418,6 +418,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Json\Conversion\Exporters\ExporterBase.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\Conversion\Exporters\NameValueCollectionExporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -429,11 +434,6 @@
                 />
                 <File
                     RelPath = "Json\Conversion\Exporters\StringExporter.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Json\Conversion\Exporters\TypeExporterBase.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -483,6 +483,10 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Json\Conversion\Importers\ImporterBase.cs"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\Conversion\Importers\ListImporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -499,11 +503,6 @@
                 />
                 <File
                     RelPath = "Json\Conversion\Importers\StringImporter.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Json\Conversion\Importers\TypeImporterBase.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

@@ -29,7 +29,7 @@ namespace Jayrock.Json.Conversion.Importers
 
     #endregion
 
-    public sealed class StringImporter : TypeImporterBase
+    public sealed class StringImporter : ImporterBase
     {
         public StringImporter() : 
             base(typeof(string)) { }

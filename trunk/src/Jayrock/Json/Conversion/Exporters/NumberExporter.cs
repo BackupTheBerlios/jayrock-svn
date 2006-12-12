@@ -30,7 +30,7 @@ namespace Jayrock.Json.Conversion.Exporters
 
     #endregion
 
-    public abstract class NumberExporterBase : TypeExporterBase
+    public abstract class NumberExporterBase : ExporterBase
     {
         protected NumberExporterBase(Type inputType) : 
             base(inputType) {}

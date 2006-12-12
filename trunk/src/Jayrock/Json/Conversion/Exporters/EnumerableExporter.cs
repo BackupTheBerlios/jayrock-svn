@@ -30,7 +30,7 @@ namespace Jayrock.Json.Conversion.Exporters
 
     #endregion
     
-    public sealed class EnumerableExporter : TypeExporterBase
+    public sealed class EnumerableExporter : ExporterBase
     {
         public EnumerableExporter(Type inputType) : 
             base(inputType) {}

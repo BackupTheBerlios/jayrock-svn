@@ -30,7 +30,7 @@ namespace Jayrock.Json.Conversion.Importers
 
     #endregion
 
-    public sealed class AnyImporter : TypeImporterBase
+    public sealed class AnyImporter : ImporterBase
     {
         public AnyImporter() : 
             base(AnyType.Value) {}

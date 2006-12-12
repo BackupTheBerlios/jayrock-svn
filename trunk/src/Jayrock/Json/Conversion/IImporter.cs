@@ -25,38 +25,14 @@ namespace Jayrock.Json.Conversion
     #region Imports
 
     using System;
-    using Jayrock.Collections;
+    using System.Collections;
+    using Jayrock.Json.Conversion.Importers;
 
     #endregion
 
-    [ Serializable ]
-    internal sealed class TypeExporterCollection : KeyedCollection
+    public interface IImporter
     {
-        public ITypeExporter this[Type type]
-        {
-            get { return (ITypeExporter) GetByKey(type); }
-        }
-       
-        public void Put(ITypeExporter exporter)
-        {
-            if (exporter == null)
-                throw new ArgumentNullException("exporter");
-            
-            Remove(exporter.InputType);
-            Add(exporter);
-        }
-
-        public void Add(ITypeExporter exporter)
-        {
-            if (exporter == null)
-                throw new ArgumentNullException("exporter");
-            
-            base.Add(exporter);
-        }
-        
-        protected override object KeyFromValue(object value)
-        {
-            return ((ITypeExporter) value).InputType;
-        }
+        Type OutputType { get; }
+        object Import(ImportContext context, JsonReader reader);
     }
 }

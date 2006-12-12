@@ -36,7 +36,7 @@ namespace Jayrock.Json.Conversion.Exporters
     /// and time formats</a>.
     /// </remarks>
 
-    public class DateTimeExporter : TypeExporterBase
+    public class DateTimeExporter : ExporterBase
     {
         public DateTimeExporter() : 
             base(typeof(DateTime)) {}

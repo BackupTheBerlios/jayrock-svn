@@ -29,7 +29,7 @@ namespace Jayrock.Json.Conversion.Importers
 
     #endregion
 
-    public class NameValueCollectionImporter : TypeImporterBase
+    public class NameValueCollectionImporter : ImporterBase
     {
         public NameValueCollectionImporter() : 
             base(typeof(NameValueCollection)) { }

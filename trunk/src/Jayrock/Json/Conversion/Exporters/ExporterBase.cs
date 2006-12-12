@@ -20,43 +20,45 @@
 //
 #endregion
 
-namespace Jayrock.Json.Conversion
+namespace Jayrock.Json.Conversion.Exporters
 {
     #region Imports
 
     using System;
-    using Jayrock.Collections;
 
     #endregion
-    
-    [ Serializable ]
-    internal sealed class TypeImporterCollection : KeyedCollection
+
+    public abstract class ExporterBase : IExporter
     {
-        public ITypeImporter this[Type type]
+        private readonly Type _inputType;
+
+        protected ExporterBase(Type inputType)
         {
-            get { return (ITypeImporter) GetByKey(type); }
-        }
-       
-        public void Put(ITypeImporter exporter)
-        {
-            if (exporter == null)
-                throw new ArgumentNullException("exporter");
+            if (inputType == null)
+                throw new ArgumentNullException("inputType");
             
-            Remove(exporter.OutputType);
-            Add(exporter);
+            _inputType = inputType;
         }
 
-        public void Add(ITypeImporter exporter)
+        public Type InputType
         {
-            if (exporter == null)
-                throw new ArgumentNullException("exporter");
+            get { return _inputType; }
+        }
+
+        public virtual void Export(ExportContext context, object value, JsonWriter writer)
+        {
+            if (context == null)
+                throw new ArgumentNullException("context");
             
-            base.Add(exporter);
+            if (writer == null)
+                throw new ArgumentNullException("writer");
+
+            if (JsonNull.LogicallyEquals(value))
+                writer.WriteNull();
+            else
+                ExportValue(context, value, writer);
         }
-        
-        protected override object KeyFromValue(object value)
-        {
-            return ((ITypeImporter) value).OutputType;
-        }
+
+        protected abstract void ExportValue(ExportContext context, object value, JsonWriter writer);
     }
 }

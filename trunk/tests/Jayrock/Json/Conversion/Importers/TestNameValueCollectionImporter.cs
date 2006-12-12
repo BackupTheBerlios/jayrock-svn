@@ -101,7 +101,7 @@ namespace Jayrock.Json.Conversion.Importers
             JsonReader reader = new JsonTextReader(new StringReader("[{},'end']"));
             reader.ReadToken(JsonTokenClass.Array);
             Assert.AreSame(JsonTokenClass.Object, reader.TokenClass);
-            ITypeImporter importer = new NameValueCollectionImporter();
+            IImporter importer = new NameValueCollectionImporter();
             importer.Import(new ImportContext(), reader);
             Assert.AreEqual("end", reader.ReadString());
         }
@@ -109,7 +109,7 @@ namespace Jayrock.Json.Conversion.Importers
         private static NameValueCollection UncheckImport(string s)
         {
             JsonReader reader = new JsonTextReader(new StringReader(s));
-            ITypeImporter importer = new NameValueCollectionImporter();
+            IImporter importer = new NameValueCollectionImporter();
             return (NameValueCollection) importer.Import(new ImportContext(), reader);
         }
 

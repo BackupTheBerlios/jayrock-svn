@@ -30,11 +30,11 @@ namespace Jayrock.Json.Conversion.Importers
 
     #endregion
 
-    public abstract class TypeImporterBase : ITypeImporter
+    public abstract class ImporterBase : IImporter
     {
         private readonly Type _outputType;
 
-        protected TypeImporterBase(Type outputType)
+        protected ImporterBase(Type outputType)
         {
             if (outputType == null)
                 throw new ArgumentNullException("outputType");

@@ -29,7 +29,7 @@ namespace Jayrock.Json.Conversion.Importers
 
     #endregion
 
-    public class ImportAwareImporter : TypeImporterBase
+    public class ImportAwareImporter : ImporterBase
     {
         public ImportAwareImporter(Type type) : 
             base(type) {}

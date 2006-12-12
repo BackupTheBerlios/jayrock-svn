@@ -36,7 +36,7 @@ namespace Jayrock.Json.Conversion.Exporters
         [ Test ]
         public void Superclass()
         {
-            Assert.IsInstanceOfType(typeof(TypeExporterBase), new DictionaryExporter(typeof(Hashtable)));    
+            Assert.IsInstanceOfType(typeof(ExporterBase), new DictionaryExporter(typeof(Hashtable)));    
         }
 
         [ Test ]
