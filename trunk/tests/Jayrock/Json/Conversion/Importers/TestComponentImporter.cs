@@ -84,48 +84,48 @@ namespace Jayrock.Json.Conversion.Importers
             string text = @"
             /* Source: http://api.search.yahoo.com/NewsSearchService/V1/newsSearch?appid=YahooDemo&query=yahoo&results=3&language=en&output=json */
             {
-                ""ResultSet"": {
-                    ""totalResultsAvailable"": ""2393"",
-                    ""totalResultsReturned"": 3,
-                    ""firstResultPosition"": ""1"",
-                    ""Result"": [
+                'ResultSet': {
+                    'totalResultsAvailable': '2393',
+                    'totalResultsReturned': 3,
+                    'firstResultPosition': '1',
+                    'Result': [
                         {
-                            ""Title"": ""Yahoo invites its users to shoot ads"",
-                            ""Summary"": "" Yahoo first encouraged consumers to create blogs and photo pages with text and pictures. Now, the Internet portal wants them to make advertisements, too. On Monday, Yahoo touts a new look for its front page by asking people to pull out the video camera, open up the editing software and create 12-second spot for Yahoo."",
-                            ""Url"": ""http://news.yahoo.com/s/usatoday/20060717/tc_usatoday/yahooinvitesitsuserstoshootads"",
-                            ""ClickUrl"": ""http://news.yahoo.com/s/usatoday/20060717/tc_usatoday/yahooinvitesitsuserstoshootads"",
-                            ""NewsSource"": ""USATODAY.com via Yahoo! News"",
-                            ""NewsSourceUrl"": ""http://news.yahoo.com/"",
-                            ""Language"": ""en"",
-                            ""PublishDate"": ""1153133816"",
-                            ""ModificationDate"": ""1153134044""
+                            'Title': 'Yahoo invites its users to shoot ads',
+                            'Summary': ' Yahoo first encouraged consumers to create blogs and photo pages with text and pictures. Now, the Internet portal wants them to make advertisements, too. On Monday, Yahoo touts a new look for its front page by asking people to pull out the video camera, open up the editing software and create 12-second spot for Yahoo.',
+                            'Url': 'http://news.yahoo.com/s/usatoday/20060717/tc_usatoday/yahooinvitesitsuserstoshootads',
+                            'ClickUrl': 'http://news.yahoo.com/s/usatoday/20060717/tc_usatoday/yahooinvitesitsuserstoshootads',
+                            'NewsSource': 'USATODAY.com via Yahoo! News',
+                            'NewsSourceUrl': 'http://news.yahoo.com/',
+                            'Language': 'en',
+                            'PublishDate': '1153133816',
+                            'ModificationDate': '1153134044'
                         },
                         {
-                            ""Title"": ""Yahoo to launch new finance features"",
-                            ""Summary"": "" Yahoo Inc. is beefing up the finance section of its Web site with more interactive stock charts and other features to help it maintain its longtime lead over rival financial information sites."",
-                            ""Url"": ""http://news.yahoo.com/s/ap/20060717/ap_on_hi_te/yahoo_finance_2"",
-                            ""ClickUrl"": ""http://news.yahoo.com/s/ap/20060717/ap_on_hi_te/yahoo_finance_2"",
-                            ""NewsSource"": ""AP via Yahoo! News"",
-                            ""NewsSourceUrl"": ""http://news.yahoo.com/"",
-                            ""Language"": ""en"",
-                            ""PublishDate"": ""1153134777"",
-                            ""ModificationDate"": ""1153134920"",
-                            ""Thumbnail"": {
-                                ""Url"": ""http://us.news2.yimg.com/us.yimg.com/p/ap/20060714/vsthumb.8b1161b66b564adba0a5bbd6339c9379.media_summit_idet125.jpg"",
-                                ""Height"": ""82"",
-                                ""Width"": ""76""
+                            'Title': 'Yahoo to launch new finance features',
+                            'Summary': ' Yahoo Inc. is beefing up the finance section of its Web site with more interactive stock charts and other features to help it maintain its longtime lead over rival financial information sites.',
+                            'Url': 'http://news.yahoo.com/s/ap/20060717/ap_on_hi_te/yahoo_finance_2',
+                            'ClickUrl': 'http://news.yahoo.com/s/ap/20060717/ap_on_hi_te/yahoo_finance_2',
+                            'NewsSource': 'AP via Yahoo! News',
+                            'NewsSourceUrl': 'http://news.yahoo.com/',
+                            'Language': 'en',
+                            'PublishDate': '1153134777',
+                            'ModificationDate': '1153134920',
+                            'Thumbnail': {
+                                'Url': 'http://us.news2.yimg.com/us.yimg.com/p/ap/20060714/vsthumb.8b1161b66b564adba0a5bbd6339c9379.media_summit_idet125.jpg',
+                                'Height': '82',
+                                'Width': '76'
                             }
                         }, 
                         {
-                            ""Title"": ""Yahoo Finance revises charts, chat, other features"",
-                            ""Summary"": "" Yahoo Inc. on Monday will unveil an upgraded version of its top-ranked financial information site that features new stock charting tools, improved investor chat rooms and financial video news."",
-                            ""Url"": ""http://news.yahoo.com/s/nm/20060717/wr_nm/media_yahoo_finance_dc_2"",
-                            ""ClickUrl"": ""http://news.yahoo.com/s/nm/20060717/wr_nm/media_yahoo_finance_dc_2"",
-                            ""NewsSource"": ""Reuters via Yahoo! News"",
-                            ""NewsSourceUrl"": ""http://news.yahoo.com/"",
-                            ""Language"": ""en"",
-                            ""PublishDate"": ""1153113288"",
-                            ""ModificationDate"": ""1153113674""
+                            'Title': 'Yahoo Finance revises charts, chat, other features',
+                            'Summary': ' Yahoo Inc. on Monday will unveil an upgraded version of its top-ranked financial information site that features new stock charting tools, improved investor chat rooms and financial video news.',
+                            'Url': 'http://news.yahoo.com/s/nm/20060717/wr_nm/media_yahoo_finance_dc_2',
+                            'ClickUrl': 'http://news.yahoo.com/s/nm/20060717/wr_nm/media_yahoo_finance_dc_2',
+                            'NewsSource': 'Reuters via Yahoo! News',
+                            'NewsSourceUrl': 'http://news.yahoo.com/',
+                            'Language': 'en',
+                            'PublishDate': '1153113288',
+                            'ModificationDate': '1153113674'
                         }
                     ]
                 }
