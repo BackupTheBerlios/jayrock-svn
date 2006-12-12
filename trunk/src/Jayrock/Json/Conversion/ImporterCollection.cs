@@ -37,21 +37,21 @@ namespace Jayrock.Json.Conversion
             get { return (IImporter) GetByKey(type); }
         }
        
-        public void Put(IImporter exporter)
+        public void Put(IImporter importer)
         {
-            if (exporter == null)
-                throw new ArgumentNullException("exporter");
+            if (importer == null)
+                throw new ArgumentNullException("importer");
             
-            Remove(exporter.OutputType);
-            Add(exporter);
+            Remove(importer.OutputType);
+            Add(importer);
         }
 
-        public void Add(IImporter exporter)
+        public void Add(IImporter importer)
         {
-            if (exporter == null)
-                throw new ArgumentNullException("exporter");
+            if (importer == null)
+                throw new ArgumentNullException("importer");
             
-            base.Add(exporter);
+            base.Add(importer);
         }
         
         protected override object KeyFromValue(object value)
