@@ -79,6 +79,13 @@ namespace Jayrock.Json
             _writer.Flush();
         }
 
+        public override string ToString()
+        {
+            StringWriter stringWriter = _writer as StringWriter;
+            return stringWriter != null ? 
+                stringWriter.ToString() : base.ToString();
+        }
+
         protected override void WriteStartObjectImpl()
         {
             OnWritingValue();
@@ -157,11 +164,15 @@ namespace Jayrock.Json
             PrettyIndent();
             _writer.Write(text);
         }
-
+        
         private bool IsNonEmptyArray()
         {
             return Bracket == JsonWriterBracket.Array && Index > 0;
         }
+        
+        //
+        // Methods below are mostly related to pretty-printing of JSON text.
+        //
 
         private void OnWritingValue()
         {
@@ -210,13 +221,6 @@ namespace Jayrock.Json
                 
                 _newLine = false;
             }
-        }
-
-        public override string ToString()
-        {
-            StringWriter stringWriter = _writer as StringWriter;
-            return stringWriter != null ? 
-                stringWriter.ToString() : base.ToString();
         }
     }
 }
