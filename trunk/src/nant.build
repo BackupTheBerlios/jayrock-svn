@@ -7,7 +7,7 @@
 
     <property name="my.project.name" value="Jayrock" />
 
-    <property name="my.tools" value="${path::combine(nant.project.basedir, '..\..\tools')}" />
+    <property name="my.tools" value="${path::combine(nant.project.basedir, '..\tools')}" />
     
     <!-- NCover (code coverage) -->
 
@@ -21,13 +21,13 @@
 
     <!-- NUnit 2.2.3 (unit-testing) -->
 
-    <property name="my.tests" value="${path::combine(nant.project.basedir, '..\..\tests')}" />
+    <property name="my.tests" value="${path::combine(nant.project.basedir, '..\tests')}" />
     <property name="my.nunit.dir.path" value="${path::combine(my.tools, 'NUnit 2.2.3')}" />
     <property name="my.nunit.console.exe.path" value="${path::combine(my.nunit.dir.path, 'nunit-console.exe')}" />
 
     <!-- Output and Binaries -->
 
-    <property name="my.bin.dir.name" value="..\..\bin" />
+    <property name="my.bin.dir.name" value="..\bin" />
     <property name="my.bin.dir.path" value="${path::combine(nant.project.basedir, my.bin.dir.name)}" />
    
     <property name="my.output.assembly.name" value="${my.project.name}" />
@@ -65,8 +65,8 @@
         <property name="my.output.dir.path" value="${path::combine(my.bin.dir.path, 'Debug')}" />
         <solution configuration="Debug">
             <projects>
-                <include name="Jayrock.csproj" />
-                <include name="Jayrock.Json.csproj" />
+                <include name="Jayrock\Jayrock.csproj" />
+                <include name="Jayrock.Json\Jayrock.Json.csproj" />
             </projects>
         </solution>
     </target>
@@ -75,8 +75,8 @@
         <property name="my.output.dir.path" value="${path::combine(my.bin.dir.path, 'Release')}" />
         <solution configuration="Release">
             <projects>
-                <include name="Jayrock.csproj" />
-                <include name="Jayrock.Json.csproj" />
+                <include name="Jayrock\Jayrock.csproj" />
+                <include name="Jayrock.Json\Jayrock.Json.csproj" />
             </projects>
         </solution>
     </target>
@@ -85,8 +85,8 @@
         <property name="my.output.dir.path" value="${path::combine(my.bin.dir.path, 'Test')}" />
         <solution configuration="Debug">
             <projects>
-                <include name="Jayrock.csproj" />
-                <include name="Jayrock.Json.csproj" />
+                <include name="Jayrock\Jayrock.csproj" />
+                <include name="Jayrock.Json\Jayrock.Json.csproj" />
                 <include name="${path::combine(my.tests, 'Jayrock\Jayrock Test.csproj')}" />
             </projects>
         </solution>

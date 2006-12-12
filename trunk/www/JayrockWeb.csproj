@@ -145,6 +145,42 @@
                     RelPath = "images\HelloWorldTest.jpg"
                     BuildAction = "Content"
                 />
+                <File
+                    RelPath = "images\cclogos\dotnet.gif"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "images\cclogos\ff.gif"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "images\cclogos\ie.gif"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "images\cclogos\linux.gif"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "images\cclogos\mono.gif"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "images\cclogos\opera.gif"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "images\cclogos\osi-certified.gif"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "images\cclogos\python.gif"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "images\cclogos\windows.gif"
+                    BuildAction = "Content"
+                />
             </Include>
         </Files>
     </CSHARP>

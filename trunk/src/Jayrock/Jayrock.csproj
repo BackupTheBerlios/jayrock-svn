@@ -95,6 +95,7 @@
             <Include>
                 <File
                     RelPath = "AssemblyInfo.cs"
+                    Link = "..\Common\AssemblyInfo.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -115,12 +116,9 @@
                 />
                 <File
                     RelPath = "Mask.cs"
+                    Link = "..\Common\Mask.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "nant.build"
-                    BuildAction = "None"
                 />
                 <File
                     RelPath = "JsonRpc\JsonRpcDispatcher.cs"
