@@ -115,8 +115,24 @@ namespace JayrockWeb
             author["LastName"] = "Aziz";
             return author;
         }
-        
-        [ JsonRpcMethod("getDataSet", Idempotent = true)]
+
+        [ JsonRpcMethod("getCouple", Idempotent = true) ]
+        [ JsonRpcHelp("Returns a server-typed object representing a couple. Demonstrates to returning server-typed objects.")]
+        public Marriage GetCouple()
+        {
+            return new Marriage(
+                new Person("Mickey", "Mouse"),
+                new Person("Minnie", "Mouse"));
+        }
+
+        [ JsonRpcMethod("swapNames", Idempotent = true)]
+        [ JsonRpcHelp("Swaps first and last name of person. Demonstrates receiving and returning a server-typed object.")]
+        public Person SwapPersonNames(Person p)
+        {
+            return p == null ? new Person() : new Person(p.LastName, p.FirstName);
+        }
+
+        [JsonRpcMethod("getDataSet", Idempotent = true)]
         [ JsonRpcHelp("Returns the Northwind employees as a DataSet.") ]
         public DataSet GetEmployeeSet()
         {
@@ -257,6 +273,40 @@ namespace JayrockWeb
         public string DecodeString(byte[] bytes, string encoding)
         {
             return System.Text.Encoding.GetEncoding(encoding).GetString(bytes);
+        }
+        
+        //
+        // NOTE: To send and receive typed objects, use public types only 
+        // that have a default constructor. Only public read/write fields
+        // and properties are convert to and from JSON.
+        //
+
+        public class Marriage
+        {
+            public Person Husband;
+            public Person Wife;
+
+            public Marriage() { }
+
+            public Marriage(Person husband, Person wife)
+            {
+                this.Husband = husband;
+                this.Wife = wife;
+            }
+        }
+
+        public class Person
+        {
+            public string FirstName;
+            public string LastName;
+
+            public Person() { }
+
+            public Person(string fn, string ln)
+            {
+                this.FirstName = fn;
+                this.LastName = ln;
+            }
         }
     }
 }
