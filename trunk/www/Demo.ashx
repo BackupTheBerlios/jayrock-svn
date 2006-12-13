@@ -203,8 +203,11 @@ namespace JayrockWeb
         {
             int total = 0;
             
-            foreach (int value in values)
-                total += value;
+            if (values != null)
+            {
+                foreach (int value in values)
+                    total += value;
+            }
             
             return total;
         }
