@@ -1,5 +1,5 @@
 Microsoft Visual Studio Solution File, Format Version 8.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jayrock Test", "Jayrock\Jayrock Test.csproj", "{DA5DD836-2530-4E76-9B76-1AAB3BE6A946}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jayrock Test", "Jayrock\Jayrock.Tests.csproj", "{DA5DD836-2530-4E76-9B76-1AAB3BE6A946}"
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
