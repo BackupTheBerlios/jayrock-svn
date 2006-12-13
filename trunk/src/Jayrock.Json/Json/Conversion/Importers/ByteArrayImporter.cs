@@ -62,7 +62,14 @@ namespace Jayrock.Json.Conversion.Importers
 
         protected override object ImportFromString(ImportContext context, JsonReader reader)
         {
-            return Convert.FromBase64String(reader.ReadString());
+            try
+            {
+                return Convert.FromBase64String(reader.ReadString());
+            }
+            catch (FormatException e)
+            {
+                throw new JsonException("Error converting JSON String containing base64-encode data to " + OutputType.FullName + ".", e);
+            }
         }
     }
 }
