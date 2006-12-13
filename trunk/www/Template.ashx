@@ -1,14 +1,14 @@
-<%@ WebHandler Language="C#" Class="JayRockWeb.TemplateService" %>
+<%@ WebHandler Language="C#" Class="JayrockWeb.TemplateService" %>
 
-namespace JayRockWeb
+namespace JayrockWeb
 {
     #region Imports
     
     using System;
     using System.Web;
     using Jayrock.Json;
-    using Jayrock.Json.Rpc;
-    using Jayrock.Json.Rpc.Web;
+    using Jayrock.JsonRpc;
+    using Jayrock.JsonRpc.Web;
     
     #endregion
     
