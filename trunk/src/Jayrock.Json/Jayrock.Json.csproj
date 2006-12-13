@@ -136,6 +136,7 @@
                 />
                 <File
                     RelPath = "PrivateAssemblyInfo.cs"
+                    SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
@@ -160,6 +161,11 @@
                 />
                 <File
                     RelPath = "Configuration\TypeListSectionHandler.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\BufferedCharReader.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -260,11 +266,6 @@
                 />
                 <File
                     RelPath = "Json\JsonWriterBracket.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Json\TextParser.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

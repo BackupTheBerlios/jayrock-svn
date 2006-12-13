@@ -592,7 +592,7 @@ namespace Jayrock.Json
         [ Test ]
         public void StringWithHexEncodedChars()
         {
-            Assert.AreEqual("1234\x1234\x56781234\xffff", CreateReader("'1234\\u1234\u56781234\uffff'").ReadString());
+            Assert.AreEqual("1234\x1234\x56781234\xffff", CreateReader(@"'1234\u1234\u56781234\uffff'").ReadString());
         }
 
         [ Test ]
@@ -618,10 +618,17 @@ namespace Jayrock.Json
         {
             Assert.AreEqual("\f", CreateReader("'\\f'").ReadString());
         }
+
         [ Test ]
         public void StringWithEscapedCarriageReturn()
         {
             Assert.AreEqual("\r", CreateReader("'\\r'").ReadString());
+        }
+        
+        [ Test, ExpectedException(typeof(JsonException)) ]
+        public void StringWithIncompleteHexEscaping()
+        {
+            Read(@"'\u1'");
         }
         
         private void AssertTokenText(JsonTokenClass token, string text)

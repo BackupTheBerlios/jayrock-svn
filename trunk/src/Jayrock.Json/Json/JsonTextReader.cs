@@ -42,10 +42,8 @@ namespace Jayrock.Json
 
     public sealed class JsonTextReader : JsonReaderBase
     {
-        private readonly TextParser _parser;
+        private BufferedCharReader _reader;
         private Stack _stack;
-
-        private const char NIL = (char) 0;
 
         private delegate JsonToken Continuation();
 
@@ -61,9 +59,8 @@ namespace Jayrock.Json
             if (reader == null)
                 throw new ArgumentNullException("reader");
 
-            _parser = new TextParser(reader.ReadToEnd());
-            _stack = new Stack();
-            _stack.Push(ParseMethod);
+            _reader = new BufferedCharReader(reader);
+            Push(ParseMethod);
         }
 
         /// <summary>
@@ -72,14 +69,19 @@ namespace Jayrock.Json
 
         protected override JsonToken ReadTokenImpl()
         {
-            if (_stack == null || _stack.Count == 0)
+            if (_stack == null)
+            {
+                return JsonToken.EOF();
+            }
+            else if (_stack.Count == 0)
             {
                 _stack = null;
+                _reader = null;
                 return JsonToken.EOF();
             }
             else
             {
-                return ((Continuation) _stack.Pop())();
+                return Pop()();
             }
         }
 
@@ -97,7 +99,7 @@ namespace Jayrock.Json
 
             if (ch == '"' || ch == '\'')
             {
-                return Yield(JsonToken.String(_parser.NextString(ch)));
+                return Yield(JsonToken.String(NextString(ch)));
             }
 
             //
@@ -106,17 +108,17 @@ namespace Jayrock.Json
 
             if (ch == '{')
             {
-                _parser.Back();
+                _reader.Back();
                 return ParseObject();
             }
 
             //
-            // JSON Array
+            // Array
             //
 
             if (ch == '[')
             {
-                _parser.Back();
+                _reader.Back();
                 return ParseArray();
             }
 
@@ -135,21 +137,34 @@ namespace Jayrock.Json
             while (ch >= ' ' && ",:]}/\\\"[{;=#".IndexOf(ch) < 0) 
             {
                 sb.Append(ch);
-                ch = _parser.Next();
+                ch = _reader.Next();
             }
 
-            _parser.Back();
+            _reader.Back();
 
             string s = sb.ToString().Trim();
 
             if (s.Length == 0)
                 throw new JsonException("Missing value.");
+            
+            
+            //
+            // Boolean
+            //
 
             if (s == JsonBoolean.TrueText || s == JsonBoolean.FalseText)
                 return Yield(JsonToken.Boolean(s == JsonBoolean.TrueText));
+            
+            //
+            // Null
+            //
 
             if (s == JsonNull.Text)
                 return Yield(JsonToken.Null());
+            
+            //
+            // Number
+            //
 
             if ((b >= '0' && b <= '9') || b == '.' || b == '-' || b == '+')
             {
@@ -159,6 +174,10 @@ namespace Jayrock.Json
 
                 return Yield(JsonToken.Number(s));
             }
+            
+            //
+            // Treat as String in all other cases, e.g. when unquoted.
+            //
 
             return Yield(JsonToken.String(s));
         }
@@ -194,9 +213,9 @@ namespace Jayrock.Json
             if (NextClean() == ']')
                 return Yield(JsonToken.EndArray());
 
-            _parser.Back();
+            _reader.Back();
 
-            _stack.Push(ParseArrayNextMethod);
+            Push(ParseArrayNextMethod);
             return Parse();
         }
 
@@ -223,7 +242,7 @@ namespace Jayrock.Json
                     if (NextClean() == ']')
                         return Yield(JsonToken.EndArray());
                     else
-                        _parser.Back();
+                        _reader.Back();
 
                     break;
                 }
@@ -237,7 +256,7 @@ namespace Jayrock.Json
                     throw new JsonException("Expected a ',' or ']'.");
             }
 
-            _stack.Push(ParseArrayNextMethod);
+            Push(ParseArrayNextMethod);
             return Parse();
         }
 
@@ -256,11 +275,6 @@ namespace Jayrock.Json
 
         private JsonToken ParseObject()
         {
-            if (_parser.Next() == '%')
-                _parser.Restart(Unescape(_parser.Source), _parser.Index);
-
-            _parser.Back();
-
             if (NextClean() != '{')
                 throw new JsonException("An object must begin with '{'.");
 
@@ -279,10 +293,10 @@ namespace Jayrock.Json
             if (ch == '}')
                 return Yield(JsonToken.EndObject());
 
-            if (ch == JsonTextReader.NIL)
+            if (ch == BufferedCharReader.EOF)
                 throw new JsonException("An object must end with '}'.");
 
-            _parser.Back();
+            _reader.Back();
             string name = Parse().Text;
             return Yield(JsonToken.Member(name), ParseObjectMemberValueMethod);
         }
@@ -302,13 +316,13 @@ namespace Jayrock.Json
 
             if (ch == '=')
             {
-                if (_parser.Next() != '>')
-                    _parser.Back();
+                if (_reader.Next() != '>')
+                    _reader.Back();
             }
             else if (ch != ':')
                 throw new JsonException("Expected a ':' after a key.");
 
-            _stack.Push(ParseNextMemberMethod);
+            Push(ParseNextMemberMethod);
             return Parse();
         }
 
@@ -340,7 +354,7 @@ namespace Jayrock.Json
                     throw new JsonException("Expected a ',' or '}'.");
             }
 
-            _parser.Back();
+            _reader.Back();
             string name = Parse().Text;
             return Yield(JsonToken.Member(name), ParseObjectMemberValueMethod);
         }
@@ -378,7 +392,7 @@ namespace Jayrock.Json
         private JsonToken Yield(JsonToken token, Continuation continuation)
         {
             if (continuation != null)
-                _stack.Push(continuation);
+                Push(continuation);
             
             return token;
         }
@@ -391,46 +405,46 @@ namespace Jayrock.Json
         
         private char NextClean()
         {
-            Debug.Assert(_parser != null);
+            Debug.Assert(_reader != null);
 
             while (true)
             {
-                char ch = _parser.Next();
+                char ch = _reader.Next();
 
                 if (ch == '/')
                 {
-                    switch (_parser.Next())
+                    switch (_reader.Next())
                     {
                         case '/':
                         {
                             do
                             {
-                                ch = _parser.Next();
-                            } while (ch != '\n' && ch != '\r' && ch != NIL);
+                                ch = _reader.Next();
+                            } while (ch != '\n' && ch != '\r' && ch != BufferedCharReader.EOF);
                             break;
                         }
                         case '*':
                         {
                             while (true)
                             {
-                                ch = _parser.Next();
+                                ch = _reader.Next();
 
-                                if (ch == NIL)
+                                if (ch == BufferedCharReader.EOF)
                                     throw new JsonException("Unclosed comment.");
 
                                 if (ch == '*')
                                 {
-                                    if (_parser.Next() == '/')
+                                    if (_reader.Next() == '/')
                                         break;
 
-                                    _parser.Back();
+                                    _reader.Back();
                                 }
                             }
                             break;
                         }
                         default:
                         {
-                            _parser.Back();
+                            _reader.Back();
                             return '/';
                         }
                     }
@@ -439,74 +453,43 @@ namespace Jayrock.Json
                 {
                     do 
                     {
-                        ch = _parser.Next();
+                        ch = _reader.Next();
                     } 
-                    while (ch != '\n' && ch != '\r' && ch != NIL);
+                    while (ch != '\n' && ch != '\r' && ch != BufferedCharReader.EOF);
                 }
-                else if (ch == NIL || ch > ' ')
+                else if (ch == BufferedCharReader.EOF || ch > ' ')
                 {
                     return ch;
                 }
             }
         }
 
-        /// <summary>
-        /// Convert %hh sequences to single characters, and convert plus to
-        /// space.
-        /// </summary>
-        
-        private static string Unescape(string s)
+        private string NextString(char quote)
         {
-            s = Mask.NullString(s);
-
-            int length = s.Length;
-            StringBuilder sb = new StringBuilder();
-
-            for (int i = 0; i < length; i++)
+            try
             {
-                char ch = s[i];
-
-                if (ch == '+')
-                {
-                    ch = ' ';
-                }
-                else if (ch == '%' && (i + 2 < length))
-                {
-                    int lo = ParseHexChar(s[i + 1]);
-                    int hi = ParseHexChar(s[i + 2]);
-
-                    if (lo >= 0 && hi >= 0)
-                    {
-                        ch = (char) (lo*16 + hi);
-                        i += 2;
-                    }
-                }
-
-                sb.Append(ch);
+                return JsonString.Dequote(_reader, quote);
             }
-
-            return sb.ToString();
+            catch (FormatException e)
+            {
+                throw new JsonException(e.Message, e);
+            }
         }
-
-        /// <summary>
-        /// Get the hex value of a character (base16).
-        /// </summary>
-        /// <returns>
-        /// An integer between 0 and 15, or -1 if ch was not a hex digit.
-        /// </returns>
         
-        private static int ParseHexChar(char ch)
+        private void Push(Continuation continuation)
         {
-            if (ch >= '0' && ch <= '9')
-                return ch - '0';
-
-            if (ch >= 'A' && ch <= 'F')
-                return ch + 10 - 'A';
-
-            if (ch >= 'a' && ch <= 'f')
-                return ch + 10 - 'a';
-
-            return -1;
+            Debug.Assert(continuation != null);
+            
+            if (_stack == null)
+                _stack = new Stack(6);
+            
+            _stack.Push(continuation);
+        }
+        
+        private Continuation Pop()
+        {
+            Debug.Assert(_stack != null);
+            return (Continuation) _stack.Pop();
         }
     }
 }
