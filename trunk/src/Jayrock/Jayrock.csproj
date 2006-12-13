@@ -115,6 +115,10 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "json.js"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
                     RelPath = "Mask.cs"
                     Link = "..\Common\Mask.cs"
                     SubType = "Code"

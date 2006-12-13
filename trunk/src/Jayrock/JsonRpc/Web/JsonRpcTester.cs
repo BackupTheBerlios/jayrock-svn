@@ -24,6 +24,7 @@ namespace Jayrock.JsonRpc.Web
 {
     #region Imports
 
+    using System.IO;
     using System.Text;
     using System.Web.UI;
     using System.Web.UI.HtmlControls;
@@ -114,8 +115,7 @@ namespace Jayrock.JsonRpc.Web
             Control headersPre = AddGeneric(content, "pre");
             headersPre.ID = "Headers";
 
-            AddScriptInclude((Request.ApplicationPath.Equals("/") ? 
-                string.Empty : Request.ApplicationPath) + "/json.js");
+            AddScriptBlockFromResource("Jayrock.json.js");
 
             AddScriptBlock(@"
                 var callTemplates = " + BuildCallTemplatesObject() + @";
@@ -160,7 +160,7 @@ namespace Jayrock.JsonRpc.Web
                         var request = { 
                             id : ++nextRequestId, 
                             method : form.Method.value, 
-                            params : JSON.parse(theForm.Request.value) };
+                            params : theForm.Request.value };
                         
                         form.Response.value = '';
                         form.Response.className = '';
@@ -186,7 +186,7 @@ namespace Jayrock.JsonRpc.Web
                     http.open('POST', '" + Request.FilePath + @"', false);
                     http.setRequestHeader('Content-Type', 'text/plain; charset=utf-8');
                     http.setRequestHeader('X-JSON-RPC', request.method);
-                    http.send(JSON.stringify(request));
+                    http.send('{\""id\"":' + request.id + ',\""method\"":\""' + request.method + '\"",\""params\"":' + request.params + '}');
                     if (http.status != 200)
                         throw { message : http.status + ' ' + http.statusText, toString : function() { return this.message; } };
                     var clockStart = new Date();
@@ -217,6 +217,12 @@ namespace Jayrock.JsonRpc.Web
             base.AddContent();
         }
 
+        private void AddScriptBlockFromResource(string resourceName) {
+            using (Stream stream = GetType().Assembly.GetManifestResourceStream(resourceName))
+            using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
+                AddScriptBlock(reader.ReadToEnd());
+        }
+
         private JsonObject BuildCallTemplatesObject()
         {
             JsonObject info = new JsonObject();
@@ -225,7 +231,7 @@ namespace Jayrock.JsonRpc.Web
             foreach (Method method in ServiceClass.GetMethods())
             {
                 sb.Length = 0;
-                sb.Append("[ ");
+                sb.Append("{ ");
 
                 Parameter[] parameters = method.GetParameters();
                 
@@ -240,11 +246,11 @@ namespace Jayrock.JsonRpc.Web
                         if (parameter.Position > 0) 
                             sb.Append(", ");
 
-                        sb.Append("/* ").Append(parameter.Name).Append(" = */ ?");
+                        sb.Append('"').Append(parameter.Name).Append("\" : null");
                     }
                 }
 
-                sb.Append(" ]");
+                sb.Append(" }");
                 info.Put(method.Name, sb.ToString());
             }
             return info;
@@ -287,11 +293,6 @@ namespace Jayrock.JsonRpc.Web
         private void AddScriptBlock(string script)
         {
             Head.Controls.Add(new LiteralControl("<script type='text/javascript'>" + script + "</script>"));
-        }
-
-        private void AddScriptInclude(string url)
-        {
-            Head.Controls.Add(new LiteralControl("<script type='text/javascript' src='" + url + "'></script>"));
         }
 
         protected override void AddStyleSheet()
