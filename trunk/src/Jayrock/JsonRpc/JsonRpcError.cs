@@ -25,6 +25,7 @@ namespace Jayrock.JsonRpc
     #region Imports
 
     using System;
+    using System.Diagnostics;
     using Jayrock.Json;
 
     #endregion
@@ -42,13 +43,35 @@ namespace Jayrock.JsonRpc
                 throw new ArgumentNullException("e");
 
             JsonObject error = new JsonObject();
-            
             error.Put("name", "JSONRPCError");
             error.Put("message", e.GetBaseException().Message);
 
             if (includeStackTrace)
                 error.Put("stackTrace", e.StackTrace);
 
+            JsonArray errors = new JsonArray();
+                
+            do
+            {
+                errors.Put(ToLocalError(e));
+                e = e.InnerException;
+            }
+            while (e != null);
+            
+            error.Put("errors", errors);
+            
+            return error;
+        }
+
+        private static JsonObject ToLocalError(Exception e) 
+        {
+            Debug.Assert(e != null);
+            
+            JsonObject error = new JsonObject();
+            
+            error.Put("name", e.GetType().Name);
+            error.Put("message", e.Message);
+            
             return error;
         }
 
