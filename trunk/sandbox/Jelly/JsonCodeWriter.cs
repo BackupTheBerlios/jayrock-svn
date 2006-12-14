@@ -20,32 +20,31 @@
 //
 #endregion
 
-namespace Jayrock.Json
+namespace Jelly
 {
     #region Imports
 
     using System;
     using System.CodeDom;
+    using System.Collections;
     using System.Diagnostics;
     using System.Reflection;
+    using Jayrock.Json;
 
     #endregion
 
     public sealed class JsonCodeWriter : JsonWriterBase
     {
         private readonly CodeVariableReferenceExpression _variable;
-        private readonly ICollector _collector;
+        private readonly IList _list;
 
-        public JsonCodeWriter(CodeVariableReferenceExpression variable, ICollector collector)
+        public JsonCodeWriter(CodeVariableReferenceExpression variable, IList list)
         {
             if (variable == null)
                 throw new ArgumentNullException("variable");
 
-            if (collector == null)
-                throw new ArgumentNullException("collector");
-
             _variable = variable;
-            _collector = collector;
+            _list = list;
         }
 
         protected override void WriteStartObjectImpl()
@@ -102,12 +101,17 @@ namespace Jayrock.Json
         {
             Debug.Assert(method != null);
 
-            CodeMethodInvokeExpression call = new CodeMethodInvokeExpression(_variable, method.Name);
+            const string ending = "Impl";
+            Debug.Assert(method.Name.EndsWith(ending));
+            string methodName = method.Name.Substring(0, method.Name.Length - ending.Length);
+            
+            CodeMethodInvokeExpression call = new CodeMethodInvokeExpression(_variable, methodName);
 
             if (value != null)
                 call.Parameters.Add(new CodePrimitiveExpression(value));
             
-            _collector.Collect(new CodeExpressionStatement(call));
+            if (_list != null)
+                _list.Add(new CodeExpressionStatement(call));
         }
     }
 }

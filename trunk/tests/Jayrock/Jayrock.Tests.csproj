@@ -94,11 +94,6 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "TestListCollector.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "TestUnixTime.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
