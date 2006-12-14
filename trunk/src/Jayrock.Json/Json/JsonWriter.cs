@@ -49,14 +49,7 @@ namespace Jayrock.Json
         /// (also valid for a JSON Object but indicates member count).
         /// </summary>
         
-        public int Index { get { return (int) LongIndex; } }
-        
-        /// <summary>
-        /// Return the current 64-bit index within a JSON Array
-        /// (also valid for a JSON Object but indicates member count).
-        /// </summary>
-        
-        public abstract long LongIndex { get; }
+        public abstract long Index { get; }
                 
         /// <summary>
         /// Determines the current bracket of the writer.

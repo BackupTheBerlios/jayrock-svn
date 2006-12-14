@@ -49,7 +49,7 @@ namespace Jayrock.Json
             get { return HasStates ? States.Count : 0; }
         }
 
-        public sealed override long LongIndex
+        public sealed override long Index
         {
             get { return Depth == 0 ? -1 : _state.MemberCount; }
         }
