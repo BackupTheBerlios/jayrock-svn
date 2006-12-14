@@ -178,13 +178,12 @@ namespace Jayrock.Json
         
         private void ExitBracket()
         {
-            WriterState state = States.Pop();
+            _state = States.Pop();
 
-            if (state.Bracket == JsonWriterBracket.Pending)
-                state.Bracket = JsonWriterBracket.Closed;
-            
-            _state = state;
-            PostWrite();
+            if (_state.Bracket == JsonWriterBracket.Pending)
+                _state.Bracket = JsonWriterBracket.Closed;
+            else            
+                PostWrite();
         }
 
         private void PostWrite()
