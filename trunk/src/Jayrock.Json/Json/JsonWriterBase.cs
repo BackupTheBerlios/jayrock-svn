@@ -51,7 +51,7 @@ namespace Jayrock.Json
 
         public sealed override long Index
         {
-            get { return Depth == 0 ? -1 : _state.MemberCount; }
+            get { return Depth == 0 ? -1 : _state.Index; }
         }
         
         public sealed override JsonWriterBracket Bracket
@@ -112,36 +112,28 @@ namespace Jayrock.Json
         {
             EnsureMemberOnObjectBracket();
             WriteStringImpl(value);
-            PostScalarWrite();
-        }
-
-        private void PostScalarWrite()
-        {
-            if (_state.Bracket == JsonWriterBracket.Member) 
-                _state.Bracket = JsonWriterBracket.Object;
-            
-            _state.MemberCount++;
+            PostWrite();
         }
 
         public sealed override void WriteNumber(string value)
         {
             EnsureMemberOnObjectBracket();
             WriteNumberImpl(value);
-            PostScalarWrite();
+            PostWrite();
         }
 
         public sealed override void WriteBoolean(bool value)
         {
             EnsureMemberOnObjectBracket();
             WriteBooleanImpl(value);
-            PostScalarWrite();
+            PostWrite();
         }
 
         public sealed override void WriteNull()
         {
             EnsureMemberOnObjectBracket();
             WriteNullImpl();
-            PostScalarWrite();
+            PostWrite();
         }
         
         //
@@ -192,7 +184,15 @@ namespace Jayrock.Json
                 state.Bracket = JsonWriterBracket.Closed;
             
             _state = state;
-            PostScalarWrite();
+            PostWrite();
+        }
+
+        private void PostWrite()
+        {
+            if (_state.Bracket == JsonWriterBracket.Member) 
+                _state.Bracket = JsonWriterBracket.Object;
+            
+            _state.Index++;
         }
 
         private void EnsureMemberOnObjectBracket() 
@@ -211,12 +211,12 @@ namespace Jayrock.Json
         private struct WriterState
         {
             public JsonWriterBracket Bracket;
-            public long MemberCount;
+            public long Index;
 
             public WriterState(JsonWriterBracket bracket)
             {
                 Bracket = bracket;
-                MemberCount = 0;
+                Index = 0;
             }
         }
         
