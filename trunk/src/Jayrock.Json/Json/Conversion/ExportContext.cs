@@ -37,7 +37,7 @@ namespace Jayrock.Json.Conversion
     [ Serializable ]
     public class ExportContext
     {
-        ExporterCollection _exporters;
+        [ ThreadStatic ] private static ExporterCollection _exporters;
 
         public virtual void Export(object value, JsonWriter writer)
         {
@@ -133,7 +133,7 @@ namespace Jayrock.Json.Conversion
             return (IExporter) Activator.CreateInstance(exporter.GetType(), new object[] { actualType });
         }
  
-        private ExporterCollection Exporters
+        private static ExporterCollection Exporters
         {
             get
             {

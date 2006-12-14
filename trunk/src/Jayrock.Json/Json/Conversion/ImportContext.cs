@@ -36,7 +36,7 @@ namespace Jayrock.Json.Conversion
     [ Serializable ]
     public class ImportContext
     {
-        private ImporterCollection _importers;
+        [ ThreadStatic ] private static ImporterCollection _importers;
 
         public virtual object Import(JsonReader reader)
         {
@@ -120,7 +120,7 @@ namespace Jayrock.Json.Conversion
             return null;
         }
  
-        private ImporterCollection Importers
+        private static ImporterCollection Importers
         {
             get
             {
