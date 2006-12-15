@@ -61,6 +61,12 @@ namespace Jayrock.Json.Conversion
             AssertInStock(typeof(GuidImporter), typeof(Guid));
         }
 
+        [ Test ]
+        public void HasItems()
+        {
+            Assert.IsNotNull((new ExportContext()).Items);
+        }
+
         private static void AssertInStock(Type expected, Type type)
         {
             ImportContext context = new ImportContext();

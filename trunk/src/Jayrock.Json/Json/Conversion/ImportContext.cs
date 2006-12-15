@@ -37,6 +37,7 @@ namespace Jayrock.Json.Conversion
     public class ImportContext
     {
         [ ThreadStatic ] private static ImporterCollection _importers;
+        private IDictionary _items;
 
         public virtual object Import(JsonReader reader)
         {
@@ -96,6 +97,17 @@ namespace Jayrock.Json.Conversion
             }
 
             return null;
+        }
+
+        public IDictionary Items
+        {
+            get
+            {
+                if (_items == null)
+                    _items = new Hashtable();
+                
+                return _items;
+            }
         }
 
         private static IImporter FindCompatibleImporter(Type type) 

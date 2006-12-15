@@ -30,14 +30,16 @@ namespace Jayrock.Json.Conversion
     using System.Collections;
     using System.Configuration;
     using System.Diagnostics;
+    using System.Runtime.Serialization;
     using Jayrock.Json.Conversion.Exporters;
 
     #endregion
-
+    
     [ Serializable ]
     public class ExportContext
     {
         [ ThreadStatic ] private static ExporterCollection _exporters;
+        private IDictionary _items;
 
         public virtual void Export(object value, JsonWriter writer)
         {
@@ -88,6 +90,17 @@ namespace Jayrock.Json.Conversion
             return null;
         }
 
+        public IDictionary Items
+        {
+            get
+            {
+                if (_items == null)
+                    _items = new Hashtable();
+                
+                return _items;
+            }
+        }
+
         private IExporter FindCompatibleExporter(Type type)
         {
             Debug.Assert(type != null);
@@ -132,7 +145,7 @@ namespace Jayrock.Json.Conversion
 
             return (IExporter) Activator.CreateInstance(exporter.GetType(), new object[] { actualType });
         }
- 
+        
         private static ExporterCollection Exporters
         {
             get

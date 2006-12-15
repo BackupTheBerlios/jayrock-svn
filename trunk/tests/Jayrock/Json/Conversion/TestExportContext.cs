@@ -73,6 +73,12 @@ namespace Jayrock.Json.Conversion
             AssertInStock(typeof(ByteArrayExporter), typeof(byte[]));
         }
 
+        [ Test ]
+        public void HasItems()
+        {
+            Assert.IsNotNull((new ExportContext()).Items);
+        }
+
         private static void AssertInStock(Type expected, Type type)
         {
             ExportContext context = new ExportContext();

@@ -145,6 +145,58 @@ namespace Jayrock.Json.Conversion.Exporters
             Test(test, johnCars);
         }
 
+        [ Test, ExpectedException(typeof(JsonException)) ]
+        public void ImmediateCircularReferenceDetection()
+        {
+            ExportContext context = new ExportContext();
+            ComponentExporter exporter = new ComponentExporter(typeof(Thing));
+            context.Register(exporter);
+            Thing thing = new Thing();
+            thing.Other = thing;
+            exporter.Export(context, thing, new EmptyJsonWriter());
+        }
+        
+        [ Test, ExpectedException(typeof(JsonException)) ]
+        public void DeepCircularReferenceDetection()
+        {
+            ExportContext context = new ExportContext();
+            ComponentExporter exporter = new ComponentExporter(typeof(Thing));
+            context.Register(exporter);
+            Thing thing = new Thing();
+            thing.Other = new Thing();
+            thing.Other.Other = new Thing();
+            thing.Other.Other.Other = thing;
+            exporter.Export(context, thing, new EmptyJsonWriter());
+        }
+
+        [ Test, ExpectedException(typeof(JsonException)) ]
+        public void CircularReferenceDetectionAcrossTypes()
+        {
+            ExportContext context = new ExportContext();
+            ComponentExporter exporter = new ComponentExporter(typeof(Parent));
+            context.Register(exporter);
+            context.Register(new ComponentExporter(typeof(ParentChild)));
+            Parent parent = new Parent();
+            parent.Child = new ParentChild();
+            parent.Child.Parent = parent;
+            exporter.Export(context, parent, new EmptyJsonWriter());
+        }
+
+        private sealed class Thing
+        {
+            public Thing Other;
+        }
+        
+        private sealed class Parent
+        {
+            public ParentChild Child;
+        }
+        
+        private sealed class ParentChild
+        {
+            public Parent Parent;
+        }
+
         private static string Format(object o)
         {
             JsonTextWriter writer = new JsonTextWriter();
@@ -315,4 +367,5 @@ namespace Jayrock.Json.Conversion.Exporters
         }
     }
 }
+
 
