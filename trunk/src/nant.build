@@ -86,7 +86,7 @@
             <projects>
                 <include name="Jayrock\Jayrock.csproj" />
                 <include name="Jayrock.Json\Jayrock.Json.csproj" />
-                <include name="${path::combine(my.tests, 'Jayrock\Jayrock Test.csproj')}" />
+                <include name="${path::combine(my.tests, 'Jayrock\Jayrock.Tests.csproj')}" />
             </projects>
         </solution>
     </target>
