@@ -110,30 +110,58 @@ namespace Jayrock.Json
 
         public sealed override void WriteString(string value)
         {
-            EnsureMemberOnObjectBracket();
-            WriteStringImpl(value);
-            PostWrite();
+            if (Depth == 0)
+            {
+                WriteStartArray(); WriteString(value); WriteEndArray();
+            }
+            else
+            {
+                EnsureMemberOnObjectBracket();
+                WriteStringImpl(value);
+                OnValueWritten();
+            }
         }
 
         public sealed override void WriteNumber(string value)
         {
-            EnsureMemberOnObjectBracket();
-            WriteNumberImpl(value);
-            PostWrite();
+            if (Depth == 0)
+            {
+                WriteStartArray(); WriteNumber(value); WriteEndArray();
+            }
+            else
+            {
+                EnsureMemberOnObjectBracket();
+                WriteNumberImpl(value);
+                OnValueWritten();
+            }
         }
 
         public sealed override void WriteBoolean(bool value)
         {
-            EnsureMemberOnObjectBracket();
-            WriteBooleanImpl(value);
-            PostWrite();
+            if (Depth == 0)
+            {
+                WriteStartArray(); WriteBoolean(value); WriteEndArray();
+            }
+            else
+            {
+                EnsureMemberOnObjectBracket();
+                WriteBooleanImpl(value);
+                OnValueWritten();
+            }
         }
 
         public sealed override void WriteNull()
         {
-            EnsureMemberOnObjectBracket();
-            WriteNullImpl();
-            PostWrite();
+            if (Depth == 0)
+            {
+                WriteStartArray(); WriteNull(); WriteEndArray();
+            }
+            else 
+            {
+                EnsureMemberOnObjectBracket();
+                WriteNullImpl();
+                OnValueWritten();
+            }
         }
         
         //
@@ -183,10 +211,10 @@ namespace Jayrock.Json
             if (_state.Bracket == JsonWriterBracket.Pending)
                 _state.Bracket = JsonWriterBracket.Closed;
             else            
-                PostWrite();
+                OnValueWritten();
         }
 
-        private void PostWrite()
+        private void OnValueWritten()
         {
             if (_state.Bracket == JsonWriterBracket.Member) 
                 _state.Bracket = JsonWriterBracket.Object;

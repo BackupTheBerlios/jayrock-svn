@@ -35,32 +35,39 @@ namespace Jayrock.Json
     public sealed class JsonTokenClass : IObjectReference
     {
         public static readonly JsonTokenClass Null = new JsonTokenClass("Null");
-        public static readonly JsonTokenClass Boolean = new JsonTokenClass("Boolean");
-        public static readonly JsonTokenClass Number = new JsonTokenClass("Number");
-        public static readonly JsonTokenClass String = new JsonTokenClass("String");
+        public static readonly JsonTokenClass Boolean = new JsonTokenClass("Boolean", Superclass.Scalar);
+        public static readonly JsonTokenClass Number = new JsonTokenClass("Number", Superclass.Scalar);
+        public static readonly JsonTokenClass String = new JsonTokenClass("String", Superclass.Scalar);
         public static readonly JsonTokenClass Array = new JsonTokenClass("Array");
-        public static readonly JsonTokenClass EndArray = new JsonTokenClass("EndArray", true);
+        public static readonly JsonTokenClass EndArray = new JsonTokenClass("EndArray", Superclass.Terminator);
         public static readonly JsonTokenClass Object = new JsonTokenClass("Object");
-        public static readonly JsonTokenClass EndObject = new JsonTokenClass("EndObject", true);
+        public static readonly JsonTokenClass EndObject = new JsonTokenClass("EndObject", Superclass.Terminator);
         public static readonly JsonTokenClass Member = new JsonTokenClass("Member");
-        public static readonly JsonTokenClass BOF = new JsonTokenClass("BOF", true);
-        public static readonly JsonTokenClass EOF = new JsonTokenClass("EOF", true);
+        public static readonly JsonTokenClass BOF = new JsonTokenClass("BOF", Superclass.Terminator);
+        public static readonly JsonTokenClass EOF = new JsonTokenClass("EOF", Superclass.Terminator);
             
         public static readonly ICollection All = new JsonTokenClass[] { BOF, EOF, Null, Boolean, Number, String, Array, EndArray, Object, EndObject, Member };
             
         private readonly string _name;
-        private readonly bool _isTerminator;
+        private readonly Superclass _superclass;
+        
+        private enum Superclass
+        {
+            Unspecified,
+            Scalar,
+            Terminator
+        }
            
         private JsonTokenClass(string name) :
-            this(name, false) {}
+            this(name, Superclass.Unspecified) {}
         
-        private JsonTokenClass(string name, bool isTerminator)
+        private JsonTokenClass(string name, Superclass superclass)
         {
             Debug.Assert(name != null);
             Debug.Assert(name.Length > 0);
                 
             _name = name;
-            _isTerminator = isTerminator;
+            _superclass = superclass;
         }
 
         public string Name
@@ -70,7 +77,12 @@ namespace Jayrock.Json
 
         internal bool IsTerminator
         {
-            get { return _isTerminator; }
+            get { return _superclass == Superclass.Terminator; }
+        }
+
+        internal bool IsScalar
+        {
+            get { return _superclass == Superclass.Scalar; }
         }
 
         public override int GetHashCode()

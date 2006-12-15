@@ -181,7 +181,6 @@ namespace Jayrock.Json
 
             protected override void WriteEndArrayImpl()
             {
-                throw new NotImplementedException();
             }
 
             protected override void WriteStringImpl(string value)

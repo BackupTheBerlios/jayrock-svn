@@ -47,11 +47,11 @@ namespace Jayrock.Json
         [ Test ]
         public void WriteString()
         {
-            WriteString("\"Hello\"", "Hello");
-            WriteString("\"Hello World\"", "Hello World");
-            WriteString("\"And before he parted, he said, \\\"Goodbye, people!\\\"\"", "And before he parted, he said, \"Goodbye, people!\"");
-            WriteString("\"Hello\\tWorld\"", "Hello\tWorld");
-            WriteString("\"Hello\\u0000World\"", "Hello" + ((char) 0) + "World");
+            WriteString("[\"Hello\"]", "Hello");
+            WriteString("[\"Hello World\"]", "Hello World");
+            WriteString("[\"And before he parted, he said, \\\"Goodbye, people!\\\"\"]", "And before he parted, he said, \"Goodbye, people!\"");
+            WriteString("[\"Hello\\tWorld\"]", "Hello\tWorld");
+            WriteString("[\"Hello\\u0000World\"]", "Hello" + ((char) 0) + "World");
         }
 
         private void WriteString(string expected, string value)
@@ -66,7 +66,7 @@ namespace Jayrock.Json
         {
             JsonTextWriter writer = new JsonTextWriter(new StringWriter());
             writer.WriteNumber(123);
-            Assert.AreEqual("123", writer.ToString());
+            Assert.AreEqual("[123]", writer.ToString());
         }
 
         [ Test ]
@@ -74,19 +74,23 @@ namespace Jayrock.Json
         {
             JsonTextWriter writer = new JsonTextWriter(new StringWriter());
             writer.WriteNull();
-            Assert.AreEqual("null", writer.ToString());
+            Assert.AreEqual("[null]", writer.ToString());
         }
 
         [ Test ]
-        public void WriteBoolean()
+        public void WriteTrueBoolean()
         {
             JsonTextWriter writer = new JsonTextWriter(new StringWriter());
             writer.WriteBoolean(true);
-            Assert.AreEqual("true", writer.ToString());
-            
-            writer = new JsonTextWriter(new StringWriter());
+            Assert.AreEqual("[true]", writer.ToString());
+        }
+
+        [ Test ]
+        public void WriteFalseBoolean()
+        {
+            JsonTextWriter writer = new JsonTextWriter(new StringWriter());
             writer.WriteBoolean(false);
-            Assert.AreEqual("false", writer.ToString());
+            Assert.AreEqual("[false]", writer.ToString());
         }
 
         [ Test ]
@@ -130,18 +134,18 @@ namespace Jayrock.Json
         [ Test ]
         public void WriteNullValue()
         {
-            Assert.AreEqual("null", JsonConvert.ExportToString(JsonNull.Value));
+            Assert.AreEqual("[null]", JsonConvert.ExportToString(JsonNull.Value));
         }
 
         [ Test ]
         public void WriteValue()
         {
-            Assert.AreEqual("123", WriteValue((byte) 123), "Byte");
-            Assert.AreEqual("\"123\"", WriteValue((sbyte) 123), "Short byte");
-            Assert.AreEqual("123", WriteValue((short) 123), "Short integer");
-            Assert.AreEqual("123", WriteValue(123), "Integer");
-            Assert.AreEqual("123", WriteValue(123L), "Long integer");
-            Assert.AreEqual("123", WriteValue(123m), "Decimal");
+            Assert.AreEqual("[123]", WriteValue((byte) 123), "Byte");
+            Assert.AreEqual("[\"123\"]", WriteValue((sbyte) 123), "Short byte");
+            Assert.AreEqual("[123]", WriteValue((short) 123), "Short integer");
+            Assert.AreEqual("[123]", WriteValue(123), "Integer");
+            Assert.AreEqual("[123]", WriteValue(123L), "Long integer");
+            Assert.AreEqual("[123]", WriteValue(123m), "Decimal");
         }
 
         [ Test ]

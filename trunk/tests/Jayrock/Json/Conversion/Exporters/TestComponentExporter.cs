@@ -40,7 +40,7 @@ namespace Jayrock.Json.Conversion.Exporters
         [ Test ]
         public void EmptyObject()
         {
-            Assert.AreEqual("\"System.Object\"", Format(new object()));
+            Assert.AreEqual("[\"System.Object\"]", Format(new object()));
         }
 
         [ Test ]

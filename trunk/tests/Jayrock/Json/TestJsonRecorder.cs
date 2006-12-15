@@ -51,7 +51,7 @@ namespace Jayrock.Json
             recorder.WriteString("Hello World");
             JsonTextWriter writer = new JsonTextWriter();
             recorder.Playback(writer);
-            Assert.AreEqual("\"Hello World\"", writer.ToString());
+            Assert.AreEqual("[\"Hello World\"]", writer.ToString());
         }
         
         [ Test ]

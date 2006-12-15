@@ -109,15 +109,43 @@ namespace Jayrock.Json
 
         public string ReadToken(JsonTokenClass token)
         {
+            int depth = Depth;
+            
             if (!token.IsTerminator)
                 MoveToContent();
             
-            if (TokenClass != token)
-                throw new JsonException(string.Format("Found {0} where {1} was expected.", TokenClass, token));
+            //
+            // We allow an exception to the simple case of validating
+            // the token and returning its value. If the reader is still at
+            // the start (depth is zero) and we're being asked to check
+            // for the null token or a scalar-type token then we allow that 
+            // to be appear within a one-length array. This is done because
+            // valid JSON text must begin with an array or object. Our
+            // JsonWriterBase automatically wraps a scalar value in an 
+            // array if not done explicitly. This exception here allow
+            // that case to pass as being logically valid, as if the
+            // token appeared entirely on its own between BOF and EOF.
+            //
             
-            string s = Text;
-            Read();
-            return s;
+            string text;
+
+            if (depth == 0 && TokenClass == JsonTokenClass.Array &&
+                (token.IsScalar || token == JsonTokenClass.Null))
+            {
+                Read(/* array */);
+                text = ReadToken(token);
+                ReadToken(JsonTokenClass.EndArray);
+            }
+            else
+            {
+                if (TokenClass != token)
+                    throw new JsonException(string.Format("Found {0} where {1} was expected.", TokenClass, token));
+            
+                text = Text;
+                Read();
+            }
+            
+            return text;
         }
 
         /// <summary>
