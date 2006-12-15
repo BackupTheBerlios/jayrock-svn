@@ -49,7 +49,7 @@ namespace Jayrock.Json
         public static readonly ICollection All = new JsonTokenClass[] { BOF, EOF, Null, Boolean, Number, String, Array, EndArray, Object, EndObject, Member };
             
         private readonly string _name;
-        private readonly Superclass _superclass;
+        [ NonSerialized ] private readonly Superclass _superclass;
         
         private enum Superclass
         {

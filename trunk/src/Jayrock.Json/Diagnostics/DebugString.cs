@@ -20,7 +20,7 @@
 //
 #endregion
 
-namespace Jayrock
+namespace Jayrock.Diagnostics
 {
     #region Imports
 
@@ -30,7 +30,7 @@ namespace Jayrock
     using System.Text;
 
     #endregion
-    
+
     /// <summary>
     /// This type supports the Jayrock infrastructure and is not intended to 
     /// be used directly from your code.

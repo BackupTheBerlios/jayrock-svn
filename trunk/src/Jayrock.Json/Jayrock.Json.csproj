@@ -104,11 +104,6 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "DebugString.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "IndentedTextWriter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -151,6 +146,11 @@
                 />
                 <File
                     RelPath = "Configuration\TypeListSectionHandler.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Diagnostics\DebugString.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

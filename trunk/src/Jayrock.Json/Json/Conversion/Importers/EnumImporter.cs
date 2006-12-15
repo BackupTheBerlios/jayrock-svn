@@ -26,6 +26,7 @@ namespace Jayrock.Json.Conversion.Importers
 
     using System;
     using System.Diagnostics;
+    using Jayrock.Diagnostics;
     using Jayrock.Json.Conversion;
 
     #endregion

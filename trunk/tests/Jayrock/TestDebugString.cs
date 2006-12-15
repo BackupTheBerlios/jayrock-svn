@@ -25,6 +25,7 @@ namespace Jayrock
     #region Imports
 
     using System;
+    using Jayrock.Diagnostics;
     using NUnit.Framework;
 
     #endregion
