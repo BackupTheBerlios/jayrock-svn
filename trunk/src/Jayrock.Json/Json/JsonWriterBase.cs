@@ -49,7 +49,7 @@ namespace Jayrock.Json
             get { return HasStates ? States.Count : 0; }
         }
 
-        public sealed override long Index
+        public sealed override int Index
         {
             get { return Depth == 0 ? -1 : _state.Index; }
         }
@@ -238,7 +238,7 @@ namespace Jayrock.Json
         private struct WriterState
         {
             public JsonWriterBracket Bracket;
-            public long Index;
+            public int Index;
 
             public WriterState(JsonWriterBracket bracket)
             {

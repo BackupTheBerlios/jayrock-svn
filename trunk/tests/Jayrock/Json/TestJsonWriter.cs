@@ -102,7 +102,7 @@ namespace Jayrock.Json
                 get { throw new NotImplementedException(); }
             }
 
-            public override long Index
+            public override int Index
             {
                 get { throw new NotImplementedException(); }
             }

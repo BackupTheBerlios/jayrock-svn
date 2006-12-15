@@ -49,7 +49,7 @@ namespace Jayrock.Json
         /// (also valid for a JSON Object but indicates member count).
         /// </summary>
         
-        public abstract long Index { get; }
+        public abstract int Index { get; }
                 
         /// <summary>
         /// Determines the current bracket of the writer.
