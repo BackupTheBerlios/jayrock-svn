@@ -20,12 +20,10 @@
 //
 #endregion
 
-namespace Jayrock
+namespace Jayrock.Diagnostics
 {
     #region Imports
 
-    using System;
-    using Jayrock.Diagnostics;
     using NUnit.Framework;
 
     #endregion
