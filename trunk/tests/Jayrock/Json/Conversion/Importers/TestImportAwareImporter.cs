@@ -50,7 +50,9 @@ namespace Jayrock.Json.Conversion.Importers
             ImportAwareImporter importer = new ImportAwareImporter(typeof(Thing));
             JsonRecorder writer = new JsonRecorder();
             writer.WriteNull();
-            Assert.IsNull(importer.Import(new ImportContext(), writer.CreatePlayer()));
+            JsonReader reader = writer.CreatePlayer();
+            reader.ReadToken(JsonTokenClass.Array);
+            Assert.IsNull(importer.Import(new ImportContext(), reader));
         }
 
         [ Test, ExpectedException(typeof(ArgumentNullException)) ]
