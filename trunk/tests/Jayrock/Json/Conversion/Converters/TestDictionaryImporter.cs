@@ -20,19 +20,32 @@
 //
 #endregion
 
-namespace Jayrock.Json.Conversion
+namespace Jayrock.Json.Conversion.Converters
 {
     #region Imports
 
-    using System;
     using System.Collections;
-    using Jayrock.Json.Conversion.Converters;
+    using NUnit.Framework;
 
     #endregion
 
-    public interface IImporter
+    [ TestFixture ]
+    public class TestDictionaryImporter
     {
-        Type OutputType { get; }
-        object Import(ImportContext context, JsonReader reader);
+        [ Test ]
+        public void Import()
+        {
+            JsonRecorder writer = new JsonRecorder();
+            writer.WriteStartObject();
+            writer.WriteMember("foo");
+            writer.WriteString("bar");
+            writer.WriteEndObject();
+            JsonReader reader = writer.CreatePlayer();
+            ImportContext context = new ImportContext();
+            IDictionary map = (IDictionary) context.Import(typeof(IDictionary), reader);
+            Assert.IsNotNull(map);
+            Assert.AreEqual(1, map.Count);
+            Assert.AreEqual("bar", map["foo"]);
+        }
     }
 }

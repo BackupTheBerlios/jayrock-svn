@@ -20,19 +20,27 @@
 //
 #endregion
 
-namespace Jayrock.Json.Conversion
+namespace Jayrock.Json.Conversion.Converters
 {
     #region Imports
 
     using System;
-    using System.Collections;
-    using Jayrock.Json.Conversion.Converters;
+    using System.Diagnostics;
+    using System.Globalization;
 
     #endregion
 
-    public interface IImporter
+    public sealed class BooleanExporter : ExporterBase
     {
-        Type OutputType { get; }
-        object Import(ImportContext context, JsonReader reader);
+        public BooleanExporter() : base(typeof(bool)) { }
+
+        protected override void ExportValue(ExportContext context, object value, JsonWriter writer)
+        {
+            Debug.Assert(context != null);
+            Debug.Assert(value != null);
+            Debug.Assert(writer != null);
+            
+            writer.WriteBoolean((bool) value);
+        }
     }
 }

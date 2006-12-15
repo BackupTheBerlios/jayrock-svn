@@ -20,19 +20,28 @@
 //
 #endregion
 
-namespace Jayrock.Json.Conversion
+namespace Jayrock.Json.Conversion.Converters
 {
     #region Imports
 
-    using System;
-    using System.Collections;
-    using Jayrock.Json.Conversion.Converters;
+    using System.Web.UI.HtmlControls;
+    using NUnit.Framework;
 
     #endregion
 
-    public interface IImporter
+    [ TestFixture ]
+    public class TestControlExporter
     {
-        Type OutputType { get; }
-        object Import(ImportContext context, JsonReader reader);
+        [ Test ]
+        public void Export()
+        {
+            ControlExporter exporter = new ControlExporter();
+            JsonTextWriter writer = new JsonTextWriter();
+            HtmlGenericControl span = new HtmlGenericControl("span");
+            span.InnerText = "Happy & shiny people!";
+            exporter.Export(new ExportContext(), span, writer);
+            Assert.AreEqual("[\"<span>Happy &amp; shiny people!<\\/span>\"]", writer.ToString());
+        }
     }
 }
+

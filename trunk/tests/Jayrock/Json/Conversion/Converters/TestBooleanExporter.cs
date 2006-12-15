@@ -20,19 +20,47 @@
 //
 #endregion
 
-namespace Jayrock.Json.Conversion
+namespace Jayrock.Json.Conversion.Converters
 {
     #region Imports
 
     using System;
-    using System.Collections;
-    using Jayrock.Json.Conversion.Converters;
+    using NUnit.Framework;
 
     #endregion
 
-    public interface IImporter
+    [ TestFixture ]
+    public class TestBooleanExporter
     {
-        Type OutputType { get; }
-        object Import(ImportContext context, JsonReader reader);
+        [ Test ]
+        public void Superclass()
+        {
+            Assert.IsInstanceOfType(typeof(ExporterBase), new BooleanExporter());
+        }
+        
+        [ Test ]
+        public void InputTypeIsBoolean()
+        {
+            Assert.AreSame(typeof(bool), (new BooleanExporter()).InputType);
+        }
+
+        [ Test ]
+        public void ExportTrue()
+        {
+            Assert.AreEqual(true, Export(true).ReadBoolean());
+        }
+
+        [ Test ]
+        public void ExportFalse()
+        {
+            Assert.AreEqual(true, Export(true).ReadBoolean());
+        }
+
+        private static JsonReader Export(bool value)
+        {
+            JsonRecorder writer = new JsonRecorder();
+            JsonConvert.Export(value, writer);
+            return writer.CreatePlayer();
+        }
     }
 }

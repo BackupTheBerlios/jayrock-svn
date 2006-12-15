@@ -20,19 +20,22 @@
 //
 #endregion
 
-namespace Jayrock.Json.Conversion
+namespace Jayrock.Json.Conversion.Converters
 {
     #region Imports
 
-    using System;
     using System.Collections;
-    using Jayrock.Json.Conversion.Converters;
 
     #endregion
 
-    public interface IImporter
+    public class DictionaryImporter : ImportAwareImporter
     {
-        Type OutputType { get; }
-        object Import(ImportContext context, JsonReader reader);
+        public DictionaryImporter() : 
+            base(typeof(IDictionary)) {}
+
+        protected override IJsonImportable CreateObject()
+        {
+            return new JsonObject();
+        }
     }
 }

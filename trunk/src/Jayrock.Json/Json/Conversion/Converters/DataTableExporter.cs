@@ -20,19 +20,40 @@
 //
 #endregion
 
-namespace Jayrock.Json.Conversion
+namespace Jayrock.Json.Conversion.Converters
 {
     #region Imports
 
     using System;
-    using System.Collections;
-    using Jayrock.Json.Conversion.Converters;
+    using System.Data;
+    using System.Diagnostics;
 
     #endregion
-
-    public interface IImporter
+    
+    public sealed class DataTableExporter : ExporterBase
     {
-        Type OutputType { get; }
-        object Import(ImportContext context, JsonReader reader);
+        public DataTableExporter() :
+            this(typeof(DataTable)) {}
+
+        public DataTableExporter(Type inputType) : 
+            base(inputType) {}
+
+        protected override void ExportValue(ExportContext context, object value, JsonWriter writer)
+        {
+            Debug.Assert(context != null);
+            Debug.Assert(value != null);
+            Debug.Assert(writer != null);
+
+            ExportTable(context, (DataTable) value, writer);
+        }
+
+        internal static void ExportTable(ExportContext context, DataTable table, JsonWriter writer)
+        {
+            Debug.Assert(context != null);
+            Debug.Assert(table != null);
+            Debug.Assert(writer != null);
+
+            DataViewExporter.ExportView(context, table.DefaultView, writer);
+       }
     }
 }

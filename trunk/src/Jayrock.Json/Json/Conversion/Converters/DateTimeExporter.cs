@@ -20,19 +20,40 @@
 //
 #endregion
 
-namespace Jayrock.Json.Conversion
+namespace Jayrock.Json.Conversion.Converters
 {
     #region Imports
 
     using System;
-    using System.Collections;
-    using Jayrock.Json.Conversion.Converters;
+    using System.Data;
+    using System.Diagnostics;
+    using System.Globalization;
 
     #endregion
 
-    public interface IImporter
+    /// <remarks>
+    /// See <a href="http://www.w3.org/TR/NOTE-datetime">W3C note on date 
+    /// and time formats</a>.
+    /// </remarks>
+
+    public class DateTimeExporter : ExporterBase
     {
-        Type OutputType { get; }
-        object Import(ImportContext context, JsonReader reader);
+        public DateTimeExporter() : 
+            base(typeof(DateTime)) {}
+
+        protected override void ExportValue(ExportContext context, object value, JsonWriter writer)
+        {
+            Debug.Assert(value != null);
+            Debug.Assert(writer != null);
+            
+            ExportTime((DateTime) value, writer);
+        }
+ 
+        private void ExportTime(DateTime localTime, JsonWriter writer)
+        {
+            Debug.Assert(writer != null);
+
+            writer.WriteString(localTime.ToString("yyyy-MM-ddTHH:mm:ss.fffffffzzzzzz", CultureInfo.InvariantCulture));
+        }
     }
 }

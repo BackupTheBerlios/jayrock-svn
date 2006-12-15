@@ -30,7 +30,7 @@ namespace Jayrock.Json.Conversion
     using System.Data;
     using System.Web.UI;
     using System.Web.UI.HtmlControls;
-    using Jayrock.Json.Conversion.Exporters;
+    using Jayrock.Json.Conversion.Converters;
     using NUnit.Framework;
 
     #endregion

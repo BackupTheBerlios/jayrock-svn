@@ -20,19 +20,33 @@
 //
 #endregion
 
-namespace Jayrock.Json.Conversion
+namespace Jayrock.Json.Conversion.Converters
 {
     #region Imports
 
     using System;
-    using System.Collections;
-    using Jayrock.Json.Conversion.Converters;
+    using System.Diagnostics;
 
     #endregion
 
-    public interface IImporter
+    public sealed class GuidImporter : ImporterBase
     {
-        Type OutputType { get; }
-        object Import(ImportContext context, JsonReader reader);
+        public GuidImporter() : 
+            base(typeof(Guid)) { }
+
+        protected override object ImportFromString(ImportContext context, JsonReader reader)
+        {
+            Debug.Assert(context != null);
+            Debug.Assert(reader != null);
+
+            try
+            {
+                return ReadReturning(reader, new Guid(reader.Text.Trim()));
+            }
+            catch (FormatException e)
+            {
+                throw new JsonException(e.Message, e);
+            }
+        }
     }
 }

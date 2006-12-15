@@ -20,19 +20,36 @@
 //
 #endregion
 
-namespace Jayrock.Json.Conversion
+namespace Jayrock.Json.Conversion.Converters
 {
     #region Imports
 
     using System;
-    using System.Collections;
-    using Jayrock.Json.Conversion.Converters;
+    using System.Diagnostics;
 
     #endregion
 
-    public interface IImporter
+    public sealed class StringImporter : ImporterBase
     {
-        Type OutputType { get; }
-        object Import(ImportContext context, JsonReader reader);
+        public StringImporter() : 
+            base(typeof(string)) { }
+
+        protected override object ImportFromBoolean(ImportContext context, JsonReader reader)
+        {
+            return ImportFromString(context, reader);
+        }
+
+        protected override object ImportFromNumber(ImportContext context, JsonReader reader)
+        {
+            return ImportFromString(context, reader);
+        }
+
+        protected override object ImportFromString(ImportContext context, JsonReader reader)
+        {
+            Debug.Assert(context != null);
+            Debug.Assert(reader != null);
+
+            return ReadReturning(reader, reader.Text);
+        }
     }
 }

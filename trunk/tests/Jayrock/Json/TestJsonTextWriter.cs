@@ -29,7 +29,7 @@ namespace Jayrock.Json
     using System.IO;
     using Jayrock.Configuration;
     using Jayrock.Json.Conversion;
-    using Jayrock.Json.Conversion.Exporters;
+    using Jayrock.Json.Conversion.Converters;
     using NUnit.Framework;
 
     #endregion

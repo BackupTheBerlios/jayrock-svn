@@ -31,7 +31,7 @@ namespace Jayrock.Json.Conversion
     using System.Configuration;
     using System.Diagnostics;
     using System.Runtime.Serialization;
-    using Jayrock.Json.Conversion.Exporters;
+    using Jayrock.Json.Conversion.Converters;
 
     #endregion
     

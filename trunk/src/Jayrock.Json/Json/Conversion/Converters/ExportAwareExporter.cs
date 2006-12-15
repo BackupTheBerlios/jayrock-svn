@@ -20,19 +20,27 @@
 //
 #endregion
 
-namespace Jayrock.Json.Conversion
+namespace Jayrock.Json.Conversion.Converters
 {
-    #region Imports
+    #region Importer
 
     using System;
-    using System.Collections;
-    using Jayrock.Json.Conversion.Converters;
+    using System.Diagnostics;
 
     #endregion
 
-    public interface IImporter
+    public sealed class ExportAwareExporter : ExporterBase
     {
-        Type OutputType { get; }
-        object Import(ImportContext context, JsonReader reader);
+        public ExportAwareExporter(Type type) : 
+            base(type) {}
+
+        protected override void ExportValue(ExportContext context, object value, JsonWriter writer)
+        {
+            Debug.Assert(context != null);
+            Debug.Assert(value != null);
+            Debug.Assert(writer != null);
+
+            ((IJsonExportable) value).Export(context, writer);
+        }
     }
 }
