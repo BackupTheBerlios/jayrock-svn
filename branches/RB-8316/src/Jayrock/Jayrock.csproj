@@ -235,7 +235,7 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "JsonRpc\Web\JsonRpcServiceBindingBase.cs"
+                    RelPath = "JsonRpc\Web\JsonRpcServiceFeature.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
