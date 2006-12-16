@@ -330,20 +330,5 @@ namespace Jayrock.JsonRpc.Web
     
             writer.Indent--;
         }
-
-        protected override void WriteClass(IndentedTextWriter writer, ServiceClass serviceClass)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override void WriteMethod(IndentedTextWriter writer, Method method)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override void WriteClassTail(IndentedTextWriter writer, ServiceClass serviceClass)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

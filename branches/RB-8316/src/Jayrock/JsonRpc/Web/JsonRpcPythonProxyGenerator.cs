@@ -44,14 +44,35 @@ namespace Jayrock.JsonRpc.Web
             get { return Service.GetClass().Name + "Proxy.py"; }
         }
 
-        protected override void WriteProlog(IndentedTextWriter writer)
+        protected override void WriteProxy(IndentedTextWriter writer)
+        {
+            if (writer == null)
+                throw new ArgumentNullException("writer");
+
+            if (writer == null)
+                throw new ArgumentNullException("writer");
+            
+            WriteProlog(writer);
+            
+            ServiceClass serviceClass = Service.GetClass();
+            WriteClass(writer, serviceClass);
+
+            foreach (Method method in serviceClass.GetMethods())
+                WriteMethod(writer, method);
+            
+            WriteClassTail(writer, serviceClass);
+
+            WriteEpilog(writer);
+        }
+
+        private void WriteProlog(IndentedTextWriter writer)
         {
             writer.WriteLine("import simplejson");
             writer.WriteLine("import urllib");
             writer.WriteLine();
         }
 
-        protected override void WriteClass(IndentedTextWriter writer, ServiceClass serviceClass)
+        private void WriteClass(IndentedTextWriter writer, ServiceClass serviceClass)
         {
             writer.Write("class ");
             writer.Write(serviceClass.Name);
@@ -93,7 +114,7 @@ namespace Jayrock.JsonRpc.Web
             writer.WriteLine();
         }
 
-        protected override void WriteMethod(IndentedTextWriter writer, Method method)
+        private void WriteMethod(IndentedTextWriter writer, Method method)
         {
             string clientMethodName = method.Name.Replace(".", "_");
 
@@ -136,26 +157,27 @@ namespace Jayrock.JsonRpc.Web
             writer.WriteLine();
         }
 
-        protected override void WriteClassTail(IndentedTextWriter writer, ServiceClass serviceClass)
+        private void WriteClassTail(IndentedTextWriter writer, ServiceClass serviceClass)
         {
-            Uri url = new Uri(Request.Url.GetLeftPart(UriPartial.Path));
-            writer.Indent--;
-            
-            writer.WriteLine(@"
-    def __call(self, method, params):
+            writer.WriteLine(@"def __call(self, method, params):
         self.__id = self.__id + 1
         response = simplejson.loads(urllib.urlopen(self.url, urllib.urlencode([('JSON-RPC', simplejson.dumps({ 'id' : self.__id, 'method' : method, 'params' : params }))])).read())
         if response.has_key('error'): raise Error(None, response)
         return response['result']
+");
+            
+            writer.Indent--;
+        }
 
-class Error(Exception):
+        private void WriteEpilog(IndentedTextWriter writer)
+        {
+            writer.WriteLine(@"class Error(Exception):
     """"""Exception raised when an error occurs calling a JSON-RPC service.""""""
     def __init__(self, message = None, response = None):
         self.error = response['error']
         self.response = response
         if message: self.message = str(message)
-        else: self.message = self.error['message']
-");
-       }
+        else: self.message = self.error['message']");
+        }
     }
 }

@@ -67,31 +67,7 @@ namespace Jayrock.JsonRpc.Web
             WriteProxy(new IndentedTextWriter(Response.Output));
         }
 
-        protected virtual void WriteProxy(IndentedTextWriter writer)
-        {
-            if (writer == null)
-                throw new ArgumentNullException("writer");
-            
-            WriteProlog(writer);
-            
-            ServiceClass serviceClass = Service.GetClass();
-            WriteClass(writer, serviceClass);
-
-            foreach (Method method in serviceClass.GetMethods())
-                WriteMethod(writer, method);
-            
-            WriteClassTail(writer, serviceClass);
-
-            WriteEpilog(writer);
-        }
-
-        protected virtual void WriteProlog(IndentedTextWriter writer)
-        {
-        }
-
-        protected virtual void WriteEpilog(IndentedTextWriter writer)
-        {
-        }
+        protected abstract void WriteProxy(IndentedTextWriter writer);
         
         protected virtual string ContentType
         {
@@ -100,10 +76,6 @@ namespace Jayrock.JsonRpc.Web
 
         protected abstract string ClientFileName { get; }
         
-        protected abstract void WriteClass(IndentedTextWriter writer, ServiceClass serviceClass);
-        protected abstract void WriteMethod(IndentedTextWriter writer, Method method);
-        protected abstract void WriteClassTail(IndentedTextWriter writer, ServiceClass serviceClass);
-
         private bool Modified()
         {
             if (!HasLastModifiedTime)
