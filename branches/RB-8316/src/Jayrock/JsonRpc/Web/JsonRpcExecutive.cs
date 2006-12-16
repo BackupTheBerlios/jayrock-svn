@@ -31,7 +31,7 @@ namespace Jayrock.JsonRpc.Web
 
     #endregion
 
-    public sealed class JsonRpcExecutive : JsonRpcServiceBindingBase
+    public sealed class JsonRpcExecutive : JsonRpcServiceFeature
         // TODO: Add IHttpAsyncHandler as soon as JsonRpcWorker supports 
         //       async processing.
     {

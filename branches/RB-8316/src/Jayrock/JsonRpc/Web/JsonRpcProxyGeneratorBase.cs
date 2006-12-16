@@ -32,7 +32,7 @@ namespace Jayrock.JsonRpc.Web
 
     #endregion
 
-    public abstract class JsonRpcProxyGeneratorBase : JsonRpcServiceBindingBase
+    public abstract class JsonRpcProxyGeneratorBase : JsonRpcServiceFeature
     {
         private DateTime _lastModifiedTime;
         private bool _lastModifiedTimeInitialized;

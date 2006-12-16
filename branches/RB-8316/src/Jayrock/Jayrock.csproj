@@ -245,11 +245,6 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "JsonRpc\Web\JsonRpcWebGateway.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "JsonRpc\Web\JsonRpcWebTraceAdapter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -271,11 +266,6 @@
                 />
                 <File
                     RelPath = "Services\IService.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Services\IServiceBinding.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

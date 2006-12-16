@@ -33,7 +33,7 @@ namespace Jayrock.JsonRpc.Web
 
     #endregion
 
-    internal abstract class JsonRpcPage : Page, IServiceBinding
+    internal abstract class JsonRpcPage : Page
     {
         private readonly IService _service;
         private ServiceClass _serviceClass;

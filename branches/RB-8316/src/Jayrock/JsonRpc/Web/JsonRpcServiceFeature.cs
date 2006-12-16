@@ -33,12 +33,12 @@ namespace Jayrock.JsonRpc.Web
 
     #endregion
 
-    public abstract class JsonRpcServiceBindingBase : IServiceBinding, IHttpHandler
+    public abstract class JsonRpcServiceFeature : IHttpHandler
     {
         private HttpContext _context;
         private readonly IService _service;
 
-        protected JsonRpcServiceBindingBase(IService service)
+        protected JsonRpcServiceFeature(IService service)
         {
             if (service == null)
                 throw new ArgumentNullException("service");
