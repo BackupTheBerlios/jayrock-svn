@@ -93,8 +93,8 @@ pre.code
     font-size: small;
     font-family: Monospace;
     padding: 1em;
-    border-top: solid 5px darkorange;
-    border-bottom: solid 2px silver;
+    border-bottom: solid 5px silver;
+    border-top: solid 2px silver;
     background: #EEEEEE;
 }
 
@@ -150,4 +150,12 @@ dd
 #compat-logos img
 {
     margin-left: 1em;
+}
+
+.note
+{
+    border: dotted 1px darkorange;
+    background-color: cornsilk;
+    padding: 1em;
+    margin: 0 5em;
 }
