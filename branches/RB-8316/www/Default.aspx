@@ -116,7 +116,7 @@
             to invoke NAnt and have it build all the targets. To invoke NAnt explicitly, otherwise,
             use the following command (assuming you are in the root of the working directory):</p>
         <p>
-            <code>tools\nant-0.85-rc2\NAnt /f:src\nant.build</code></p>
+            <code>tools\nant-0.85\NAnt /f:src\nant.build</code></p>
         <p>
             A full build runs the unit tests, creates a code coverage report from the tests
             and then goes on to compile the debug and release assemblies for Jayrock and Jayrock.Json.</p>
@@ -260,7 +260,7 @@
                 points to the directory <code>www</code> under your working copy of Jayrock.</li>
             <li>Open the Visual Studio .NET 2003 solution called <code>Jayrock Web</code> to compile all 
                 projects. There is also a <a href="http://nant.sourceforge.net/">NAnt</a> 
-                0.85 RC2 build script but this builds all other projects except the web project. If you 
+                0.85 build script but this builds all other projects except the web project. If you 
                 compile from the command-line, the only additional step required at the moment is to 
                 manually copy the <code>Jayrock.dll</code> and <code>Jayrock.Json.dll</code> from the
                 <code>bin</code> directory in the root of your working copy to <code>bin</code>
