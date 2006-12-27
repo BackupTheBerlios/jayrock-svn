@@ -46,7 +46,8 @@
             In a few words, Jayrock allows clients, typically <a href="http://en.wikipedia.org/wiki/JavaScript">
                 JavaScript</a> in web pages, to be able to call into server-side methods
             using JSON as the wire format and JSON-RPC as the procedure invocation protocol.
-            The methods can be called synchronously or asynchronously.&nbsp;</p>
+            The methods can be called synchronously or asynchronously.
+        </p>
         <ul>
             <li><a href="http://developer.berlios.de/project/showfiles.php?group_id=4638">Download
                 Jayrock 0.9 now!</a></li>
@@ -67,6 +68,11 @@
                 <a target="_blank" href="http://www.opera.com/"><img src="images/cclogos/opera.gif" width="53" height="43" alt="Opera" border="0" /></a>
                 <a target="_blank" href="http://www.opensource.org/docs/definition.php"><img src="images/cclogos/osi-certified.gif" width="60" height="42" alt="Open Source (OSI) Certified" border="0" /></a>
         </p>
+        <script type="text/javascript">
+            if (typeof window.Delicious == "undefined") window.Delicious = {};
+            Delicious.BLOGBADGE_DEFAULT_CLASS = 'delicious-blogbadge-line';
+        </script>
+        <script type="text/javascript" src="http://images.del.icio.us/static/js/blogbadge.js"></script>
         <h1>
             <a id="get-source" name="get-source">Where is the Source, Luke?</a></h1>
         <p>
