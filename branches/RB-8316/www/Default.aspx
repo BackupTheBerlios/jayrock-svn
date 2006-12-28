@@ -54,6 +54,7 @@
             <li><a href="http://groups.google.com/group/jayrock">Discuss Jayrock</a></li>
             <li><a href="http://jayrock.berlios.de/coverage-report.html">Code coverage report</a></li>
             <li><a href="http://developer.berlios.de/projects/jayrock/">Project foundry on BerliOS</a></li>
+            <li><a href="http://www.ohloh.net/projects/3887">Ohloh Metrics Report</a></li>
         </ul>
         <p>
             Compatibility &amp; compliance:</p>
@@ -68,6 +69,7 @@
                 <a target="_blank" href="http://www.opera.com/"><img src="images/cclogos/opera.gif" width="53" height="43" alt="Opera" border="0" /></a>
                 <a target="_blank" href="http://www.opensource.org/docs/definition.php"><img src="images/cclogos/osi-certified.gif" width="60" height="42" alt="Open Source (OSI) Certified" border="0" /></a>
         </p>
+        <p>No time for Jayrock right now? Got <a href="http://del.icio.us/">del.icio.us</a>? Bookmark it and come back later&hellip;</p>
         <script type="text/javascript">
             if (typeof window.Delicious == "undefined") window.Delicious = {};
             Delicious.BLOGBADGE_DEFAULT_CLASS = 'delicious-blogbadge-line';
