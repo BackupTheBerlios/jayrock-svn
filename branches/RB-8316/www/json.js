@@ -81,6 +81,24 @@ var JSON = function () {
                             }
                         }
                         a[a.length] = ']';
+                    } else if (x instanceof Date) {
+                        function p(n) { return n < 10 ? '0' + n : n; };
+                        var tz = x.getTimezoneOffset();
+                        if (tz != 0) {
+                            var tzh = Math.floor(Math.abs(tz) / 60);
+                            var tzm = Math.abs(tz) % 60;
+                            tz = (tz < 0 ? '+' : '-') + p(tzh) + ':' + p(tzm);
+                        }
+                        else {
+                            tz = 'Z';
+                        }
+                        return '"' + 
+                                x.getFullYear() + '-' +
+                                p(x.getMonth() + 1) + '-' +
+                                p(x.getDate()) + 'T' +
+                                p(x.getHours()) + ':' +
+                                p(x.getMinutes()) + ':' +
+                                p(x.getSeconds()) + tz + '"';
                     } else if (x instanceof Object) {
                         a[0] = '{';
                         for (i in x) {
