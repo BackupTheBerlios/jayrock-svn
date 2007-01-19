@@ -23,5 +23,5 @@ REM along with this library; if not, write to the Free Software Foundation, Inc.
 REM 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
 
 @pushd %~dp0
-..\tools\nant-0.85\NAnt %*
+..\tools\nant-0.85\NAnt -t:net-1.1 %*
 @popd
