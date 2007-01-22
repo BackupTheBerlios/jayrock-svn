@@ -46,7 +46,7 @@ namespace Jayrock.Json.Conversion
             context.Export(value, writer);
         }
         
-        private static void Export(object value, TextWriter writer)
+        public static void Export(object value, TextWriter writer)
         {
             if (writer == null)
                 throw new ArgumentNullException("writer");
