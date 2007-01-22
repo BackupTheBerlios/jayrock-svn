@@ -73,8 +73,13 @@
         <script type="text/javascript">
             if (typeof window.Delicious == "undefined") window.Delicious = {};
             Delicious.BLOGBADGE_DEFAULT_CLASS = 'delicious-blogbadge-line';
+            Delicious.BLOGBADGE_MANUAL_MODE = true;
         </script>
         <script type="text/javascript" src="http://images.del.icio.us/static/js/blogbadge.js"></script>
+        <script type="text/javascript">
+            Delicious.BlogBadge.writeBadge("delicious-blogbadge-"+Math.random(), "http://jayrock.berlios.de/", document.title, {});
+            Delicious.BlogBadge.onload();                
+        </script>
         <h1>
             <a id="get-source" name="get-source">Where is the Source, Luke?</a></h1>
         <p>
