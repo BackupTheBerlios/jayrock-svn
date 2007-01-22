@@ -36,9 +36,11 @@ namespace Jayrock.Json.Conversion
     [ Serializable ]
     public class ImportContext
     {
-        [ ThreadStatic ] private static ImporterCollection _importers;
+        private ImporterCollection _importers;
         private IDictionary _items;
 
+        private static ImporterCollection _stockImporters;
+        
         public virtual object Import(JsonReader reader)
         {
             return Import(AnyType.Value, reader);
@@ -87,8 +89,11 @@ namespace Jayrock.Json.Conversion
             
             if (importer != null)
                 return importer;
+            
+            importer = StockImporters[type];
 
-            importer = FindCompatibleImporter(type);
+            if (importer == null)
+               importer = FindCompatibleImporter(type);
 
             if (importer != null)
             {
@@ -131,12 +136,23 @@ namespace Jayrock.Json.Conversion
 
             return null;
         }
- 
-        private static ImporterCollection Importers
+
+        private ImporterCollection Importers
         {
             get
             {
                 if (_importers == null)
+                    _importers = new ImporterCollection();
+                
+                return _importers;
+            }
+        }
+
+        private static ImporterCollection StockImporters
+        {
+            get
+            {
+                if (_stockImporters == null)
                 {
                     ImporterCollection importers = new ImporterCollection();
 
@@ -164,10 +180,10 @@ namespace Jayrock.Json.Conversion
                             importers.Add((IImporter) Activator.CreateInstance(type));
                     }
 
-                    _importers = importers;
+                    _stockImporters = importers;
                 }
                 
-                return _importers;
+                return _stockImporters;
             }
         }
     }
