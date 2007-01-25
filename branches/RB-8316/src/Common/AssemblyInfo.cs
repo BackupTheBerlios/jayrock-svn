@@ -34,7 +34,7 @@ using ComVisible = System.Runtime.InteropServices.ComVisibleAttribute;
 
 [assembly: AssemblyProduct("Jayrock")]
 [assembly: AssemblyCompany("http://jayrock.berlios.de")]
-[assembly: AssemblyCopyright("Copyright (c) 2005-6, Atif Aziz. All rights reserved.")]
+[assembly: AssemblyCopyright("Copyright (c) 2005, Atif Aziz. All rights reserved.")]
 [assembly: AssemblyCulture("")]
 
 //
@@ -42,6 +42,7 @@ using ComVisible = System.Runtime.InteropServices.ComVisibleAttribute;
 //
 
 [assembly: AssemblyVersion("0.9.8316.0")]
+[assembly: AssemblyInformationalVersion("0.9.8316.0")]
 
 //
 // Configuration (test, debug, release)
