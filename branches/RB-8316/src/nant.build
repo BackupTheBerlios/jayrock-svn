@@ -58,7 +58,8 @@
 
     <target name="clean">
         <delete dir="${my.bin.dir.path}" failonerror="false" />
-        <delete dir="obj" failonerror="false" />
+        <delete dir="Jayrock\obj" failonerror="false" />
+        <delete dir="Jayrock.Json\obj" failonerror="false" />
     </target>
 
     <target name="debug">
