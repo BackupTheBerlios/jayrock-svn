@@ -2,9 +2,9 @@
 
 REM Batch file for building Jayrock using NAnt
 REM
-REM Jayrock - A JSON and JSON-RPC implementation for the Microsoft .NET Framework
+REM Jayrock - JSON and JSON-RPC for Microsoft .NET Framework and Mono
 REM Written by Atif Aziz (atif.aziz@skybow.com)
-REM Copyright (c) Atif Aziz. All rights reserved.
+REM Copyright (c) 2005 Atif Aziz. All rights reserved.
 REM
 REM License, Terms and Conditions
 REM
