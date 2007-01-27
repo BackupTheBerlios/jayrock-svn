@@ -64,7 +64,26 @@ namespace Jayrock.Json.Conversion
         [ Test ]
         public void HasItems()
         {
-            Assert.IsNotNull((new ExportContext()).Items);
+            Assert.IsNotNull((new ImportContext()).Items);
+        }
+
+        [ Test ]
+        public void Registration()
+        {
+            ImportContext context = new ImportContext();
+            ThingImporter importer = new ThingImporter();
+            context.Register(importer);
+            Assert.AreSame(importer, context.FindImporter(typeof(Thing)));
+        }
+
+        [ Test ]
+        public void RegistrationIsPerContext()
+        {
+            ImportContext context = new ImportContext();
+            ThingImporter exporter = new ThingImporter();
+            context.Register(exporter);
+            context = new ImportContext();
+            Assert.AreNotSame(exporter, context.FindImporter(typeof(Thing)));
         }
 
         private static void AssertInStock(Type expected, Type type)
@@ -78,6 +97,21 @@ namespace Jayrock.Json.Conversion
         private sealed class ImportableThing : IJsonImportable
         {
             public void Import(ImportContext context, JsonReader reader)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        private sealed class Thing {}
+
+        private sealed class ThingImporter : IImporter
+        {
+            public Type OutputType
+            {
+                get { return typeof(Thing); }
+            }
+
+            public object Import(ImportContext context, JsonReader reader)
             {
                 throw new NotImplementedException();
             }

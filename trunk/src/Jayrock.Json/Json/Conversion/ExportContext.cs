@@ -1,9 +1,8 @@
 #region License, Terms and Conditions
-
 //
-// Jayrock - A JSON-RPC implementation for the Microsoft .NET Framework
+// Jayrock - JSON and JSON-RPC for Microsoft .NET Framework and Mono
 // Written by Atif Aziz (atif.aziz@skybow.com)
-// Copyright (c) Atif Aziz. All rights reserved.
+// Copyright (c) 2005 Atif Aziz. All rights reserved.
 //
 // This library is free software; you can redistribute it and/or modify it under
 // the terms of the GNU Lesser General Public License as published by the Free
@@ -19,7 +18,6 @@
 // along with this library; if not, write to the Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
 //
-
 #endregion
 
 namespace Jayrock.Json.Conversion
@@ -38,8 +36,10 @@ namespace Jayrock.Json.Conversion
     [ Serializable ]
     public class ExportContext
     {
-        [ ThreadStatic ] private static ExporterCollection _exporters;
+        private ExporterCollection _exporters;
         private IDictionary _items;
+
+        private static ExporterCollection _stockExporters;
 
         public virtual void Export(object value, JsonWriter writer)
         {
@@ -79,7 +79,10 @@ namespace Jayrock.Json.Conversion
             if (exporter != null)
                 return exporter;
             
-            exporter = FindCompatibleExporter(type);
+            exporter = StockExporters[type];
+            
+            if (exporter == null)
+                exporter = FindCompatibleExporter(type);
 
             if (exporter != null)
             {
@@ -141,16 +144,32 @@ namespace Jayrock.Json.Conversion
             IExporter exporter = Exporters[baseType];
 
             if (exporter == null)
-                return FindBaseExporter(baseType.BaseType, actualType);
+            {
+                exporter = StockExporters[baseType];
+                
+                if (exporter == null)
+                    return FindBaseExporter(baseType.BaseType, actualType);
+            }
 
             return (IExporter) Activator.CreateInstance(exporter.GetType(), new object[] { actualType });
         }
         
-        private static ExporterCollection Exporters
+        private ExporterCollection Exporters
         {
             get
             {
                 if (_exporters == null)
+                    _exporters = new ExporterCollection();
+                
+                return _exporters;
+            }
+        }
+
+        private static ExporterCollection StockExporters
+        {
+            get
+            {
+                if (_stockExporters == null)
                 {
                     ExporterCollection exporters = new ExporterCollection();
 
@@ -180,10 +199,10 @@ namespace Jayrock.Json.Conversion
                             exporters.Add((IExporter) Activator.CreateInstance(type));
                     }
 
-                    _exporters = exporters;
+                    _stockExporters = exporters;
                 }
-
-                return _exporters;
+                
+                return _stockExporters;
             }
         }
     }

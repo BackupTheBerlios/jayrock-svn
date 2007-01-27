@@ -1,8 +1,8 @@
 #region License, Terms and Conditions
 //
-// Jayrock - A JSON-RPC implementation for the Microsoft .NET Framework
+// Jayrock - JSON and JSON-RPC for Microsoft .NET Framework and Mono
 // Written by Atif Aziz (atif.aziz@skybow.com)
-// Copyright (c) Atif Aziz. All rights reserved.
+// Copyright (c) 2005 Atif Aziz. All rights reserved.
 //
 // This library is free software; you can redistribute it and/or modify it under
 // the terms of the GNU Lesser General Public License as published by the Free
@@ -33,7 +33,7 @@ namespace Jayrock.JsonRpc.Web
 
     #endregion
 
-    public sealed class JsonRpcGetProtocol : JsonRpcServiceBindingBase
+    public sealed class JsonRpcGetProtocol : JsonRpcServiceFeature
         // TODO: Add IHttpAsyncHandler as soon as JsonRpcWorker supports 
         //       async processing.
     {

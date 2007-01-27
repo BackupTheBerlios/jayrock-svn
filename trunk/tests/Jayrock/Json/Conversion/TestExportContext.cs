@@ -79,6 +79,25 @@ namespace Jayrock.Json.Conversion
             Assert.IsNotNull((new ExportContext()).Items);
         }
 
+        [ Test ]
+        public void Registration()
+        {
+            ExportContext context = new ExportContext();
+            ThingExporter exporter = new ThingExporter();
+            context.Register(exporter);
+            Assert.AreSame(exporter, context.FindExporter(typeof(Thing)));
+        }
+
+        [ Test ]
+        public void RegistrationIsPerContext()
+        {
+            ExportContext context = new ExportContext();
+            ThingExporter exporter = new ThingExporter();
+            context.Register(exporter);
+            context = new ExportContext();
+            Assert.AreNotSame(exporter, context.FindExporter(typeof(Thing)));
+        }
+
         private static void AssertInStock(Type expected, Type type)
         {
             ExportContext context = new ExportContext();
@@ -109,5 +128,20 @@ namespace Jayrock.Json.Conversion
             public MyDataRow(DataRowBuilder builder) : 
                 base(builder) {}
         }        
+        
+        private sealed class Thing {}
+
+        private sealed class ThingExporter : IExporter
+        {
+            public Type InputType
+            {
+                get { return typeof(Thing); }
+            }
+
+            public void Export(ExportContext context, object value, JsonWriter writer)
+            {
+                throw new NotImplementedException();
+            }
+        }
     }
 }

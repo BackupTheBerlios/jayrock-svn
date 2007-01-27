@@ -1,4 +1,25 @@
 <?xml version="1.0" encoding="utf-8" ?>
+<!--
+//
+// Jayrock - JSON and JSON-RPC for Microsoft .NET Framework and Mono
+// Written by Atif Aziz (atif.aziz@skybow.com)
+// Copyright (c) 2005 Atif Aziz. All rights reserved.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License as published by the Free
+// Software Foundation; either version 2.1 of the License, or (at your option)
+// any later version.
+//
+// This library is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+// FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+// details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with this library; if not, write to the Free Software Foundation, Inc.,
+// 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
+//
+-->
 <project default="all" xmlns="http://nant.sf.net/schemas/nant.xsd">
 
     <!--======================== PROPERTY SECTION ========================-->
@@ -6,8 +27,8 @@
     <!-- General -->
 
     <property name="my.project.name" value="Jayrock" />
-
-    <property name="my.tools" value="${path::combine(nant.project.basedir, '..\tools')}" />
+    <property name="my.project.basedir" value="${project::get-base-directory()}" />
+    <property name="my.tools" value="${path::combine(my.project.basedir, '..\tools')}" />
     
     <!-- NCover (code coverage) -->
 
@@ -21,14 +42,14 @@
 
     <!-- NUnit 2.2.3 (unit-testing) -->
 
-    <property name="my.tests" value="${path::combine(nant.project.basedir, '..\tests')}" />
+    <property name="my.tests" value="${path::combine(my.project.basedir, '..\tests')}" />
     <property name="my.nunit.dir.path" value="${path::combine(my.tools, 'NUnit 2.2.3')}" />
     <property name="my.nunit.console.exe.path" value="${path::combine(my.nunit.dir.path, 'nunit-console.exe')}" />
 
     <!-- Output and Binaries -->
 
     <property name="my.bin.dir.name" value="..\bin" />
-    <property name="my.bin.dir.path" value="${path::combine(nant.project.basedir, my.bin.dir.name)}" />
+    <property name="my.bin.dir.path" value="${path::combine(my.project.basedir, my.bin.dir.name)}" />
    
     <property name="my.output.assembly.name" value="${my.project.name}" />
     <property name="my.output.assembly.filename" value="${my.output.assembly.name + '.dll'}" />
@@ -58,7 +79,8 @@
 
     <target name="clean">
         <delete dir="${my.bin.dir.path}" failonerror="false" />
-        <delete dir="obj" failonerror="false" />
+        <delete dir="Jayrock\obj" failonerror="false" />
+        <delete dir="Jayrock.Json\obj" failonerror="false" />
     </target>
 
     <target name="debug">
@@ -112,8 +134,8 @@
     <target name="cover" depends="compile-test">
         <call target="set-binpath-test" />
         <property name="my.output.testassembly.path" value="${path::combine(my.output.dir.path, my.output.testassembly.filename)}" />
-        <exec program="${my.ncover.console.exe.path}" commandline='/q /w "${my.output.dir.path}" /o "${nant.project.basedir}\coverage.xml" /a ${my.output.assembly.name};${my.output.jsonassembly.name} /c "${my.nunit.console.exe.path}" "\"${my.output.testassembly.path}\""' />
-        <exec program="${my.ncoverexplorer.console.exe.path}" commandline='"${nant.project.basedir}\coverage.xml" /html:coverage-report.html /report:2 /excluded /p:${my.project.name} /minCoverage:85 "/c:${nant.project.basedir}\NCoverExplorer.config"' />
+        <exec program="${my.ncover.console.exe.path}" commandline='/q /w "${my.output.dir.path}" /o "${my.project.basedir}\coverage.xml" /a ${my.output.assembly.name};${my.output.jsonassembly.name} /c "${my.nunit.console.exe.path}" "\"${my.output.testassembly.path}\""' />
+        <exec program="${my.ncoverexplorer.console.exe.path}" commandline='"${my.project.basedir}\coverage.xml" /html:coverage-report.html /report:2 /excluded /p:${my.project.name} /minCoverage:85 "/c:${my.project.basedir}\NCoverExplorer.config"' />
         <call target="draco" if="${draco}" />
     </target>
     
@@ -127,7 +149,7 @@
             format="Html"
             mailhost="${my.smtp.server}">
             <files>
-                <include name="${nant.project.basedir}\coverage-report.htm" />
+                <include name="${my.project.basedir}\coverage-report.htm" />
             </files>
         </mail>
     </target>
@@ -143,7 +165,8 @@
             Find what: \<property name="{[^"]+}".+$
             Replace with: <echo message="\1 = ${\1}" />
         -->
-        
+
+        <echo message="my.project.basedir = ${my.project.basedir}" />
         <echo message="my.tools = ${my.tools}" />
         
         <echo message="my.ncover.dir.path = ${my.ncover.dir.path}" />

@@ -1,8 +1,8 @@
 #region License, Terms and Conditions
 //
-// Jayrock - A JSON-RPC implementation for the Microsoft .NET Framework
+// Jayrock - JSON and JSON-RPC for Microsoft .NET Framework and Mono
 // Written by Atif Aziz (atif.aziz@skybow.com)
-// Copyright (c) Atif Aziz. All rights reserved.
+// Copyright (c) 2005 Atif Aziz. All rights reserved.
 //
 // This library is free software; you can redistribute it and/or modify it under
 // the terms of the GNU Lesser General Public License as published by the Free
@@ -34,14 +34,15 @@ using ComVisible = System.Runtime.InteropServices.ComVisibleAttribute;
 
 [assembly: AssemblyProduct("Jayrock")]
 [assembly: AssemblyCompany("http://jayrock.berlios.de")]
-[assembly: AssemblyCopyright("Copyright (c) 2005-6, Atif Aziz. All rights reserved.")]
+[assembly: AssemblyCopyright("Copyright (c) 2005, Atif Aziz. All rights reserved.")]
 [assembly: AssemblyCulture("")]
 
 //
 // Version information
 //
 
-[assembly: AssemblyVersion("0.9.8312.0")]
+[assembly: AssemblyVersion("0.9.8316.0")]
+[assembly: AssemblyInformationalVersion("0.9.8316.0")]
 
 //
 // Configuration (test, debug, release)

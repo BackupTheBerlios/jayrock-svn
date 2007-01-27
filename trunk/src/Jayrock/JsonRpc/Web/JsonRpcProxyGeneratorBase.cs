@@ -1,8 +1,8 @@
 #region License, Terms and Conditions
 //
-// Jayrock - A JSON-RPC implementation for the Microsoft .NET Framework
+// Jayrock - JSON and JSON-RPC for Microsoft .NET Framework and Mono
 // Written by Atif Aziz (atif.aziz@skybow.com)
-// Copyright (c) Atif Aziz. All rights reserved.
+// Copyright (c) 2005 Atif Aziz. All rights reserved.
 //
 // This library is free software; you can redistribute it and/or modify it under
 // the terms of the GNU Lesser General Public License as published by the Free
@@ -32,7 +32,7 @@ namespace Jayrock.JsonRpc.Web
 
     #endregion
 
-    public abstract class JsonRpcProxyGeneratorBase : JsonRpcServiceBindingBase
+    public abstract class JsonRpcProxyGeneratorBase : JsonRpcServiceFeature
     {
         private DateTime _lastModifiedTime;
         private bool _lastModifiedTimeInitialized;
@@ -67,31 +67,7 @@ namespace Jayrock.JsonRpc.Web
             WriteProxy(new IndentedTextWriter(Response.Output));
         }
 
-        protected virtual void WriteProxy(IndentedTextWriter writer)
-        {
-            if (writer == null)
-                throw new ArgumentNullException("writer");
-            
-            WriteProlog(writer);
-            
-            ServiceClass serviceClass = Service.GetClass();
-            WriteClass(writer, serviceClass);
-
-            foreach (Method method in serviceClass.GetMethods())
-                WriteMethod(writer, method);
-            
-            WriteClassTail(writer, serviceClass);
-
-            WriteEpilog(writer);
-        }
-
-        protected virtual void WriteProlog(IndentedTextWriter writer)
-        {
-        }
-
-        protected virtual void WriteEpilog(IndentedTextWriter writer)
-        {
-        }
+        protected abstract void WriteProxy(IndentedTextWriter writer);
         
         protected virtual string ContentType
         {
@@ -100,10 +76,6 @@ namespace Jayrock.JsonRpc.Web
 
         protected abstract string ClientFileName { get; }
         
-        protected abstract void WriteClass(IndentedTextWriter writer, ServiceClass serviceClass);
-        protected abstract void WriteMethod(IndentedTextWriter writer, Method method);
-        protected abstract void WriteClassTail(IndentedTextWriter writer, ServiceClass serviceClass);
-
         private bool Modified()
         {
             if (!HasLastModifiedTime)

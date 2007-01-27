@@ -46,13 +46,15 @@
             In a few words, Jayrock allows clients, typically <a href="http://en.wikipedia.org/wiki/JavaScript">
                 JavaScript</a> in web pages, to be able to call into server-side methods
             using JSON as the wire format and JSON-RPC as the procedure invocation protocol.
-            The methods can be called synchronously or asynchronously.&nbsp;</p>
+            The methods can be called synchronously or asynchronously.
+        </p>
         <ul>
             <li><a href="http://developer.berlios.de/project/showfiles.php?group_id=4638">Download
                 Jayrock 0.9 now!</a></li>
             <li><a href="http://groups.google.com/group/jayrock">Discuss Jayrock</a></li>
-            <li><a href="http://jayrock.berlios.de/">Code coverage report</a></li>
+            <li><a href="http://jayrock.berlios.de/coverage-report.html">Code coverage report</a></li>
             <li><a href="http://developer.berlios.de/projects/jayrock/">Project foundry on BerliOS</a></li>
+            <li><a href="http://www.ohloh.net/projects/3887">Ohloh Metrics Report</a></li>
         </ul>
         <p>
             Compatibility &amp; compliance:</p>
@@ -67,6 +69,17 @@
                 <a target="_blank" href="http://www.opera.com/"><img src="images/cclogos/opera.gif" width="53" height="43" alt="Opera" border="0" /></a>
                 <a target="_blank" href="http://www.opensource.org/docs/definition.php"><img src="images/cclogos/osi-certified.gif" width="60" height="42" alt="Open Source (OSI) Certified" border="0" /></a>
         </p>
+        <p>No time for Jayrock right now? Got <a href="http://del.icio.us/">del.icio.us</a>? Bookmark it and come back later&hellip;</p>
+        <script type="text/javascript">
+            if (typeof window.Delicious == "undefined") window.Delicious = {};
+            Delicious.BLOGBADGE_DEFAULT_CLASS = 'delicious-blogbadge-line';
+            Delicious.BLOGBADGE_MANUAL_MODE = true;
+        </script>
+        <script type="text/javascript" src="http://images.del.icio.us/static/js/blogbadge.js"></script>
+        <script type="text/javascript">
+            Delicious.BlogBadge.writeBadge("delicious-blogbadge-"+Math.random(), "http://jayrock.berlios.de/", document.title, {});
+            Delicious.BlogBadge.onload();                
+        </script>
         <h1>
             <a id="get-source" name="get-source">Where is the Source, Luke?</a></h1>
         <p>
@@ -116,12 +129,12 @@
             to invoke NAnt and have it build all the targets. To invoke NAnt explicitly, otherwise,
             use the following command (assuming you are in the root of the working directory):</p>
         <p>
-            <code>tools\nant-0.85-rc2\NAnt /f:src\nant.build</code></p>
+            <code>tools\nant-0.85\NAnt /f:src\nant.build</code></p>
         <p>
             A full build runs the unit tests, creates a code coverage report from the tests
             and then goes on to compile the debug and release assemblies for Jayrock and Jayrock.Json.</p>
         <p>
-            The NAnt script can be used to build 5 different types of so-called <em><a href="http://nant.sourceforge.net/release/latest/help/fundamentals/targets.html">
+            The NAnt script can be used to build 4 different types of so-called <em><a href="http://nant.sourceforge.net/release/latest/help/fundamentals/targets.html">
                 targets</a></em>:</p>
         <dl>
             <dt>test </dt>
@@ -135,7 +148,7 @@
             <dt>cover</dt>
             <dd>
                 Builds the test project, and creates report using NCover and NCoverExplorer for code
-                coverage resulting from the unit tests. The generated report can be found in <code>src\Jayrock\coverage-report.htm</code>.
+                coverage resulting from the unit tests. The generated report can be found in <code>src\coverage-report.htm</code>.
             </dd>
         </dl>
         <h2>
@@ -153,7 +166,7 @@
                 to only work with the JSON data format then this is the right solution for you.</dd>
             <dt>Jayrock</dt>
             <dd>The complete solution that includes and build the JSON-RPC and JSON bits.</dd>
-            <dt>Jayrock Test </dt>
+            <dt>Jayrock.Tests</dt>
             <dd>
                 Solution that contains a test-view of the project, containing references and sources
                 for unit tests.</dd>
@@ -260,7 +273,7 @@
                 points to the directory <code>www</code> under your working copy of Jayrock.</li>
             <li>Open the Visual Studio .NET 2003 solution called <code>Jayrock Web</code> to compile all 
                 projects. There is also a <a href="http://nant.sourceforge.net/">NAnt</a> 
-                0.85 RC2 build script but this builds all other projects except the web project. If you 
+                0.85 build script but this builds all other projects except the web project. If you 
                 compile from the command-line, the only additional step required at the moment is to 
                 manually copy the <code>Jayrock.dll</code> and <code>Jayrock.Json.dll</code> from the
                 <code>bin</code> directory in the root of your working copy to <code>bin</code>
@@ -271,6 +284,12 @@
         </ol>
         <h1>
             <a id="quick-start" name="quick-start">ASP.NET Quick Start</a></h1>
+        <p class="note">
+            <strong>IMPORTANT!</strong> This quick start tutorial and its code illustrations are
+            based on version <% = typeof(Jayrock.Json.JsonReader).Assembly.GetName().Version %> of Jayrock.
+            If you are using an older build then some of this tutorial may not make sense 
+            or work. In that case, use the tutorial supplied with the version you have 
+            instead if you cannot upgrade right away.</p>
         <p>
             To use Jayrock in your ASP.NET project, add a reference to the 
             <code>Jayrock.dll</code> and <code>Jayrock.Json.dll</code> assemblies add a copy of 
@@ -281,10 +300,6 @@
             called <code>HelloWorld</code>. Begin by creating a file called <code>helloworld.ashx</code>
             in the root your ASP.NET application. Add the following code to the file:
         </p>
-        <p>
-            <strong>IMPORTANT!</strong> This quick start tutorial and its code illustrations are
-            based on version <% = typeof(Jayrock.Json.JsonReader).Assembly.GetName().Version %> of Jayrock.
-            If you are using an older build then some of this may not make sense or work for you.</p>
         <pre class="code">&lt;%@ WebHandler Class="JayrockWeb.HelloWorld" %&gt;
 
 namespace JayrockWeb
@@ -323,10 +338,15 @@ namespace JayrockWeb
             now almost ready to test your service. The last item needed is the addition of a
             few sections in the <code>web.config</code> of your ASP.NET application:
         </p>
+        <p class="note">
+            <strong>Note:</strong> As of version 0.9.8316, the configuration shown
+            here is the assumed default and not required in <code>web.config</code> anymore.
+            For the purpose of this tutorial, you may skip adding the following 
+            sections to your <code>web.config</code>.</p>
         <pre class="code">&lt;configSections&gt;
     ...
     &lt;sectionGroup name="jayrock"&gt;
-        &lt;sectionGroup name="json.rpc"&gt;
+        &lt;sectionGroup name="jsonrpc"&gt;
             &lt;section 
                 name="features" 
                 type="Jayrock.JsonRpc.Web.JsonRpcFeaturesSectionHandler, Jayrock" /&gt;        
@@ -336,29 +356,36 @@ namespace JayrockWeb
 &lt;/configSections&gt;
 ...
 &lt;jayrock&gt;
-    &lt;json.rpc&gt;
+    &lt;jsonrpc&gt;
         &lt;features&gt;
             &lt;add name="rpc" 
                  type="Jayrock.JsonRpc.Web.JsonRpcExecutive, Jayrock" /&gt;
+            &lt;add name="getrpc" 
+                 type="Jayrock.JsonRpc.Web.JsonRpcGetProtocol, Jayrock" /&gt;
             &lt;add name="proxy" 
                  type="Jayrock.JsonRpc.Web.JsonRpcProxyGenerator, Jayrock" /&gt;
+            &lt;add name="pyproxy" 
+                 type="Jayrock.JsonRpc.Web.JsonRpcPythonProxyGenerator, Jayrock" /&gt;
             &lt;add name="help" 
                  type="Jayrock.JsonRpc.Web.JsonRpcHelp, Jayrock" /&gt;
             &lt;add name="test" 
                  type="Jayrock.JsonRpc.Web.JsonRpcTester, Jayrock" /&gt;
         &lt;/features&gt;
-    &lt;/json.rpc&gt;
+    &lt;/jsonrpc&gt;
 &lt;/jayrock&gt;
 ...
 </pre>
         <p>
-            The above configuration lines enable various features on top of your service. These
-            features are accessed by using the feature name in the query string to your handler's
-            URL, as in <code>?<span class="em">feature</span></code> (very similar to <a href="http://msdn.microsoft.com/library/en-us/vbcon/html/vbtskExploringWebService.asp">
+            The above configuration lines enable various <em>features</em> on top of your service. 
+            These features are accessed by using the feature's name in the query string to your handler's
+            URL, as in <code>?<em>feature</em></code> (very similar to <a href="http://msdn.microsoft.com/library/en-us/vbcon/html/vbtskExploringWebService.asp">
                 how you request the WSDL document for an ASP.NET Web Service</a>). First and
             foremost, there is the <code>rpc</code> feature. It is responsible for actually
-            making the JSON-RPC invocation on your service. Without this feature, your service
-            is JSON-RPC ready but won't be callable by anyone. The <code>proxy</code> feature
+            making the JSON-RPC invocation on your service upon receiving a request over HTTP POST. 
+            Without this feature, your service is JSON-RPC ready but won't be callable by anyone. 
+            The <code>getrpc</code> feature is similar except it makes the services methods
+            callable over HTTP GET.</p>
+        <p>The <code>proxy</code> feature
             dynamically generates JavaScript code for the client-side proxy. This code will
             contain a class that you can instantiate and use to call the server methods either
             synchronously and asynchronously. In an HTML page, you can import the proxy by using
@@ -515,8 +542,7 @@ window.onload = function()
                 Two things come to mind:
                 <ol>
                     <li>You can use just the Jayrock's JSON infrastructure for manipulating JSON data and text without
-                    all the JSON-RPC fuss. Whenever you see <em>Jayrock.Json</em> mentioned, it's referring to
-                        just this piece of functionality and which is provided as a stand-alone assembly.</li>
+                    all the JSON-RPC fuss. Just use the stand-alone <code>Jayrock.Json</code> assembly.</li>
                         <li>In addition to the above, you can use Jayrock to expose light-weight services with procedures
                             from within your ASP.NET application. You can then invoke the procedures on those
                             services over HTTP using JSON-RPC as the protocol. A typical use case would be some
@@ -533,13 +559,15 @@ window.onload = function()
                 any client with HTTP capability, be that scripts or console applications, can benefit
                 from Jayrock by remotely invoking procedures of your services. If you have a
                 JSON-RPC client library for your language, environment or platform then all the
-                better. If not, Jayrock comes with one for JavaScript to get you started off the ground in <a href="http://www.microsoft.com/ie">Microsoft Internet Explorer</a>
-                6 or <a href="http://www.firefox.com/">FireFox</a> 1.5. Given a service, Jayrock can dynamically provide a JavaScript proxy that
+                better. If not, Jayrock comes with one for JavaScript to get you started off the ground in 
+                <a href="http://www.microsoft.com/ie">Microsoft Internet Explorer</a>,
+                <a href="http://www.firefox.com/">FireFox</a> and even <a href="http://en.wikipedia.org/wiki/Windows_Script_Host">WSH (Windows Script Host)</a>.
+                Given a service, Jayrock can dynamically provide a JavaScript proxy that
                 implements the JSON-RPC protocol
                 to call back into your service (synchronously and asynchronously). Jayrock, however, does not provide any client-side whiz-bang
                 widgets or controls that you may have come to generally expect from other and more ambitious Ajax frameworks.
                 For that, you are recommended to shop around elsewhere, like <a href="http://dojotoolkit.org/">
-                    Dojo toolkit</a>, <a href="http://atlas.asp.net/">Microsoft Atlas</a>, <a href="http://developer.yahoo.com/yui/">
+                    Dojo toolkit</a>, <a href="http://ajax.asp.net/">Microsoft ASP.NET AJAX</a>, <a href="http://developer.yahoo.com/yui/">
                         Yahoo! UI Library</a> or <a href="http://ajaxpatterns.org/Ajax_Frameworks">many others</a>.</dd>
             <dt>Which versions of the Microsoft .NET Framework are supported?</dt><dd>Jayrock
       is compiled and delivered for Microsoft .NET Framework 1.1, but it can
@@ -548,10 +576,10 @@ window.onload = function()
       hand, you don't need to do anything. Just toss the assemblies at your application
       and you are good to go.</dd><dt>What is JSON?</dt><dd><a href="http://www.json.org/"><acronym title="JavaScript Object Notation">JSON</acronym></a> stands for JavaScript Object Notation. It is a simple, human-readable,
                 text-based and portable data format that is ideal for representing and exchanging
-                application data. It has only 6 data types (Null, Boolean, Number, String, Object
+                application data. It has only 5 data types (Boolean, Number, String, Object
                 and Array) that are commonly used across a wide number of applications and programming
-                languages. For more information, see <a href="http://www.ietf.org/internet-drafts/draft-crockford-jsonorg-json-04.txt">
-                    JSON Internet Draft</a>.
+                languages. For more information, see <a href="http://www.ietf.org/rfc/rfc4627.txt">
+                    RFC 4627</a>.
             </dd>
             <dt>What is JSON-RPC?</dt><dd><a href="http://www.json-rpc.org/">JSON-RPC</a> is a light-weight
                 remote procedure call protocol that relies on

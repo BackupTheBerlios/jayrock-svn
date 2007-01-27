@@ -274,7 +274,21 @@ namespace JayrockWeb
         {
             return System.Text.Encoding.GetEncoding(encoding).GetString(bytes);
         }
-        
+
+        [ JsonRpcMethod("stypeof", Idempotent = true) ]
+        [ JsonRpcHelp("Returns the CLR type that a given value converted to on the server.") ]
+        public string GetObjectType(object o)
+        {
+            return o != null ? o.GetType().FullName : null;
+        }
+
+        [ JsonRpcMethod("echoTime", Idempotent = true) ]
+        [ JsonRpcHelp("Echoes back the date/time sent as parameter.") ]
+        public DateTime EchoTime(DateTime time)
+        {
+            return time;
+        }
+
         //
         // NOTE: To send and receive typed objects, use public types only 
         // that have a default constructor. Only public read/write fields

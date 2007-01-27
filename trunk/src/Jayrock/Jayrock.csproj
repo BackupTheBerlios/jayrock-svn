@@ -235,18 +235,13 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "JsonRpc\Web\JsonRpcServiceBindingBase.cs"
+                    RelPath = "JsonRpc\Web\JsonRpcServiceFeature.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
                     RelPath = "JsonRpc\Web\JsonRpcTester.cs"
                     SubType = "ASPXCodeBehind"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "JsonRpc\Web\JsonRpcWebGateway.cs"
-                    SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
@@ -271,11 +266,6 @@
                 />
                 <File
                     RelPath = "Services\IService.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Services\IServiceBinding.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
