@@ -84,7 +84,7 @@ namespace Jayrock.Collections
             base.OnValidate(value);
             
             if (KeyFromValue(value) == null)
-                throw new ArgumentException("value");
+                throw new ArgumentException(null, "value");
         }
 
         protected override void OnInsertComplete(int index, object value)
@@ -118,7 +118,7 @@ namespace Jayrock.Collections
                 throw new ArgumentNullException("keys");
             
             if (keys.Rank != 1)
-                throw new ArgumentException("keys");
+                throw new ArgumentException(null, "keys");
 
             for (int i = 0; i < Math.Min(Count, keys.Length); i++)
                 keys.SetValue(KeyFromValue(InnerList[i]), i);

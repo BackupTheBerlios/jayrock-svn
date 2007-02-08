@@ -101,7 +101,7 @@ namespace Jayrock.Services
             SynchronousAsyncResult ar = asyncResult as SynchronousAsyncResult;
 
             if (ar == null)
-                throw new ArgumentException("asyncResult", "IAsyncResult object did not come from the corresponding async method on this type.");
+                throw new ArgumentException("IAsyncResult object did not come from the corresponding async method on this type.", "asyncResult");
 
             try
             {

@@ -297,7 +297,7 @@ namespace Jayrock.Json
                 throw new ArgumentNullException("key");
 
             if (!(key is string))
-                throw new ArgumentException("key", string.Format("The key cannot be of the supplied type {0}. It must be typed System.String.", key.GetType().FullName));
+                throw new ArgumentException(string.Format("The key cannot be of the supplied type {0}. It must be typed System.String.", key.GetType().FullName), "key");
         }
 
         protected override void OnInsert(object key, object value)

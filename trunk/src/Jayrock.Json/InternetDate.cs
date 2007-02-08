@@ -50,7 +50,7 @@ namespace Jayrock
                 throw new ArgumentNullException("input");
 
             if (input.Length < _formats[0].Length)
-                throw new ArgumentException("input");
+                throw new ArgumentException(null, "input");
 
             //
             // Parse according to the following syntax:

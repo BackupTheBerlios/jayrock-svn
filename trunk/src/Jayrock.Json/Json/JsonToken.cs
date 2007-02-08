@@ -132,7 +132,7 @@ namespace Jayrock.Json
                 throw new ArgumentNullException("text)");
                     
             if (text.Length == 0)
-                throw new ArgumentException("Number text cannot zero in length.", "text)");
+                throw new ArgumentException("Number text cannot zero in length.", "text");
                     
             return new JsonToken(JsonTokenClass.Number, text);
         }

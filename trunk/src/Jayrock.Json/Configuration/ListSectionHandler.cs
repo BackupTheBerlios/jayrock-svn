@@ -41,7 +41,7 @@ namespace Jayrock.Configuration
                 throw new ArgumentNullException("elementName");
             
             if (elementName.Length == 0)
-                throw new ArgumentException("elementName");
+                throw new ArgumentException(null, "elementName");
             
             _elementName = elementName;
         }

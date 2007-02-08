@@ -99,7 +99,7 @@ namespace Jayrock.JsonRpc
             }
 
             if (!response.Contains("result"))
-                throw new ArgumentException("Response object is not valid because it does not contain the expected 'result' member.");
+                throw new ArgumentException("Response object is not valid because it does not contain the expected 'result' member.", "response");
 
             object result = response["result"];
 
