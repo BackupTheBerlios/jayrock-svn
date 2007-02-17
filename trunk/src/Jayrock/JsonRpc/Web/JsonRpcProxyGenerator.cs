@@ -158,14 +158,14 @@ namespace Jayrock.JsonRpc.Web
     {
         var request = { id : nextId++, method : method, params : params };
         return callback == null ? 
-            callSync(method, request) : callAsync(method, request, callback);
+            callSync(request) : callAsync(request, callback);
     }
 
-    function callSync(method, request)
+    function callSync(request)
     {
         var http = newHTTP();
         http.open('POST', url, false, self.httpUserName, self.httpPassword);
-        setupHeaders(http, method);
+        setupHeaders(http, request.method);
         http.send(JSON.stringify(request));
         if (http.status != 200)
             throw { message : http.status + ' ' + http.statusText, toString : function() { return message; } };
@@ -174,11 +174,11 @@ namespace Jayrock.JsonRpc.Web
         return response.result;
     }
 
-    function callAsync(method, request, callback)
+    function callAsync(request, callback)
     {
         var http = newHTTP();
         http.open('POST', url, true, self.httpUserName, self.httpPassword);
-        setupHeaders(http, method);
+        setupHeaders(http, request.method);
         http.onreadystatechange = function() { http_onreadystatechange(http, callback); }
         http.send(JSON.stringify(request));
         return request.id;
