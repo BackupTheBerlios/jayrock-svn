@@ -189,6 +189,40 @@ namespace Jayrock.JsonRpc
             JsonRpcServices.GetResult((IDictionary) Parse(server.Process("{ id : 1, foo : [bar], method : 'Dummy', params : [] }")));
         }
 
+        [ Test ]
+        public void RequestIdReportedEvenWhenCallingNonExistingMethod()
+        {
+            //
+            // This test exercises the following bug:
+            // Bug #10421: No ID on response when non-existing method called
+            // https://developer.berlios.de/bugs/?func=detailbug&bug_id=10421&group_id=4638
+            //
+
+            JsonRpcDispatcher server = new JsonRpcDispatcher(new TestService());
+            IDictionary response = (IDictionary) JsonConvert.Import(server.Process("{ id : 42, method : foobaz }"));
+            Assert.IsNotNull(response["error"]);
+            object id = response["id"];
+            Assert.IsNotNull(id);
+            Assert.AreEqual(42, ((JsonNumber) id).ToInt32());
+        }
+
+        [ Test ]
+        public void RequestIdReportedEvenWhenBadJson()
+        {
+            //
+            // This test exercises the following bug:
+            // Bug #10421: No ID on response when non-existing method called
+            // https://developer.berlios.de/bugs/?func=detailbug&bug_id=10421&group_id=4638
+            //
+
+            JsonRpcDispatcher server = new JsonRpcDispatcher(new TestService());
+            IDictionary response = (IDictionary) JsonConvert.Import(server.Process("{ id : 42, method : 'foo }"));
+            Assert.IsNotNull(response["error"]);
+            object id = response["id"];
+            Assert.IsNotNull(id);
+            Assert.AreEqual(42, ((JsonNumber) id).ToInt32());
+        }
+
         private object Parse(string source)
         {
             return JsonConvert.Import(source);
