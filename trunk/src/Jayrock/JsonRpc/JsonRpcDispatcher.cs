@@ -120,22 +120,21 @@ namespace Jayrock.JsonRpc
             if (output == null)
                 throw new ArgumentNullException("output");
 
-            IDictionary response;
+            IDictionary request;
             
             try
             {
-                IDictionary request = (IDictionary) ParseRequest(input);
-                response = Invoke(request);
+                request = (IDictionary) ParseRequest(input);
             }
-            catch (MethodNotFoundException e)
+            catch (BadRequestException e)
             {
-                response = CreateResponse(null, null, OnError(e));
+                request = e.Request as IDictionary;
+                object id = request != null ? request["id"] : null;
+                WriteResponse(CreateResponse(id, null, OnError(e.InnerException)), output);
+                return;
             }
-            catch (JsonException e)
-            {
-                response = CreateResponse(null, null, OnError(e));
-            }
-            
+
+            IDictionary response = Invoke(request);
             WriteResponse(response, output);
         }
 
@@ -255,92 +254,103 @@ namespace Jayrock.JsonRpc
         {
             if (input == null)
                 throw new ArgumentNullException("input");
-
+            
             JsonReader reader = (JsonReader) _serviceProvider.GetService(typeof(JsonReader));
 
             if (reader == null)
                 reader = new JsonTextReader(input);
-            
+    
             ImportContext importContext = new ImportContext();
-            
+    
             JsonObject request = new JsonObject();
             Method method = null;
             JsonReader paramsReader = null;
             object args = null;
             
-            reader.ReadToken(JsonTokenClass.Object);
-            
-            while (reader.TokenClass != JsonTokenClass.EndObject)
+            try
             {
-                string memberName = reader.ReadMember();
-                
-                switch (memberName)
+                reader.ReadToken(JsonTokenClass.Object);
+        
+                while (reader.TokenClass != JsonTokenClass.EndObject)
                 {
-                    case "id" :
+                    string memberName = reader.ReadMember();
+            
+                    switch (memberName)
                     {
-                        request["id"] = importContext.Import(reader);
-                        break;
-                    }
+                        case "id" :
+                        {
+                            request["id"] = importContext.Import(reader);
+                            break;
+                        }
+                
+                        case "method" :
+                        {
+                            string methodName = reader.ReadString();
+                            request["method"] = methodName;
+                            method = _service.GetClass().GetMethodByName(methodName);
                     
-                    case "method" :
-                    {
-                        string methodName = reader.ReadString();
-                        request["method"] = methodName;
-                        method = _service.GetClass().GetMethodByName(methodName);
+                            if (paramsReader != null)
+                            {
+                                //
+                                // If the parameters were already read in and
+                                // buffer, then deserialize them now that we know
+                                // the method we're dealing with.
+                                //
                         
-                        if (paramsReader != null)
+                                args = ReadParameters(method, paramsReader, importContext);
+                                paramsReader = null;
+                            }
+                    
+                            break;
+                        }
+                
+                        case "params" :
                         {
                             //
-                            // If the parameters were already read in and
-                            // buffer, then deserialize them now that we know
-                            // the method we're dealing with.
+                            // Is the method already known? If so, then we can
+                            // deserialize the parameters right away. Otherwise
+                            // we record them until hopefully the method is
+                            // encountered.
                             //
-                            
-                            args = ReadParameters(method, paramsReader, importContext);
-                            paramsReader = null;
-                        }
-                        
-                        break;
-                    }
                     
-                    case "params" :
-                    {
-                        //
-                        // Is the method already known? If so, then we can
-                        // deserialize the parameters right away. Otherwise
-                        // we record them until hopefully the method is
-                        // encountered.
-                        //
-                        
-                        if (method != null)
-                        {
-                            args = ReadParameters(method, reader, importContext);
-                        }
-                        else
-                        {
-                            JsonRecorder recorder = new JsonRecorder();
-                            recorder.WriteFromReader(reader);
-                            paramsReader = recorder.CreatePlayer();
-                        }
+                            if (method != null)
+                            {
+                                args = ReadParameters(method, reader, importContext);
+                            }
+                            else
+                            {
+                                JsonRecorder recorder = new JsonRecorder();
+                                recorder.WriteFromReader(reader);
+                                paramsReader = recorder.CreatePlayer();
+                            }
 
-                        break;
-                    }
-                        
-                    default:
-                    {
-                        reader.Skip();
-                        break;
+                            break;
+                        }
+                    
+                        default:
+                        {
+                            reader.Skip();
+                            break;
+                        }
                     }
                 }
-            }
-            
-            reader.Read();
+        
+                reader.Read();
 
-            if (args != null)
-                request["params"] = args;
-            
-            return request;
-        }
+                if (args != null)
+                    request["params"] = args;
+        
+                return request;
+            }
+            catch (JsonException e)
+            {
+                throw new BadRequestException(e.Message, e, request);
+            }
+            catch (MethodNotFoundException e)
+            {
+                throw new BadRequestException(e.Message, e, request);
+            }
+       }
 
         protected virtual void WriteResponse(object response, TextWriter output)
         {
