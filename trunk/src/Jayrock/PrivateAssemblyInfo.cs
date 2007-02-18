@@ -23,7 +23,6 @@
 #region Imports
 
 using System.Reflection;
-using CLSCompliantAttribute = System.CLSCompliantAttribute;
 using ComVisible = System.Runtime.InteropServices.ComVisibleAttribute;
 
 #endregion
