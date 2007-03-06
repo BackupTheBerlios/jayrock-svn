@@ -84,6 +84,11 @@
         <Files>
             <Include>
                 <File
+                    RelPath = "TestDictionaryHelper.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "TestInternetDate.cs"
                     SubType = "Code"
                     BuildAction = "Compile"

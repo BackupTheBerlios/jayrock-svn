@@ -58,10 +58,7 @@ namespace Jayrock.Json
 
         public JsonObject(IDictionary members)
         {
-            // FIXME: Use IDictionaryEnumerator.Entry instead and enumerate manually (faster and more robust).
-            // See comment in DictionaryExporter for details.
-            
-            foreach (DictionaryEntry entry in members)
+            foreach (DictionaryEntry entry in DictionaryHelper.GetEntries(members))
             {
                 if (entry.Key == null)
                     throw new InvalidMemberException();
