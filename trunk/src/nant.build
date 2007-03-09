@@ -60,6 +60,16 @@
     <property name="my.output.testassembly.name" value="${my.project.name + '.Tests'}" />
     <property name="my.output.testassembly.filename" value="${my.output.testassembly.name + '.dll'}" />
     
+    <!-- Web -->
+    
+    <property name="my.www.dir.path" value="${path::combine(my.project.basedir, '..\www')}" />
+    
+    <!-- Build -->
+
+    <property name="my.build.dir.path" value="${path::combine(my.project.basedir, '..\build')}" />
+    <tstamp property="my.build.date" pattern="yyyy-MM-dd" />
+    <tstamp property="my.build.datetime" pattern="yyyy-MM-dd-HHmm" />
+
     <!-- Mailing -->
 
     <property name="my.smtp.server" value="" />
@@ -74,8 +84,6 @@
     <property name="draco" value="false" overwrite="false" />
 
     <!--======================== PROPERTY SECTION ========================-->
-
-    <target name="build" depends="" />
 
     <target name="clean">
         <delete dir="${my.bin.dir.path}" failonerror="false" />
@@ -139,6 +147,85 @@
         <call target="draco" if="${draco}" />
     </target>
     
+    <target name="build" depends="test cover debug release">
+        
+        <!-- Delete files resulting from coverage and testing -->
+        
+        <delete file="${path::combine(path::combine(my.bin.dir.path, 'Test'), 'TestResult.xml')}" failonerror="false" />
+        <delete file="coverage.xml" failonerror="false" />
+        <delete file="coverage.xsl" failonerror="false" />
+        
+        <!--
+            Copy the output assemblies from so that the demo
+            service in ASP.NET web application is runnable. 
+        -->
+        
+        <mkdir dir="${path::combine(my.www.dir.path, 'bin')}" />
+        <copy todir="${path::combine(my.www.dir.path, 'bin')}" overwrite="true">
+            <fileset basedir="${my.output.dir.path}">
+                <include name="*.dll" />
+                <include name="*.pdb" />
+            </fileset>
+        </copy>
+
+        <!-- 
+            Create the build directory and then create zips and compressed
+            tars of the two versions of the project, one with sources and 
+            one without (called the binary version). The source version 
+            includes everything in the project except previous builds. 
+            The binary version includes only the project binaries 
+            (excluding those from unit tests), samples and the web.
+        -->
+
+        <mkdir dir="${my.build.dir.path}" />
+
+        <zip zipfile="${path::combine(my.build.dir.path, 'jayrock.zip')}" ziplevel="9">
+            <fileset basedir="..">
+                <include name="**/*" />
+                <exclude name="build/**/*" />
+            </fileset>
+        </zip>
+        <zip zipfile="${path::combine(my.build.dir.path, 'jayrock-bin.zip')}" ziplevel="9">
+            <fileset basedir="..">
+                <include name="*" />
+                <include name="bin/**/*" />
+                <exclude name="bin/Test/**/*" />
+                <include name="samples/**/*" />
+                <include name="www/**/*" />
+            </fileset>
+        </zip>
+
+        <tar destfile="${path::combine(my.build.dir.path, 'jayrock.tar.gz')}" compression="GZip">
+            <fileset basedir="..">
+                <include name="**/*" />
+                <exclude name="build/**/*" />
+            </fileset>
+        </tar>
+        <tar destfile="${path::combine(my.build.dir.path, 'jayrock-bin.tar.gz')}" compression="GZip">
+            <fileset basedir="..">
+                <include name="*" />
+                <include name="bin/**/*" />
+                <exclude name="bin/Test/**/*" />
+                <include name="samples/**/*" />
+                <include name="www/**/*" />
+            </fileset>
+        </tar>
+
+    </target>
+
+    <target name="daily-build" depends="build">
+
+        <property name="my.dailybuild.dir.path" value="${path::combine(my.build.dir.path, my.build.date)}" />
+        <mkdir dir="${my.dailybuild.dir.path}" />
+        <copy todir="${my.dailybuild.dir.path}">
+            <fileset basedir="${my.build.dir.path}">
+                <include name="*.zip" />
+                <include name="*.gz" />
+            </fileset>
+        </copy>
+
+    </target>
+
     <target name="draco">
         <fail if="${string::get-length(my.smtp.server) == 0}" 
             message="You must specify an SMTP server host value via the SMTPSERVER environment variable for this build target to succeed." />
@@ -166,6 +253,9 @@
             Replace with: <echo message="\1 = ${\1}" />
         -->
 
+        <echo message="my.build.date = ${my.build.date}" />
+        <echo message="my.build.datetime = ${my.build.datetime}" />
+
         <echo message="my.project.basedir = ${my.project.basedir}" />
         <echo message="my.tools = ${my.tools}" />
         
@@ -186,6 +276,8 @@
         <echo message="my.output.testassembly.name = ${my.output.testassembly.name}" />
         <echo message="my.output.testassembly.filename = ${my.output.testassembly.filename}" />
         
+        <echo message="my.www.dir.path = ${my.www.dir.path}" />
+
         <echo message="my.smtp.server = ${my.smtp.server}" />
         <echo message="my.mail.from = ${my.mail.from}" />
         <echo message="my.mail.to = ${my.mail.to}" />
