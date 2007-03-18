@@ -88,6 +88,11 @@ h2
     font-size: large;
 }
 
+h3
+{
+    font-size: medium;
+}
+
 pre.code
 {
     font-size: small;
@@ -159,3 +164,8 @@ dd
     padding: 1em;
     margin: 0 5em;
 }
+
+.hi, .hiy { background-color: #FFFF00; }
+.hig { background-color: #00FF00; }
+.hit { background-color: #00FFFF; }
+.hip { background-color: #FF00FF; }

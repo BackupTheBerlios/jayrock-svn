@@ -136,7 +136,7 @@
             A full build runs the unit tests, creates a code coverage report from the tests
             and then goes on to compile the debug and release assemblies for Jayrock and Jayrock.Json.</p>
         <p>
-            The NAnt script can be used to build 4 different types of so-called <em><a href="http://nant.sourceforge.net/release/latest/help/fundamentals/targets.html">
+            The NAnt script can be used to build three different types of so-called <em><a href="http://nant.sourceforge.net/release/latest/help/fundamentals/targets.html">
                 targets</a></em>:</p>
         <dl>
             <dt>test </dt>
@@ -159,8 +159,8 @@
             Jayrock comes with <a href="http://msdn.microsoft.com/vstudio/previous/2003/">Microsoft
                 Visual Studio 2003</a> project and solution files that compile assemblies for
             Microsoft .NET Framework 1.1. There is little to know except open the desired solution
-            in Visual Studio and build away! The three solutions that you will find under <code>
-                src</code> are:</p>
+            in Visual Studio and build away! The three solutions that you will find under <code>src</code> 
+            and <code>tests</code> are:</p>
         <dl>
             <dt>Jayrock.Json</dt>
             <dd>Solution that builds and contains functionality related to JSON only, 
@@ -282,7 +282,7 @@
                 directory under <code>www</code>.</li>
             <li>Open up a browser window and navigate to
                 the virtual root created in the first step, which most probably reads something like 
-                <code><span class="fake-a">http://localhost/jayrock/</span></code>).</li>
+                <code><span class="fake-a">http://localhost/jayrock/</span></code>.</li>
         </ol>
         <h1>
             <a id="quick-start" name="quick-start">ASP.NET Quick Start</a></h1>
@@ -483,28 +483,55 @@ window.onload = function()
             returned from our JSON-RPC service method <code>greetings</code>. The first message
             box will be from the synchronous execution whereas the second from the asynchronous
             one.</p>
-        <p>
-            That's it! We're done. Hope you enjoyed the quick tour.</p>
-        <!--
-        <h1>
-            Inside Jayrock</h1>
         <h2>
-            Writing JSON</h2>
+            Calling Services from Windows Script Host (WSH)</h2>
         <p>
-            To be completed...</p>
-        <h2>
-            Reading JSON</h2>
+            One of the interesting things about the JavaScript proxy (the one 
+            dynamically served by Jayrock for your service) is that it can also 
+            be used from outside a web page and therefore the whole web browser 
+            environment. More specifically, you can use the proxy without any 
+            modifications from within a 
+            <a href="http://msdn2.microsoft.com/en-us/library/9bbdkx3k.aspx"><acronym title="Windows Script Host">WSH</acronym></a>
+            script. This enables a number of key scenarios like:</p>
+        <ul>
+            <li>Write batch scripts</li>
+            <li>Provide a command-line and scriptable interface to your service</li>
+            <li>Allow administrators and operators to call your service for 
+            maintenance purposes</li>
+            <li>Run performance test scripts</li>
+        </ul>
         <p>
-            To be completed...</p>
-        <h2>
-            Formatting Types into JSON</h2>
+            Let&#39;s take the same HelloWorld service developed in the previous 
+            section and try to call it 
+            from a WSH script. Put the following markup into a 
+            <a href="http://msdn2.microsoft.com/en-us/library/15x4407c.aspx">Windows Script 
+            Host Script</a> file called <code>hello.wsf</code>. </p>
+        <pre class="code">&lt;job&gt;
+    &lt;script language=&quot;JScript&quot; src=&quot;http://localhost/jayrock/json.js&quot; /&gt;
+    &lt;script language=&quot;JScript&quot; src=&quot;http://localhost/jayrock/helloworld.ashx?proxy&quot; /&gt;
+    &lt;script language=&quot;JScript&quot;&gt;
+var s = new HelloWorld();
+WScript.Echo(s.greetings());
+    &lt;/script&gt;
+&lt;/job&gt;</pre>
         <p>
-            To be completed...</p>
-        <h2>
-            Importing Types from JSON</h2>
+            Open a Window Command Prompt, change to the directory where you 
+            saved <code>hello.wsf</code> and simply type <code>hello</code> to 
+            execute it. If that does not work, you 
+            may have to type the full command-line, as in <code>cscript hello.wsf</code> or 
+            <code>wscript hello.wsf</code>. When the script runs, it should 
+            display the greeting message from the service.</p>
         <p>
-            To be completed...</p>
-        -->            
+            Just as in the case 
+            of the web page, the WSH script references the JSON and service 
+            proxy script files as external sources to be imported at run-time. In fact, since the scripts 
+            will be fetched from the web server, the WSH script will pick up changes 
+            automatically by downloading the latest copy. Notice also that the 
+            references to the external scripts use absolute URLs since the WSH 
+            script will in reality live at an independent location from the web 
+            server.</p>
+        <p>
+            That's it! We're done. Hope you enjoyed this quick tour.</p>
         <h1>
             <a id="samples" name="samples">Samples &amp; Demos</a></h1>
         <p>
@@ -520,7 +547,7 @@ window.onload = function()
         <h1>
             <a id="docs" name="docs">Documents</a></h1>
         <dl>
-            <dt><a href="http://msdn2.microsoft.com/en-us/library/bb299886.aspx">An Introduction to JavaScript Object Notation (JSON) in JavaScript and .NET</a></dt>
+             <dt><a href="http://msdn2.microsoft.com/en-us/library/bb299886.aspx">An Introduction to JavaScript Object Notation (JSON) in JavaScript and .NET</a></dt>
             <dd>
                 An <a href="http://msdn.microsoft.com/"><acronym title="Microsoft Developer Network">MSDN</acronym></a> 
                 article that takes a cursory look at <acronym title="JavaScript Object Notation">JSON</acronym>, 
@@ -530,7 +557,7 @@ window.onload = function()
                 <a href="http://msdn2.microsoft.com/en-us/library/bb299886.aspx#intro_to_json_topic5">
                 Working with JSON in the .NET Framework</a> section of the 
                 article for more.</dd>
-            <dt><a href="Jayrock.pdf">Jayrock Project Presentation</a></dt>
+           <dt><a href="Jayrock.pdf">Jayrock Project Presentation</a></dt>
             <dd>
                 This presentation contains illustrations that briefly cover the architecture of
                 Jayrock's JSON and JSON-RPC implementations. Beware, however, that some bits
