@@ -520,6 +520,16 @@ window.onload = function()
         <h1>
             <a id="docs" name="docs">Documents</a></h1>
         <dl>
+            <dt><a href="http://msdn2.microsoft.com/en-us/library/bb299886.aspx">An Introduction to JavaScript Object Notation (JSON) in JavaScript and .NET</a></dt>
+            <dd>
+                An <a href="http://msdn.microsoft.com/"><acronym title="Microsoft Developer Network">MSDN</acronym></a> 
+                article that takes a cursory look at <acronym title="JavaScript Object Notation">JSON</acronym>, 
+                its origins and then its application from within JavaScript and C#. 
+                Reading and writing JSON text from C# is demonstrated 
+                using classes from Jayrock. See the
+                <a href="http://msdn2.microsoft.com/en-us/library/bb299886.aspx#intro_to_json_topic5">
+                Working with JSON in the .NET Framework</a> section of the 
+                article for more.</dd>
             <dt><a href="Jayrock.pdf">Jayrock Project Presentation</a></dt>
             <dd>
                 This presentation contains illustrations that briefly cover the architecture of
