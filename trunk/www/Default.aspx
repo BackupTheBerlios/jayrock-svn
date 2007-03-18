@@ -136,7 +136,7 @@
             A full build runs the unit tests, creates a code coverage report from the tests
             and then goes on to compile the debug and release assemblies for Jayrock and Jayrock.Json.</p>
         <p>
-            The NAnt script can be used to build three different types of so-called <em><a href="http://nant.sourceforge.net/release/latest/help/fundamentals/targets.html">
+            The NAnt script can be used to build 4 different types of so-called <em><a href="http://nant.sourceforge.net/release/latest/help/fundamentals/targets.html">
                 targets</a></em>:</p>
         <dl>
             <dt>test </dt>
