@@ -51,6 +51,8 @@
         <ul>
             <li><a href="http://developer.berlios.de/project/showfiles.php?group_id=4638">Download
                 Jayrock 0.9 now!</a></li>
+            <li><a href="http://developer.berlios.de/project/showfiles.php?group_id=4638">Download
+                latest nightly build</a> (<a href="http://en.wikipedia.org/wiki/Alpha_release#Stable.2Funstable">unstable</a>)</li>
             <li><a href="http://groups.google.com/group/jayrock">Discuss Jayrock</a></li>
             <li><a href="http://jayrock.berlios.de/coverage-report.html">Code coverage report</a></li>
             <li><a href="http://developer.berlios.de/projects/jayrock/">Project foundry on BerliOS</a></li>
