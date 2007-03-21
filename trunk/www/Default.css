@@ -88,6 +88,11 @@ h2
     font-size: large;
 }
 
+h2 a
+{
+    color: black;
+}
+
 h3
 {
     font-size: medium;

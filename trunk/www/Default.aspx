@@ -107,7 +107,8 @@
             repository then you can simply download them from the <a href="http://developer.berlios.de/project/showfiles.php?group_id=4638">
                 Files</a> section of the project.
         </p>
-        <h2>Search the Source</h2>
+        <h2>
+            <a id="search" name="search">Search the Source</a></h2>
         <form method="get" action="http://www.koders.com/">
         <p>
             Search the project sources using the following open source repository search engines:
