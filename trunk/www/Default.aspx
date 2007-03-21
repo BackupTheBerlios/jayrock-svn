@@ -107,6 +107,35 @@
             repository then you can simply download them from the <a href="http://developer.berlios.de/project/showfiles.php?group_id=4638">
                 Files</a> section of the project.
         </p>
+        <h2>Search the Source</h2>
+        <form method="get" action="http://www.koders.com/">
+        <p>
+            Search the project sources using the following open source repository search engines:
+        </p>
+        <p>
+                <a href="http://www.koders.com/">Koders</a>: 
+                <input name="s" title="Query" /> 
+                <input type="submit" value="Search" title="Search using Koders" />
+                <a href="http://www.koders.com/info.aspx?c=ProjectInfo&amp;pid=6XU9CH225CAEAP7EWXEE13TALE">Browse</a>
+                <input type="hidden" name="la" value="*" />
+                <input type="hidden" name="li" value="*" />
+                <input type="hidden" name="scope" value="6XU9CH225CAEAP7EWXEE13TALE" />
+        </p>
+        </form>
+        <form method="get" action="http://www.google.com/codesearch">
+        <p>
+                <a href="http://www.google.com/codesearch">Google</a>: 
+                <input name="q" value="package:jayrock" title="Query" />
+                <input type="submit" value="Search" title="Search using Google Code Search" />
+                <a href="http://www.google.com/codesearch?hl=en&amp;q=show:JCr4gVljnjM:7PzDCI1wQTc&amp;sa=N&amp;ct=rdp&amp;cs_p=svn://svn.berlios.de/jayrock/trunk">Browse</a>
+        </p>
+        </form>
+        <p>
+            <strong>Note:</strong>
+            Each search engine maintains a periodically crawled and cached copy of the source 
+            code so results may be inaccurate sometimes due to differences from 
+            <a href="http://svn.berlios.de/wsvn/jayrock">the original</a>.
+        </p>
         <h1>
             <a id="compiling" name="compiling">Compiling</a></h1>
         <p>
