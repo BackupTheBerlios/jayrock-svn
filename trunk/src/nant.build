@@ -22,6 +22,10 @@
 -->
 <project default="all" xmlns="http://nant.sf.net/schemas/nant.xsd">
 
+    <echo message="NOTE: Code coverage has been disabled in the &apos;all&apos; and" />
+    <echo message="&apos;build&apos; targets since NCover appears to fail on some machines." />
+    <echo message="To get code coverage, build the &apos;cover&apos; target." />
+
     <!--======================== PROPERTY SECTION ========================-->
 
     <!-- General -->
@@ -67,8 +71,6 @@
     <!-- Build -->
 
     <property name="my.build.dir.path" value="${path::combine(my.project.basedir, '../build')}" />
-    <tstamp property="my.build.date" pattern="yyyy-MM-dd" />
-    <tstamp property="my.build.datetime" pattern="yyyy-MM-dd-HHmm" />
 
     <!-- Mailing -->
 
@@ -123,10 +125,6 @@
 
     <target name="all">
         
-        <echo message="NOTE: Code coverage has been disabled in the &apos;all&apos;" />
-        <echo message="target since NCover appears to fail on some machines." />
-        <echo message="To get code coverage, build the &apos;cover&apos; target." />
-        
         <call target="test" />
         <call target="debug" />
         <call target="release" />
@@ -147,8 +145,11 @@
         <call target="draco" if="${draco}" />
     </target>
     
-    <target name="build" depends="test cover debug release">
+    <target name="build" depends="test debug release">
         
+        <tstamp property="my.build.date" pattern="yyyy-MM-dd" />
+        <tstamp property="my.build.datetime" pattern="yyyy-MM-dd-HHmm" />
+
         <!-- Delete files resulting from coverage and testing -->
         
         <delete file="${path::combine(path::combine(my.bin.dir.path, 'Test'), 'TestResult.xml')}" failonerror="false" />
