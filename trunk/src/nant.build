@@ -30,56 +30,56 @@
 
     <!-- General -->
 
-    <property name="my.project.name" value="Jayrock" />
-    <property name="my.project.basedir" value="${project::get-base-directory()}" />
-    <property name="my.tools" value="${path::combine(my.project.basedir, '../tools')}" />
+    <property name="project.name" value="Jayrock" />
+    <property name="project.basedir" value="${project::get-base-directory()}" />
+    <property name="tools" value="${path::combine(project.basedir, '../tools')}" />
     
     <!-- NCover (code coverage) -->
 
-    <property name="my.ncover.dir.path" value="${path::combine(my.tools, 'NCover')}" />
-    <property name="my.ncover.console.exe.path" value="${path::combine(my.ncover.dir.path, 'NCover.Console.exe')}" />
+    <property name="ncover.dir.path" value="${path::combine(tools, 'NCover')}" />
+    <property name="ncover.console.exe.path" value="${path::combine(ncover.dir.path, 'NCover.Console.exe')}" />
     
     <!-- NCoverExplorer (code coverage) -->
 
-    <property name="my.ncoverexplorer.dir.path" value="${path::combine(my.tools, 'NCoverExplorer')}" />
-    <property name="my.ncoverexplorer.console.exe.path" value="${path::combine(my.ncoverexplorer.dir.path, 'NCoverExplorer.Console.exe')}" />
+    <property name="ncoverexplorer.dir.path" value="${path::combine(tools, 'NCoverExplorer')}" />
+    <property name="ncoverexplorer.console.exe.path" value="${path::combine(ncoverexplorer.dir.path, 'NCoverExplorer.Console.exe')}" />
 
     <!-- NUnit 2.2.3 (unit-testing) -->
 
-    <property name="my.tests" value="${path::combine(my.project.basedir, '../tests')}" />
-    <property name="my.nunit.dir.path" value="${path::combine(my.tools, 'NUnit 2.2.3')}" />
-    <property name="my.nunit.console.exe.path" value="${path::combine(my.nunit.dir.path, 'nunit-console.exe')}" />
+    <property name="tests" value="${path::combine(project.basedir, '../tests')}" />
+    <property name="nunit.dir.path" value="${path::combine(tools, 'NUnit 2.2.3')}" />
+    <property name="nunit.console.exe.path" value="${path::combine(nunit.dir.path, 'nunit-console.exe')}" />
 
     <!-- Output and Binaries -->
 
-    <property name="my.bin.dir.name" value="../bin" />
-    <property name="my.bin.dir.path" value="${path::combine(my.project.basedir, my.bin.dir.name)}" />
+    <property name="bin.dir.name" value="../bin" />
+    <property name="bin.dir.path" value="${path::combine(project.basedir, bin.dir.name)}" />
    
-    <property name="my.output.assembly.name" value="${my.project.name}" />
-    <property name="my.output.assembly.filename" value="${my.output.assembly.name + '.dll'}" />
+    <property name="output.assembly.name" value="${project.name}" />
+    <property name="output.assembly.filename" value="${output.assembly.name + '.dll'}" />
     
-    <property name="my.output.jsonassembly.name" value="${my.project.name + '.Json'}" />
-    <property name="my.output.jsonassembly.filename" value="${my.output.jsonassembly.name + '.dll'}" />
+    <property name="output.jsonassembly.name" value="${project.name + '.Json'}" />
+    <property name="output.jsonassembly.filename" value="${output.jsonassembly.name + '.dll'}" />
 
-    <property name="my.output.testassembly.name" value="${my.project.name + '.Tests'}" />
-    <property name="my.output.testassembly.filename" value="${my.output.testassembly.name + '.dll'}" />
+    <property name="output.testassembly.name" value="${project.name + '.Tests'}" />
+    <property name="output.testassembly.filename" value="${output.testassembly.name + '.dll'}" />
     
     <!-- Web -->
     
-    <property name="my.www.dir.path" value="${path::combine(my.project.basedir, '../www')}" />
+    <property name="www.dir.path" value="${path::combine(project.basedir, '../www')}" />
     
     <!-- Build -->
 
-    <property name="my.build.dir.path" value="${path::combine(my.project.basedir, '../build')}" />
+    <property name="build.dir.path" value="${path::combine(project.basedir, '../build')}" />
 
     <!-- Mailing -->
 
-    <property name="my.smtp.server" value="" />
+    <property name="smtp.server" value="" />
     <if test="${environment::variable-exists('SMTPSERVER')}">
-        <property name="my.smtp.server" value="${environment::get-variable('SMTPSERVER')}" />
+        <property name="smtp.server" value="${environment::get-variable('SMTPSERVER')}" />
     </if>
-    <property name="my.mail.from" value="buildserver@jayrock.org" />
-    <property name="my.mail.to" value="atif.aziz@skybow.com" />
+    <property name="mail.from" value="buildserver@jayrock.org" />
+    <property name="mail.to" value="atif.aziz@skybow.com" />
 
     <!-- Draco (build server) -->
 
@@ -88,13 +88,13 @@
     <!--======================== PROPERTY SECTION ========================-->
 
     <target name="clean">
-        <delete dir="${my.bin.dir.path}" failonerror="false" />
+        <delete dir="${bin.dir.path}" failonerror="false" />
         <delete dir="Jayrock/obj" failonerror="false" />
         <delete dir="Jayrock.Json/obj" failonerror="false" />
     </target>
 
     <target name="debug">
-        <property name="my.output.dir.path" value="${path::combine(my.bin.dir.path, 'Debug')}" />
+        <property name="output.dir.path" value="${path::combine(bin.dir.path, 'Debug')}" />
         <solution configuration="Debug">
             <projects>
                 <include name="Jayrock/Jayrock.csproj" />
@@ -104,7 +104,7 @@
     </target>
 
     <target name="release">
-        <property name="my.output.dir.path" value="${path::combine(my.bin.dir.path, 'Release')}" />
+        <property name="output.dir.path" value="${path::combine(bin.dir.path, 'Release')}" />
         <solution configuration="Release">
             <projects>
                 <include name="Jayrock/Jayrock.csproj" />
@@ -118,7 +118,7 @@
             <projects>
                 <include name="Jayrock/Jayrock.csproj" />
                 <include name="Jayrock.Json/Jayrock.Json.csproj" />
-                <include name="${path::combine(my.tests, 'Jayrock/Jayrock.Tests.csproj')}" />
+                <include name="${path::combine(tests, 'Jayrock/Jayrock.Tests.csproj')}" />
             </projects>
         </solution>
     </target>
@@ -133,26 +133,26 @@
 
     <target name="test" depends="compile-test">
         <call target="set-binpath-test" />
-        <property name="my.output.testassembly.path" value="${path::combine(my.output.dir.path, my.output.testassembly.filename)}" />
-        <exec program="${my.nunit.console.exe.path}" commandline='"${my.output.testassembly.path}"' />
+        <property name="output.testassembly.path" value="${path::combine(output.dir.path, output.testassembly.filename)}" />
+        <exec program="${nunit.console.exe.path}" commandline='"${output.testassembly.path}"' />
     </target>
     
     <target name="cover" depends="compile-test">
         <call target="set-binpath-test" />
-        <property name="my.output.testassembly.path" value="${path::combine(my.output.dir.path, my.output.testassembly.filename)}" />
-        <exec program="${my.ncover.console.exe.path}" commandline='/q /w "${my.output.dir.path}" /o "${my.project.basedir}/coverage.xml" /a ${my.output.assembly.name};${my.output.jsonassembly.name} /c "${my.nunit.console.exe.path}" "\"${my.output.testassembly.path}\""' />
-        <exec program="${my.ncoverexplorer.console.exe.path}" commandline='"${my.project.basedir}/coverage.xml" /html:coverage-report.html /report:2 /excluded /p:${my.project.name} /minCoverage:85 "/c:${my.project.basedir}/NCoverExplorer.config"' />
+        <property name="output.testassembly.path" value="${path::combine(output.dir.path, output.testassembly.filename)}" />
+        <exec program="${ncover.console.exe.path}" commandline='/q /w "${output.dir.path}" /o "${project.basedir}/coverage.xml" /a ${output.assembly.name};${output.jsonassembly.name} /c "${nunit.console.exe.path}" "\"${output.testassembly.path}\""' />
+        <exec program="${ncoverexplorer.console.exe.path}" commandline='"${project.basedir}/coverage.xml" /html:coverage-report.html /report:2 /excluded /p:${project.name} /minCoverage:85 "/c:${project.basedir}/NCoverExplorer.config"' />
         <call target="draco" if="${draco}" />
     </target>
     
     <target name="build" depends="test debug release">
         
-        <tstamp property="my.build.date" pattern="yyyy-MM-dd" />
-        <tstamp property="my.build.datetime" pattern="yyyy-MM-dd-HHmm" />
+        <tstamp property="build.date" pattern="yyyy-MM-dd" />
+        <tstamp property="build.datetime" pattern="yyyy-MM-dd-HHmm" />
 
         <!-- Delete files resulting from coverage and testing -->
         
-        <delete file="${path::combine(path::combine(my.bin.dir.path, 'Test'), 'TestResult.xml')}" failonerror="false" />
+        <delete file="${path::combine(path::combine(bin.dir.path, 'Test'), 'TestResult.xml')}" failonerror="false" />
         <delete file="coverage.xml" failonerror="false" />
         <delete file="coverage.xsl" failonerror="false" />
         
@@ -161,9 +161,9 @@
             service in ASP.NET web application is runnable. 
         -->
         
-        <mkdir dir="${path::combine(my.www.dir.path, 'bin')}" />
-        <copy todir="${path::combine(my.www.dir.path, 'bin')}" overwrite="true">
-            <fileset basedir="${my.output.dir.path}">
+        <mkdir dir="${path::combine(www.dir.path, 'bin')}" />
+        <copy todir="${path::combine(www.dir.path, 'bin')}" overwrite="true">
+            <fileset basedir="${output.dir.path}">
                 <include name="*.dll" />
                 <include name="*.pdb" />
             </fileset>
@@ -178,15 +178,15 @@
             (excluding those from unit tests), samples and the web.
         -->
 
-        <mkdir dir="${my.build.dir.path}" />
+        <mkdir dir="${build.dir.path}" />
 
-        <zip zipfile="${path::combine(my.build.dir.path, 'jayrock.zip')}" ziplevel="9">
+        <zip zipfile="${path::combine(build.dir.path, 'jayrock.zip')}" ziplevel="9">
             <fileset basedir="..">
                 <include name="**/*" />
                 <exclude name="build/**/*" />
             </fileset>
         </zip>
-        <zip zipfile="${path::combine(my.build.dir.path, 'jayrock-bin.zip')}" ziplevel="9">
+        <zip zipfile="${path::combine(build.dir.path, 'jayrock-bin.zip')}" ziplevel="9">
             <fileset basedir="..">
                 <include name="*" />
                 <include name="bin/**/*" />
@@ -196,13 +196,13 @@
             </fileset>
         </zip>
 
-        <tar destfile="${path::combine(my.build.dir.path, 'jayrock.tar.gz')}" compression="GZip">
+        <tar destfile="${path::combine(build.dir.path, 'jayrock.tar.gz')}" compression="GZip">
             <fileset basedir="..">
                 <include name="**/*" />
                 <exclude name="build/**/*" />
             </fileset>
         </tar>
-        <tar destfile="${path::combine(my.build.dir.path, 'jayrock-bin.tar.gz')}" compression="GZip">
+        <tar destfile="${path::combine(build.dir.path, 'jayrock-bin.tar.gz')}" compression="GZip">
             <fileset basedir="..">
                 <include name="*" />
                 <include name="bin/**/*" />
@@ -216,10 +216,10 @@
 
     <target name="daily-build" depends="build">
 
-        <property name="my.dailybuild.dir.path" value="${path::combine(my.build.dir.path, my.build.date)}" />
-        <mkdir dir="${my.dailybuild.dir.path}" />
-        <copy todir="${my.dailybuild.dir.path}">
-            <fileset basedir="${my.build.dir.path}">
+        <property name="dailybuild.dir.path" value="${path::combine(build.dir.path, build.date)}" />
+        <mkdir dir="${dailybuild.dir.path}" />
+        <copy todir="${dailybuild.dir.path}">
+            <fileset basedir="${build.dir.path}">
                 <include name="*.zip" />
                 <include name="*.gz" />
             </fileset>
@@ -228,22 +228,22 @@
     </target>
 
     <target name="draco">
-        <fail if="${string::get-length(my.smtp.server) == 0}" 
+        <fail if="${string::get-length(smtp.server) == 0}" 
             message="You must specify an SMTP server host value via the SMTPSERVER environment variable for this build target to succeed." />
         <mail 
-            from="${my.mail.from}" 
-            tolist="${my.mail.to}" 
+            from="${mail.from}" 
+            tolist="${mail.to}" 
             subject="Jayrock coverage for build ${build.id}"
             format="Html"
-            mailhost="${my.smtp.server}">
+            mailhost="${smtp.server}">
             <files>
-                <include name="${my.project.basedir}/coverage-report.htm" />
+                <include name="${project.basedir}/coverage-report.htm" />
             </files>
         </mail>
     </target>
     
     <target name="set-binpath-test">
-        <property name="my.output.dir.path" value="${path::combine(my.bin.dir.path, 'Test')}" />
+        <property name="output.dir.path" value="${path::combine(bin.dir.path, 'Test')}" />
     </target>
     
     <target name="props">
@@ -254,31 +254,31 @@
             Replace with: <echo message="\1 = ${\1}" />
         -->
 
-        <echo message="my.project.basedir = ${my.project.basedir}" />
-        <echo message="my.tools = ${my.tools}" />
+        <echo message="project.basedir = ${project.basedir}" />
+        <echo message="tools = ${tools}" />
         
-        <echo message="my.ncover.dir.path = ${my.ncover.dir.path}" />
-        <echo message="my.ncover.console.exe.path = ${my.ncover.console.exe.path}" />
+        <echo message="ncover.dir.path = ${ncover.dir.path}" />
+        <echo message="ncover.console.exe.path = ${ncover.console.exe.path}" />
 
-        <echo message="my.tests= ${my.tests}" />
-        <echo message="my.nunit.dir.path = ${my.nunit.dir.path}" />
-        <echo message="my.nunit.console.exe.path = ${my.nunit.console.exe.path}" />
+        <echo message="tests= ${tests}" />
+        <echo message="nunit.dir.path = ${nunit.dir.path}" />
+        <echo message="nunit.console.exe.path = ${nunit.console.exe.path}" />
 
-        <echo message="my.bin.dir.name = ${my.bin.dir.name}" />
-        <echo message="my.bin.dir.path = ${my.bin.dir.path}" />
+        <echo message="bin.dir.name = ${bin.dir.name}" />
+        <echo message="bin.dir.path = ${bin.dir.path}" />
        
-        <echo message="my.output.assembly.name = ${my.output.assembly.name}" />
-        <echo message="my.output.assembly.filename = ${my.output.assembly.filename}" />
-        <echo message="my.output.jsonassembly.name= ${my.output.jsonassembly.name}" />
-        <echo message="my.output.jsonassembly.filename = ${my.output.jsonassembly.filename}" />
-        <echo message="my.output.testassembly.name = ${my.output.testassembly.name}" />
-        <echo message="my.output.testassembly.filename = ${my.output.testassembly.filename}" />
+        <echo message="output.assembly.name = ${output.assembly.name}" />
+        <echo message="output.assembly.filename = ${output.assembly.filename}" />
+        <echo message="output.jsonassembly.name= ${output.jsonassembly.name}" />
+        <echo message="output.jsonassembly.filename = ${output.jsonassembly.filename}" />
+        <echo message="output.testassembly.name = ${output.testassembly.name}" />
+        <echo message="output.testassembly.filename = ${output.testassembly.filename}" />
         
-        <echo message="my.www.dir.path = ${my.www.dir.path}" />
+        <echo message="www.dir.path = ${www.dir.path}" />
 
-        <echo message="my.smtp.server = ${my.smtp.server}" />
-        <echo message="my.mail.from = ${my.mail.from}" />
-        <echo message="my.mail.to = ${my.mail.to}" />
+        <echo message="smtp.server = ${smtp.server}" />
+        <echo message="mail.from = ${mail.from}" />
+        <echo message="mail.to = ${mail.to}" />
 
         <echo message="draco = ${draco}" />
 
