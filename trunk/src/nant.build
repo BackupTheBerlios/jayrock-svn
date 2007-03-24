@@ -67,6 +67,7 @@
     <!-- Web -->
     
     <property name="www.dir.path" value="${path::combine(project.basedir, '../www')}" />
+    <property name="www.bin.dir.path" value="${path::combine(www.dir.path, 'bin')}" />
     
     <!-- Build -->
 
@@ -91,6 +92,14 @@
         <delete dir="${bin.dir.path}" failonerror="false" />
         <delete dir="Jayrock/obj" failonerror="false" />
         <delete dir="Jayrock.Json/obj" failonerror="false" />
+        <delete>
+            <fileset basedir="${www.bin.dir.path}">
+                <include name="Jayrock.dll" />
+                <include name="Jayrock.pdb" />
+                <include name="Jayrock.Json.dll" />
+                <include name="Jayrock.Json.pdb" />
+            </fileset>
+        </delete>
     </target>
 
     <target name="debug">
@@ -101,6 +110,7 @@
                 <include name="Jayrock.Json/Jayrock.Json.csproj" />
             </projects>
         </solution>
+        <call target="update-web" />
     </target>
 
     <target name="release">
@@ -111,6 +121,7 @@
                 <include name="Jayrock.Json/Jayrock.Json.csproj" />
             </projects>
         </solution>
+        <call target="update-web" />
     </target>
     
     <target name="compile-test">
@@ -156,19 +167,6 @@
         <delete file="coverage.xml" failonerror="false" />
         <delete file="coverage.xsl" failonerror="false" />
         
-        <!--
-            Copy the output assemblies from so that the demo
-            service in ASP.NET web application is runnable. 
-        -->
-        
-        <mkdir dir="${path::combine(www.dir.path, 'bin')}" />
-        <copy todir="${path::combine(www.dir.path, 'bin')}" overwrite="true">
-            <fileset basedir="${output.dir.path}">
-                <include name="*.dll" />
-                <include name="*.pdb" />
-            </fileset>
-        </copy>
-
         <!-- 
             Create the build directory and then create zips and compressed
             tars of the two versions of the project, one with sources and 
@@ -227,6 +225,18 @@
 
     </target>
 
+    <target name="update-web">
+        
+        <mkdir dir="${path::combine(www.dir.path, 'bin')}" />
+        <copy todir="${path::combine(www.dir.path, 'bin')}" overwrite="true">
+            <fileset basedir="${output.dir.path}">
+                <include name="*.dll" />
+                <include name="*.pdb" />
+            </fileset>
+        </copy>
+
+    </target>
+    
     <target name="draco">
         <fail if="${string::get-length(smtp.server) == 0}" 
             message="You must specify an SMTP server host value via the SMTPSERVER environment variable for this build target to succeed." />
@@ -275,6 +285,7 @@
         <echo message="output.testassembly.filename = ${output.testassembly.filename}" />
         
         <echo message="www.dir.path = ${www.dir.path}" />
+        <echo message="www.dir.path = ${www.bin.dir.path}" />
 
         <echo message="smtp.server = ${smtp.server}" />
         <echo message="mail.from = ${mail.from}" />
