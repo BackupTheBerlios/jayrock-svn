@@ -254,9 +254,6 @@
             Replace with: <echo message="\1 = ${\1}" />
         -->
 
-        <echo message="my.build.date = ${my.build.date}" />
-        <echo message="my.build.datetime = ${my.build.datetime}" />
-
         <echo message="my.project.basedir = ${my.project.basedir}" />
         <echo message="my.tools = ${my.tools}" />
         
