@@ -193,7 +193,7 @@ namespace Jayrock.Json
             JsonTextWriter writer = new JsonTextWriter();
             writer.PrettyPrint = true;
             writer.WriteFromReader(new JsonTextReader(new StringReader("{'menu':{'id':'file','value':'File:','popup':{'menuitem':[{'value':'New','onclick':'CreateNewDoc()'},{'value':'Open','onclick':'OpenDoc()'},{'value':'Close','onclick':'CloseDoc()'}]}}}")));
-            Assert.AreEqual(@"{ 
+            Assert.AreEqual(RewriteLines(@"{ 
     ""menu"" : { 
         ""id"" : ""file"",
         ""value"" : ""File:"",
@@ -210,13 +210,28 @@ namespace Jayrock.Json
             } ]
         }
     }
-}", writer.ToString());
+}"), writer.ToString() + Environment.NewLine);
         }
-
+        
         private static string WriteValue(object value)
         {
             JsonTextWriter writer = new JsonTextWriter(new StringWriter());
             JsonConvert.Export(value, writer);
+            return writer.ToString();
+        }
+
+        private static string RewriteLines(string s)
+        {
+            StringReader reader = new StringReader(s);
+            StringWriter writer = new StringWriter();
+
+            string line = reader.ReadLine();
+            while (line != null)
+            {
+                writer.WriteLine(line);
+                line = reader.ReadLine();
+            }
+            
             return writer.ToString();
         }
     }
