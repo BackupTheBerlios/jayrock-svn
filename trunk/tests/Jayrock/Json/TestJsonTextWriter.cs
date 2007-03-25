@@ -213,24 +213,6 @@ namespace Jayrock.Json
 }", writer.ToString());
         }
 
-        private sealed class StringArrayExporter : ExporterBase
-        {
-            public StringArrayExporter() : 
-                base(typeof(object[])) {}
-            
-            protected override void ExportValue(ExportContext context, object value, JsonWriter writer)
-            {
-                IEnumerable enumerable = (IEnumerable) value;
-
-                ArrayList list = new ArrayList();
-
-                foreach (object item in enumerable)
-                    list.Add(item == null ? null : item.ToString());
-
-                writer.WriteString(string.Join(",", (string[]) list.ToArray(typeof(string))));
-            }
-        }
-
         private static string WriteValue(object value)
         {
             JsonTextWriter writer = new JsonTextWriter(new StringWriter());
