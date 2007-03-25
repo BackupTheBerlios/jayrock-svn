@@ -1,4 +1,4 @@
-body
+﻿body
 {
     background-color: white;
 }
@@ -6,14 +6,15 @@ body
 #Content
 {
     font-family: arial;
-    font-size: small;
+    font-size: 100%;
     margin: 1em;
     padding: 1em;
 }
 
 pre, code, samp
 {
-    font-size: small;
+    font-family: Courier New, Monospace;
+    font-size: 100%;
 }
 
 #Content p, li, dt, dd, h1, h2
@@ -100,8 +101,8 @@ h3
 
 pre.code
 {
-    font-size: small;
-    font-family: Monospace;
+    font-family: Courier New, Monospace;
+    font-size: 100%;
     padding: 1em;
     border-bottom: solid 5px silver;
     border-top: solid 2px silver;
