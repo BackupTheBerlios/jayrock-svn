@@ -24,7 +24,8 @@
 
     <echo message="NOTE: Code coverage has been disabled in the &apos;all&apos; and" />
     <echo message="&apos;build&apos; targets since NCover appears to fail on some machines." />
-    <echo message="To get code coverage, build the &apos;cover&apos; target." />
+    <echo message="To get code coverage, build the &apos;cover&apos; target. Also coverage" />
+    <echo message="via NCover is only available on Win32 platforms." />
 
     <!--======================== PROPERTY SECTION ========================-->
 
@@ -49,11 +50,14 @@
     <property name="tests" value="${path::combine(project.basedir, '../tests')}" />
     <property name="nunit.dir.path" value="${path::combine(tools, 'NUnit 2.2.3')}" />
     <property name="nunit.console.exe.path" value="${path::combine(nunit.dir.path, 'nunit-console.exe')}" />
-
+    
     <!-- Output and Binaries -->
 
     <property name="bin.dir.name" value="../bin" />
     <property name="bin.dir.path" value="${path::combine(project.basedir, bin.dir.name)}" />
+    <property name="bin.debug.dir.path" value="${path::combine(bin.dir.path, 'Debug')}" />
+    <property name="bin.release.dir.path" value="${path::combine(bin.dir.path, 'Release')}" />
+    <property name="bin.test.dir.path" value="${path::combine(bin.dir.path, 'Test')}" />
    
     <property name="output.assembly.name" value="${project.name}" />
     <property name="output.assembly.filename" value="${output.assembly.name + '.dll'}" />
@@ -63,7 +67,8 @@
 
     <property name="output.testassembly.name" value="${project.name + '.Tests'}" />
     <property name="output.testassembly.filename" value="${output.testassembly.name + '.dll'}" />
-    
+    <property name="output.testassembly.path" value="${path::combine(bin.test.dir.path, output.testassembly.filename)}" />
+
     <!-- Web -->
     
     <property name="www.dir.path" value="${path::combine(project.basedir, '../www')}" />
@@ -103,35 +108,87 @@
     </target>
 
     <target name="debug">
-        <property name="output.dir.path" value="${path::combine(bin.dir.path, 'Debug')}" />
-        <solution configuration="Debug">
-            <projects>
-                <include name="Jayrock/Jayrock.csproj" />
-                <include name="Jayrock.Json/Jayrock.Json.csproj" />
-            </projects>
-        </solution>
+        <property name="output.dir.path" value="${bin.debug.dir.path}" />
+        <property name="debuginfo" value="Full" />
+        <property name="optimize" value="false" />
+        <property name="define.symbols" value="DEBUG,TRACE" />
+        <call target="compile" />
         <call target="update-web" />
     </target>
 
     <target name="release">
-        <property name="output.dir.path" value="${path::combine(bin.dir.path, 'Release')}" />
-        <solution configuration="Release">
-            <projects>
-                <include name="Jayrock/Jayrock.csproj" />
-                <include name="Jayrock.Json/Jayrock.Json.csproj" />
-            </projects>
-        </solution>
+        <property name="output.dir.path" value="${bin.release.dir.path}" />
+        <property name="debuginfo" value="PdbOnly" />
+        <property name="optimize" value="true" />
+        <property name="define.symbols" value="TRACE" />
+        <call target="compile" />
         <call target="update-web" />
     </target>
     
-    <target name="compile-test">
-        <solution configuration="Debug">
-            <projects>
-                <include name="Jayrock/Jayrock.csproj" />
-                <include name="Jayrock.Json/Jayrock.Json.csproj" />
-                <include name="${path::combine(tests, 'Jayrock/Jayrock.Tests.csproj')}" />
-            </projects>
-        </solution>
+    <target name="compile">
+
+        <property name="jayrock.json.dll.path" value="${path::combine(output.dir.path, 'Jayrock.Json.dll')}" />
+        <property name="jayrock.dll.path" value="${path::combine(output.dir.path, 'Jayrock.dll')}" />
+
+        <mkdir dir="${output.dir.path}" />
+
+        <csc target="library" debug="${debuginfo}" optimize="${optimize}" define="${define.symbols}" output="${jayrock.json.dll.path}">
+            <sources basedir="${project.basedir}">
+                <include name="Common/**/*.cs" />
+                <include name="Jayrock.Json/**/*.cs" />
+            </sources>
+            <references>
+                <include name="System.dll" />
+                <include name="System.Data.dll" />
+                <include name="System.Xml.dll" />
+                <include name="System.Web.dll" />
+            </references>
+        </csc>
+
+        <csc target="library" debug="${debuginfo}" define="${define.symbols}" output="${path::combine(output.dir.path, 'Jayrock.dll')}">
+            <sources basedir="${project.basedir}">
+                <include name="Common/**/*.cs" />
+                <include name="Jayrock/**/*.cs" />
+            </sources>
+            <references>
+                <include name="System.dll" />
+                <include name="System.Xml.dll" />
+                <include name="System.Web.dll" />
+                <include name="${jayrock.json.dll.path}" />
+            </references>
+        </csc>
+
+    </target>
+    
+    <target name="compile-test" depends="debug">
+
+        <copy todir="${bin.test.dir.path}" overwrite="true">
+            <fileset basedir="${bin.debug.dir.path}">
+                <include name="*.dll" />
+                <include name="*.pdb" />
+            </fileset>
+        </copy>
+
+        <mkdir dir="${bin.test.dir.path}" />
+
+        <csc target="library" debug="Enable" output="${output.testassembly.path}">
+            <sources basedir="../tests">
+                <include name="Jayrock/**/*.cs" />
+            </sources>
+            <references>
+                <include name="System.dll" />
+                <include name="System.Data.dll" />
+                <include name="System.Xml.dll" />
+                <include name="System.Web.dll" />
+                <include name="System.Web.dll" />
+                <include name="${jayrock.json.dll.path}" />
+                <include name="${jayrock.dll.path}" />
+                <include name="${path::combine(nunit.dir.path, 'nunit.framework.dll')}" />
+            </references>
+        </csc>
+
+        <copy file="${path::combine(nunit.dir.path, 'nunit.framework.dll')}" todir="${bin.test.dir.path}" />
+
     </target>
 
     <target name="all">
@@ -143,15 +200,14 @@
     </target>
 
     <target name="test" depends="compile-test">
-        <call target="set-binpath-test" />
-        <property name="output.testassembly.path" value="${path::combine(output.dir.path, output.testassembly.filename)}" />
-        <exec program="${nunit.console.exe.path}" commandline='"${output.testassembly.path}"' />
+        <nunit2>
+            <formatter type="Plain" />
+            <test assemblyname="${output.testassembly.path}" />
+        </nunit2>
     </target>
     
-    <target name="cover" depends="compile-test">
-        <call target="set-binpath-test" />
-        <property name="output.testassembly.path" value="${path::combine(output.dir.path, output.testassembly.filename)}" />
-        <exec program="${ncover.console.exe.path}" commandline='/q /w "${output.dir.path}" /o "${project.basedir}/coverage.xml" /a ${output.assembly.name};${output.jsonassembly.name} /c "${nunit.console.exe.path}" "\"${output.testassembly.path}\""' />
+    <target name="cover" depends="compile-test" if="${platform::is-win32()}">
+        <exec program="${ncover.console.exe.path}" commandline='/q /w "${bin.test.dir.path}" /o "${project.basedir}/coverage.xml" /a ${output.assembly.name};${output.jsonassembly.name} /c "${nunit.console.exe.path}" "\"${output.testassembly.path}\""' />
         <exec program="${ncoverexplorer.console.exe.path}" commandline='"${project.basedir}/coverage.xml" /html:coverage-report.html /report:2 /excluded /p:${project.name} /minCoverage:85 "/c:${project.basedir}/NCoverExplorer.config"' />
         <call target="draco" if="${draco}" />
     </target>
@@ -251,11 +307,7 @@
             </files>
         </mail>
     </target>
-    
-    <target name="set-binpath-test">
-        <property name="output.dir.path" value="${path::combine(bin.dir.path, 'Test')}" />
-    </target>
-    
+        
     <target name="props">
 
         <!-- 
@@ -276,6 +328,9 @@
 
         <echo message="bin.dir.name = ${bin.dir.name}" />
         <echo message="bin.dir.path = ${bin.dir.path}" />
+        <echo message="bin.debug.dir.path = ${bin.debug.dir.path}" />
+        <echo message="bin.release.dir.path = ${bin.release.dir.path}" />
+        <echo message="bin.test.dir.path = ${bin.test.dir.path}" />
        
         <echo message="output.assembly.name = ${output.assembly.name}" />
         <echo message="output.assembly.filename = ${output.assembly.filename}" />
