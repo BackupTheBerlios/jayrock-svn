@@ -91,7 +91,7 @@ namespace Jayrock.Json.Conversion.Converters
                 reader.Read(); // EndArray/String
             }
             
-            return collection;
+            return ReadReturning(reader, collection);
         }
 
         protected virtual string GetValueAsString(JsonReader reader)

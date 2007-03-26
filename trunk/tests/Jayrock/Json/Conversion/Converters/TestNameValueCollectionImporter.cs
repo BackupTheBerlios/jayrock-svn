@@ -38,7 +38,7 @@ namespace Jayrock.Json.Conversion.Converters
         [ Test ]
         public void ImportNull()
         {
-            Assert.IsNull(UncheckImport("null"));
+            Assert.IsNull(UncheckedImport("null"));
         }
         
         [ Test ]
@@ -106,16 +106,18 @@ namespace Jayrock.Json.Conversion.Converters
             Assert.AreEqual("end", reader.ReadString());
         }
 
-        private static NameValueCollection UncheckImport(string s)
+        private static NameValueCollection UncheckedImport(string s)
         {
             JsonReader reader = new JsonTextReader(new StringReader(s));
             IImporter importer = new NameValueCollectionImporter();
-            return (NameValueCollection) importer.Import(new ImportContext(), reader);
+            NameValueCollection import = (NameValueCollection) importer.Import(new ImportContext(), reader);
+            Assert.IsTrue(reader.EOF, "Reader must be at EOF.");
+            return import;
         }
 
         private static NameValueCollection Import(string s)
         {
-            object o = UncheckImport(s);
+            object o = UncheckedImport(s);
             Assert.IsNotNull(o);
             Assert.IsInstanceOfType(typeof(NameValueCollection), o);
             return (NameValueCollection) o;
