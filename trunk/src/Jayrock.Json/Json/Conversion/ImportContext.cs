@@ -171,6 +171,7 @@ namespace Jayrock.Json.Conversion
                     importers.Add(new AnyImporter());
                     importers.Add(new DictionaryImporter());
                     importers.Add(new ListImporter());
+                    importers.Add(new NameValueCollectionImporter());
                     
                     IList typeList = (IList) ConfigurationSettings.GetConfig("jayrock/json.conversion.importers");
 

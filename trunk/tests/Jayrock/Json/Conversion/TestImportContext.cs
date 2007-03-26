@@ -26,6 +26,7 @@ namespace Jayrock.Json.Conversion
 
     using System;
     using System.Collections;
+    using System.Collections.Specialized;
     using System.Threading;
     using Jayrock.Json.Conversion;
     using Jayrock.Json.Conversion.Converters;
@@ -59,6 +60,7 @@ namespace Jayrock.Json.Conversion
             AssertInStock(typeof(ImportAwareImporter), typeof(IList));
             AssertInStock(typeof(ImportAwareImporter), typeof(ImportableThing));
             AssertInStock(typeof(GuidImporter), typeof(Guid));
+            AssertInStock(typeof(NameValueCollectionImporter), typeof(NameValueCollection));
         }
 
         [ Test ]
