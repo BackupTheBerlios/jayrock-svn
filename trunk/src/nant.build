@@ -150,6 +150,9 @@
                 <include name="Common/**/*.cs" />
                 <include name="Jayrock/**/*.cs" />
             </sources>
+            <resources dynamicprefix="true">
+                <include name="Jayrock/json.js" asis="true" />
+            </resources>
             <references>
                 <include name="System.dll" />
                 <include name="System.Xml.dll" />
