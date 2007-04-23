@@ -129,9 +129,20 @@ namespace Jayrock.Json.Conversion
                 return new EnumImporter(type);
             
             if ((type.IsPublic || type.IsNestedPublic) && 
-                !type.IsPrimitive && type.GetConstructor(Type.EmptyTypes) != null)
+                !type.IsPrimitive && 
+                (type.IsValueType || type.GetConstructor(Type.EmptyTypes) != null))
             {
-                return new ComponentImporter(type);
+                if (type.IsValueType)
+                {
+                    CustomTypeDescriptor logicalType = new CustomTypeDescriptor(type);
+                
+                    if (logicalType.GetProperties().Count > 0)
+                        return new ComponentImporter(type, logicalType);
+                }
+                else
+                {
+                    return new ComponentImporter(type);
+                }
             }
 
             return null;

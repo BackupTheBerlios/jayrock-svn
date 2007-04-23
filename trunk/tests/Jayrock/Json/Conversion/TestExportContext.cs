@@ -71,6 +71,7 @@ namespace Jayrock.Json.Conversion
             AssertInStock(typeof(DataRowViewExporter), typeof(DataRowView));
             AssertInStock(typeof(StringExporter), typeof(Guid));
             AssertInStock(typeof(ByteArrayExporter), typeof(byte[]));
+            AssertInStock(typeof(ComponentExporter), typeof(ValueThing));
         }
 
         [ Test ]
@@ -142,6 +143,12 @@ namespace Jayrock.Json.Conversion
             {
                 throw new NotImplementedException();
             }
+        }
+        
+        public struct ValueThing
+        {
+            public int Field1;
+            public int Field2;
         }
     }
 }

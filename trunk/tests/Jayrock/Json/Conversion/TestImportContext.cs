@@ -61,6 +61,7 @@ namespace Jayrock.Json.Conversion
             AssertInStock(typeof(ImportAwareImporter), typeof(ImportableThing));
             AssertInStock(typeof(GuidImporter), typeof(Guid));
             AssertInStock(typeof(NameValueCollectionImporter), typeof(NameValueCollection));
+            AssertInStock(typeof(ComponentImporter), typeof(ValueThing));
         }
 
         [ Test ]
@@ -117,6 +118,12 @@ namespace Jayrock.Json.Conversion
             {
                 throw new NotImplementedException();
             }
+        }
+    
+        public struct ValueThing
+        {
+            public int Field1;
+            public int Field2;
         }
     }
 }
