@@ -188,6 +188,16 @@ namespace JayrockWeb
             return GetEmployeeSet().Tables[0].DefaultView[0];
         }
 
+        [ JsonRpcMethod("streamEmployees", Idempotent = true) ]
+        [ JsonRpcHelp("Returns the Northwind employees as a SqlDataReader and which gets streamed out as an array of record objects.") ]
+        public SqlDataReader StreamEmyploees()
+        {
+            SqlConnection connection = new SqlConnection(ConfigurationSettings.AppSettings["NorthwindConnectionString"]);
+            SqlCommand command = new SqlCommand("SELECT EmployeeID, LastName, FirstName, Title, TitleOfCourtesy, BirthDate, HireDate, Address, City, Region, PostalCode, Country, HomePhone, Extension, Notes, ReportsTo, PhotoPath FROM Employees", connection);
+            connection.Open();
+            return command.ExecuteReader(CommandBehavior.CloseConnection);
+        }
+
         [ JsonRpcMethod("getDropDown", Idempotent = true)]
         [ JsonRpcHelp("Returns a data-bound DropDownList to the client as HTML.") ]
         public Control EmployeeDropDown()

@@ -411,6 +411,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Json\Conversion\Converters\DbDataRecordExporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\Conversion\Converters\DictionaryExporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"

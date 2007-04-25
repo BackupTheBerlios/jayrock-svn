@@ -28,6 +28,7 @@ namespace Jayrock.Json.Conversion
     using System.Collections;
     using System.Collections.Specialized;
     using System.Data;
+    using System.Data.Common;
     using System.Web.UI;
     using System.Web.UI.HtmlControls;
     using Jayrock.Json.Conversion.Converters;
@@ -69,6 +70,7 @@ namespace Jayrock.Json.Conversion
             AssertInStock(typeof(DataRowExporter), typeof(DataRow));
             AssertInStock(typeof(DataRowExporter), typeof(MyDataRow));
             AssertInStock(typeof(DataRowViewExporter), typeof(DataRowView));
+            AssertInStock(typeof(DbDataRecordExporter), typeof(DbDataRecord));
             AssertInStock(typeof(StringExporter), typeof(Guid));
             AssertInStock(typeof(ByteArrayExporter), typeof(byte[]));
             AssertInStock(typeof(ComponentExporter), typeof(ValueThing));

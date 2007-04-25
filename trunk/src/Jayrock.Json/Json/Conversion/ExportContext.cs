@@ -200,6 +200,7 @@ namespace Jayrock.Json.Conversion
                     exporters.Add(new DataSetExporter());
                     exporters.Add(new DataTableExporter());
                     exporters.Add(new DataRowExporter());
+                    exporters.Add(new DbDataRecordExporter());
                     exporters.Add(new ControlExporter());
 
                     IList typeList = (IList) ConfigurationSettings.GetConfig("jayrock/json.conversion.exporters");
