@@ -568,11 +568,6 @@ WScript.Echo(s.greetings());
             supplied demo service. See <code><span class="fake-a">http://localhost/jayrock/demo.ashx</span></code>
             on your machine for a working copy of the demo.
         </p>
-        <p>
-            Note that some of the methods on the demo service, which illustrate data access,
-            assume that you have a default instance of <a href="http://www.microsoft.com/sql/">Microsoft
-                SQL Server</a> running on your machine with the Northwind database loaded.
-        </p>
         <h1>
             <a id="docs" name="docs">Documents</a></h1>
         <dl>

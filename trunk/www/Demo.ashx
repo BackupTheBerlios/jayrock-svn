@@ -5,7 +5,6 @@ namespace JayrockWeb
     using System;
     using System.Configuration;
     using System.Data;
-    using System.Data.SqlClient;
     using System.Collections;
     using System.Collections.Specialized;
     using System.Web;
@@ -136,14 +135,9 @@ namespace JayrockWeb
         [ JsonRpcHelp("Returns the Northwind employees as a DataSet.") ]
         public DataSet GetEmployeeSet()
         {
-            using (SqlConnection connection = new SqlConnection(ConfigurationSettings.AppSettings["NorthwindConnectionString"]))
-            {
-                SqlDataAdapter a = new SqlDataAdapter();
-                a.SelectCommand = new SqlCommand("SELECT EmployeeID, LastName, FirstName, Title, TitleOfCourtesy, BirthDate, HireDate, Address, City, Region, PostalCode, Country, HomePhone, Extension, Notes, ReportsTo, PhotoPath FROM Employees", connection);
-                DataSet ds = new DataSet();
-                a.Fill(ds, "Employee");
-                return ds;
-            }
+            DataSet ds = new DataSet();
+            ds.ReadXml(Server.MapPath("~/NorthwindData.xml"));
+            return ds;
         }
         
         [ JsonRpcMethod("getDataTable", Idempotent = true)]
@@ -188,15 +182,26 @@ namespace JayrockWeb
             return GetEmployeeSet().Tables[0].DefaultView[0];
         }
 
+        #if NET_2_0
+
+        //
+        // The following method has to is conditionally enabled because
+        // it makes use of System.Data.DataTableReader that was only 
+        // introduced with .NET Framework 2.0. To include this method
+        // in the compiled service, define the NET_2_0 symbol by 
+        // changing the directive above to read:
+        //
+        // <%@ WebHandler ... CompilerOptions="/d:NET_2_0" %>
+        //
+
         [ JsonRpcMethod("streamEmployees", Idempotent = true) ]
-        [ JsonRpcHelp("Returns the Northwind employees as a SqlDataReader and which gets streamed out as an array of record objects.") ]
-        public SqlDataReader StreamEmyploees()
+        [ JsonRpcHelp("Returns the Northwind employees as an IDataReader instance and which gets streamed out as an array of record objects.") ]
+        public IDataReader StreamEmyploees()
         {
-            SqlConnection connection = new SqlConnection(ConfigurationSettings.AppSettings["NorthwindConnectionString"]);
-            SqlCommand command = new SqlCommand("SELECT EmployeeID, LastName, FirstName, Title, TitleOfCourtesy, BirthDate, HireDate, Address, City, Region, PostalCode, Country, HomePhone, Extension, Notes, ReportsTo, PhotoPath FROM Employees", connection);
-            connection.Open();
-            return command.ExecuteReader(CommandBehavior.CloseConnection);
+            return GetEmployeeSet().CreateDataReader();
         }
+
+        #endif
 
         [ JsonRpcMethod("getDropDown", Idempotent = true)]
         [ JsonRpcHelp("Returns a data-bound DropDownList to the client as HTML.") ]
