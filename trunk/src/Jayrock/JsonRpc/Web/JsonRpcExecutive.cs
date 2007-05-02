@@ -58,7 +58,7 @@ namespace Jayrock.JsonRpc.Web
             // be more specific, like text/json.
             //
 
-            Response.ContentType = "text/plain";
+            Response.ContentType = "application/json";
 
             //
             // Delegate rest of the work to JsonRpcServer.

@@ -55,7 +55,7 @@ namespace Jayrock.JsonRpc.Web
             // be more specific, like text/json.
             //
 
-            Response.ContentType = "text/plain";
+            Response.ContentType = "application/json";
             
             //
             // Convert the query string into a call object.
