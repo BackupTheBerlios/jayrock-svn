@@ -24,8 +24,10 @@ namespace Jayrock.JsonRpc.Web
 {
     #region Imports
 
+    using System;
     using System.Collections.Specialized;
     using System.IO;
+    using System.Text.RegularExpressions;
     using System.Web;
     using Jayrock.Json;
     using Jayrock.Json.Conversion;
@@ -37,6 +39,22 @@ namespace Jayrock.JsonRpc.Web
         // TODO: Add IHttpAsyncHandler as soon as JsonRpcWorker supports 
         //       async processing.
     {
+        private static readonly Regex _jsonpex;
+
+        static JsonRpcGetProtocol()
+        {
+            _jsonpex = new Regex(@"^ 
+                     [a-z_] [a-z0-9_]+ ( \[ [0-9]+ \] )?
+                ( \. [a-z_] [a-z0-9_]+ ( \[ [0-9]+ \] )? )* $",
+                RegexOptions.IgnoreCase
+                | RegexOptions.Singleline
+                | RegexOptions.ExplicitCapture
+                | RegexOptions.IgnorePatternWhitespace
+                | RegexOptions.CultureInvariant
+                | RegexOptions.Compiled);
+            
+        }
+        
         public JsonRpcGetProtocol(IService service) : 
             base(service) {}
 
@@ -50,12 +68,31 @@ namespace Jayrock.JsonRpc.Web
                 throw new JsonRpcException(string.Format("HTTP {0} is not supported for RPC execution. Use HTTP GET or HEAD only.", httpMethod));
             }
 
+            string callback = Mask.NullString(Request.QueryString["jsonp"]);
+            bool padded = callback.Length > 0;
+            
             //
-            // Response will be plain text, though it would have been nice to 
-            // be more specific, like text/json.
+            // The response type depends on whether JSONP (JSON with 
+            // Padding) is in effect or not.
             //
 
-            Response.ContentType = "application/json";
+            Response.ContentType = padded ? "text/javascript" : "application/json";
+            
+            //
+            // Validate that the JSONP callback method conforms to the 
+            // allowed syntax. If not, issue a client-side exception
+            // that will certainly help to bring problem to light, even if
+            // a little too aggressively.
+            //
+            
+            if (padded)
+            {
+                if (!_jsonpex.IsMatch(callback))
+                {
+                    Response.Write("throw new Error('Invalid JSONP callback parameter value.');");
+                    Response.End();
+                }
+            }
             
             //
             // Convert the query string into a call object.
@@ -107,8 +144,22 @@ namespace Jayrock.JsonRpc.Web
             
             if (HttpRequestSecurity.IsLocal(Request))
                 dispatcher.SetLocalExecution();
-            
+                        
+            if (padded)
+            {
+                //
+                // For JSONP, see details here:
+                // http://bob.pythonmac.org/archives/2005/12/05/remote-json-jsonp/
+                //
+
+                Response.Write(callback);
+                Response.Write('(');
+            }
+
             dispatcher.Process(new StringReader(writer.ToString()), Response.Output);
+            
+            if (padded)
+                Response.Write(')');
         }
     }
 }
