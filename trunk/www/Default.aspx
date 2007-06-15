@@ -53,7 +53,7 @@
                 Jayrock 0.9 now!</a></li>
             <li><a href="http://groups.google.com/group/jayrock">Discuss Jayrock</a></li>
             <li><a href="ftp://ftp.berlios.de/pub/jayrock">Latest daily/developer build</a></li>
-            <li><a href="http://subtlety.errtheblog.com/O_o/187.xml">Commits Feed</a>, <a href="http://jayrock.berlios.de/coverage-report.html">Code coverage report</a></li>
+            <li><a href="http://feeds.feedburner.com/jayrockcommits">Commits Feed</a>, <a href="http://jayrock.berlios.de/coverage-report.html">Code coverage report</a></li>
             <li><a href="http://developer.berlios.de/projects/jayrock/">Project foundry @ BerliOS</a>, <a href="http://www.ohloh.net/projects/3887">Ohloh Metrics</a></li>
         </ul>
         <p>
