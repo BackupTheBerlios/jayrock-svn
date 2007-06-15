@@ -74,6 +74,7 @@ namespace Jayrock.Json.Conversion
             AssertInStock(typeof(StringExporter), typeof(Guid));
             AssertInStock(typeof(ByteArrayExporter), typeof(byte[]));
             AssertInStock(typeof(ComponentExporter), typeof(ValueThing));
+            AssertInStock(typeof(StringExporter), typeof(Uri));
         }
 
         [ Test ]
