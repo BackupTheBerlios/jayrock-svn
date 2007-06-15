@@ -231,7 +231,7 @@ namespace Jayrock.Json
         private void EnsureNotEnded()
         {
             if (_state.Bracket == JsonWriterBracket.Closed)
-                throw new JsonException("JSON text has already been ended.");
+                throw new JsonException("JSON data has already been ended.");
         }
 
         [ Serializable ]
