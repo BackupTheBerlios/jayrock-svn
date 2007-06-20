@@ -142,15 +142,54 @@ var JSON = function () {
         },
 /*
     Parse a JSON text, producing a JavaScript value.
-    It returns false if there is a syntax error.
+    If the text is not JSON parseable, then a SyntaxError is thrown.
 */
-        eval: function (text) {
-            try {
-                if (/^("(\\.|[^"\\\n\r])*?"|[,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t])+?$/.test(text)) {
-                    return eval('(' + text + ')');
+        eval: function (text, filter) {
+
+            function walk(k, v) {
+                var i;
+                if (v && typeof v === 'object') {
+                    for (i in v) {
+                        if (v.hasOwnProperty(i))
+                            v[i] = walk(i, v[i]);
+                    }
                 }
-            } catch (e) {
+                return filter(k, v);
             }
+
+            // Parsing happens in three stages. In the first stage, we run the
+            // text against a regular expression which looks for non-JSON
+            // characters. We are especially concerned with '()' and 'new'
+            // because they can cause invocation, and '=' because it can cause
+            // mutation. But just to be safe, we will reject all unexpected
+            // characters.
+
+            // We split the first stage into 3 regexp operations in order to
+            // work around crippling deficiencies in Safari's regexp engine.
+            // First we replace all backslash pairs with '@' (a non-JSON
+            // character). Second we delete all of the string literals. Third,
+            // we look to see if any non-JSON characters remain. If not, then
+            // the text is safe for eval.
+
+            text = text.replace(/\\./g, '@').replace(/"[^"\\\n\r]*"/g, '');
+
+            // In the second stage we use the eval function to compile the text
+            // into a JavaScript structure. The '{' operator is subject to a
+            // syntactic ambiguity in JavaScript: it can begin a block or an
+            // object literal. We wrap the text in parens to eliminate the
+            // ambiguity.
+
+            if (/^[,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t]*$/.test(text)) {
+                var result = eval('(' + text + ')');
+
+                // In the optional third stage, we recursively walk the new
+                // structure, passing each name/value pair to a filter 
+                // function for possible transformation.
+
+                if (typeof filter === 'function')
+                    result = walk('', result);
+            }
+
             throw new SyntaxError("eval");
         },
 
