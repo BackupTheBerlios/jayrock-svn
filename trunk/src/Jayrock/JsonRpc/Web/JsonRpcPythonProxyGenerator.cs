@@ -48,9 +48,6 @@ namespace Jayrock.JsonRpc.Web
         {
             if (writer == null)
                 throw new ArgumentNullException("writer");
-
-            if (writer == null)
-                throw new ArgumentNullException("writer");
             
             WriteProlog(writer);
             
