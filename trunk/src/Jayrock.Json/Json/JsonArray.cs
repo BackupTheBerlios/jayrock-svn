@@ -63,10 +63,9 @@ namespace Jayrock.Json
             get { return Count; }
         }
 
-        public JsonArray Put(object value)
+        public void Put(object value)
         {
             Add(value);
-            return this;
         }
 
         public virtual void Add(object value)
@@ -382,7 +381,7 @@ namespace Jayrock.Json
         }
 
         /// <summary>
-        /// Returns an array with specified elements inserted at the beginning.
+        /// Inserts the specified element at the beginning of the array.
         /// </summary>
         /// <remarks>
         /// The unshift method inserts elements into the start of an array, so
@@ -390,14 +389,13 @@ namespace Jayrock.Json
         /// list.
         /// </remarks>
 
-        public virtual JsonArray Unshift(object value)
+        public virtual void Unshift(object value)
         {
             InnerList.Insert(0, value);
-            return this;
         }
 
         /// <summary>
-        /// Returns an array with specified elements inserted at the beginning.
+        /// Inserts the specified elements at the beginning of the array.
         /// </summary>
         /// <remarks>
         /// The unshift method inserts elements into the start of an array, so
@@ -405,15 +403,13 @@ namespace Jayrock.Json
         /// list.
         /// </remarks>
 
-        public virtual JsonArray Unshift(params object[] values)
+        public virtual void Unshift(params object[] values)
         {
             if (values != null)
             {
                 foreach (object value in values)
                     Unshift(value);
             }
-
-            return this;
         }
     }
 }

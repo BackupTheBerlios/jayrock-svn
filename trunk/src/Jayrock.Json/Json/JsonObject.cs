@@ -116,7 +116,7 @@ namespace Jayrock.Json
         /// In contrast, the Put method replaces the previous value.
         /// </summary>
 
-        public virtual JsonObject Accumulate(string name, object value)
+        public virtual void Accumulate(string name, object value)
         {
             if (name == null)
                 throw new ArgumentNullException("name");
@@ -143,8 +143,6 @@ namespace Jayrock.Json
                     Put(name, values);
                 }
             }
-
-            return this;
         }
 
         /// <summary>
@@ -152,13 +150,12 @@ namespace Jayrock.Json
         /// then the key will be removed from the JObject if it is present.
         /// </summary>
 
-        public virtual JsonObject Put(string name, object value)
+        public virtual void Put(string name, object value)
         {
             if (name == null)
                 throw new ArgumentNullException("name");
 
             Dictionary[name] = value;
-            return this;
         }
 
         public virtual bool Contains(string name)
