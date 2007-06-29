@@ -20,52 +20,46 @@
 //
 #endregion
 
-namespace Jayrock.Json
+namespace Jayrock.Json.Conversion.Converters
 {
     #region Imports
 
-    using System;
-    using System.Data.SqlTypes;
-    using System.IO;
-    using System.Runtime.Serialization.Formatters.Binary;
-    using Jayrock.Json.Conversion;
     using NUnit.Framework;
 
     #endregion
 
     [ TestFixture ]
-    public class TestJsonNull
+    public class TestJsonNumberExporter
     {
         [ Test ]
-        public void Equality()
+        public void Superclass()
         {
-            Assert.IsTrue(JsonNull.Value.Equals(JsonNull.Value));
+            Assert.IsInstanceOfType(typeof(ExporterBase), new JsonNumberExporter());
         }
 
         [ Test ]
-        public void ReferenceEqualityPostDeserialization()
+        public void InputTypeIsJsonNumber()
         {
-            MemoryStream stream = new MemoryStream();
-            BinaryFormatter formatter = new BinaryFormatter();
-            formatter.Serialize(stream, JsonNull.Value);
-            stream.Position = 0;
-            object o = formatter.Deserialize(stream);
-            Assert.IsTrue(JsonNull.Value.Equals(o));
+            Assert.AreSame(typeof(JsonNumber), (new JsonNumberExporter()).InputType);
         }
 
         [ Test ]
-        public void LogicalEquality()
+        public void ExportDefault()
         {
-            Assert.IsTrue(JsonNull.LogicallyEquals(JsonNull.Value), "Equals self?");
-            Assert.IsFalse(JsonNull.LogicallyEquals(new object()), "Equals non-nullable?");
-            Assert.IsTrue(JsonNull.LogicallyEquals(null), "Equals null reference?");
-            Assert.IsTrue(JsonNull.LogicallyEquals(DBNull.Value), "Equals DBNull?");
+            Assert.AreEqual(0, (int) Export(new JsonNumber()).ReadNumber());
         }
 
         [ Test ]
-        public void StringRepresentation()
+        public void ExportNonZero()
         {
-            Assert.AreEqual("null", JsonNull.Value.ToString());
+            Assert.AreEqual(42, (int) Export(new JsonNumber("42")).ReadNumber());
+        }
+
+        private static JsonReader Export(JsonNumber value)
+        {
+            JsonRecorder writer = new JsonRecorder();
+            JsonConvert.Export(value, writer);
+            return writer.CreatePlayer();
         }
     }
 }

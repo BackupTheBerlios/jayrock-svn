@@ -142,15 +142,6 @@ namespace Jayrock.Json
             Assert.AreEqual(TypeCode.Object, n.GetTypeCode());
         }
         
-        [ Test ]
-        public void Export()
-        {
-            TestJsonWriter writer = new TestJsonWriter();
-            IJsonExportable number = Number("123");
-            number.Export(new ExportContext(), writer);
-            Assert.AreEqual("123", writer.WrittenValue);
-        }
-
         private static JsonNumber Number(string s)
         {
             return new JsonNumber(s);

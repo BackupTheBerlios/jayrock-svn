@@ -269,6 +269,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Json\Conversion\Converters\TestJsonNumberExporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\Conversion\Converters\TestListImporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"

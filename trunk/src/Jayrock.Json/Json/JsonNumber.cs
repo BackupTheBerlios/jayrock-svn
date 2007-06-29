@@ -43,7 +43,7 @@ namespace Jayrock.Json
     /// </remarks>
 
     [ Serializable ]
-    public struct JsonNumber : IConvertible, IJsonExportable
+    public struct JsonNumber : IConvertible
     {
         private readonly string _value;
 
@@ -279,17 +279,6 @@ namespace Jayrock.Json
         public static explicit operator DateTime(JsonNumber number)
         {
             return number.ToDateTime();
-        }
-
-        void IJsonExportable.Export(ExportContext context, JsonWriter writer)
-        {
-            if (context == null)
-                throw new ArgumentNullException("context");
-
-            if (writer == null)
-                throw new ArgumentNullException("writer");
-            
-            writer.WriteNumber(Value);
         }
     }
 }

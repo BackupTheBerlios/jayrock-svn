@@ -194,6 +194,7 @@ namespace Jayrock.Json.Conversion
                     exporters.Add(new StringExporter());
                     exporters.Add(new BooleanExporter());
                     exporters.Add(new DateTimeExporter());
+                    exporters.Add(new JsonNumberExporter());
                     exporters.Add(new ByteArrayExporter());
                     exporters.Add(new DataRowViewExporter());
                     exporters.Add(new NameValueCollectionExporter());

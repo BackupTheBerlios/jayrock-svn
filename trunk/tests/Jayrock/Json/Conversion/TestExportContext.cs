@@ -75,6 +75,7 @@ namespace Jayrock.Json.Conversion
             AssertInStock(typeof(ByteArrayExporter), typeof(byte[]));
             AssertInStock(typeof(ComponentExporter), typeof(ValueThing));
             AssertInStock(typeof(StringExporter), typeof(Uri));
+            AssertInStock(typeof(JsonNumberExporter), typeof(JsonNumber));
         }
 
         [ Test ]
@@ -100,6 +101,17 @@ namespace Jayrock.Json.Conversion
             context.Register(exporter);
             context = new ExportContext();
             Assert.AreNotSame(exporter, context.FindExporter(typeof(Thing)));
+        }
+        
+        [ Test ]
+        public void ExportJsonNullValue()
+        {
+            ExportContext context = new ExportContext();
+            JsonRecorder writer = new JsonRecorder();
+            context.Export(JsonNull.Value, writer);
+            JsonReader reader = writer.CreatePlayer();
+            reader.ReadNull();
+            Assert.IsTrue(reader.EOF);
         }
 
         private static void AssertInStock(Type expected, Type type)
