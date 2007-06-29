@@ -86,9 +86,6 @@ namespace Jayrock.JsonRpc.Web
             Debug.Assert(!url.IsFile);
             Debug.Assert(writer != null);
 
-            writer.WriteLine("// Proxy version 1.0");
-            writer.WriteLine();
-
             writer.Write("function ");
             writer.Write(service.Name);
             writer.WriteLine("(url)");
@@ -105,11 +102,10 @@ namespace Jayrock.JsonRpc.Web
 
                 if (method.Description.Length > 0)
                 {
-                    // TODO: What to do if /* and */ appear in the summary?
+                    // TODO: What to do if summary breaks over several lines?
 
-                    writer.Write("/* ");
-                    writer.Write(method.Description);
-                    writer.WriteLine(" */");
+                    writer.Write("// ");
+                    writer.WriteLine(method.Description);
                     writer.WriteLine();
                 }
 
@@ -129,7 +125,7 @@ namespace Jayrock.JsonRpc.Web
                 writer.WriteLine("{");
                 writer.Indent++;
 
-                writer.Write("return call(\"");
+                writer.Write("return rpc(new Call(\"");
                 writer.Write(method.Name);
                 writer.Write("\", [");
 
@@ -141,7 +137,7 @@ namespace Jayrock.JsonRpc.Web
                     writer.Write(parameter.Name);
                 }
 
-                writer.WriteLine(" ], callback);");
+                writer.WriteLine(" ], callback));");
 
                 writer.Indent--;
                 writer.WriteLine("}");
@@ -154,61 +150,63 @@ namespace Jayrock.JsonRpc.Web
             writer.WriteLine(@"var self = this;
     var nextId = 0;
 
-    function call(method, params, callback)
+    function Call(method, params, callback)
     {
-        var request = { id : nextId++, method : method, params : params };
-        return callback == null ? 
-            callSync(request) : callAsync(request, callback);
+        this.url = url;
+        this.callback = callback;
+        this.request = 
+        { 
+            id     : ++nextId, 
+            method : method, 
+            params : params 
+        };
     }
 
-    function callSync(request)
+    function rpc(call)
     {
-        var http = newHTTP();
-        http.open('POST', url, false, self.httpUserName, self.httpPassword);
-        setupHeaders(http, request.method);
-        http.send(JSON.stringify(request));
-        if (http.status != 200)
-            throw { message : http.status + ' ' + http.statusText, toString : function() { return message; } };
-        var response = JSON.eval(http.responseText);
-        if (response.error != null) throw response.error;
-        return response.result;
+        return self.channel != null && typeof(self.channel.rpc) === 'function' ?
+            self.channel.rpc(call) : call;
     }
 
-    function callAsync(request, callback)
-    {
-        var http = newHTTP();
-        http.open('POST', url, true, self.httpUserName, self.httpPassword);
-        setupHeaders(http, request.method);
-        http.onreadystatechange = function() { http_onreadystatechange(http, callback); }
-        http.send(JSON.stringify(request));
-        return request.id;
-    }
+    this.channel = new JayrockChannel();
 
-    function setupHeaders(http, method)
+    function JayrockChannel()
     {
-        http.setRequestHeader('Content-Type', 'text/plain; charset=utf-8');
-        http.setRequestHeader('X-JSON-RPC', method);
-    }
-
-    function http_onreadystatechange(sender, callback)
-    {
-        if (sender.readyState == /* complete */ 4)
+        this.rpc = function(call)
         {
-            var response = sender.status == 200 ? 
-                JSON.eval(sender.responseText) : {};
-            
-            response.xmlHTTP = sender;
-                
-            callback(response);
+            var async = typeof(call.callback) === 'function';
+            var xhr = newXHR();
+            xhr.open('POST', call.url, async, this.httpUserName, this.httpPassword);
+            xhr.setRequestHeader('Content-Type', this.contentType || 'application/json; charset=utf-8');
+            xhr.setRequestHeader('X-JSON-RPC', call.request.method);
+            if (async) xhr.onreadystatechange = function() { xhr_onreadystatechange(xhr, call.callback); }
+            xhr.send(JSON.stringify(call.request));
+            call.handler = xhr;
+            if (async) return call;
+            if (xhr.status != 200) throw new Error(xhr.status + ' ' + xhr.statusText);
+            var response = JSON.eval(xhr.responseText);
+            if (response.error != null) throw response.error;
+            return response.result;
         }
-    }
 
-    function newHTTP()
-    {
-        if (typeof(window) != 'undefined' && window.XMLHttpRequest)
-            return new XMLHttpRequest(); /* IE7, Safari 1.2, Mozilla 1.0/Firefox, and Netscape 7 */
-        else
-            return new ActiveXObject('Microsoft.XMLHTTP'); /* WSH and IE 5 to IE 6 */
+        function xhr_onreadystatechange(sender, callback)
+        {
+            if (sender.readyState == /* complete */ 4)
+            {
+                var response = sender.status == 200 ? 
+                    JSON.eval(sender.responseText) : {};
+                
+                callback(response, sender);
+            }
+        }
+
+        function newXHR()
+        {
+            if (typeof(window) !== 'undefined' && window.XMLHttpRequest)
+                return new XMLHttpRequest(); /* IE7, Safari 1.2, Mozilla 1.0/Firefox, and Netscape 7 */
+            else
+                return new ActiveXObject('Microsoft.XMLHTTP'); /* WSH and IE 5 to IE 6 */
+        }
     }");
     
             writer.Indent--;
@@ -228,6 +226,17 @@ namespace Jayrock.JsonRpc.Web
             Debug.Assert(url!= null);
             Debug.Assert(!url.IsFile);
             Debug.Assert(writer != null);
+            
+            if (JsonRpcTrace.TraceWarning)
+            {
+                writer.WriteLine(@"// *** O B S O L E T E *** 
+//
+// You are using version 2 of the JavaScript proxy that MAY 
+// be obsoleted and removed in the next release. The functionality has 
+// been integrated into the original proxy version via the channel 
+// property on the JavaScript proxy.
+");
+            }
  
             writer.WriteLine("// Proxy version 2.0");
             writer.WriteLine();
