@@ -171,26 +171,28 @@ var JSON = function () {
             // we look to see if any non-JSON characters remain. If not, then
             // the text is safe for eval.
 
-            text = text.replace(/\\./g, '@').replace(/"[^"\\\n\r]*"/g, '');
-
-            // In the second stage we use the eval function to compile the text
-            // into a JavaScript structure. The '{' operator is subject to a
-            // syntactic ambiguity in JavaScript: it can begin a block or an
-            // object literal. We wrap the text in parens to eliminate the
-            // ambiguity.
-
-            if (/^[,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t]*$/.test(text)) {
-                var result = eval('(' + text + ')');
-
-                // In the optional third stage, we recursively walk the new
-                // structure, passing each name/value pair to a filter 
-                // function for possible transformation.
-
-                if (typeof filter === 'function')
-                    result = walk('', result);
+            if (!/^[,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t]*$/.test(text.
+                replace(/\\./g, '@').
+                replace(/"[^"\\\n\r]*"/g, ''))) {
+                throw new SyntaxError("eval");
             }
 
-            throw new SyntaxError("eval");
+            // In the second stage we use the eval function to compile the 
+            // text into a JavaScript structure. The '{' operator is subject 
+            // to a syntactic ambiguity in JavaScript: it can begin a block 
+            // or an object literal. We wrap the text in parens to eliminate 
+            // the ambiguity.
+
+            var result = eval('(' + text + ')');
+
+            // In the optional third stage, we recursively walk the new
+            // structure, passing each name/value pair to a filter function 
+            // for possible transformation.
+
+            if (typeof filter === 'function')
+                result = walk('', result);
+
+            return result;
         },
 
         parse: function (text) {

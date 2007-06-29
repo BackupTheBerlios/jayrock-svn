@@ -5,13 +5,25 @@ Math.floor(c/16).toString(16)+
 (c%16).toString(16);});}
 return'"'+x+'"';},object:function(x){if(x){var a=[],b,f,i,l,v;if(x instanceof Array){a[0]='[';l=x.length;for(i=0;i<l;i+=1){v=x[i];f=s[typeof v];if(f){v=f(v);if(typeof v=='string'){if(b){a[a.length]=',';}
 a[a.length]=v;b=true;}}}
-a[a.length]=']';}else if(x instanceof Object){a[0]='{';for(i in x){v=x[i];f=s[typeof v];if(f){v=f(v);if(typeof v=='string'){if(b){a[a.length]=',';}
+a[a.length]=']';}else if(x instanceof Date){function p(n){return n<10?'0'+n:n;};var tz=x.getTimezoneOffset();if(tz!=0){var tzh=Math.floor(Math.abs(tz)/60);var tzm=Math.abs(tz)%60;tz=(tz<0?'+':'-')+p(tzh)+':'+p(tzm);}
+else{tz='Z';}
+return'"'+
+x.getFullYear()+'-'+
+p(x.getMonth()+1)+'-'+
+p(x.getDate())+'T'+
+p(x.getHours())+':'+
+p(x.getMinutes())+':'+
+p(x.getSeconds())+tz+'"';}else if(x instanceof Object){a[0]='{';for(i in x){v=x[i];f=s[typeof v];if(f){v=f(v);if(typeof v=='string'){if(b){a[a.length]=',';}
 a.push(s.string(i),':',v);b=true;}}}
 a[a.length]='}';}else{return;}
 return a.join('');}
 return'null';}};return{copyright:'(c)2005 JSON.org',license:'http://www.crockford.com/JSON/license.html',stringify:function(v){var f=s[typeof v];if(f){v=f(v);if(typeof v=='string'){return v;}}
-return null;},eval:function(text){try{if(/^("(\\.|[^"\\\n\r])*?"|[,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t])+?$/.test(text)){return eval('('+text+')');}}catch(e){}
-throw new SyntaxError("eval");},parse:function(text){var at=0;var ch=' ';function error(m){throw{name:'JSONError',message:m,at:at-1,text:text};}
+return null;},eval:function(text,filter){function walk(k,v){var i;if(v&&typeof v==='object'){for(i in v){if(v.hasOwnProperty(i))
+v[i]=walk(i,v[i]);}}
+return filter(k,v);}
+if(!/^[,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t]*$/.test(text.replace(/\\./g,'@').replace(/"[^"\\\n\r]*"/g,''))){throw new SyntaxError("eval");}
+var result=eval('('+text+')');if(typeof filter==='function')
+result=walk('',result);return result;},parse:function(text){var at=0;var ch=' ';function error(m){throw{name:'JSONError',message:m,at:at-1,text:text};}
 function next(){ch=text.charAt(at);at+=1;return ch;}
 function white(){while(ch){if(ch<=' '){next();}else if(ch=='/'){switch(next()){case'/':while(next()&&ch!='\n'&&ch!='\r'){}
 break;case'*':next();for(;;){if(ch){if(ch=='*'){if(next()=='/'){next();break;}}else{next();}}else{error("Unterminated comment");}}
