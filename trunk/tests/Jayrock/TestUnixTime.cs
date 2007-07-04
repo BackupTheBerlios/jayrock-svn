@@ -48,7 +48,7 @@ namespace Jayrock
         }
         
         [ Test ]
-        public void Conversions()
+        public void IntegralConversions()
         {
             DateTime t1 = new DateTime(2006, 7, 17, 10, 56, 56);
             const long u1 = 1153133816;
@@ -61,6 +61,37 @@ namespace Jayrock
             
             Assert.AreEqual(u1, UnixTime.ToInt64(t1.ToLocalTime()));
             Assert.AreEqual(u2, UnixTime.ToInt64(t2.ToLocalTime()));
+        }
+
+        [ Test ]
+        public void Milliseconds()
+        {
+            DateTime t1 = new DateTime(2006, 7, 17, 10, 56, 56, 456);
+            const double u1 = 1153133816.456;
+            
+            DateTime t2 = new DateTime(2006, 7, 17, 11, 00, 44, 567);
+            const double u2 = 1153134044.567;
+
+            DateTime ut1 = UnixTime.ToDateTime(u1).ToUniversalTime();
+            Assert.AreEqual(t1, ut1, "ms expected = {0}, ms actual = {1}", t1.Millisecond, ut1.Millisecond);
+            
+            DateTime ut2 = UnixTime.ToDateTime(u2).ToUniversalTime();
+            Assert.AreEqual(t2, ut2, "ms expected = {0}, ms actual = {1}", t2.Millisecond, ut2.Millisecond);
+
+            Assert.AreEqual(u1, UnixTime.ToDouble(t1.ToLocalTime()), 0.0001);
+            Assert.AreEqual(u2, UnixTime.ToDouble(t2.ToLocalTime()), 0.0001);
+        }
+
+        [ Test, ExpectedException(typeof(ArgumentOutOfRangeException)) ]
+        public void CannotSpecifyNegativeMilliseconds()
+        {
+            UnixTime.ToDateTime(0, -1);
+        }
+ 
+        [ Test, ExpectedException(typeof(ArgumentOutOfRangeException)) ]
+        public void CannotOverflowMilliseconds()
+        {
+            UnixTime.ToDateTime(0, 1000);
         }
     }
 }

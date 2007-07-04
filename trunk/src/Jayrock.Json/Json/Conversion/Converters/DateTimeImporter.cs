@@ -58,11 +58,11 @@ namespace Jayrock.Json.Conversion.Converters
 
             string text = reader.Text;
 
-            long time;
+            double time;
 
             try
             {
-                time = Convert.ToInt64(text, CultureInfo.InvariantCulture);
+                time = Convert.ToDouble(text, CultureInfo.InvariantCulture);
             }
             catch (FormatException e)
             {

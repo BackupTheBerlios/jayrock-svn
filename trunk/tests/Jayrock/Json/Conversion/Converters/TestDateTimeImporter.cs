@@ -52,6 +52,12 @@ namespace Jayrock.Json.Conversion.Converters
             AssertImport(new DateTime(2006, 7, 17, 10, 56, 56), "1153133816", true);
         }
 
+        [ Test ]
+        public void ImportFractionalNumber()
+        {
+            AssertImport(new DateTime(2006, 7, 17, 10, 56, 56, 456), "1153133816.456", true);
+        }
+
         [ Test, ExpectedException(typeof(JsonException)) ]
         public void CannotImportTrue()
         {
@@ -77,15 +83,9 @@ namespace Jayrock.Json.Conversion.Converters
         }
         
         [ Test, ExpectedException(typeof(JsonException)) ]
-        public void CannotImportUsingFractionalNumber()
-        {
-            Import("99.99");
-        }
-
-        [ Test, ExpectedException(typeof(JsonException)) ]
         public void CannotImportOutOfRangeNumber()
         {
-            Import(new string('9', 100));
+            Import(new string('9', 309));
         }
 
         [ Test, ExpectedException(typeof(JsonException)) ]
