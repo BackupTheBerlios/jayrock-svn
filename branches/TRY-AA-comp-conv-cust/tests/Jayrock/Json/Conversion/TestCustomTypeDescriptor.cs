@@ -99,19 +99,6 @@ namespace Jayrock.Json.Conversion
             Assert.AreEqual(">>test", thing.Text);
         }
 
-        [ Test, Ignore() ]
-        public void PropertyAttributes()
-        {
-            CustomTypeDescriptor thingType = new CustomTypeDescriptor(typeof(Thing));
-            PropertyDescriptorCollection properties = thingType.GetProperties();
-            
-            Assert.AreEqual(0, properties.Find("Field1", true).Attributes.Count);
-            
-            AttributeCollection attributes = properties.Find("Field3", true).Attributes;
-            Assert.AreEqual(1, attributes.Count);
-            Assert.IsInstanceOfType(typeof(DummyAttribute), attributes[0]);
-        }
-        
         public sealed class Thing
         {
             public object Field1;
