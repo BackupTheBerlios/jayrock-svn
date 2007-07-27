@@ -107,6 +107,7 @@ namespace Jayrock.Json.Conversion
             {
                 FieldInfo field = member as FieldInfo;
                 string name = names != null && index < names.Length ? names[index] : null;
+                TypeMemberDescriptor descriptor = null;
 
                 if (field != null)
                 {
@@ -119,7 +120,7 @@ namespace Jayrock.Json.Conversion
                         throw new ArgumentException(null, "fields");
                 
                     if (!field.IsInitOnly && !field.IsLiteral)
-                        logicalProperties.Add(new TypeFieldDescriptor(field, name));
+                        descriptor = new TypeFieldDescriptor(field, name);
                 }
                 else
                 {
@@ -135,12 +136,18 @@ namespace Jayrock.Json.Conversion
                             throw new ArgumentException(null, "properties");
 
                         if (property.CanRead && property.CanWrite)
-                            logicalProperties.Add(new TypePropertyDescriptor(property, name));
+                            descriptor = new TypePropertyDescriptor(property, name);
                     }
                     else
                     {
                         throw new ArgumentException(null, "members");
                     }
+                }
+                
+                if (descriptor != null)
+                {
+                    descriptor.ApplyCustomizations();
+                    logicalProperties.Add(descriptor);
                 }
                 
                 index++;
@@ -218,10 +225,21 @@ namespace Jayrock.Json.Conversion
         /// a type member (<see cref="MemberInfo"/>).
         /// </summary>
 
-        private abstract class TypeMemberDescriptor : PropertyDescriptor
+        private abstract class TypeMemberDescriptor : PropertyDescriptor, IPropertyImpl, IPropertyCustomization
         {
-            protected TypeMemberDescriptor(MemberInfo member, string name) : 
-                base(ChooseName(name, member.Name), null) {}
+            private string _customName;
+            private int _customNameHashCode;
+            private Type _propertyType;
+            private IPropertyImpl _impl;
+            
+            protected TypeMemberDescriptor(MemberInfo member, string name , Type propertyType) : 
+                base(ChooseName(name, member.Name), null)
+            {
+                Debug.Assert(propertyType != null);
+                
+                _impl = this;
+                _propertyType = propertyType;
+            }
 
             protected abstract MemberInfo Member { get; }
                 
@@ -230,7 +248,7 @@ namespace Jayrock.Json.Conversion
                 TypeMemberDescriptor other = obj as TypeMemberDescriptor;
                 return other != null && other.Member.Equals(Member);
             }
-
+            
             public override int GetHashCode() { return Member.GetHashCode(); }
             public override bool IsReadOnly { get { return false; } }
             public override void ResetValue(object component) {}
@@ -238,9 +256,75 @@ namespace Jayrock.Json.Conversion
             public override bool ShouldSerializeValue(object component) { return true; }
             public override Type ComponentType { get { return Member.DeclaringType; } }
                 
-            public abstract override Type PropertyType { get; }
-            public abstract override object GetValue(object component);
-            public abstract override void SetValue(object component, object value);
+            public override Type PropertyType 
+            { 
+                get { return _propertyType; }
+            }
+
+            public override object GetValue(object component)
+            {
+                return _impl.GetValue(component);
+            }
+
+            public override void SetValue(object component, object value)
+            {
+                _impl.SetValue(component, value);
+            }
+
+            public override string Name
+            {
+                get { return _customName != null ? _customName : base.Name; }
+            }
+
+            protected override int NameHashCode
+            {
+                get { return _customName != null ? _customNameHashCode : base.NameHashCode; }
+            }
+
+            protected abstract object GetValueImpl(object component);
+            protected abstract void SetValueImpl(object component, object value);
+
+            object IPropertyImpl.GetValue(object obj)
+            {
+                return GetValueImpl(obj);
+            }
+
+            void IPropertyImpl.SetValue(object obj, object value)
+            {
+                SetValueImpl(obj, value);
+            }
+
+            void IPropertyCustomization.SetName(string name)
+            {
+                // FIXME: Check args
+                _customName = name;
+                _customNameHashCode = name.GetHashCode();
+            }
+
+            void IPropertyCustomization.SetType(Type type)
+            {
+                // FIXME: Check args
+                _propertyType = type;
+            }
+
+            IPropertyImpl IPropertyCustomization.OverrideImpl(IPropertyImpl impl)
+            {
+                // FIXME: Check args
+                IPropertyImpl baseImpl = _impl;
+                _impl = impl;
+                return baseImpl;
+            }
+
+            internal void ApplyCustomizations()
+            {
+                IPropertyDescriptorCustomization[] customizations = (IPropertyDescriptorCustomization[]) Member.GetCustomAttributes(typeof(IPropertyDescriptorCustomization), true);
+                
+                if (customizations == null)
+                    return;
+
+                foreach (IPropertyDescriptorCustomization customization in customizations)
+                    customization.Apply(this);
+            }
 
             private static string ChooseName(string propsedName, string baseName)
             {
@@ -269,7 +353,7 @@ namespace Jayrock.Json.Conversion
             private readonly FieldInfo _field;
 
             public TypeFieldDescriptor(FieldInfo field, string name) : 
-                base(field, name)
+                base(field, name, field.FieldType)
             {
                 _field = field;
             }
@@ -278,18 +362,13 @@ namespace Jayrock.Json.Conversion
             {
                 get { return _field; }
             }
-                
-            public override Type PropertyType
-            {
-                get { return _field.FieldType; }
-            }
 
-            public override object GetValue(object component)
+            protected override object GetValueImpl(object component)
             {
                 return _field.GetValue(component);
             }
 
-            public override void SetValue(object component, object value) 
+            protected override void SetValueImpl(object component, object value) 
             {
                 _field.SetValue(component, value); 
                 OnValueChanged(component, EventArgs.Empty);
@@ -306,7 +385,7 @@ namespace Jayrock.Json.Conversion
             private readonly PropertyInfo _property;
 
             public TypePropertyDescriptor(PropertyInfo property, string name) : 
-                base(property, name)
+                base(property, name, property.PropertyType)
             {
                 _property = property;
             }
@@ -316,17 +395,12 @@ namespace Jayrock.Json.Conversion
                 get { return _property; }
             }
 
-            public override Type PropertyType
-            {
-                get { return _property.PropertyType; }
-            }
-
-            public override object GetValue(object component)
+            protected override object GetValueImpl(object component)
             {
                 return _property.GetValue(component, null);
             }
 
-            public override void SetValue(object component, object value) 
+            protected override void SetValueImpl(object component, object value) 
             {
                 _property.SetValue(component, value, null); 
                 OnValueChanged(component, EventArgs.Empty);

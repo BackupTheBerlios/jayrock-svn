@@ -331,6 +331,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Json\Conversion\PropertyCustomization.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\Conversion\Converters\AnyImporter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
