@@ -45,58 +45,93 @@ namespace Jayrock.Json.Conversion
         }
 
         [ Test ]
-        public void PropertyDescriptorsSupportCustomization()
+        public void TypeFieldDescriptorSupportsCustomization()
         {
-            CustomTypeDescriptor thingType = new CustomTypeDescriptor(typeof(Thing));
-            PropertyDescriptorCollection properties = thingType.GetProperties();
-            Assert.AreNotEqual(0, properties.Count);
-            foreach (PropertyDescriptor property in properties)
-                Assert.IsInstanceOfType(typeof(IPropertyCustomization), property, "Property = {0}", property.Name);
+            PropertyDescriptor property = CustomTypeDescriptor.CreateProperty(typeof(Thing).GetField("Field1"));
+            Assert.IsInstanceOfType(typeof(IPropertyCustomization), property);
+        }
+
+        [ Test ]
+        public void TypePropertyDescriptorSupportsCustomization()
+        {
+            PropertyDescriptor property = CustomTypeDescriptor.CreateProperty(typeof(Thing).GetProperty("Property1"));
+            Assert.IsInstanceOfType(typeof(IPropertyCustomization), property);
         }
 
         [ Test ]
         public void PropertyNameCustomization()
         {
-            CustomTypeDescriptor thingType = new CustomTypeDescriptor(typeof(CustomizedThing));
-            PropertyDescriptorCollection properties = thingType.GetProperties();
-            Assert.AreEqual(3, properties.Count);
-            PropertyDescriptor property = properties[0];
-            Assert.AreEqual("FIELD", property.Name);
-            Assert.AreSame(property, properties.Find("FIELD", false));
+            PropertyDescriptor property = CustomTypeDescriptor.CreateProperty(typeof(Thing).GetField("Field1"));
+            Assert.AreEqual("Field1", property.Name);
+            IPropertyCustomization customization = (IPropertyCustomization) property;
+            customization.SetName("FIELD1");
+            Assert.AreEqual("FIELD1", property.Name);
+        }
+
+        [ Test, ExpectedException(typeof(ArgumentNullException)) ]
+        public void CannotCustomizePropertyWithNullName()
+        {
+            PropertyDescriptor property = CustomTypeDescriptor.CreateProperty(typeof(Thing).GetField("Field1"));
+            ((IPropertyCustomization) property).SetName(null);
+        }
+
+        [ Test, ExpectedException(typeof(ArgumentException)) ]
+        public void CannotCustomizePropertyWithEmptyName()
+        {
+            PropertyDescriptor property = CustomTypeDescriptor.CreateProperty(typeof(Thing).GetField("Field1"));
+            ((IPropertyCustomization) property).SetName(string.Empty);
         }
 
         [ Test ]
         public void PropertyTypeCustomization()
         {
-            CustomTypeDescriptor thingType = new CustomTypeDescriptor(typeof(CustomizedThing));
-            PropertyDescriptorCollection properties = thingType.GetProperties();
-            PropertyDescriptor time = properties.Find("time", false);
-            Assert.IsNotNull(time);
-            Assert.AreEqual(typeof(string), time.PropertyType);
+            PropertyDescriptor property = CustomTypeDescriptor.CreateProperty(typeof(Thing).GetField("Field1"));
+            Assert.AreEqual(typeof(object), property.PropertyType);
+            IPropertyCustomization customization = (IPropertyCustomization) property;
+            customization.SetType(typeof(string));
+            Assert.AreEqual(typeof(string), property.PropertyType);
+        }
+
+        [ Test, ExpectedException(typeof(ArgumentNullException)) ]
+        public void CannotCustomizePropertyWithNullType()
+        {
+            PropertyDescriptor property = CustomTypeDescriptor.CreateProperty(typeof(Thing).GetField("Field1"));
+            ((IPropertyCustomization) property).SetType(null);
         }
 
         [ Test ]
         public void PropertyGetterCustomization()
         {
-            CustomTypeDescriptor thingType = new CustomTypeDescriptor(typeof(CustomizedThing));
-            PropertyDescriptorCollection properties = thingType.GetProperties();
-            PropertyDescriptor text = properties.Find("text", false);
-            Assert.IsNotNull(text);
-            CustomizedThing thing = new CustomizedThing();
-            thing.Text = "test";
-            Assert.AreEqual("<<test", text.GetValue(thing));
+            Thing thing = new Thing();
+            PropertyDescriptor property = CustomTypeDescriptor.CreateProperty(typeof(Thing).GetField("Field1"));
+            const string testValue = "test";
+            thing.Field1 = testValue;
+            Assert.AreEqual(testValue, thing.Field1);
+            IPropertyCustomization customization = (IPropertyCustomization) property;
+            FakePropertyImpl impl = new FakePropertyImpl();
+            impl.BaseImpl = customization.OverrideImpl(impl);
+            Assert.IsNotNull(impl.BaseImpl);
+            Assert.AreEqual("<<" + testValue, property.GetValue(thing));
+        }
+
+        [ Test, ExpectedException(typeof(ArgumentNullException)) ]
+        public void CannotCustomizePropertyWithNullImpl()
+        {
+            PropertyDescriptor property = CustomTypeDescriptor.CreateProperty(typeof(Thing).GetField("Field1"));
+            ((IPropertyCustomization) property).OverrideImpl(null);
         }
 
         [ Test ]
         public void PropertySetterCustomization()
         {
-            CustomTypeDescriptor thingType = new CustomTypeDescriptor(typeof(CustomizedThing));
-            PropertyDescriptorCollection properties = thingType.GetProperties();
-            PropertyDescriptor text = properties.Find("text", false);
-            Assert.IsNotNull(text);
-            CustomizedThing thing = new CustomizedThing();
-            text.SetValue(thing, "test");
-            Assert.AreEqual(">>test", thing.Text);
+            Thing thing = new Thing();
+            PropertyDescriptor property = CustomTypeDescriptor.CreateProperty(typeof(Thing).GetField("Field1"));
+            Assert.IsNull(thing.Field1);
+            IPropertyCustomization customization = (IPropertyCustomization) property;
+            FakePropertyImpl impl = new FakePropertyImpl();
+            impl.BaseImpl = customization.OverrideImpl(impl);
+            property.SetValue(thing, "test");
+            Assert.AreEqual(">>test", thing.Field1);
         }
 
         public sealed class Thing
@@ -112,54 +147,19 @@ namespace Jayrock.Json.Conversion
         
         [ AttributeUsage(AttributeTargets.Field)]
         private sealed class DummyAttribute : Attribute {}
- 
-        public sealed class CustomizedThing
+
+        private sealed class FakePropertyImpl : IPropertyImpl
         {
-            [UpperName] public object Field;
-            [StringType] public DateTime Time;
-            [Chevron] public string Text;
-        }
-
-        [ AttributeUsage(AttributeTargets.Field)]
-        private sealed class UpperNameAttribute : Attribute, IPropertyDescriptorCustomization
-        {
-            public void Apply(PropertyDescriptor property)
-            {
-                IPropertyCustomization customization = (IPropertyCustomization) property;
-                customization.SetName(property.Name.ToUpper(CultureInfo.InvariantCulture));
-            }
-        }
-
-        [ AttributeUsage(AttributeTargets.Field)]
-        private sealed class StringTypeAttribute : Attribute, IPropertyDescriptorCustomization
-        {
-            public void Apply(PropertyDescriptor property)
-            {
-                IPropertyCustomization customization = (IPropertyCustomization) property;
-                customization.SetType(typeof(string));
-            }
-        }
-
-        [ AttributeUsage(AttributeTargets.Field)]
-        private sealed class ChevronAttribute : Attribute, IPropertyDescriptorCustomization, IPropertyImpl
-        {
-            private IPropertyImpl _baseImpl;
-
-            public void Apply(PropertyDescriptor property)
-            {
-                IPropertyCustomization customization = (IPropertyCustomization) property;
-                _baseImpl = customization.OverrideImpl(this);
-                Assert.AreSame(property, _baseImpl);
-            }
-
+            public IPropertyImpl BaseImpl;
+            
             public object GetValue(object obj)
             {
-                return "<<" + _baseImpl.GetValue(obj);
+                return "<<" + BaseImpl.GetValue(obj);
             }
 
             public void SetValue(object obj, object value)
             {
-                _baseImpl.SetValue(obj, ">>" + value);
+                BaseImpl.SetValue(obj, ">>" + value);
             }
         }
     }

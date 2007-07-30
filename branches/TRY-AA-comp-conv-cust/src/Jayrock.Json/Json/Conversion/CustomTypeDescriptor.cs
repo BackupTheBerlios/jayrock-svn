@@ -156,6 +156,22 @@ namespace Jayrock.Json.Conversion
             _properties = logicalProperties;
         }
 
+        public static PropertyDescriptor CreateProperty(FieldInfo field)
+        {
+            if (field == null)
+                throw new ArgumentNullException("field");
+            
+            return new TypeFieldDescriptor(field, field.Name);
+        }
+            
+        public static PropertyDescriptor CreateProperty(PropertyInfo property)
+        {
+            if (property == null)
+                throw new ArgumentNullException("property");
+            
+            return new TypePropertyDescriptor(property, property.Name);
+        }
+
         public PropertyDescriptorCollection GetProperties()
         {
             return _properties;
@@ -296,20 +312,29 @@ namespace Jayrock.Json.Conversion
 
             void IPropertyCustomization.SetName(string name)
             {
-                // FIXME: Check args
+                if (name == null)
+                    throw new ArgumentNullException("name");
+
+                if (name.Length == 0)
+                    throw new ArgumentException(null, "name");
+
                 _customName = name;
                 _customNameHashCode = name.GetHashCode();
             }
 
             void IPropertyCustomization.SetType(Type type)
             {
-                // FIXME: Check args
+                if (type == null)
+                    throw new ArgumentNullException("null");
+                
                 _propertyType = type;
             }
 
             IPropertyImpl IPropertyCustomization.OverrideImpl(IPropertyImpl impl)
             {
-                // FIXME: Check args
+                if (impl == null)
+                    throw new ArgumentNullException("impl");
+                
                 IPropertyImpl baseImpl = _impl;
                 _impl = impl;
                 return baseImpl;
