@@ -27,6 +27,8 @@ namespace Jayrock.Json.Conversion.Converters
     using System;
     using System.Collections;
     using System.ComponentModel;
+    using System.ComponentModel.Design;
+    using System.Globalization;
     using System.IO;
     using System.Reflection;
     using NUnit.Framework;
@@ -180,6 +182,98 @@ namespace Jayrock.Json.Conversion.Converters
             parent.Child = new ParentChild();
             parent.Child.Parent = parent;
             exporter.Export(context, parent, new EmptyJsonWriter());
+        }
+        
+        [ Test ]
+        public void MemberExportCustomization()
+        {
+            TestObjectMemberExporter memberExporter = new TestObjectMemberExporter();
+            Hashtable services = new Hashtable();
+            services.Add(typeof(IObjectMemberExporter), memberExporter);
+
+            TestTypeDescriptor logicalType = new TestTypeDescriptor();
+            PropertyDescriptorCollection properties = logicalType.GetProperties();
+            properties.Add(new TestPropertyDescriptor("prop", services));
+            
+            ComponentExporter exporter = new ComponentExporter(typeof(Thing), logicalType);
+            ExportContext context = new ExportContext();
+            context.Register(exporter);
+            
+            JsonRecorder writer = new JsonRecorder();
+            Thing thing = new Thing();
+            context.Export(thing, writer);
+            
+            Assert.AreSame(context, memberExporter.ExportContext);
+            Assert.AreSame(writer, memberExporter.ExportWriter);
+            Assert.AreSame(thing, memberExporter.ExportSource);
+        }
+        
+        private sealed class TestObjectMemberExporter : IObjectMemberExporter
+        {
+            public ExportContext ExportContext;
+            public JsonWriter ExportWriter;
+            public object ExportSource;
+
+            void IObjectMemberExporter.Export(ExportContext context, JsonWriter writer, object source)
+            {
+                ExportContext = context;
+                ExportWriter = writer;
+                ExportSource = source;
+            }
+        }
+
+        private sealed class TestPropertyDescriptor : PropertyDescriptor, IServiceProvider
+        {
+            private IDictionary Services;
+
+            public TestPropertyDescriptor(string name, IDictionary services) : base(name, null)
+            {
+                Services = services;
+            }
+            
+            object IServiceProvider.GetService(Type serviceType)
+            {
+                return Services[serviceType];
+            }
+
+            #region Unimplemented members of PropertyDescriptor
+
+            public override bool CanResetValue(object component) { throw new NotImplementedException(); }
+            public override object GetValue(object component) { throw new NotImplementedException(); }
+            public override void ResetValue(object component) { throw new NotImplementedException(); }
+            public override void SetValue(object component, object value) { throw new NotImplementedException(); }
+            public override bool ShouldSerializeValue(object component) { throw new NotImplementedException(); }
+            public override Type ComponentType { get { throw new NotImplementedException(); } }
+            public override bool IsReadOnly { get { throw new NotImplementedException(); } }
+            public override Type PropertyType { get { throw new NotImplementedException(); } }
+            
+            #endregion
+        }
+
+        private class TestTypeDescriptor : ICustomTypeDescriptor
+        {
+            private readonly PropertyDescriptorCollection _properties = new PropertyDescriptorCollection(null);
+
+            public PropertyDescriptorCollection GetProperties()
+            {
+                return _properties;
+            }
+
+            #region Unimplemented members of ICustomTypeDescriptor
+
+            public AttributeCollection GetAttributes() { throw new NotImplementedException(); }
+            public string GetClassName() { throw new NotImplementedException(); }
+            public string GetComponentName() { throw new NotImplementedException(); }
+            public TypeConverter GetConverter() { throw new NotImplementedException(); }
+            public EventDescriptor GetDefaultEvent() { throw new NotImplementedException(); }
+            public PropertyDescriptor GetDefaultProperty() { throw new NotImplementedException(); }
+            public object GetEditor(Type editorBaseType) { throw new NotImplementedException(); }
+            public EventDescriptorCollection GetEvents() { throw new NotImplementedException(); }
+            public EventDescriptorCollection GetEvents(Attribute[] attributes) { throw new NotImplementedException(); }
+            public PropertyDescriptorCollection GetProperties(Attribute[] attributes) { throw new NotImplementedException(); }
+            public object GetPropertyOwner(PropertyDescriptor pd) { throw new NotImplementedException(); }
+
+            #endregion
         }
 
         private sealed class Thing
@@ -365,7 +459,56 @@ namespace Jayrock.Json.Conversion.Converters
                 exporter.Export(new ExportContext(), this, writer);
             }
         }
+
+        /*
+        public class Spike
+        {
+            [ Formattable("yyyy-MM-dd") ] public DateTime Time;
+        }
+        
+        [ AttributeUsage(AttributeTargets.Field | AttributeTargets.Property) ]
+        public sealed class FormattableAttribute : Attribute, IPropertyDescriptorCustomization, IObjectMemberExporter, IObjectMemberImporter
+        {
+            private string _format;
+            private PropertyDescriptor _property;
+
+            public FormattableAttribute(string format)
+            {
+                _format = format;
+            }
+
+            public string Format
+            {
+                get { return _format; }
+                set { _format = value; }
+            }
+
+            public void Apply(PropertyDescriptor property)
+            {
+                _property = property;
+                System.ComponentModel.Design.IServiceContainer sc = (IServiceContainer) property;
+                sc.AddService(typeof(IObjectMemberExporter), this);
+            }
+
+            public void Export(ExportContext context, JsonWriter writer, object source)
+            {
+                writer.WriteMember(_property.Name);
+                object value = _property.GetValue(source);
+                IFormattable formattable = value as IFormattable;
+                context.Export(formattable != null ? formattable.ToString(Format, null) : value, writer);
+            }
+
+            public void Import(ImportContext context, JsonReader reader, object target)
+            {
+                string str = (string) context.Import(typeof(string), reader);
+                
+                if (str == null)
+                    return;
+
+                DateTime time = DateTime.ParseExact(str, Format, null, DateTimeStyles.None);
+                _property.SetValue(target, time);
+            }
+        }
+        */
     }
 }
-
-

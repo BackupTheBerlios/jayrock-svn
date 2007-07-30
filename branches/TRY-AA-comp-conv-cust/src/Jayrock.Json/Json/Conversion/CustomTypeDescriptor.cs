@@ -26,6 +26,7 @@ namespace Jayrock.Json.Conversion
 
     using System;
     using System.Collections;
+    using System.ComponentModel.Design;
     using System.Diagnostics;
     using System.Globalization;
     using System.Reflection;
@@ -241,12 +242,13 @@ namespace Jayrock.Json.Conversion
         /// a type member (<see cref="MemberInfo"/>).
         /// </summary>
 
-        private abstract class TypeMemberDescriptor : PropertyDescriptor, IPropertyImpl, IPropertyCustomization
+        private abstract class TypeMemberDescriptor : PropertyDescriptor, IPropertyImpl, IPropertyCustomization, IServiceContainer
         {
             private string _customName;
             private int _customNameHashCode;
             private Type _propertyType;
             private IPropertyImpl _impl;
+            private ServiceContainer _services;
             
             protected TypeMemberDescriptor(MemberInfo member, string name , Type propertyType) : 
                 base(ChooseName(name, member.Name), null)
@@ -366,6 +368,58 @@ namespace Jayrock.Json.Conversion
                 
                 return char.ToLower(s[0], CultureInfo.InvariantCulture) + s.Substring(1);
             }
+
+            private ServiceContainer Services
+            {
+                get
+                {
+                    if (_services == null)
+                        _services = new ServiceContainer();
+                    
+                    return _services;
+                }
+            }
+
+            #region IServiceContainer implementation
+
+            void IServiceContainer.AddService(Type serviceType, object serviceInstance)
+            {
+                Services.AddService(serviceType, serviceInstance);
+            }
+
+            void IServiceContainer.AddService(Type serviceType, object serviceInstance, bool promote)
+            {
+                Services.AddService(serviceType, serviceInstance, promote);
+            }
+
+            void IServiceContainer.AddService(Type serviceType, ServiceCreatorCallback callback)
+            {
+                Services.AddService(serviceType, callback);
+            }
+
+            void IServiceContainer.AddService(Type serviceType, ServiceCreatorCallback callback, bool promote)
+            {
+                Services.AddService(serviceType, callback, promote);
+            }
+
+            object IServiceProvider.GetService(Type serviceType)
+            {
+                return _services != null ? _services.GetService(serviceType) : null;
+            }
+
+            void IServiceContainer.RemoveService(Type serviceType)
+            {
+                if (_services != null)
+                    _services.RemoveService(serviceType);
+            }
+
+            void IServiceContainer.RemoveService(Type serviceType, bool promote)
+            {
+                if (_services != null)
+                    _services.RemoveService(serviceType, promote);
+            }
+
+            #endregion
         }
 
         /// <summary>
