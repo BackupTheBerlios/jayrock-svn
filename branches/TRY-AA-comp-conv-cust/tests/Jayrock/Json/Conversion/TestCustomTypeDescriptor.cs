@@ -171,6 +171,30 @@ namespace Jayrock.Json.Conversion
             AddThenRemoveService((IServiceContainer) Thing.GetProperty1Property());
         }
 
+        [ Test ]
+        public void ReadOnlyFieldHasReadOnlyDescriptor()
+        {
+            Assert.IsTrue(Thing.GetReadOnlyFieldProperty().IsReadOnly);
+        }
+
+        [ Test, ExpectedException(typeof(NotSupportedException)) ]
+        public void CannotSetReadOnlyFieldViaDescriptor()
+        {
+            Thing.GetReadOnlyFieldProperty().SetValue(new Thing(), new object());
+        }
+
+        [ Test ]
+        public void ReadOnlyPropertyHasReadOnlyDescriptor()
+        {
+            Assert.IsTrue(Thing.GetReadOnlyPropertyProperty().IsReadOnly);
+        }
+
+        [ Test, ExpectedException(typeof(NotSupportedException)) ]
+        public void CannotSetReadOnlyPropertyViaDescriptor()
+        {
+            Thing.GetReadOnlyPropertyProperty().SetValue(new Thing(), new object());
+        }
+
         private static void AddServiceToServiceContainer(IServiceContainer sc) 
         {
             object service = new object();
@@ -205,19 +229,31 @@ namespace Jayrock.Json.Conversion
             public object Field1;
             [ JsonIgnore ] public object Field2;
             public object Field3;
+            public readonly object ReadOnlyField = null;
 
             public object Property1 { get { return null; } set { } }
             [ JsonIgnore ] public object Property2 { get { return null; } set { } }
             public object Property3 { get { return null; } set { } }
+            public object ReadOnlyProperty { get { return null; } }
             
             public static PropertyDescriptor GetField1Property()
             {
                 return CustomTypeDescriptor.CreateProperty(typeof(Thing).GetField("Field1"));
             }
 
+            public static PropertyDescriptor GetReadOnlyFieldProperty()
+            {
+                return CustomTypeDescriptor.CreateProperty(typeof(Thing).GetField("ReadOnlyField"));
+            }
+
             public static PropertyDescriptor GetProperty1Property()
             {
                 return CustomTypeDescriptor.CreateProperty(typeof(Thing).GetProperty("Property1"));
+            }
+
+            public static PropertyDescriptor GetReadOnlyPropertyProperty()
+            {
+                return CustomTypeDescriptor.CreateProperty(typeof(Thing).GetProperty("ReadOnlyProperty"));
             }
         }
         

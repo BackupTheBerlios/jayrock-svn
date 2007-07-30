@@ -442,6 +442,11 @@ namespace Jayrock.Json.Conversion
                 get { return _field; }
             }
 
+            public override bool IsReadOnly
+            {
+                get { return _field.IsInitOnly; }
+            }
+
             protected override object GetValueImpl(object component)
             {
                 return _field.GetValue(component);
@@ -449,6 +454,9 @@ namespace Jayrock.Json.Conversion
 
             protected override void SetValueImpl(object component, object value) 
             {
+                if (IsReadOnly)
+                    throw new NotSupportedException();
+
                 _field.SetValue(component, value); 
                 OnValueChanged(component, EventArgs.Empty);
             }
@@ -474,6 +482,11 @@ namespace Jayrock.Json.Conversion
                 get { return _property; }
             }
 
+            public override bool IsReadOnly
+            {
+                get { return !_property.CanWrite; }
+            }
+
             protected override object GetValueImpl(object component)
             {
                 return _property.GetValue(component, null);
@@ -481,6 +494,9 @@ namespace Jayrock.Json.Conversion
 
             protected override void SetValueImpl(object component, object value) 
             {
+                if (IsReadOnly)
+                    throw new NotSupportedException();
+
                 _property.SetValue(component, value, null); 
                 OnValueChanged(component, EventArgs.Empty);
             }
