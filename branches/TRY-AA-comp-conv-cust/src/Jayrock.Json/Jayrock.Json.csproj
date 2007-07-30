@@ -321,6 +321,16 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Json\Conversion\IObjectMemberExporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Conversion\IObjectMemberImporter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\Conversion\JsonConvert.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
