@@ -268,7 +268,6 @@ namespace Jayrock.Json.Conversion
             }
             
             public override int GetHashCode() { return Member.GetHashCode(); }
-            public override bool IsReadOnly { get { return false; } }
             public override void ResetValue(object component) {}
             public override bool CanResetValue(object component) { return false; }
             public override bool ShouldSerializeValue(object component) { return true; }
@@ -286,6 +285,9 @@ namespace Jayrock.Json.Conversion
 
             public override void SetValue(object component, object value)
             {
+                if (IsReadOnly)
+                    throw new NotSupportedException();
+                
                 _impl.SetValue(component, value);
             }
 
@@ -454,9 +456,6 @@ namespace Jayrock.Json.Conversion
 
             protected override void SetValueImpl(object component, object value) 
             {
-                if (IsReadOnly)
-                    throw new NotSupportedException();
-
                 _field.SetValue(component, value); 
                 OnValueChanged(component, EventArgs.Empty);
             }
@@ -494,9 +493,6 @@ namespace Jayrock.Json.Conversion
 
             protected override void SetValueImpl(object component, object value) 
             {
-                if (IsReadOnly)
-                    throw new NotSupportedException();
-
                 _property.SetValue(component, value, null); 
                 OnValueChanged(component, EventArgs.Empty);
             }
