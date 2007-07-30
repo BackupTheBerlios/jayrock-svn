@@ -204,7 +204,7 @@ namespace Jayrock.Json.Conversion
         {
             public object Field1;
             [ JsonIgnore ] public object Field2;
-            [ DummyAttribute ] public object Field3;
+            public object Field3;
 
             public object Property1 { get { return null; } set { } }
             [ JsonIgnore ] public object Property2 { get { return null; } set { } }
@@ -221,9 +221,6 @@ namespace Jayrock.Json.Conversion
             }
         }
         
-        [ AttributeUsage(AttributeTargets.Field)]
-        private sealed class DummyAttribute : Attribute {}
-
         private sealed class FakePropertyImpl : IPropertyImpl
         {
             public IPropertyImpl BaseImpl;
