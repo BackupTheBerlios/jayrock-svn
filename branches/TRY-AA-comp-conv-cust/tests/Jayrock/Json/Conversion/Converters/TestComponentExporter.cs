@@ -250,7 +250,7 @@ namespace Jayrock.Json.Conversion.Converters
             #endregion
         }
 
-        private class TestTypeDescriptor : ICustomTypeDescriptor
+        private sealed class TestTypeDescriptor : ICustomTypeDescriptor
         {
             private readonly PropertyDescriptorCollection _properties = new PropertyDescriptorCollection(null);
 
