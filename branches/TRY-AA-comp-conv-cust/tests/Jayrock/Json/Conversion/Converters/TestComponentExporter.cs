@@ -459,56 +459,5 @@ namespace Jayrock.Json.Conversion.Converters
                 exporter.Export(new ExportContext(), this, writer);
             }
         }
-
-        /*
-        public class Spike
-        {
-            [ Formattable("yyyy-MM-dd") ] public DateTime Time;
-        }
-        
-        [ AttributeUsage(AttributeTargets.Field | AttributeTargets.Property) ]
-        public sealed class FormattableAttribute : Attribute, IPropertyDescriptorCustomization, IObjectMemberExporter, IObjectMemberImporter
-        {
-            private string _format;
-            private PropertyDescriptor _property;
-
-            public FormattableAttribute(string format)
-            {
-                _format = format;
-            }
-
-            public string Format
-            {
-                get { return _format; }
-                set { _format = value; }
-            }
-
-            public void Apply(PropertyDescriptor property)
-            {
-                _property = property;
-                System.ComponentModel.Design.IServiceContainer sc = (IServiceContainer) property;
-                sc.AddService(typeof(IObjectMemberExporter), this);
-            }
-
-            public void Export(ExportContext context, JsonWriter writer, object source)
-            {
-                writer.WriteMember(_property.Name);
-                object value = _property.GetValue(source);
-                IFormattable formattable = value as IFormattable;
-                context.Export(formattable != null ? formattable.ToString(Format, null) : value, writer);
-            }
-
-            public void Import(ImportContext context, JsonReader reader, object target)
-            {
-                string str = (string) context.Import(typeof(string), reader);
-                
-                if (str == null)
-                    return;
-
-                DateTime time = DateTime.ParseExact(str, Format, null, DateTimeStyles.None);
-                _property.SetValue(target, time);
-            }
-        }
-        */
     }
 }
