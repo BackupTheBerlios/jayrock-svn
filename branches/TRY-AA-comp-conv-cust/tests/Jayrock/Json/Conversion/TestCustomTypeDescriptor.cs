@@ -27,7 +27,6 @@ namespace Jayrock.Json.Conversion
     using System;
     using System.ComponentModel;
     using System.ComponentModel.Design;
-    using System.Globalization;
     using NUnit.Framework;
 
     #endregion
@@ -195,6 +194,14 @@ namespace Jayrock.Json.Conversion
             Thing.GetReadOnlyPropertyProperty().SetValue(new Thing(), new object());
         }
 
+        [ Test ]
+        public void ReadOnlyPropertyWithIncludeAttributeIsIncluded()
+        {
+            CustomTypeDescriptor thingType = new CustomTypeDescriptor(typeof(ThingWithSpecialReadOnlyProperty));
+            PropertyDescriptorCollection properties = thingType.GetProperties();
+            Assert.AreEqual(1, properties.Count);
+        }
+
         private static void AddServiceToServiceContainer(IServiceContainer sc) 
         {
             object service = new object();
@@ -257,6 +264,11 @@ namespace Jayrock.Json.Conversion
             }
         }
         
+        private sealed class ThingWithSpecialReadOnlyProperty
+        {
+            [ JsonExport ] public object SpecialReadOnlyProperty { get { return null; } }
+        }
+       
         private sealed class FakePropertyImpl : IPropertyImpl
         {
             public IPropertyImpl BaseImpl;

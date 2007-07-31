@@ -127,21 +127,25 @@ namespace Jayrock.Json.Conversion
                 {
                     PropertyInfo property = member as PropertyInfo;
                     
-                    if (property != null)
-                    {
-                        //
-                        // Add public properties that can be read and modified.
-                        //
-
-                        if (property.DeclaringType != type && property.ReflectedType != type)
-                            throw new ArgumentException(null, "properties");
-
-                        if (property.CanRead && property.CanWrite)
-                            descriptor = new TypePropertyDescriptor(property, name);
-                    }
-                    else
-                    {
+                    if (property == null)
                         throw new ArgumentException(null, "members");
+                    
+                    //
+                    // Add public properties that can be read and modified.
+                    // If property is read-only yet has the JsonExport 
+                    // attribute applied then include it anyhow (assuming
+                    // that the type author probably has customizations
+                    // that know how to deal with the sceanrio more 
+                    // accurately).
+                    //
+
+                    if (property.DeclaringType != type && property.ReflectedType != type)
+                        throw new ArgumentException(null, "properties");
+
+                    if ((property.CanRead) &&
+                        (property.CanWrite || property.IsDefined(typeof(JsonExportAttribute), true)))
+                    {
+                        descriptor = new TypePropertyDescriptor(property, name);
                     }
                 }
                 
