@@ -101,17 +101,22 @@ var JSON = function () {
                                 p(x.getSeconds()) + tz + '"';
                     } else if (x instanceof Object) {
                         a[0] = '{';
+                        // Iterate through all of the keys in the 
+                        // object, ignoring the proto chain and keys 
+                        // that are not strings.
                         for (i in x) {
-                            v = x[i];
-                            f = s[typeof v];
-                            if (f) {
-                                v = f(v);
-                                if (typeof v == 'string') {
-                                    if (b) {
-                                        a[a.length] = ',';
+                            if (typeof i === 'string' && x.hasOwnProperty(i)) {
+                                v = x[i];
+                                f = s[typeof v];
+                                if (f) {
+                                    v = f(v);
+                                    if (typeof v == 'string') {
+                                        if (b) {
+                                            a[a.length] = ',';
+                                        }
+                                        a.push(s.string(i), ':', v);
+                                        b = true;
                                     }
-                                    a.push(s.string(i), ':', v);
-                                    b = true;
                                 }
                             }
                         }
