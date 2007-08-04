@@ -24,6 +24,8 @@ namespace Jayrock.Json.Conversion
 {
     #region Imports
 
+    using System;
+    using Jayrock.Json.Conversion.Converters;
     using NUnit.Framework;
 
     #endregion
@@ -39,6 +41,18 @@ namespace Jayrock.Json.Conversion
             Assert.IsNull(thingType.GetProperties().Find("Field2", true));
             Assert.IsNull(thingType.GetProperties().Find("Property2", true));
         }
+
+        [ Test ]
+        public void IndexerPropertyExcluded()
+        {
+            //
+            // Exercises bug #11675
+            // http://developer.berlios.de/bugs/?func=detailbug&bug_id=11675&group_id=4638
+            //
+            
+            CustomTypeDescriptor thingType = new CustomTypeDescriptor(typeof(ThingWithIndexer));
+            Assert.AreEqual(0, thingType.GetProperties().Count);
+        }
         
         public sealed class Thing
         {
@@ -50,5 +64,14 @@ namespace Jayrock.Json.Conversion
             [ JsonIgnore ] public object Property2 { get { return null; } set { } }
             public object Property3 { get { return null; } set { } }
         }
-   }
+
+        public class ThingWithIndexer
+        {
+            public object this[int index]
+            {
+                get { throw new NotImplementedException(); }
+                set { throw new NotImplementedException(); }
+            }
+        }
+    }
 }

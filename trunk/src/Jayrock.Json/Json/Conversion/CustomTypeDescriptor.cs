@@ -134,8 +134,11 @@ namespace Jayrock.Json.Conversion
                         if (property.DeclaringType != type && property.ReflectedType != type)
                             throw new ArgumentException(null, "properties");
 
-                        if (property.CanRead && property.CanWrite)
+                        if (property.CanRead && property.CanWrite &&
+                            property.GetIndexParameters().Length == 0)
+                        {
                             logicalProperties.Add(new TypePropertyDescriptor(property, name));
+                        }
                     }
                     else
                     {
