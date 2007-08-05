@@ -46,13 +46,18 @@ var JSON = function () {
                 return isFinite(x) ? String(x) : 'null';
             },
             string: function (x) {
+                // If the string contains no control characters, no quote 
+                // characters, and no backslash characters, then we can 
+                // simply slap some quotes around it. Otherwise we must 
+                // also replace the offending characters with safe
+                // sequences.
                 if (/["\\\x00-\x1f]/.test(x)) {
-                    x = x.replace(/([\x00-\x1f\\"])/g, function(a, b) {
-                        var c = m[b];
+                    x = x.replace(/[\x00-\x1f\\"]/g, function (a) {
+                        var c = m[a];
                         if (c) {
                             return c;
                         }
-                        c = b.charCodeAt();
+                        c = a.charCodeAt();
                         return '\\u00' +
                             Math.floor(c / 16).toString(16) +
                             (c % 16).toString(16);
@@ -105,7 +110,8 @@ var JSON = function () {
                         // object, ignoring the proto chain and keys 
                         // that are not strings.
                         for (i in x) {
-                            if (typeof i === 'string' && x.hasOwnProperty(i)) {
+                            if (typeof i === 'string' && 
+                                Object.prototype.hasOwnProperty.apply(x, [i])) {
                                 v = x[i];
                                 f = s[typeof v];
                                 if (f) {
@@ -155,8 +161,9 @@ var JSON = function () {
                 var i;
                 if (v && typeof v === 'object') {
                     for (i in v) {
-                        if (v.hasOwnProperty(i))
+                        if (Object.prototype.hasOwnProperty.apply(v, [i])) {
                             v[i] = walk(i, v[i]);
+                        }
                     }
                 }
                 return filter(k, v);
