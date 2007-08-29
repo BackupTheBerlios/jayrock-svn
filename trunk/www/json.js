@@ -1,32 +1,28 @@
 /*
-Copyright (c) 2005 JSON.org
+    json.js
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+    Public Domain
+    
+    The global object JSON contains three methods.
 
-The Software shall be used for Good, not Evil.
+    JSON.stringify(value) takes a JavaScript value and produces a JSON 
+    text. The value must not be cyclical.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-*/
+    JSON.parse(text) takes a JSON text and produces a JavaScript value. 
+    It will throw SyntaxError if there is an error in parsing the JSON
+    text. This method is fully JavaScript-based and therefore can be
+    several magnitudes slower than JSON.eval. However, it is also more
+    permissive than JSON.eval. For example, JSON.parse permits use of
+    JavaScript-style comments in JSON text.
 
-/*
-    The global object JSON contains two methods.
-
-    JSON.stringify(value) takes a JavaScript value and produces a JSON text.
-    The value must not be cyclical.
-
-    JSON.parse(text) takes a JSON text and produces a JavaScript value. It will
-    return false if there is an error.
+    JSON.eval(text) takes a JSON text and produces a JavaScript value.
+    It will throw SyntaxError if there is an error in parsing the JSON
+    text. JSON.eval is much faster (as it internally relies on the 
+    JavaScript eval method after making safety checks) and stricter in 
+    complaince to JSON text.
+    
+    NOTE: This implementation is hand-synchronized with the reference 
+    implementation available over at http://www.json.org/json.js.
 */
 var JSON = function () {
     var m = {
@@ -212,12 +208,10 @@ var JSON = function () {
             var ch = ' ';
 
             function error(m) {
-                throw {
-                    name: 'JSONError',
-                    message: m,
-                    at: at - 1,
-                    text: text
-                };
+                var e = new SyntaxError(m);
+                e.at = at - 1;
+                e.text = text;
+                throw e;
             }
 
             function next() {

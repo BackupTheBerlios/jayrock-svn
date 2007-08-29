@@ -1,6 +1,6 @@
 
-var JSON=function(){var m={'\b':'\\b','\t':'\\t','\n':'\\n','\f':'\\f','\r':'\\r','"':'\\"','\\':'\\\\'},s={'boolean':function(x){return String(x);},number:function(x){return isFinite(x)?String(x):'null';},string:function(x){if(/["\\\x00-\x1f]/.test(x)){x=x.replace(/([\x00-\x1f\\"])/g,function(a,b){var c=m[b];if(c){return c;}
-c=b.charCodeAt();return'\\u00'+
+var JSON=function(){var m={'\b':'\\b','\t':'\\t','\n':'\\n','\f':'\\f','\r':'\\r','"':'\\"','\\':'\\\\'},s={'boolean':function(x){return String(x);},number:function(x){return isFinite(x)?String(x):'null';},string:function(x){if(/["\\\x00-\x1f]/.test(x)){x=x.replace(/[\x00-\x1f\\"]/g,function(a){var c=m[a];if(c){return c;}
+c=a.charCodeAt();return'\\u00'+
 Math.floor(c/16).toString(16)+
 (c%16).toString(16);});}
 return'"'+x+'"';},object:function(x){if(x){var a=[],b,f,i,l,v;if(x instanceof Array){a[0]='[';l=x.length;for(i=0;i<l;i+=1){v=x[i];f=s[typeof v];if(f){v=f(v);if(typeof v=='string'){if(b){a[a.length]=',';}
@@ -13,17 +13,16 @@ p(x.getMonth()+1)+'-'+
 p(x.getDate())+'T'+
 p(x.getHours())+':'+
 p(x.getMinutes())+':'+
-p(x.getSeconds())+tz+'"';}else if(x instanceof Object){a[0]='{';for(i in x){v=x[i];f=s[typeof v];if(f){v=f(v);if(typeof v=='string'){if(b){a[a.length]=',';}
-a.push(s.string(i),':',v);b=true;}}}
+p(x.getSeconds())+tz+'"';}else if(x instanceof Object){a[0]='{';for(i in x){if(typeof i==='string'&&Object.prototype.hasOwnProperty.apply(x,[i])){v=x[i];f=s[typeof v];if(f){v=f(v);if(typeof v=='string'){if(b){a[a.length]=',';}
+a.push(s.string(i),':',v);b=true;}}}}
 a[a.length]='}';}else{return;}
 return a.join('');}
 return'null';}};return{copyright:'(c)2005 JSON.org',license:'http://www.crockford.com/JSON/license.html',stringify:function(v){var f=s[typeof v];if(f){v=f(v);if(typeof v=='string'){return v;}}
-return null;},eval:function(text,filter){function walk(k,v){var i;if(v&&typeof v==='object'){for(i in v){if(v.hasOwnProperty(i))
-v[i]=walk(i,v[i]);}}
+return null;},eval:function(text,filter){function walk(k,v){var i;if(v&&typeof v==='object'){for(i in v){if(Object.prototype.hasOwnProperty.apply(v,[i])){v[i]=walk(i,v[i]);}}}
 return filter(k,v);}
 if(!/^[,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t]*$/.test(text.replace(/\\./g,'@').replace(/"[^"\\\n\r]*"/g,''))){throw new SyntaxError("eval");}
 var result=eval('('+text+')');if(typeof filter==='function')
-result=walk('',result);return result;},parse:function(text){var at=0;var ch=' ';function error(m){throw{name:'JSONError',message:m,at:at-1,text:text};}
+result=walk('',result);return result;},parse:function(text){var at=0;var ch=' ';function error(m){e=new SyntaxError(m);e.at=at-1;e.text=text;throw e;}
 function next(){ch=text.charAt(at);at+=1;return ch;}
 function white(){while(ch){if(ch<=' '){next();}else if(ch=='/'){switch(next()){case'/':while(next()&&ch!='\n'&&ch!='\r'){}
 break;case'*':next();for(;;){if(ch){if(ch=='*'){if(next()=='/'){next();break;}}else{next();}}else{error("Unterminated comment");}}
