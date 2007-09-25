@@ -50,8 +50,28 @@ namespace Jayrock.JsonRpc.Web
 
             if (HasLastModifiedTime)
             {
+                DateTime lastModifiedTime = this.LastModifiedTime;
+
+                //
+                // Fix for issue #12072:
+                // http://developer.berlios.de/bugs/?func=detailbug&bug_id=12072&group_id=4638
+                //
+                // If the server time or time zone is incorrect then 
+                // the last modified time of the source could be into 
+                // the future (e.g. if it was copied to the server from 
+                // a machine in another timezone). 
+                // HttpCachePolicy.SetLastModified throws an exception 
+                // for a time value that is into the future so pin the 
+                // last modified time to the current time if it is 
+                // indeed in the future.
+                
+                DateTime now = DateTime.Now;
+                
+                if (lastModifiedTime > now)
+                    lastModifiedTime = now;
+
                 Response.Cache.SetCacheability(HttpCacheability.Public);
-                Response.Cache.SetLastModified(LastModifiedTime);
+                Response.Cache.SetLastModified(lastModifiedTime);
             }
 
             Response.ContentType = ContentType;
