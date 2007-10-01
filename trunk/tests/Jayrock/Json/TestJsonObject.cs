@@ -209,5 +209,64 @@ namespace Jayrock.Json
             Assert.AreEqual(o[members[2]], reader.ReadBoolean());
             Assert.AreEqual(JsonTokenClass.EndObject, reader.TokenClass);
         }
+
+        [ Test, ExpectedException(typeof(ArgumentNullException)) ]
+        public void CannotPutUsingNullName()
+        {
+            (new JsonObject()).Put(null, new object());
+        }
+
+        [ Test, ExpectedException(typeof(ArgumentNullException)) ]
+        public void CannotRemoveByNullName()
+        {
+            (new JsonObject()).Remove(null);
+        }
+
+        [ Test, ExpectedException(typeof(ArgumentNullException)) ]
+        public void CannotTestContainmentForNullName()
+        {
+            (new JsonObject()).Contains(null);
+        }
+
+        [ Test, ExpectedException(typeof(ArgumentNullException)) ]
+        public void CannotListNamesToNullList()
+        {
+            (new JsonObject()).ListNames(null);
+        }
+
+        [ Test, ExpectedException(typeof(ArgumentNullException)) ]
+        public void CannotExportToNullWriter()
+        {
+            (new SubJsonObject()).SubExport(new ExportContext(), null);
+        }
+        
+        [ Test, ExpectedException(typeof(ArgumentNullException)) ]
+        public void CannotAccumulateUsingNullName()
+        {
+            (new JsonObject()).Accumulate(null, new object());
+        }
+
+        [ Test ]
+        public void NoHasMemberWhenEmpty()
+        {
+            Assert.IsFalse((new JsonObject()).HasMembers);
+        }
+
+        [ Test ]
+        public void HasMemberWhenNotEmpty()
+        {
+            JsonObject o = new JsonObject();
+            Assert.IsFalse(o.HasMembers);
+            o.Put("foo", "bar");
+            Assert.IsTrue(o.HasMembers);
+        }
+
+        private sealed class SubJsonObject : JsonObject
+        {
+            public void SubExport(ExportContext context, JsonWriter writer)
+            {
+                Export(context, writer);
+            }
+        }
     }
 }
