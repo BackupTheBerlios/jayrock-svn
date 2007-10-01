@@ -164,6 +164,24 @@ namespace Jayrock.Collections
             Assert.IsFalse(values.Remove("something"));
         }
 
+        [ Test, ExpectedException(typeof(ArgumentNullException)) ]
+        public void CannotSendNullArrayToBaseListKeysByIndex()
+        {
+            (new NamedValueCollection()).ListKeysTo(null);
+        }
+
+        [ Test, ExpectedException(typeof(ArgumentException)) ]
+        public void CannotSendMultiDimensionalArrayToBaseListKeysByIndex()
+        {
+            (new NamedValueCollection()).ListKeysTo(new string[0, 0]);
+        }
+
+        [ Test, ExpectedException(typeof(ArgumentNullException)) ]
+        public void CannotIndexByNullKey()
+        {
+            object unused = new NamedValueCollection()[null];
+        }
+
         private sealed class NamedValue
         {
             public string Name;
@@ -203,6 +221,11 @@ namespace Jayrock.Collections
                 string[] keys = new string[Count];
                 ListKeysByIndex(keys);
                 return keys;
+            }
+
+            public void ListKeysTo(Array keys)
+            {
+                ListKeysByIndex(keys);
             }
 
             protected override object KeyFromValue(object value)
