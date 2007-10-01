@@ -190,7 +190,7 @@ namespace Jayrock.Json.Conversion
                     if (typeList != null && typeList.Count > 0)
                     {
                         foreach (Type type in typeList)
-                            importers.Add((IImporter) Activator.CreateInstance(type));
+                            importers.Put((IImporter) Activator.CreateInstance(type));
                     }
 
                     _stockImporters = importers;

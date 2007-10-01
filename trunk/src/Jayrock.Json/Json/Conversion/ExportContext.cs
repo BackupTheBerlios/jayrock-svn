@@ -28,7 +28,6 @@ namespace Jayrock.Json.Conversion
     using System.Collections;
     using System.Configuration;
     using System.Diagnostics;
-    using System.Runtime.Serialization;
     using Jayrock.Json.Conversion.Converters;
 
     #endregion
@@ -209,7 +208,7 @@ namespace Jayrock.Json.Conversion
                     if (typeList != null && typeList.Count > 0)
                     {
                         foreach (Type type in typeList)
-                            exporters.Add((IExporter) Activator.CreateInstance(type));
+                            exporters.Put((IExporter) Activator.CreateInstance(type));
                     }
 
                     _stockExporters = exporters;
