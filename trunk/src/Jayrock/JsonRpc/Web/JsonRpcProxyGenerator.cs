@@ -26,10 +26,8 @@ namespace Jayrock.JsonRpc.Web
 
     using System;
     using System.Diagnostics;
-    using System.IO;
-    using System.Security;
-    using System.Web;
-    using Jayrock.Json;
+    using System.Globalization;
+    using Jayrock.Json.Conversion;
     using Jayrock.Services;
 
     #endregion
@@ -91,14 +89,31 @@ namespace Jayrock.JsonRpc.Web
             writer.WriteLine("(url)");
             writer.WriteLine("{");
             writer.Indent++;
-    
+            writer.WriteLine("var self = this;");
+            
             Method[] methods = service.GetMethods();
+            
             string[] methodNames = new string[methods.Length];
+            bool[] idempotents = new bool[methods.Length];
+
+            for (int i = 0; i < methods.Length; i++)
+            {
+                methodNames[i] = methods[i].Name;
+                idempotents[i] = methods[i].Idempotent;
+            }
+
+            writer.Write("var m = ");
+            JsonConvert.Export(methodNames, writer);
+            writer.WriteLine(';');
+            writer.Write("var idems = ");
+            JsonConvert.Export(idempotents, writer);
+            writer.WriteLine(';');
+            writer.WriteLine();
     
             for (int i = 0; i < methods.Length; i++)
             {
                 Method method = methods[i];
-                methodNames[i] = method.Name;
+                string index = i.ToString(CultureInfo.InvariantCulture);
 
                 if (method.Description.Length > 0)
                 {
@@ -109,9 +124,11 @@ namespace Jayrock.JsonRpc.Web
                     writer.WriteLine();
                 }
 
-                writer.Write("this[\"");
+                writer.Write("this[m[");
+                writer.Write(index);
+                writer.Write("]] = function /* "); 
                 writer.Write(method.Name);
-                writer.Write("\"] = function(");
+                writer.Write(" */ (");
 
                 Parameter[] parameters = method.GetParameters();
                 
@@ -125,9 +142,25 @@ namespace Jayrock.JsonRpc.Web
                 writer.WriteLine("{");
                 writer.Indent++;
 
-                writer.Write("return rpc(new Call(\"");
-                writer.Write(method.Name);
-                writer.Write("\", [");
+                writer.Write("if (self.kwargs) return rpc(new Call(");
+                writer.Write(index);
+                writer.Write(", {");
+
+                foreach (Parameter parameter in parameters)
+                {
+                    if (parameter.Position > 0)
+                        writer.Write(',');
+                    writer.Write(' ');
+                    writer.Write(parameter.Name);
+                    writer.Write(": ");
+                    writer.Write(parameter.Name);
+                }
+
+                writer.WriteLine(" }, callback));");
+
+                writer.Write("return rpc(new Call(");
+                writer.Write(index);
+                writer.Write(", [");
 
                 foreach (Parameter parameter in parameters)
                 {
@@ -147,17 +180,18 @@ namespace Jayrock.JsonRpc.Web
             writer.Write("var url = typeof(url) === 'string' ? url : '");
             writer.Write(url);
             writer.WriteLine("';");
-            writer.WriteLine(@"var self = this;
-    var nextId = 0;
+            writer.WriteLine(@"var nextId = 0;
 
     function Call(method, params, callback)
     {
         this.url = url;
         this.callback = callback;
+        this.proxy = self;
+        this.idempotent = idems[method];
         this.request = 
         { 
             id     : ++nextId, 
-            method : method, 
+            method : m[method], 
             params : params 
         };
     }
@@ -168,6 +202,7 @@ namespace Jayrock.JsonRpc.Web
             self.channel.rpc(call) : call;
     }
 
+    this.kwargs = false;
     this.channel = new JayrockChannel();
 
     function JayrockChannel()
@@ -215,8 +250,7 @@ namespace Jayrock.JsonRpc.Web
             writer.WriteLine();
             writer.Write(service.Name);
             writer.Write(".rpcMethods = ");
-            JsonTextWriter jsonWriter = new JsonTextWriter(writer);
-            jsonWriter.WriteStringArray(methodNames);
+            JsonConvert.Export(methodNames, writer);
             writer.WriteLine(";");
         }
 
@@ -328,7 +362,7 @@ namespace Jayrock.JsonRpc.Web
         { 
             id     : ++nextId, 
             method : method, 
-            params : params 
+            params : params
         };
     }
     
