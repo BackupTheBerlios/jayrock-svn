@@ -34,12 +34,12 @@
     <property name="project.name" value="Jayrock" />
     <property name="project.basedir" value="${project::get-base-directory()}" />
     <property name="tools" value="${path::combine(project.basedir, '../tools')}" />
-    
+
     <!-- NCover (code coverage) -->
 
     <property name="ncover.dir.path" value="${path::combine(tools, 'NCover')}" />
     <property name="ncover.console.exe.path" value="${path::combine(ncover.dir.path, 'NCover.Console.exe')}" />
-    
+
     <!-- NCoverExplorer (code coverage) -->
 
     <property name="ncoverexplorer.dir.path" value="${path::combine(tools, 'NCoverExplorer')}" />
@@ -50,7 +50,7 @@
     <property name="tests" value="${path::combine(project.basedir, '../tests')}" />
     <property name="nunit.dir.path" value="${path::combine(tools, 'NUnit 2.2.3')}" />
     <property name="nunit.console.exe.path" value="${path::combine(nunit.dir.path, 'nunit-console.exe')}" />
-    
+
     <!-- Output and Binaries -->
 
     <property name="bin.dir.name" value="../bin" />
@@ -58,10 +58,10 @@
     <property name="bin.debug.dir.path" value="${path::combine(bin.dir.path, 'Debug')}" />
     <property name="bin.release.dir.path" value="${path::combine(bin.dir.path, 'Release')}" />
     <property name="bin.test.dir.path" value="${path::combine(bin.dir.path, 'Test')}" />
-   
+
     <property name="output.assembly.name" value="${project.name}" />
     <property name="output.assembly.filename" value="${output.assembly.name + '.dll'}" />
-    
+
     <property name="output.jsonassembly.name" value="${project.name + '.Json'}" />
     <property name="output.jsonassembly.filename" value="${output.jsonassembly.name + '.dll'}" />
 
@@ -70,10 +70,10 @@
     <property name="output.testassembly.path" value="${path::combine(bin.test.dir.path, output.testassembly.filename)}" />
 
     <!-- Web -->
-    
+
     <property name="www.dir.path" value="${path::combine(project.basedir, '../www')}" />
     <property name="www.bin.dir.path" value="${path::combine(www.dir.path, 'bin')}" />
-    
+
     <!-- Build -->
 
     <property name="build.dir.path" value="${path::combine(project.basedir, '../build')}" />
@@ -94,10 +94,10 @@
     <!--======================== PROPERTY SECTION ========================-->
 
     <target name="clean">
-        <delete dir="${bin.dir.path}" failonerror="false" />
-        <delete dir="Jayrock/obj" failonerror="false" />
-        <delete dir="Jayrock.Json/obj" failonerror="false" />
-        <delete>
+        <delete dir="${bin.dir.path}" if="${directory::exists(bin.dir.path)}" />
+        <delete dir="Jayrock/obj" if="${directory::exists('Jayrock/obj')}" />
+        <delete dir="Jayrock.Json/obj" if="${directory::exists('Jayrock.Json/obj')}" />
+        <delete if="${directory::exists(www.bin.dir.path)}">
             <fileset basedir="${www.bin.dir.path}">
                 <include name="Jayrock.dll" />
                 <include name="Jayrock.pdb" />
@@ -124,7 +124,7 @@
         <call target="compile" />
         <call target="update-web" />
     </target>
-    
+
     <target name="compile">
 
         <property name="jayrock.json.dll.path" value="${path::combine(output.dir.path, 'Jayrock.Json.dll')}" />
@@ -162,7 +162,7 @@
         </csc>
 
     </target>
-    
+
     <target name="compile-test" depends="debug">
 
         <copy todir="${bin.test.dir.path}" overwrite="true">
@@ -195,7 +195,7 @@
     </target>
 
     <target name="all">
-        
+
         <call target="test" />
         <call target="debug" />
         <call target="release" />
@@ -208,24 +208,24 @@
             <test assemblyname="${output.testassembly.path}" />
         </nunit2>
     </target>
-    
+
     <target name="cover" depends="compile-test" if="${platform::is-win32()}">
         <exec program="${ncover.console.exe.path}" commandline='/q /w "${bin.test.dir.path}" /o "${project.basedir}/coverage.xml" /a ${output.assembly.name};${output.jsonassembly.name} /c "${nunit.console.exe.path}" "\"${output.testassembly.path}\""' />
         <exec program="${ncoverexplorer.console.exe.path}" commandline='"${project.basedir}/coverage.xml" /html:coverage-report.html /report:2 /excluded /p:${project.name} /minCoverage:85 "/c:${project.basedir}/NCoverExplorer.config"' />
         <call target="draco" if="${draco}" />
     </target>
-    
+
     <target name="build" depends="test debug release">
-        
+
         <tstamp property="build.date" pattern="yyyy-MM-dd" />
         <tstamp property="build.datetime" pattern="yyyy-MM-dd-HHmm" />
 
         <!-- Delete files resulting from coverage and testing -->
-        
+
         <delete file="${path::combine(path::combine(bin.dir.path, 'Test'), 'TestResult.xml')}" failonerror="false" />
         <delete file="coverage.xml" failonerror="false" />
         <delete file="coverage.xsl" failonerror="false" />
-        
+
         <!-- 
             Create the build directory and then create zips and compressed
             tars of the two versions of the project, one with sources and 
@@ -285,7 +285,7 @@
     </target>
 
     <target name="update-web">
-        
+
         <mkdir dir="${path::combine(www.dir.path, 'bin')}" />
         <copy todir="${path::combine(www.dir.path, 'bin')}" overwrite="true">
             <fileset basedir="${output.dir.path}">
@@ -295,13 +295,13 @@
         </copy>
 
     </target>
-    
+
     <target name="draco">
-        <fail if="${string::get-length(smtp.server) == 0}" 
+        <fail if="${string::get-length(smtp.server) == 0}"
             message="You must specify an SMTP server host value via the SMTPSERVER environment variable for this build target to succeed." />
-        <mail 
-            from="${mail.from}" 
-            tolist="${mail.to}" 
+        <mail
+            from="${mail.from}"
+            tolist="${mail.to}"
             subject="Jayrock coverage for build ${build.id}"
             format="Html"
             mailhost="${smtp.server}">
@@ -310,7 +310,7 @@
             </files>
         </mail>
     </target>
-        
+
     <target name="props">
 
         <!-- 
@@ -321,7 +321,7 @@
 
         <echo message="project.basedir = ${project.basedir}" />
         <echo message="tools = ${tools}" />
-        
+
         <echo message="ncover.dir.path = ${ncover.dir.path}" />
         <echo message="ncover.console.exe.path = ${ncover.console.exe.path}" />
 
@@ -334,14 +334,14 @@
         <echo message="bin.debug.dir.path = ${bin.debug.dir.path}" />
         <echo message="bin.release.dir.path = ${bin.release.dir.path}" />
         <echo message="bin.test.dir.path = ${bin.test.dir.path}" />
-       
+
         <echo message="output.assembly.name = ${output.assembly.name}" />
         <echo message="output.assembly.filename = ${output.assembly.filename}" />
         <echo message="output.jsonassembly.name= ${output.jsonassembly.name}" />
         <echo message="output.jsonassembly.filename = ${output.jsonassembly.filename}" />
         <echo message="output.testassembly.name = ${output.testassembly.name}" />
         <echo message="output.testassembly.filename = ${output.testassembly.filename}" />
-        
+
         <echo message="www.dir.path = ${www.dir.path}" />
         <echo message="www.dir.path = ${www.bin.dir.path}" />
 
