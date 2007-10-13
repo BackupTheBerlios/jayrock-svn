@@ -2,8 +2,9 @@
 
 namespace JayrockWeb
 {
+    #region Imports
+
     using System;
-    using System.Configuration;
     using System.Data;
     using System.Collections;
     using System.Collections.Specialized;
@@ -11,10 +12,10 @@ namespace JayrockWeb
     using System.Web.SessionState;
     using System.Web.UI;
     using System.Web.UI.WebControls;
-    using System.Drawing;
-    using Jayrock.Json;
     using Jayrock.JsonRpc;
     using Jayrock.JsonRpc.Web;
+
+    #endregion
 
     [ JsonRpcHelp("This is a JSON-RPC service that demonstrates the basic features of the Jayrock library.") ]    
     public class DemoService : JsonRpcHandler, IRequiresSessionState 
