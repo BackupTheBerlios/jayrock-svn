@@ -136,7 +136,7 @@ namespace JayrockWeb
         public DataSet GetEmployeeSet()
         {
             DataSet ds = new DataSet();
-            ds.ReadXml(Server.MapPath("~/NorthwindData.xml"));
+            ds.ReadXml(Server.MapPath("NorthwindData.xml"));
             return ds;
         }
         
