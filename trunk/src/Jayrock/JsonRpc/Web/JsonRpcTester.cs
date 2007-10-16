@@ -40,9 +40,9 @@ namespace Jayrock.JsonRpc.Web
         public JsonRpcTester(IService service) : 
             base(service) {}
 
-        protected override string Title
+        protected override string PageTitle
         {
-            get { return "Test " + base.Title; }
+            get { return "Test " + base.PageTitle; }
         }
 
         protected override void AddHeader()
@@ -50,7 +50,7 @@ namespace Jayrock.JsonRpc.Web
             Control header = AddDiv(Body, null);
             header.ID = "Header";
 
-            AddGeneric(header, "h1", null, Title);
+            AddGeneric(header, "h1", null, PageTitle);
 
             base.AddHeader();
         }

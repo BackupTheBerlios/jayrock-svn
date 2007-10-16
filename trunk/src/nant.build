@@ -143,6 +143,9 @@
                 <include name="System.Xml.dll" />
                 <include name="System.Web.dll" />
             </references>
+            <nowarn>
+                <warning number="618" />
+            </nowarn>
         </csc>
 
         <csc target="library" debug="${debuginfo}" define="${define.symbols}" output="${path::combine(output.dir.path, 'Jayrock.dll')}">
@@ -159,6 +162,9 @@
                 <include name="System.Web.dll" />
                 <include name="${jayrock.json.dll.path}" />
             </references>
+            <nowarn>
+                <warning number="618" />
+            </nowarn>
         </csc>
 
     </target>
@@ -188,6 +194,9 @@
                 <include name="${jayrock.dll.path}" />
                 <include name="${path::combine(nunit.dir.path, 'nunit.framework.dll')}" />
             </references>
+            <nowarn>
+                <warning number="618" />
+            </nowarn>
         </csc>
 
         <copy file="${path::combine(nunit.dir.path, 'nunit.framework.dll')}" todir="${bin.test.dir.path}" />

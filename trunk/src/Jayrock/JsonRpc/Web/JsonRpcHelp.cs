@@ -44,7 +44,7 @@ namespace Jayrock.JsonRpc.Web
             Control header = AddDiv(Body, null);
             header.ID = "Header";
 
-            AddGeneric(header, "h1", null, Title);
+            AddGeneric(header, "h1", null, PageTitle);
 
             base.AddHeader();
         }

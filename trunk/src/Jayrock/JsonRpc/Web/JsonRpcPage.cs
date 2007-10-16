@@ -99,7 +99,7 @@ namespace Jayrock.JsonRpc.Web
             html.Controls.Add(_body);
 
             HtmlGenericControl title = new HtmlGenericControl("title");
-            title.InnerText = Title;
+            title.InnerText = PageTitle;
             _head.Controls.Add(title);
 
             base.OnInit(e);
@@ -141,7 +141,7 @@ namespace Jayrock.JsonRpc.Web
             get { return _body; }
         }
 
-        protected virtual string Title
+        protected virtual string PageTitle
         {
             get { return ServiceClass.Name; }
         }
