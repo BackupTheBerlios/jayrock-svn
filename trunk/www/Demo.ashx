@@ -212,7 +212,7 @@ namespace JayrockWeb
             DataSet ds = GetEmployeeSet();
             ds.Tables[0].Columns.Add("FullName", typeof(string), "FirstName + ' ' + LastName");
             ddl.DataSource = ds;
-            ddl.DataMember = "Employee";
+            ddl.DataMember = "Employees";
             ddl.DataTextField = "FullName";
             ddl.DataValueField = "EmployeeID";
             ddl.DataBind();
