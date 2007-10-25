@@ -30,7 +30,7 @@ namespace Jayrock
     #endregion
 
     internal sealed class CaselessString
-	{
+    {
         public static bool Equals(string a, string b)
         {
             return string.Compare(a, b, true, CultureInfo.InvariantCulture) == 0;
