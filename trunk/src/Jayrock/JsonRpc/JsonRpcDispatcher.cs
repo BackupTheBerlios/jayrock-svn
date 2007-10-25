@@ -415,7 +415,7 @@ namespace Jayrock.JsonRpc
 
                     foreach (Parameter parameter in parameters)
                     {
-                        if (parameter.Name.Equals(name))
+                        if (CaselessString.Equals(parameter.Name, name))
                         {
                             parameterType = parameter.ParameterType;
                             break;

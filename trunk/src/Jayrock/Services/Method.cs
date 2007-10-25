@@ -237,7 +237,7 @@ namespace Jayrock.Services
                 
                 if (position < 0)
                 {
-                    int order = InvariantStringArray.BinarySearch(_parameterNames, name);
+                    int order = InvariantStringArray.BinarySearch(_parameterNames, name, /* ignoreCase */ true);
                     if (order >= 0)
                         position = _sortedParameters[order].Position;
                 }

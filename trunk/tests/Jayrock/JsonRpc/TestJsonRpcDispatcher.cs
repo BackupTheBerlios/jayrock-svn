@@ -223,6 +223,14 @@ namespace Jayrock.JsonRpc
             Assert.AreEqual(42, ((JsonNumber) id).ToInt32());
         }
 
+        [ Test ]
+        public void CallWithParamNamesInAltCase()
+        {
+            JsonRpcDispatcher server = new JsonRpcDispatcher(new TestService());
+            string responseString = server.Process("{ id : 1, method : 'Say', params : { MESSAGE : 'Hello' } }");
+            Assert.AreEqual("Hello", JsonRpcServices.GetResult((IDictionary) Parse(responseString)));
+        }
+
         private object Parse(string source)
         {
             return JsonConvert.Import(source);

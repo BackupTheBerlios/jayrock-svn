@@ -253,6 +253,17 @@ namespace Jayrock.JsonRpc
             Assert.IsTrue(clazz.GetMethodByName("IdempotentMethod").Idempotent);
         }
         
+        [ Test ]
+        public void MethodLookupIsCaseFree()
+        {
+            ServiceClass clazz = JsonRpcServices.GetClassFromType(typeof(TestService));
+            Method foo = clazz.FindMethodByName("Foo");
+            Assert.AreEqual("Foo", foo.Name);
+            Assert.AreSame(foo, clazz.FindMethodByName("foo"));
+            Assert.AreSame(foo, clazz.FindMethodByName("FOO"));
+            Assert.AreSame(foo, clazz.FindMethodByName("Foo"));
+        }
+
         private sealed class EmptyService
         {
         }

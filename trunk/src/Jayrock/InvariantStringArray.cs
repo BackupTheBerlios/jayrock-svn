@@ -50,7 +50,15 @@ namespace Jayrock
         {
             Debug.Assert(values != null);
 
-            return Array.BinarySearch(values, sought, InvariantComparer);
+            return BinarySearch(values, sought, false);
+        }
+
+        public static int BinarySearch(string[] values, string sought, bool ignoreCase)
+        {
+            Debug.Assert(values != null);
+
+            return Array.BinarySearch(values, sought, 
+                ignoreCase ? CaselessInvariantComparer : InvariantComparer);
         }
         
         private static IComparer InvariantComparer
@@ -65,20 +73,35 @@ namespace Jayrock
             }
         }
 
+        private static IComparer CaselessInvariantComparer
+        {
+            get
+            {
+#if NET_1_0
+                return StringComparer.CaselessDefaultInvariant;
+#else
+                return CaseInsensitiveComparer.DefaultInvariant;
+#endif
+            }
+        }
+
 #if NET_1_0
         
         [ Serializable ]
         private sealed class StringComparer : IComparer
         {
             private CompareInfo _compareInfo;
+            private CompareOptions _options;
             
-            public static readonly StringComparer DefaultInvariant = new StringComparer(CultureInfo.InvariantCulture);
+            public static readonly StringComparer DefaultInvariant = new StringComparer(CultureInfo.InvariantCulture, CompareOptions.None);
+            public static readonly StringComparer CaselessDefaultInvariant = new StringComparer(CultureInfo.InvariantCulture, CompareOptions.IgnoreCase);
 
-            private StringComparer(CultureInfo culture)
+            private StringComparer(CultureInfo culture, CompareOptions options)
             {
                 Debug.Assert(culture != null);
                 
                 _compareInfo = culture.CompareInfo;
+                _options = options;
             }
 
             public int Compare(object x, object y)
@@ -90,7 +113,7 @@ namespace Jayrock
                 else if (y == null) 
                     return 1;
                 else
-                    return _compareInfo.Compare((string) x, (string) y);
+                    return _compareInfo.Compare((string) x, (string) y, _options);
             }
         }
 
