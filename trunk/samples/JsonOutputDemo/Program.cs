@@ -25,13 +25,13 @@ namespace JsonOutputDemo
 
         private static void Main()
         {
-            Demo[] demos = new Demo[]
-                {
-                    new Demo(WriteContinents), 
-                    new Demo(WriteContact), 
-                    new Demo(WriteRssToJson), 
-                    new Demo(ExportRssToJson), 
-                };
+            Demo[] demos = new Demo[] 
+            {
+                WriteContinents, 
+                WriteContact, 
+                WriteRssToJson, 
+                ExportRssToJson, 
+            };
 
             foreach (Demo demo in demos)
             {
