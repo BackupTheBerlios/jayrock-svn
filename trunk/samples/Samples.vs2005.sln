@@ -24,6 +24,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YahooJsonNewsReader", "Yaho
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonConversionsDemo", "JsonConversionsDemo\JsonConversionsDemo.csproj", "{FD86AB36-F607-46D6-850D-E3A9FD7B7039}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,6 +52,10 @@ Global
 		{E3BFDE70-F896-4ADA-8150-F03D83E1A706}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E3BFDE70-F896-4ADA-8150-F03D83E1A706}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E3BFDE70-F896-4ADA-8150-F03D83E1A706}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD86AB36-F607-46D6-850D-E3A9FD7B7039}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD86AB36-F607-46D6-850D-E3A9FD7B7039}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD86AB36-F607-46D6-850D-E3A9FD7B7039}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD86AB36-F607-46D6-850D-E3A9FD7B7039}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
