@@ -436,7 +436,7 @@ namespace JayrockWeb
             application is called <code>foobar</code> and is running on your local machine,
             then type <code><span class="fake-a">http://localhost/foobar/helloworld.ashx</span></code>.
             You should now see a page appear that lists the methods exposed by your service:</p>
-        <img border="0"  class="figure" src="images/HelloWorldHelp.jpg" width="800" height="600" alt="HelloWorld Help" />
+        <img border="0"  class="figure" src="images/HelloWorldHelp.png" width="832" height="632" alt="HelloWorld Help" />
         <p>
             Notice that there are two methods, namely <code>greetings</code> and <code>system.listMethods</code>.
             The <code>system.listMethods</code> is always there and inheirted by all services
@@ -449,7 +449,7 @@ namespace JayrockWeb
             page from where you can invoke and test each individual method. Click on this link
             now, which should yield a page similar to the one shown here:
         </p>
-        <img border="0"  class="figure" src="images/HelloWorldTest.jpg" width="800" height="600" alt="HelloWorld Test" />
+        <img border="0"  class="figure" src="images/HelloWorldTest.png" width="832" height="632" alt="HelloWorld Test" />
         <p>
             To see if everything is working correctly, select the <code>greetings</code> method
             from the drop-down list and click the button labeled <code>Test</code>. If all goes
