@@ -34,6 +34,7 @@ namespace Jayrock.Json.Conversion.Converters
     public sealed class ComponentImporter : ImporterBase
     {
         private readonly PropertyDescriptorCollection _properties; // TODO: Review thread-safety of PropertyDescriptorCollection
+        private readonly IObjectMemberImporter[] _importers;
 
         public ComponentImporter(Type type) :
             this(type, null) {}
@@ -44,7 +45,31 @@ namespace Jayrock.Json.Conversion.Converters
             if (typeDescriptor == null)
                 typeDescriptor = new CustomTypeDescriptor(type);
             
-            _properties = typeDescriptor.GetProperties();
+            int index = 0;
+            int count = 0;
+            PropertyDescriptorCollection properties = typeDescriptor.GetProperties();
+            IObjectMemberImporter[] importers = new IObjectMemberImporter[properties.Count];
+            
+            foreach (PropertyDescriptor property in properties)
+            {
+                IServiceProvider sp = property as IServiceProvider;
+                
+                if (sp == null)
+                    continue;
+                
+                IObjectMemberImporter importer = (IObjectMemberImporter) sp.GetService(typeof(IObjectMemberImporter));
+                
+                if (importer == null)
+                    continue;
+                
+                importers[index++] = importer;
+                count++;
+            }
+
+            _properties = properties;
+
+            if (count > 0)
+                _importers = importers;
         }
 
         protected override object ImportFromObject(ImportContext context, JsonReader reader)
@@ -62,10 +87,43 @@ namespace Jayrock.Json.Conversion.Converters
                
                 PropertyDescriptor property = _properties.Find(memberName, true);
                 
-                if (property != null && !property.IsReadOnly)
-                    property.SetValue(o, context.Import(property.PropertyType, reader));
-                else 
+                //
+                // Skip over the member value and continue with reading if
+                // the property was not found or if the property found cannot
+                // be set.
+                //
+                
+                if (property == null || property.IsReadOnly)
+                {
                     reader.Skip();
+                    continue;
+                }
+                
+                //
+                // Check if the property defines a custom import scheme.
+                // If yes, ask it to import the value into the property 
+                // and then continue with the next.
+                //
+                
+                if (_importers != null)
+                {
+                    int index = _properties.IndexOf(property);
+                    
+                    IObjectMemberImporter importer = _importers[index];
+                    
+                    if (importer != null)
+                    {
+                        importer.Import(context, reader, o);
+                        continue;
+                    }
+                }
+                    
+                //
+                // Import from reader based on the property type and 
+                // then set the value of the property.
+                //
+                
+                property.SetValue(o, context.Import(property.PropertyType, reader));
             }
          
             return ReadReturning(reader, o);

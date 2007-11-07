@@ -20,18 +20,27 @@
 //
 #endregion
 
-#region Imports
-
-using System.Reflection;
-using ComVisible = System.Runtime.InteropServices.ComVisibleAttribute;
-
-#endregion
-
-[assembly: AssemblyTitle("Jayrock.Json")]
-[assembly: AssemblyDescription("JSON Library")]
-
-//
-// Version information
-//
-
-[assembly: AssemblyFileVersion("0.9.9407.1305")]
+namespace Jayrock.Json.Conversion
+{
+    /// <summary>
+    /// Defines methods to export a single JSON Object member.
+    /// </summary>
+    
+    public interface IObjectMemberExporter
+    {
+        /// <summary>
+        /// Gets a value from a source object and exports it as a JSON 
+        /// Object member (name plus value).
+        /// </summary>
+        /// <remarks>
+        /// The implementation is responsible for writing the member
+        /// name and value. The implementation is free to omit writing
+        /// anything to produce a terser output. For example, if the
+        /// corresponding field or property of the source object is
+        /// null then the implementation could just do nothing instead
+        /// of emitting the member name with a value of JSON Null.
+        /// </remarks>
+        
+        void Export(ExportContext context, JsonWriter writer, object source);
+    }
+}

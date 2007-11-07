@@ -25,6 +25,7 @@ namespace Jayrock.Json.Conversion.Converters
     #region Imports
 
     using System;
+    using System.Collections;
     using System.ComponentModel;
     using System.Diagnostics;
     using System.IO;
@@ -191,145 +192,74 @@ namespace Jayrock.Json.Conversion.Converters
             Type thingType = typeof(Thing);
             JsonTextReader reader = new JsonTextReader(new StringReader("{ Id : 42 }"));
             TestTypeDescriptor descriptor = new TestTypeDescriptor();
-            descriptor.AddReadOnlyProperty("Id");
+            descriptor.GetProperties().Add(new ReadOnlyPropertyDescriptor("Id"));
             ComponentImporter importer = new ComponentImporter(thingType, descriptor);
             importer.Import(new ImportContext(), reader);
-            Assert.IsFalse(descriptor.GetProperty("Id").SetValueCalled);
+            Assert.IsFalse(((ReadOnlyPropertyDescriptor) descriptor.GetProperties().Find("Id", false)).SetValueCalled);
+        }
+
+        [ Test ]
+        public void MemberImportCustomization()
+        {
+            TestObjectMemberImporter memberImporter = new TestObjectMemberImporter();
+            Hashtable services = new Hashtable();
+            services.Add(typeof(IObjectMemberImporter), memberImporter);
+
+            TestTypeDescriptor logicalType = new TestTypeDescriptor();
+            PropertyDescriptorCollection properties = logicalType.GetProperties();
+            TestPropertyDescriptor property = new TestPropertyDescriptor("prop", typeof(object), services);
+            properties.Add(property);
+            
+            ComponentImporter importer = new ComponentImporter(typeof(Thing), logicalType);
+            ImportContext context = new ImportContext();
+            context.Register(importer);
+            
+            JsonRecorder writer = new JsonRecorder();
+            writer.WriteStartObject();
+            writer.WriteMember("prop");
+            writer.WriteString("value");
+            writer.WriteEndObject();
+
+            JsonReader reader = writer.CreatePlayer();
+            Thing thing = (Thing) context.Import(typeof(Thing), reader);
+            
+            Assert.AreSame(context, memberImporter.ImportContext);
+            Assert.AreSame(reader, memberImporter.ImportReader);
+            Assert.AreSame(thing, memberImporter.ImportTarget);
+            Assert.AreEqual("value", memberImporter.ImportedValue);
         }
 
         private sealed class Thing
         {
         }
 
-        private sealed class TestTypeDescriptor : ICustomTypeDescriptor
+        private sealed class ReadOnlyPropertyDescriptor : PropertyDescriptor
         {
-            private static readonly PropertyDescriptorCollection _properties = new PropertyDescriptorCollection(null);
+            public bool SetValueCalled;
 
-            public PropertyDescriptorCollection GetProperties()
+            public ReadOnlyPropertyDescriptor(string name) : 
+                base(name, null) {}
+
+            public override void SetValue(object component, object value)
             {
-                return _properties;
+                SetValueCalled = true;
             }
+
+            public override bool IsReadOnly
+            {
+                get { return true; }
+            }
+
+            #region Unimplemented members of PropertyDescriptor
+
+            public override bool CanResetValue(object component) { throw new NotImplementedException(); }
+            public override object GetValue(object component) { throw new NotImplementedException(); }
+            public override void ResetValue(object component) { throw new NotImplementedException(); }
+            public override bool ShouldSerializeValue(object component) { throw new NotImplementedException(); }
+            public override Type ComponentType { get { throw new NotImplementedException(); } }
+            public override Type PropertyType { get { throw new NotImplementedException(); } }
             
-            public void AddReadOnlyProperty(string name)
-            {
-                _properties.Add(new ReadOnlyPropertyDescriptor(name));
-            }
-
-            public sealed class ReadOnlyPropertyDescriptor : PropertyDescriptor
-            {
-                public bool SetValueCalled;
-
-                public ReadOnlyPropertyDescriptor(string name) : 
-                    base(name, null) {}
-
-                public override void SetValue(object component, object value)
-                {
-                    SetValueCalled = true;
-                }
-
-                public override bool IsReadOnly
-                {
-                    get { return true; }
-                }
-
-                #region Unused members
-
-                public override bool CanResetValue(object component)
-                {
-                    throw new NotImplementedException();
-                }
-
-                public override object GetValue(object component)
-                {
-                    throw new NotImplementedException();
-                }
-
-                public override void ResetValue(object component)
-                {
-                    throw new NotImplementedException();
-                }
-
-                public override bool ShouldSerializeValue(object component)
-                {
-                    throw new NotImplementedException();
-                }
-
-                public override Type ComponentType
-                {
-                    get { throw new NotImplementedException(); }
-                }
-
-                public override Type PropertyType
-                {
-                    get { throw new NotImplementedException(); }
-                }
-
-                #endregion
-            }
-
-            #region Unused members
-
-            public AttributeCollection GetAttributes()
-            {
-                throw new NotImplementedException();
-            }
-
-            public string GetClassName()
-            {
-                throw new NotImplementedException();
-            }
-
-            public string GetComponentName()
-            {
-                throw new NotImplementedException();
-            }
-
-            public TypeConverter GetConverter()
-            {
-                throw new NotImplementedException();
-            }
-
-            public EventDescriptor GetDefaultEvent()
-            {
-                throw new NotImplementedException();
-            }
-
-            public PropertyDescriptor GetDefaultProperty()
-            {
-                throw new NotImplementedException();
-            }
-
-            public object GetEditor(Type editorBaseType)
-            {
-                throw new NotImplementedException();
-            }
-
-            public EventDescriptorCollection GetEvents()
-            {
-                throw new NotImplementedException();
-            }
-
-            public EventDescriptorCollection GetEvents(Attribute[] attributes)
-            {
-                throw new NotImplementedException();
-            }
-
-            public PropertyDescriptorCollection GetProperties(Attribute[] attributes)
-            {
-                throw new NotImplementedException();
-            }
-
-            public object GetPropertyOwner(PropertyDescriptor pd)
-            {
-                throw new NotImplementedException();
-            }
-
             #endregion
-
-            public ReadOnlyPropertyDescriptor GetProperty(string name)
-            {
-                return (ReadOnlyPropertyDescriptor) _properties[name];
-            }
         }
 
         private static object Import(Type expectedType, string s)
@@ -429,6 +359,82 @@ namespace Jayrock.Json.Conversion.Converters
             public string Url = null;
             public int Height = 0;
             public int Width = 0;
+        }
+ 
+        private sealed class TestObjectMemberImporter : IObjectMemberImporter
+        {
+            public ImportContext ImportContext;
+            public JsonReader ImportReader;
+            public object ImportTarget;
+            public object ImportedValue;
+
+            void IObjectMemberImporter.Import(ImportContext context, JsonReader reader, object target)
+            {
+                ImportContext = context;
+                ImportReader = reader;
+                ImportTarget = target;
+                ImportedValue = context.Import(typeof(object), reader);
+            }
+        }
+
+        private sealed class TestPropertyDescriptor : PropertyDescriptor, IServiceProvider
+        {
+            public object Value;
+
+            private IDictionary _services;
+            private readonly Type _propertyType;
+
+            public TestPropertyDescriptor(string name, Type type, IDictionary services) : base(name, null)
+            {
+                _services = services;
+                _propertyType = type;
+            }
+            
+            public override bool IsReadOnly { get { return false; } }
+            public override void SetValue(object component, object value) { Value = value; }
+
+            object IServiceProvider.GetService(Type serviceType)
+            {
+                return _services[serviceType];
+            }
+
+            public override Type PropertyType { get { return _propertyType; } }
+
+            #region Unimplemented members of PropertyDescriptor
+
+            public override bool CanResetValue(object component) { throw new NotImplementedException(); }
+            public override object GetValue(object component) { throw new NotImplementedException(); }
+            public override void ResetValue(object component) { throw new NotImplementedException(); }
+            public override bool ShouldSerializeValue(object component) { throw new NotImplementedException(); }
+            public override Type ComponentType { get { throw new NotImplementedException(); } }
+            
+            #endregion
+        }
+
+        private sealed class TestTypeDescriptor : ICustomTypeDescriptor
+        {
+            private readonly PropertyDescriptorCollection _properties = new PropertyDescriptorCollection(null);
+
+            public PropertyDescriptorCollection GetProperties()
+            {
+                return _properties;
+            }
+
+            #region Unimplemented members of ICustomTypeDescriptor
+
+            public AttributeCollection GetAttributes() { throw new NotImplementedException(); }
+            public string GetClassName() { throw new NotImplementedException(); }
+            public string GetComponentName() { throw new NotImplementedException(); }
+            public TypeConverter GetConverter() { throw new NotImplementedException(); }
+            public EventDescriptor GetDefaultEvent() { throw new NotImplementedException(); }
+            public PropertyDescriptor GetDefaultProperty() { throw new NotImplementedException(); }
+            public object GetEditor(Type editorBaseType) { throw new NotImplementedException(); }
+            public EventDescriptorCollection GetEvents() { throw new NotImplementedException(); }
+            public EventDescriptorCollection GetEvents(Attribute[] attributes) { throw new NotImplementedException(); }
+            public PropertyDescriptorCollection GetProperties(Attribute[] attributes) { throw new NotImplementedException(); }
+            public object GetPropertyOwner(PropertyDescriptor pd) { throw new NotImplementedException(); }
+
+            #endregion
         }
     }
 }

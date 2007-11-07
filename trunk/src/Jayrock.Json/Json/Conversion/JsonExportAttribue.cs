@@ -20,18 +20,22 @@
 //
 #endregion
 
-#region Imports
+namespace Jayrock.Json.Conversion
+{
+    #region Imports
 
-using System.Reflection;
-using ComVisible = System.Runtime.InteropServices.ComVisibleAttribute;
+    using System;
 
-#endregion
+    #endregion
 
-[assembly: AssemblyTitle("Jayrock.Json")]
-[assembly: AssemblyDescription("JSON Library")]
-
-//
-// Version information
-//
-
-[assembly: AssemblyFileVersion("0.9.9407.1305")]
+    /// <summary>
+    /// Instructs a JSON serializer to write out the value of a public property
+    /// when it wouldn't be included otherwise.
+    /// </summary>
+    
+    [ Serializable ]
+    [ AttributeUsage(AttributeTargets.Property) ]
+    public sealed class JsonExportAttribute : Attribute
+    {
+    }
+}

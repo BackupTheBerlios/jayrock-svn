@@ -20,18 +20,40 @@
 //
 #endregion
 
-#region Imports
+namespace Jayrock.Json.Conversion
+{
+    using System;
+    using System.ComponentModel;
+    
+    /// <summary>
+    /// Marks a type, typically an attribute, as a customization targeting
+    /// a <see cref="PropertyDescriptor"/>.
+    /// </summary>
 
-using System.Reflection;
-using ComVisible = System.Runtime.InteropServices.ComVisibleAttribute;
+    public interface IPropertyDescriptorCustomization
+    {
+        void Apply(PropertyDescriptor property);
+    }
+    
+    /// <summary>
+    /// Defines getter and setter methods that encapsulate a property 
+    /// implementation.
+    /// </summary>
 
-#endregion
+    public interface IPropertyImpl
+    {
+        object GetValue(object obj);
+        void SetValue(object obj, object value);
+    }
+    
+    /// <summary>
+    /// Advertises a property that can be customized at run-time.
+    /// </summary>
 
-[assembly: AssemblyTitle("Jayrock.Json")]
-[assembly: AssemblyDescription("JSON Library")]
-
-//
-// Version information
-//
-
-[assembly: AssemblyFileVersion("0.9.9407.1305")]
+    public interface IPropertyCustomization
+    {
+        void SetName(string name);
+        void SetType(Type type);
+        IPropertyImpl OverrideImpl(IPropertyImpl impl);
+    }
+}

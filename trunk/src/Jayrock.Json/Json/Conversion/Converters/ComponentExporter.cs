@@ -35,6 +35,7 @@ namespace Jayrock.Json.Conversion.Converters
     public sealed class ComponentExporter : ExporterBase
     {
         private readonly PropertyDescriptorCollection _properties; // TODO: Review thread-safety of PropertyDescriptorCollection
+        private readonly IObjectMemberExporter[] _exporters;
 
         public ComponentExporter(Type inputType) :
             this(inputType, (ICustomTypeDescriptor) null) {}
@@ -49,6 +50,29 @@ namespace Jayrock.Json.Conversion.Converters
             Debug.Assert(properties != null);
             
             _properties = properties;
+
+            int index = 0;
+            int count = 0;
+            IObjectMemberExporter[] exporters = new IObjectMemberExporter[properties.Count];
+
+            foreach (PropertyDescriptor property in properties)
+            {
+                IServiceProvider sp = property as IServiceProvider;
+                
+                if (sp == null)
+                    continue;
+                
+                IObjectMemberExporter exporter = (IObjectMemberExporter) sp.GetService(typeof(IObjectMemberExporter));
+                
+                if (exporter == null)
+                    continue;
+                
+                exporters[index++] = exporter;
+                count++;
+            }
+            
+            if (count > 0)
+                _exporters = exporters;
         }
 
         protected override void ExportValue(ExportContext context, object value, JsonWriter writer)
@@ -68,29 +92,41 @@ namespace Jayrock.Json.Conversion.Converters
                 try
                 {
                     writer.WriteStartObject();
+                    
+                    int index = 0;
 
                     foreach (PropertyDescriptor property in _properties)
                     {
-                        object propertyValue = property.GetValue(value);
-                
-                        if (!JsonNull.LogicallyEquals(propertyValue))
+                        IObjectMemberExporter exporter = _exporters != null && index < _exporters.Length ? 
+                            _exporters[index] : null;
+                        
+                        if (exporter != null)
                         {
-                            writer.WriteMember(property.Name);
-
-                            if (tracker == null)
+                            exporter.Export(context, writer, value);
+                        }
+                        else
+                        {
+                            object propertyValue = property.GetValue(value);
+                
+                            if (!JsonNull.LogicallyEquals(propertyValue))
                             {
-                                //
-                                // We are about to enter a deeper scope so 
-                                // start tracking the current object being 
-                                // exported. This will help to detect 
-                                // recursive references that may occur 
-                                // through this exporter deeper in the tree.
-                                //
-                                
-                                tracker = TrackObject(context, value);
-                            }
+                                writer.WriteMember(property.Name);
 
-                            context.Export(propertyValue, writer);
+                                if (tracker == null)
+                                {
+                                    //
+                                    // We are about to enter a deeper scope so 
+                                    // start tracking the current object being 
+                                    // exported. This will help to detect 
+                                    // recursive references that may occur 
+                                    // through this exporter deeper in the tree.
+                                    //
+                                
+                                    tracker = TrackObject(context, value);
+                                }
+
+                                context.Export(propertyValue, writer);
+                            }
                         }
                     }
 
