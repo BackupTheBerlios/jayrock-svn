@@ -26,6 +26,10 @@ namespace Jayrock.Collections
 
     using System;
     using System.Collections;
+    using System.IO;
+    using System.Reflection;
+    using System.Runtime.Serialization;
+    using System.Runtime.Serialization.Formatters.Binary;
     using NUnit.Framework;
 
     #endregion
@@ -182,6 +186,33 @@ namespace Jayrock.Collections
             object unused = new NamedValueCollection()[null];
         }
 
+        [ Test ]
+        public void AddsNoSerializableState()
+        {
+            MemberInfo[] members = FormatterServices.GetSerializableMembers(typeof(KeyedCollection));
+            foreach (MemberInfo member in members)
+            Assert.AreNotEqual(typeof(KeyedCollection), member.DeclaringType);
+        }
+
+        [ Test ]
+        public void MappingIsRestoredUponDeserialization()
+        {
+            NamedValueCollection collection = new NamedValueCollection();
+            Assert.IsFalse(collection.OnDeserializationCallbackCalled);
+            collection.Add(new NamedValue("foo", "bar"));
+            BinaryFormatter formatter = new BinaryFormatter();
+            MemoryStream ms = new MemoryStream();
+            formatter.Serialize(ms, collection);
+            ms.Position = 0; // rewind
+            collection = (NamedValueCollection) formatter.Deserialize(ms);
+            Assert.IsTrue(collection.OnDeserializationCallbackCalled);
+            NamedValue entry = collection["foo"];
+            Assert.IsNotNull(entry);
+            Assert.AreEqual("foo", entry.Name); 
+            Assert.AreEqual("bar", entry.Value);
+        }
+
+        [ Serializable ]
         private sealed class NamedValue
         {
             public string Name;
@@ -194,8 +225,11 @@ namespace Jayrock.Collections
             }
         }
         
+        [ Serializable ]
         private sealed class NamedValueCollection : KeyedCollection
         {
+            public bool OnDeserializationCallbackCalled;
+
             public NamedValue this[string key]
             {
                 get { return (NamedValue) GetByKey(key); }
@@ -231,6 +265,12 @@ namespace Jayrock.Collections
             protected override object KeyFromValue(object value)
             {
                 return ((NamedValue) value).Name;
+            }
+
+            protected override void OnDeserializationCallback(object sender)
+            {
+                OnDeserializationCallbackCalled = true;
+                base.OnDeserializationCallback(sender);
             }
         }
     }

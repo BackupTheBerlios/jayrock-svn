@@ -26,22 +26,25 @@ namespace Jayrock.Collections
 
     using System;
     using System.Collections;
+    using System.Runtime.Serialization;
 
     #endregion
 
     [ Serializable ]
-    public abstract class KeyedCollection : CollectionBase
+    public abstract class KeyedCollection : CollectionBase, IDeserializationCallback
     {
-        private Hashtable _valueByKey; // TODO: Mark [ NonSerializable ] and implement IDeserializationCallback
+        [ NonSerialized ]
+        private Hashtable _valueByKey;
 
-        protected KeyedCollection()
-        {
-            _valueByKey = new Hashtable();
-        }
-        
         private Hashtable ValueByKey
         {
-            get { return _valueByKey; }
+            get
+            {
+                if (_valueByKey == null)
+                    _valueByKey = new Hashtable(4);
+
+                return _valueByKey;
+            }
         }
 
         protected void Add(object value)
@@ -125,5 +128,16 @@ namespace Jayrock.Collections
         }
 
         protected abstract object KeyFromValue(object value);
+
+        void IDeserializationCallback.OnDeserialization(object sender)
+        {
+            OnDeserializationCallback(sender);
+        }
+
+        protected virtual void OnDeserializationCallback(object sender)
+        {
+            foreach (object value in this)
+                ValueByKey[KeyFromValue(value)] = value;
+        }
     }
 }
