@@ -25,8 +25,11 @@ namespace Jayrock.JsonRpc
     #region Imports
 
     using System;
+    using System.Diagnostics;
     using System.Reflection;
     using Jayrock.Services;
+    using System.ComponentModel;
+    using CustomTypeDescriptor = Jayrock.Json.Conversion.CustomTypeDescriptor;
 
     #endregion
 
@@ -36,6 +39,7 @@ namespace Jayrock.JsonRpc
     {
         private string _name;
         private bool _idempotent;
+        private bool _warpedParameters;
 
         public JsonRpcMethodAttribute() {}
 
@@ -55,11 +59,70 @@ namespace Jayrock.JsonRpc
             get { return _idempotent; }
             set { _idempotent = value; }
         }
+        
+        public bool WarpedParameters
+        {
+            get { return _warpedParameters; }
+            set { _warpedParameters = value; }
+        }
 
         void IMethodReflector.Build(MethodBuilder builder, MethodInfo method)
         {
             builder.Name = Name;
             builder.Idempotent = Idempotent;
+
+            //
+            // Build the method parameters.
+            //
+
+            ParameterInfo[] parameters = method.GetParameters();
+
+            if (WarpedParameters)
+            {
+                if (parameters.Length != 1)
+                {
+                    // TODO: Use a more specific exception type
+                    throw new Exception(string.Format(
+                        "Methods used warped parameters must accept a single argument of the warped type only whereas method {1} on {0} accepts {2}.",
+                        method.DeclaringType.FullName, method.Name, parameters.Length.ToString()));
+                }
+
+                PropertyDescriptorCollection args = GetProperties(parameters[0].ParameterType);
+                foreach (PropertyDescriptor arg in args)
+                {
+                    ParameterBuilder parameter = builder.DefineParameter();
+                    parameter.Name = arg.Name;
+                    parameter.ParameterType = arg.PropertyType;
+                }
+
+                PropertyDescriptor result = null;
+
+                if (method.ReturnType != typeof(void))
+                {
+                    PropertyDescriptorCollection results = GetProperties(method.ReturnType);
+                    if (results.Count > 0)
+                    {
+                        result = results[0];
+                        builder.ResultType = result.PropertyType;
+                    }
+                }
+
+                builder.Handler = new WarpedMethodImpl(builder.Handler, 
+                    parameters[0].ParameterType, 
+                    args, result);
+            }
+            else
+            {
+                foreach (ParameterInfo parameter in parameters)
+                    JsonRpcServiceReflector.BuildParameter(builder.DefineParameter(), parameter);
+            }
+        }
+
+        private static PropertyDescriptorCollection GetProperties(Type type) 
+        {
+            Debug.Assert(type != null);
+            CustomTypeDescriptor customType = new CustomTypeDescriptor(type);
+            return customType.GetProperties();
         }
     }
 }

@@ -37,7 +37,7 @@ namespace Jayrock.JsonRpc
     /// </summary>
 
     [ AttributeUsage(AttributeTargets.Class | AttributeTargets.Method) ]
-    public sealed class JsonRpcObsoleteAttribute : Attribute, IMethodReflector, ICloneable
+    public sealed class JsonRpcObsoleteAttribute : Attribute, IMethodModifier, ICloneable
     {
         private string _message;
 
@@ -54,7 +54,7 @@ namespace Jayrock.JsonRpc
             set { _message = value; }
         }
 
-        void IMethodReflector.Build(MethodBuilder builder, MethodInfo method)
+        void IMethodModifier.Modify(MethodBuilder builder, MethodInfo method)
         {
             builder.AddCustomAttribute(this);
         }

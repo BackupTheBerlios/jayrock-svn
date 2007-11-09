@@ -305,6 +305,13 @@ namespace JayrockWeb
             return time;
         }
 
+        [ JsonRpcMethod("wadd", Idempotent = true, WarpedParameters = true) ]
+        [ JsonRpcHelp("Adds two float arguments and returns their result. This method demostrates use of warped parameters.") ]
+        public WarpedAddOutput WarpedAdd(WarpedAddInput args)
+        {
+            return new WarpedAddOutput(args.X + args.Y);
+        }
+        
         //
         // NOTE: To send and receive typed objects, use public types only 
         // that have a default constructor. Only public read/write fields
@@ -336,6 +343,22 @@ namespace JayrockWeb
             {
                 this.FirstName = fn;
                 this.LastName = ln;
+            }
+        }
+
+        public class WarpedAddInput
+        {
+            public double X;
+            public double Y;
+        }
+
+        public class WarpedAddOutput
+        {
+            public double Result;
+
+            public WarpedAddOutput(double result)
+            {
+                this.Result = result;
             }
         }
     }

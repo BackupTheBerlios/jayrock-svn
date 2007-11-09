@@ -26,8 +26,6 @@ namespace Jayrock.JsonRpc
 
     using System;
     using System.Collections;
-    using System.Diagnostics;
-    using System.Reflection;
     using Jayrock.Services;
     using NUnit.Framework;
 
@@ -264,6 +262,39 @@ namespace Jayrock.JsonRpc
             Assert.AreSame(foo, clazz.FindMethodByName("Foo"));
         }
 
+        [ Test ]
+        public void MethodWithWarpedParametersAndResult()
+        {
+            ServiceClass clazz = JsonRpcServices.GetClassFromType(typeof(ServiceWithMethodsUsingWarpedParameters));
+            Method foo = clazz.FindMethodByName("Foo");
+
+            Assert.AreEqual(typeof(DateTime), foo.ResultType);
+
+            Parameter[] parameters = foo.GetParameters();
+            Assert.AreEqual(2, parameters.Length);
+
+            Parameter parameter;
+
+            parameter = parameters[0];
+            Assert.AreEqual("stringArg", parameter.Name);
+            Assert.AreEqual(0, parameter.Position);
+            Assert.AreEqual(typeof(string), parameter.ParameterType);
+
+            parameter = parameters[1];
+            Assert.AreEqual("intArg", parameter.Name);
+            Assert.AreEqual(1, parameter.Position);
+            Assert.AreEqual(typeof(int), parameter.ParameterType);
+        }
+
+        [Test]
+        public void MethodWithWarpedParametersButVoidResult()
+        {
+            ServiceClass clazz = JsonRpcServices.GetClassFromType(typeof(ServiceWithMethodsUsingWarpedParameters));
+            Method foo = clazz.FindMethodByName("FooNoResult");
+            
+            Assert.AreEqual(typeof(void), foo.ResultType);
+        }
+
         private sealed class EmptyService
         {
         }
@@ -309,7 +340,7 @@ namespace Jayrock.JsonRpc
         [ AttributeUsage(AttributeTargets.All, AllowMultiple = true) ]
         private class MyAttribute : Attribute, ICloneable
         {
-            private int _testValue;
+            private readonly int _testValue;
 
             public MyAttribute(int testValue)
             {
@@ -324,6 +355,57 @@ namespace Jayrock.JsonRpc
             public object Clone()
             {
                 return MemberwiseClone();
+            }
+        }
+
+        private sealed class ServiceWithMethodsUsingWarpedParameters : IService
+        {
+            public FooArgs Args;
+            public FooResult Result = null;
+
+            [ JsonRpcMethod(WarpedParameters = true) ]
+            public FooResult Foo(FooArgs args) 
+            {
+                this.Args = args;
+                return Result;
+            }
+
+            [ JsonRpcMethod(WarpedParameters = true) ]
+            public void FooNoResult(FooArgs args)
+            {
+                this.Args = args;
+            }
+
+            public sealed class FooArgs
+            {
+                //
+                // NOTE: The default assignments on the following fields is
+                // to maily shut off the following warning from the compiler:
+                //
+                // warning CS0649: Field '...' is never assigned to, and will always have its default value
+                //
+                // This warning is harmless. Since the C# 1.x compiler does
+                // not support #pragma warning disable, we have to resort
+                // to a more brute force method.
+                //
+
+                public string stringArg = null;
+                public int intArg = 0;
+            }
+
+            public sealed class FooResult
+            {
+                public DateTime Result;
+
+                public FooResult(DateTime result)
+                {
+                    this.Result = result;
+                }
+            }
+
+            public ServiceClass GetClass()
+            {
+                throw new NotImplementedException();
             }
         }
     }

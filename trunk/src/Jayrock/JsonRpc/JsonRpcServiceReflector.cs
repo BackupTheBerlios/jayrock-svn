@@ -62,13 +62,16 @@ namespace Jayrock.JsonRpc
         private static void BuildClass(ServiceClassBuilder builder, Type type)
         {
             //
-            // Build via attributes.
+            // Build...
             //
 
-            object[] attributes = type.GetCustomAttributes(typeof(IServiceClassReflector), true);
-            foreach (IServiceClassReflector reflector in attributes)
-                reflector.Build(builder, type);
-            
+            IServiceClassReflector reflector = (IServiceClassReflector) FindCustomAttribute(type, typeof(IServiceClassReflector), true);
+
+            if (reflector == null)
+                reflector = new JsonRpcServiceAttribute();
+
+            reflector.Build(builder, type);
+
             //
             // Fault in the type name if still without name.
             //
@@ -77,27 +80,22 @@ namespace Jayrock.JsonRpc
                 builder.Name = type.Name;
 
             //
-            // Get all the public instance methods on the type and create a
-            // filtered table of those to expose from the service.
+            // Modify...
             //
-            
-            MethodInfo[] publicMethods = type.GetMethods(BindingFlags.Public | BindingFlags.Instance);
 
-            foreach (MethodInfo method in publicMethods)
-            {
-                if (ShouldBuild(method))
-                    BuildMethod(builder.DefineMethod(), method);
-            }
+            object[] modifiers = type.GetCustomAttributes(typeof(IServiceClassModifier), true);
+            foreach (IServiceClassModifier modifier in modifiers)
+                modifier.Modify(builder, type);
         }
 
-        private static bool ShouldBuild(MethodInfo method)
+        internal static bool ShouldBuild(MethodInfo method)
         {
             Debug.Assert(method != null);
-            
-            return !method.IsAbstract && Attribute.IsDefined(method, typeof(JsonRpcMethodAttribute));
+
+            return !method.IsAbstract && method.IsDefined(typeof(IMethodReflector), true);
         }
 
-        private static void BuildMethod(MethodBuilder builder, MethodInfo method)
+        internal static void BuildMethod(MethodBuilder builder, MethodInfo method)
         {
             Debug.Assert(method != null);
             Debug.Assert(builder != null);
@@ -105,41 +103,49 @@ namespace Jayrock.JsonRpc
             builder.InternalName = method.Name;
             builder.ResultType = method.ReturnType;
             builder.Handler = new TypeMethodImpl(method);
-            
+
             //
-            // Build via attributes.
+            // Build...
             //
-            
-            object[] attributes = method.GetCustomAttributes(typeof(Attribute), true);
-            foreach (Attribute attribute in attributes)
-            {
-                IMethodReflector reflector = attribute as IMethodReflector;
-                
-                if (reflector != null)
-                    reflector.Build(builder, method);
-                else 
-                    builder.AddCustomAttribute(attribute);
-            }
-            
+
+            IMethodReflector reflector = (IMethodReflector) FindCustomAttribute(method, typeof(IMethodReflector), true);
+
+            if (reflector == null)
+                reflector = new JsonRpcMethodAttribute();
+
+            reflector.Build(builder, method);
+
             //
             // Fault in the method name if still without name.
             //
-            
+
             if (builder.Name.Length == 0)
                 builder.Name = method.Name;
 
             //
-            // Build the method parameters.
+            // Modify...
             //
 
-            foreach (ParameterInfo parameter in method.GetParameters())
-                BuildParameter(builder.DefineParameter(), parameter);
+            object[] attributes = method.GetCustomAttributes(typeof(Attribute), true);
+            foreach (Attribute attribute in attributes)
+            {
+                IMethodModifier modifier = attribute as IMethodModifier;
+
+                if (modifier != null)
+                    modifier.Modify(builder, method);
+                else if (!(attribute is IMethodReflector))
+                    builder.AddCustomAttribute(attribute);
+            }
         }
 
-        private static void BuildParameter(ParameterBuilder builder, ParameterInfo parameter)
+        internal static void BuildParameter(ParameterBuilder builder, ParameterInfo parameter)
         {
             Debug.Assert(parameter != null);
             Debug.Assert(builder != null);
+
+            //
+            // Build...
+            //
             
             builder.Name = parameter.Name;
             builder.ParameterType = parameter.ParameterType;
@@ -147,12 +153,18 @@ namespace Jayrock.JsonRpc
             builder.IsParamArray = parameter.IsDefined(typeof(ParamArrayAttribute), true);
 
             //
-            // Build via attributes.
+            // Modify...
             //
             
-            object[] attributes = parameter.GetCustomAttributes(typeof(IParameterReflector), true);
-            foreach (IParameterReflector reflector in attributes)
-                reflector.Build(builder, parameter);
+            object[] modifiers = parameter.GetCustomAttributes(typeof(IParameterModifier), true);
+            foreach (IParameterModifier modifier in modifiers)
+                modifier.Modify(builder, parameter);
+        }
+
+        private static object FindCustomAttribute(ICustomAttributeProvider provider, Type attributeType, bool inherit)
+        {
+            object[] attributes = provider.GetCustomAttributes(attributeType, inherit);
+            return attributes.Length > 0 ? attributes[0] : null;
         }
 
         private JsonRpcServiceReflector()
@@ -166,14 +178,28 @@ namespace Jayrock.JsonRpc
         void Build(ServiceClassBuilder builder, Type type);
     }
 
+    internal interface IServiceClassModifier
+    {
+        void Modify(ServiceClassBuilder builder, Type type);
+    }
+
     internal interface IMethodReflector
     {
         void Build(MethodBuilder builder, MethodInfo method);
+    }
+
+    internal interface IMethodModifier
+    {
+        void Modify(MethodBuilder builder, MethodInfo method);
     }
 
     internal interface IParameterReflector
     {
         void Build(ParameterBuilder builder, ParameterInfo parameter);
     }
-}
 
+    internal interface IParameterModifier
+    {
+        void Modify(ParameterBuilder builder, ParameterInfo parameter);
+    }
+}

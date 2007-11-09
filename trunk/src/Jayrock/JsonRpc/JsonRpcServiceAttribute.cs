@@ -52,6 +52,19 @@ namespace Jayrock.JsonRpc
         void IServiceClassReflector.Build(ServiceClassBuilder builder, Type type)
         {
             builder.Name = Name;
+
+            //
+            // Get all the public instance methods on the type and create a
+            // filtered table of those to expose from the service.
+            //
+
+            MethodInfo[] publicMethods = type.GetMethods(BindingFlags.Public | BindingFlags.Instance);
+
+            foreach (MethodInfo method in publicMethods)
+            {
+                if (JsonRpcServiceReflector.ShouldBuild(method))
+                    JsonRpcServiceReflector.BuildMethod(builder.DefineMethod(), method);
+            }
         }
     }
 }
