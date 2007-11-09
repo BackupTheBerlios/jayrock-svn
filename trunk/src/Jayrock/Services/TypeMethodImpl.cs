@@ -134,7 +134,7 @@ namespace Jayrock.Services
             }
         }
 
-        private Exception TranslateException(ArgumentException e)
+        private static Exception TranslateException(ArgumentException e)
         {
             //
             // The type of the parameter does not match the signature
