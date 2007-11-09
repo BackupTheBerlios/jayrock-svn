@@ -32,7 +32,7 @@ namespace Jayrock.Services
     #endregion
 
     [ TestFixture ]
-    public class TestMethodl
+    public class TestMethod
     {
         [ Test ]
         public void FailedMethodYieldsInvocationException()
