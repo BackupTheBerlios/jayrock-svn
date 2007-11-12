@@ -75,7 +75,9 @@ namespace Jayrock.JsonRpc.Web
 
         private TextReader GetRequestReader()
         {
-            if (CaselessString.Equals(Request.ContentType, "application/x-www-form-urlencoded"))
+            string contentType = Request.ContentType.Split(';')[0];
+            
+            if (CaselessString.Equals(contentType, "application/x-www-form-urlencoded"))
             {
                 string request = Request.Form.Count == 1 ? Request.Form[0] : Request.Form["JSON-RPC"];
                 return new StringReader(request);
