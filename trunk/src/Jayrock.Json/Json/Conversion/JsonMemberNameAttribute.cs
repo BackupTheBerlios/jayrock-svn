@@ -26,26 +26,14 @@ namespace Jayrock.Json.Conversion
 
     using System;
     using System.ComponentModel;
-    using System.Globalization;
 
     #endregion
-
-    [ Serializable ]
-    public enum NamingCase
-    {
-        None,
-        Camel,      // worldWideWeb
-        Pascal,     // WorldWideWeb
-        Upper,      // WORLDWIDEWEB
-        Lower       // worldwideweb
-    }
 
     [ Serializable ]
     [ AttributeUsage(AttributeTargets.Property | AttributeTargets.Field) ]
     public sealed class JsonMemberNameAttribute : Attribute, IPropertyDescriptorCustomization
     {
         private string _name;
-        private NamingCase _case;
 
         public JsonMemberNameAttribute() {}
 
@@ -60,36 +48,16 @@ namespace Jayrock.Json.Conversion
             set { _name = value; }
         }
 
-        public NamingCase NamingCase
-        {
-            get { return _case; }
-            set { _case = value; }
-        }
-
         void IPropertyDescriptorCustomization.Apply(PropertyDescriptor property)
         {
             if (property == null) 
                 throw new ArgumentNullException("property");
 
-            string name = Name.Length > 0 ? Name : property.Name;
+            if (Name.Length == 0)
+                return;
 
-            switch (NamingCase)
-            {
-                case NamingCase.Pascal:
-                    name = char.ToUpper(name[0], CultureInfo.InvariantCulture) + name.Substring(1); break;
-                case NamingCase.Camel:
-                    name = char.ToLower(name[0], CultureInfo.InvariantCulture) + name.Substring(1); break;
-                case NamingCase.Upper:
-                    name = name.ToUpper(CultureInfo.InvariantCulture); break;
-                case NamingCase.Lower:
-                    name = name.ToLower(CultureInfo.InvariantCulture); break;
-            }
-
-            if (string.Compare(property.Name, name, false, CultureInfo.InvariantCulture) != 0)
-            {
-                IPropertyCustomization customization = (IPropertyCustomization) property;
-                customization.SetName(name);
-            }
+            IPropertyCustomization customization = (IPropertyCustomization) property;
+            customization.SetName(Name);
         }
     }
 }

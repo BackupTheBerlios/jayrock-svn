@@ -32,51 +32,26 @@ namespace Jayrock.Tests.Json.Conversion
     #endregion
 
     [ TestFixture ]
-    public class TestJsonMemberNameAttribute
+    public class TestJsonMemberNamingConventionAttribute
     {
         [ Test ]
         public void IsSerializable()
         {
-            Assert.IsTrue(typeof(JsonMemberNameAttribute).IsSerializable);
+            Assert.IsTrue(typeof(JsonMemberNamingConventionAttribute).IsSerializable);
         }
 
         [ Test ]
-        public void DefaultInitializationYieldsEmptyName()
+        public void DefaultInitializationYieldsNoneConvention()
         {
-            JsonMemberNameAttribute attribute = new JsonMemberNameAttribute();
-            Assert.IsNotNull(attribute.Name);
-            Assert.AreEqual(string.Empty, attribute.Name);
+            JsonMemberNamingConventionAttribute attribute = new JsonMemberNamingConventionAttribute();
+            Assert.AreEqual(NamingConvention.None, attribute.Convention);
         }
 
         [ Test ]
-        public void InitializingNullNameYieldsEmptyName()
-        {
-            JsonMemberNameAttribute attribute = new JsonMemberNameAttribute(null);
-            Assert.IsNotNull(attribute.Name);
-            Assert.AreEqual(string.Empty, attribute.Name);
-        }
-
-        [ Test ]
-        public void InitializeName()
-        {
-            JsonMemberNameAttribute attribute = new JsonMemberNameAttribute("name");
-            Assert.AreEqual("name", attribute.Name);
-        }
-
-        [ Test ]
-        public void PropertyDescriptorNameCustomization()
+        public void CustomizationSkippedWhenNoneConvention()
         {
             TestPropertyDescriptor property = CreateTestProperty("foo");
-            IPropertyDescriptorCustomization customization = new JsonMemberNameAttribute("bar");
-            customization.Apply(property);
-            Assert.AreEqual("bar", property.CustomizedName);
-        }
-
-        [ Test ]
-        public void PropertyDescriptorNameCustomizationSkippedOnEmptyName()
-        {
-            TestPropertyDescriptor property = CreateTestProperty("foo");
-            IPropertyDescriptorCustomization customization = new JsonMemberNameAttribute();
+            IPropertyDescriptorCustomization customization = new JsonMemberNamingConventionAttribute();
             customization.Apply(property);
             Assert.IsNull(property.CustomizedName);
         }
@@ -85,8 +60,69 @@ namespace Jayrock.Tests.Json.Conversion
         [ ExpectedException(typeof(ArgumentNullException)) ]
         public void CannotApplyToNullPropertyDescriptor()
         {
-            IPropertyDescriptorCustomization customization = new JsonMemberNameAttribute();
+            IPropertyDescriptorCustomization customization = new JsonMemberNamingConventionAttribute();
             customization.Apply(null);
+        }
+
+        [ Test ]
+        public void PascalCaseApplication()
+        {
+            TestNamingCase("pascalCase", NamingConvention.Pascal, "PascalCase");
+        }
+
+        [ Test ]
+        public void SingleLetterPascalCaseApplication()
+        {
+            TestNamingCase("p", NamingConvention.Pascal, "P");
+        }
+
+        [ Test ]
+        public void CamelCaseApplication()
+        {
+            TestNamingCase("CamelCase", NamingConvention.Camel, "camelCase");
+            TestNamingCase("C", NamingConvention.Camel, "c");
+        }
+
+        [ Test ]
+        public void SingleLetterCamelCaseApplication()
+        {
+            TestNamingCase("C", NamingConvention.Camel, "c");
+        }
+
+        [ Test ]
+        public void UpperCaseApplication()
+        {
+            TestNamingCase("upper", NamingConvention.Upper, "UPPER");
+        }
+
+        [ Test ]
+        public void SinlgleLetterUpperCaseApplication()
+        {
+            TestNamingCase("u", NamingConvention.Upper, "U");
+        }
+
+        [ Test ]
+        public void LowerCaseApplication()
+        {
+            TestNamingCase("LOWER", NamingConvention.Lower, "lower");
+        }
+
+        [ Test ]
+        public void SingleLetterLowerCaseApplication()
+        {
+            TestNamingCase("LOWER", NamingConvention.Lower, "lower");
+            TestNamingCase("L", NamingConvention.Lower, "l");
+        }
+
+        private static void TestNamingCase(string baseName, NamingConvention testCase, string expected) 
+        {
+            JsonMemberNamingConventionAttribute attribute = new JsonMemberNamingConventionAttribute(testCase);
+            TestPropertyDescriptor property = CreateTestProperty(baseName);
+            IPropertyDescriptorCustomization customization = attribute;
+            
+            customization.Apply(property);
+            
+            Assert.AreEqual(expected, property.CustomizedName);
         }
 
         private static TestPropertyDescriptor CreateTestProperty(string baseName) 

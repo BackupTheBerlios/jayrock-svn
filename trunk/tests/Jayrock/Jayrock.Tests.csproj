@@ -1,7 +1,7 @@
 <VisualStudioProject>
     <CSHARP
         ProjectType = "Local"
-        ProductVersion = "7.10.6030"
+        ProductVersion = "7.10.3077"
         SchemaVersion = "2.0"
         ProjectGuid = "{DA5DD836-2530-4E76-9B76-1AAB3BE6A946}"
     >
@@ -190,6 +190,11 @@
                 />
                 <File
                     RelPath = "Json\Conversion\TestJsonMemberNameAttribute.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Json\Conversion\TestJsonMemberNamingConventionAttribute.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
