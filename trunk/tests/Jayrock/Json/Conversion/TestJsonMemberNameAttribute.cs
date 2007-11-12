@@ -64,6 +64,15 @@ namespace Jayrock.Tests.Json.Conversion
         }
 
         [ Test ]
+        public void SetName()
+        {
+            JsonMemberNameAttribute attribute = new JsonMemberNameAttribute();
+            Assert.AreEqual(string.Empty, attribute.Name);
+            attribute.Name = "foo";
+            Assert.AreEqual("foo", attribute.Name);
+        }
+
+        [ Test ]
         public void PropertyDescriptorNameCustomization()
         {
             TestPropertyDescriptor property = CreateTestProperty("foo");
