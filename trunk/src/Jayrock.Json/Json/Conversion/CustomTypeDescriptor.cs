@@ -334,7 +334,7 @@ namespace Jayrock.Json.Conversion
             void IPropertyCustomization.SetType(Type type)
             {
                 if (type == null)
-                    throw new ArgumentNullException("null");
+                    throw new ArgumentNullException("type");
                 
                 _propertyType = type;
             }
