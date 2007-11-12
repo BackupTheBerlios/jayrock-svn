@@ -346,6 +346,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Json\Conversion\JsonMemberNameAttribute.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\Conversion\PropertyCustomization.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
