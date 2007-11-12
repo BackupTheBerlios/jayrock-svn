@@ -48,6 +48,22 @@ namespace Jayrock.Tests.Json.Conversion
         }
 
         [ Test ]
+        public void InitializeConvention()
+        {
+            JsonMemberNamingConventionAttribute attribute = new JsonMemberNamingConventionAttribute(NamingConvention.Pascal);
+            Assert.AreEqual(NamingConvention.Pascal, attribute.Convention);
+        }
+
+        [ Test ]
+        public void SetConvention()
+        {
+            JsonMemberNamingConventionAttribute attribute = new JsonMemberNamingConventionAttribute();
+            Assert.AreEqual(NamingConvention.None, attribute.Convention);
+            attribute.Convention = NamingConvention.Pascal; 
+            Assert.AreEqual(NamingConvention.Pascal, attribute.Convention);
+        }
+
+        [ Test ]
         public void CustomizationSkippedWhenNoneConvention()
         {
             TestPropertyDescriptor property = CreateTestProperty("foo");
