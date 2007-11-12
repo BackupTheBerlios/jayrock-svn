@@ -118,7 +118,7 @@ namespace Jayrock.Json.Conversion
                     //
             
                     if (field.DeclaringType != type && field.ReflectedType != type)
-                        throw new ArgumentException(null, "fields");
+                        throw new ArgumentException(null, "members");
                 
                     if (!field.IsInitOnly && !field.IsLiteral)
                         descriptor = new TypeFieldDescriptor(field, name);
@@ -140,7 +140,7 @@ namespace Jayrock.Json.Conversion
                     //
 
                     if (property.DeclaringType != type && property.ReflectedType != type)
-                        throw new ArgumentException(null, "properties");
+                        throw new ArgumentException(null, "members");
 
                     if ((property.CanRead) &&
                         (property.CanWrite || property.IsDefined(typeof(JsonExportAttribute), true)) &&
