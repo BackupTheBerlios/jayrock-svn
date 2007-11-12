@@ -31,7 +31,7 @@ namespace Jayrock.Json.Conversion
 
     [ Serializable ]
     [ AttributeUsage(AttributeTargets.Property | AttributeTargets.Field) ]
-    public sealed class JsonMemberNameAttribute : Attribute, IPropertyDescriptorCustomization
+    public class JsonMemberNameAttribute : Attribute, IPropertyDescriptorCustomization
     {
         private string _name;
 
@@ -50,13 +50,18 @@ namespace Jayrock.Json.Conversion
 
         void IPropertyDescriptorCustomization.Apply(PropertyDescriptor property)
         {
-            if (property == null) 
+            ApplyCustomization(property);
+        }
+
+        protected virtual void ApplyCustomization(PropertyDescriptor property)
+        {
+            if (property == null)
                 throw new ArgumentNullException("property");
 
             if (Name.Length == 0)
                 return;
 
-            IPropertyCustomization customization = (IPropertyCustomization) property;
+            IPropertyCustomization customization = (IPropertyCustomization)property;
             customization.SetName(Name);
         }
     }
