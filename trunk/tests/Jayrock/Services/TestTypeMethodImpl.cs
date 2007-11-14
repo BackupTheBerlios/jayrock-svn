@@ -174,10 +174,10 @@ namespace Jayrock.Services
         [ Test, ExpectedException(typeof(ArgumentException)) ]
         public void CannotCallEndInvokeWithBadAsyncResultType()
         {
-            GetImpl("Sub").EndInvoke(new MockService(), new StubAsyncResult());
+            GetImpl("Sub").EndInvoke(new MockService(), new DummyAsyncResult());
         }
 
-        private sealed class StubAsyncResult : IAsyncResult
+        private sealed class DummyAsyncResult : IAsyncResult
         {
             public bool IsCompleted { get { throw new NotImplementedException(); } }
             public WaitHandle AsyncWaitHandle { get { throw new NotImplementedException(); } }
@@ -185,18 +185,18 @@ namespace Jayrock.Services
             public bool CompletedSynchronously { get { throw new NotImplementedException(); } }
         }
 
-        private void OnInvoked(IAsyncResult ar)
+        private static void OnInvoked(IAsyncResult ar)
         {
             Assert.IsNotNull(ar);
             ((bool[]) ar.AsyncState)[0] = true;
         }
 
-        private TypeMethodImpl GetImpl(string name)
+        private static TypeMethodImpl GetImpl(string name)
         {
             return new TypeMethodImpl(typeof(MockService).GetMethod(name));
         }
 
-        private MethodInfo GetMethod(string name)
+        private static MethodInfo GetMethod(string name)
         {
             return typeof(MockService).GetMethod(name);
         }
@@ -204,7 +204,6 @@ namespace Jayrock.Services
         private sealed class MockService : IService
         {
             public MethodBase LastCalledMethod;
-            public object[] LastCallArgs;
             public object NextReturn;
             public Exception NextException;
             
@@ -216,7 +215,6 @@ namespace Jayrock.Services
             public void TwoArgSub(int a, int b)
             {
                 LastCalledMethod = MethodBase.GetCurrentMethod();
-                LastCallArgs = new object[] { a, b };
             }
 
             public object Function()
