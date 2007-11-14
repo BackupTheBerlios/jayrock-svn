@@ -158,13 +158,18 @@ namespace Jayrock.Services
                 throw new NotImplementedException();
             }
 
+            public bool IsAsynchronous
+            {
+                get { throw new NotImplementedException(); }
+            }
+
             public IAsyncResult BeginInvoke(IService service, object[] args, AsyncCallback callback,
                 object asyncState)
             {
                 throw new NotImplementedException();
             }
 
-            public object EndInvoke(IAsyncResult asyncResult)
+            public object EndInvoke(IService service, IAsyncResult asyncResult)
             {
                 throw new NotImplementedException();
             }

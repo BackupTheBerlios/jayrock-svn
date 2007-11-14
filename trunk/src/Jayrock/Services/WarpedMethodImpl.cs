@@ -62,14 +62,19 @@ namespace Jayrock.Services
             return _result.GetValue(result);
         }
 
+        public bool IsAsynchronous
+        {
+            get { return _handler.IsAsynchronous; }
+        }
+
         public IAsyncResult BeginInvoke(IService service, object[] args, AsyncCallback callback, object asyncState)
         {
             return _handler.BeginInvoke(service, WarpedArgsFromArgsArray(args), callback, asyncState);
         }
 
-        public object EndInvoke(IAsyncResult asyncResult)
+        public object EndInvoke(IService service, IAsyncResult asyncResult)
         {
-            return _result.GetValue(_handler.EndInvoke(asyncResult));
+            return _result.GetValue(_handler.EndInvoke(service, asyncResult));
         }
 
         private object[] WarpedArgsFromArgsArray(object[] args)

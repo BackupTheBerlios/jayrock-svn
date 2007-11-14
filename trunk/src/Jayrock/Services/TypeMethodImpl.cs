@@ -47,6 +47,11 @@ namespace Jayrock.Services
             get { return _method; }
         }
 
+        public bool IsAsynchronous
+        {
+            get { return false; }
+        }
+
         public object Invoke(IService service, object[] args)
         {
             if (service == null)
@@ -93,8 +98,11 @@ namespace Jayrock.Services
             return asyncResult;
         }
 
-        public object EndInvoke(IAsyncResult asyncResult)
+        public object EndInvoke(IService service, IAsyncResult asyncResult)
         {
+            if (service == null)
+                throw new ArgumentNullException("service");
+
             if (asyncResult == null)
                 throw new ArgumentNullException("asyncResult");
 

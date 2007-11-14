@@ -142,7 +142,7 @@ namespace Jayrock.Services
             IAsyncResult ar = impl.BeginInvoke(service, null, null, null);
             try
             {
-                impl.EndInvoke(ar);
+                impl.EndInvoke(service, ar);
                 Assert.Fail("Expected " + typeof(TargetMethodException));
             }
             catch (TargetMethodException e)
@@ -153,15 +153,28 @@ namespace Jayrock.Services
         }
 
         [ Test, ExpectedException(typeof(ArgumentNullException)) ]
+        public void CannotCallEndInvokeWithNullService()
+        {
+            TypeMethodImpl impl = GetImpl("Sub");
+            impl.EndInvoke(null, impl.BeginInvoke(new MockService(), null, null, null));
+        }
+
+        [ Test, ExpectedException(typeof(ArgumentNullException)) ]
         public void CannotCallEndInvokeWithNullAsyncResult()
         {
-            GetImpl("Sub").EndInvoke(null);
+            GetImpl("Sub").EndInvoke(new MockService(), null);
+        }
+
+        [ Test ]
+        public void ImplementationIsNotAsynchronous()
+        {
+            Assert.IsFalse(GetImpl("Sub").IsAsynchronous);
         }
         
         [ Test, ExpectedException(typeof(ArgumentException)) ]
         public void CannotCallEndInvokeWithBadAsyncResultType()
         {
-            GetImpl("Sub").EndInvoke(new StubAsyncResult());
+            GetImpl("Sub").EndInvoke(new MockService(), new StubAsyncResult());
         }
 
         private sealed class StubAsyncResult : IAsyncResult

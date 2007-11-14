@@ -30,9 +30,10 @@ namespace Jayrock.Services
 
     public interface IMethodImpl
     {
+        bool IsAsynchronous { get; }
         object Invoke(IService service, object[] args);
         IAsyncResult BeginInvoke(IService service, object[] args, AsyncCallback callback, object asyncState);
-        object EndInvoke(IAsyncResult asyncResult);
+        object EndInvoke(IService service, IAsyncResult asyncResult);
     }
 }
 

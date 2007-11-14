@@ -166,9 +166,9 @@ namespace Jayrock.Services
             return _handler.BeginInvoke(service, args, callback, asyncState);
         }
 
-        public object EndInvoke(IAsyncResult asyncResult)
+        public object EndInvoke(IService service, IAsyncResult asyncResult)
         {
-            return _handler.EndInvoke(asyncResult);
+            return _handler.EndInvoke(service, asyncResult);
         }
 
         /// <summary>

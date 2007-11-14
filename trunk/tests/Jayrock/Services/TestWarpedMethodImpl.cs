@@ -81,7 +81,7 @@ namespace Jayrock.Services
             object[] args = new object[] { 42, "foobar" };
             baseMethod.InvokeResult = new ResultThing(123);
             IAsyncResult ar = warpedMethod.BeginInvoke(service, args, null, null);
-            object result = warpedMethod.EndInvoke(ar);
+            object result = warpedMethod.EndInvoke(service, ar);
 
             Assert.AreSame(ar, baseMethod.EndInvokeAsyncResult);
             Assert.AreSame(service, baseMethod.InvokeService);
@@ -113,6 +113,15 @@ namespace Jayrock.Services
         public void CannotInitializeWithNullArgs()
         {
             new WarpedMethodImpl(new TestMethodImpl(), typeof(Thing), null, null);
+        }
+
+        [ Test ]
+        public void AsynchronousQueryIsDelegated()
+        {
+            TestMethodImpl impl = new TestMethodImpl();
+            Assert.IsFalse(impl.IsAsynchronousCalled);
+            Assert.IsFalse(new WarpedMethodImpl(impl, typeof(Thing), new PropertyDescriptorCollection(null), null).IsAsynchronous);
+            Assert.IsTrue(impl.IsAsynchronousCalled);
         }
 
         private sealed class Thing
@@ -162,6 +171,7 @@ namespace Jayrock.Services
             public object[] InvokeArgs;
             public ResultThing InvokeResult;
             public IAsyncResult EndInvokeAsyncResult;
+            public bool IsAsynchronousCalled;
 
             public object Invoke(IService service, object[] args)
             {
@@ -170,13 +180,22 @@ namespace Jayrock.Services
                 return InvokeResult;
             }
 
+            public bool IsAsynchronous
+            {
+                get
+                {
+                    IsAsynchronousCalled = true;
+                    return false;
+                }
+            }
+
             public IAsyncResult BeginInvoke(IService service, object[] args, AsyncCallback callback, object asyncState)
             {
                 Invoke(service, args);
                 return new DummyAsyncResult();
             }
 
-            public object EndInvoke(IAsyncResult asyncResult)
+            public object EndInvoke(IService service, IAsyncResult asyncResult)
             {
                 EndInvokeAsyncResult = asyncResult;
                 return InvokeResult;
