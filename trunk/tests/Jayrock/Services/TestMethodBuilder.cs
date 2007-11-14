@@ -98,7 +98,7 @@ namespace Jayrock.Services
         [ Test ]
         public void GetSetHandler()
         {
-            IMethodImpl handler = new StubMethod();
+            IMethodImpl handler = new DummyMethod();
             _builder.Handler = handler;
             Assert.AreSame(handler, _builder.Handler);
         }
@@ -151,33 +151,15 @@ namespace Jayrock.Services
             Assert.IsTrue(_builder.Idempotent);
         }
         
-        private sealed class StubMethod : IMethodImpl
+        private sealed class DummyMethod : IMethodImpl
         {
-            public object Invoke(IService service, object[] args)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsAsynchronous
-            {
-                get { throw new NotImplementedException(); }
-            }
-
-            public IAsyncResult BeginInvoke(IService service, object[] args, AsyncCallback callback,
-                object asyncState)
-            {
-                throw new NotImplementedException();
-            }
-
-            public object EndInvoke(IService service, IAsyncResult asyncResult)
-            {
-                throw new NotImplementedException();
-            }
+            public object Invoke(IService service, object[] args) { throw new NotImplementedException(); }
+            public bool IsAsynchronous { get { throw new NotImplementedException(); } }
+            public IAsyncResult BeginInvoke(IService service, object[] args, AsyncCallback callback, object asyncState) { throw new NotImplementedException(); }
+            public object EndInvoke(IService service, IAsyncResult asyncResult) { throw new NotImplementedException(); }
         }
 
-        private class MyAttribute : Attribute
-        {
-        }
+        private class MyAttribute : Attribute {}
     }
 }
 
