@@ -112,7 +112,7 @@ namespace Jayrock.Json.Conversion.Converters
                             {
                                 writer.WriteMember(property.Name);
 
-                                if (tracker == null)
+                                if (value.GetType().IsClass && tracker == null)
                                 {
                                     //
                                     // We are about to enter a deeper scope so 
@@ -121,7 +121,7 @@ namespace Jayrock.Json.Conversion.Converters
                                     // recursive references that may occur 
                                     // through this exporter deeper in the tree.
                                     //
-                                
+
                                     tracker = TrackObject(context, value);
                                 }
 
@@ -165,7 +165,7 @@ namespace Jayrock.Json.Conversion.Converters
 
         private sealed class ObjectReferenceTracker
         {
-            private ArrayList _stack = new ArrayList(6);
+            private readonly ArrayList _stack = new ArrayList(6);
             
             public void PushNew(object value)
             {
