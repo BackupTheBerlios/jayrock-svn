@@ -51,23 +51,22 @@ namespace Jayrock.Json.Conversion.Converters
             
             _properties = properties;
 
-            int index = 0;
             int count = 0;
             IObjectMemberExporter[] exporters = new IObjectMemberExporter[properties.Count];
 
-            foreach (PropertyDescriptor property in properties)
+            for (int i = 0; i < properties.Count; i++)
             {
-                IServiceProvider sp = property as IServiceProvider;
-                
+                IServiceProvider sp = properties[i] as IServiceProvider;
+
                 if (sp == null)
                     continue;
-                
-                IObjectMemberExporter exporter = (IObjectMemberExporter) sp.GetService(typeof(IObjectMemberExporter));
-                
+
+                IObjectMemberExporter exporter = (IObjectMemberExporter)sp.GetService(typeof(IObjectMemberExporter));
+
                 if (exporter == null)
                     continue;
-                
-                exporters[index++] = exporter;
+
+                exporters[i] = exporter;
                 count++;
             }
             
@@ -98,7 +97,7 @@ namespace Jayrock.Json.Conversion.Converters
                     foreach (PropertyDescriptor property in _properties)
                     {
                         IObjectMemberExporter exporter = _exporters != null && index < _exporters.Length ? 
-                            _exporters[index] : null;
+                            _exporters[index++] : null;
                         
                         if (exporter != null)
                         {

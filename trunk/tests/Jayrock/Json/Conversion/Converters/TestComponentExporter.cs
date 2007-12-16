@@ -187,14 +187,23 @@ namespace Jayrock.Json.Conversion.Converters
         [ Test ]
         public void MemberExportCustomization()
         {
-            TestObjectMemberExporter memberExporter = new TestObjectMemberExporter();
-            Hashtable services = new Hashtable();
-            services.Add(typeof(IObjectMemberExporter), memberExporter);
+            ArrayList calls = new ArrayList();
 
             TestTypeDescriptor logicalType = new TestTypeDescriptor();
             PropertyDescriptorCollection properties = logicalType.GetProperties();
-            properties.Add(new TestPropertyDescriptor("prop", services));
-            
+
+            Hashtable services;
+
+            TestObjectMemberExporter memexp1 = new TestObjectMemberExporter(calls);
+            services = new Hashtable();
+            services.Add(typeof(IObjectMemberExporter), memexp1);
+            properties.Add(new TestPropertyDescriptor("prop1", services));
+
+            TestObjectMemberExporter memexp2 = new TestObjectMemberExporter(calls);
+            services = new Hashtable();
+            services.Add(typeof(IObjectMemberExporter), memexp2);
+            properties.Add(new TestPropertyDescriptor("prop2", services));
+
             ComponentExporter exporter = new ComponentExporter(typeof(Thing), logicalType);
             ExportContext context = new ExportContext();
             context.Register(exporter);
@@ -202,38 +211,48 @@ namespace Jayrock.Json.Conversion.Converters
             JsonRecorder writer = new JsonRecorder();
             Thing thing = new Thing();
             context.Export(thing, writer);
-            
-            Assert.AreSame(context, memberExporter.ExportContext);
-            Assert.AreSame(writer, memberExporter.ExportWriter);
-            Assert.AreSame(thing, memberExporter.ExportSource);
+
+            Assert.AreEqual(2, calls.Count);
+
+            object[] args = { context, writer, thing };
+
+            Assert.AreSame(memexp1, calls[0]);
+            Assert.AreEqual(args, ((TestObjectMemberExporter) calls[0]).ExportArgs);
+
+            Assert.AreSame(memexp2, calls[1]);
+            Assert.AreEqual(args, ((TestObjectMemberExporter) calls[1]).ExportArgs);
         }
-        
+
         private sealed class TestObjectMemberExporter : IObjectMemberExporter
         {
-            public ExportContext ExportContext;
-            public JsonWriter ExportWriter;
-            public object ExportSource;
+            public object[] ExportArgs;
+
+            private readonly IList _sequence;
+            
+            public TestObjectMemberExporter(IList recorder)
+            {
+                _sequence = recorder;
+            }
 
             void IObjectMemberExporter.Export(ExportContext context, JsonWriter writer, object source)
             {
-                ExportContext = context;
-                ExportWriter = writer;
-                ExportSource = source;
+                ExportArgs = new object[] { context, writer, source };
+                _sequence.Add(this);
             }
         }
 
         private sealed class TestPropertyDescriptor : PropertyDescriptor, IServiceProvider
         {
-            private IDictionary Services;
+            private readonly IDictionary _services;
 
             public TestPropertyDescriptor(string name, IDictionary services) : base(name, null)
             {
-                Services = services;
+                _services = services;
             }
             
             object IServiceProvider.GetService(Type serviceType)
             {
-                return Services[serviceType];
+                return _services[serviceType];
             }
 
             #region Unimplemented members of PropertyDescriptor

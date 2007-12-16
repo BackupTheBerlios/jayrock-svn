@@ -45,14 +45,13 @@ namespace Jayrock.Json.Conversion.Converters
             if (typeDescriptor == null)
                 typeDescriptor = new CustomTypeDescriptor(type);
             
-            int index = 0;
             int count = 0;
             PropertyDescriptorCollection properties = typeDescriptor.GetProperties();
             IObjectMemberImporter[] importers = new IObjectMemberImporter[properties.Count];
             
-            foreach (PropertyDescriptor property in properties)
+            for (int i = 0; i < properties.Count; i++)
             {
-                IServiceProvider sp = property as IServiceProvider;
+                IServiceProvider sp = properties[i] as IServiceProvider;
                 
                 if (sp == null)
                     continue;
@@ -62,7 +61,7 @@ namespace Jayrock.Json.Conversion.Converters
                 if (importer == null)
                     continue;
                 
-                importers[index++] = importer;
+                importers[i++] = importer;
                 count++;
             }
 

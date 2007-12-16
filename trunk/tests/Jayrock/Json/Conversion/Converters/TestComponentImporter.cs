@@ -27,7 +27,6 @@ namespace Jayrock.Json.Conversion.Converters
     using System;
     using System.Collections;
     using System.ComponentModel;
-    using System.Diagnostics;
     using System.IO;
     using Jayrock.Json.Conversion;
     using NUnit.Framework;
@@ -201,32 +200,38 @@ namespace Jayrock.Json.Conversion.Converters
         [ Test ]
         public void MemberImportCustomization()
         {
-            TestObjectMemberImporter memberImporter = new TestObjectMemberImporter();
-            Hashtable services = new Hashtable();
-            services.Add(typeof(IObjectMemberImporter), memberImporter);
+            ArrayList calls = new ArrayList();
 
             TestTypeDescriptor logicalType = new TestTypeDescriptor();
             PropertyDescriptorCollection properties = logicalType.GetProperties();
-            TestPropertyDescriptor property = new TestPropertyDescriptor("prop", typeof(object), services);
-            properties.Add(property);
-            
+
+            properties.Add(new TestPropertyDescriptor("prop1", typeof(object), new Hashtable()));
+
+            TestObjectMemberImporter memberImporter = new TestObjectMemberImporter(calls);
+            Hashtable services = new Hashtable();
+            services.Add(typeof(IObjectMemberImporter), memberImporter);
+            properties.Add(new TestPropertyDescriptor("prop2", typeof(object), services));
+
             ComponentImporter importer = new ComponentImporter(typeof(Thing), logicalType);
             ImportContext context = new ImportContext();
             context.Register(importer);
             
             JsonRecorder writer = new JsonRecorder();
             writer.WriteStartObject();
-            writer.WriteMember("prop");
-            writer.WriteString("value");
+            writer.WriteMember("prop1");
+            writer.WriteString("value1");
+            writer.WriteMember("prop2");
+            writer.WriteString("value2");
             writer.WriteEndObject();
 
             JsonReader reader = writer.CreatePlayer();
             Thing thing = (Thing) context.Import(typeof(Thing), reader);
-            
-            Assert.AreSame(context, memberImporter.ImportContext);
-            Assert.AreSame(reader, memberImporter.ImportReader);
-            Assert.AreSame(thing, memberImporter.ImportTarget);
-            Assert.AreEqual("value", memberImporter.ImportedValue);
+
+            Assert.AreEqual(1, calls.Count);
+
+            Assert.AreSame(memberImporter, calls[0]);
+            Assert.AreEqual(new object[] { context, reader, thing }, memberImporter.ImportArgs);
+            Assert.AreEqual("value2", memberImporter.ImportedValue);
         }
 
         private sealed class Thing
@@ -363,25 +368,27 @@ namespace Jayrock.Json.Conversion.Converters
  
         private sealed class TestObjectMemberImporter : IObjectMemberImporter
         {
-            public ImportContext ImportContext;
-            public JsonReader ImportReader;
-            public object ImportTarget;
+            public object[] ImportArgs;
             public object ImportedValue;
+
+            private readonly IList _sequence;
+
+            public TestObjectMemberImporter(IList recorder)
+            {
+                _sequence = recorder;
+            }
 
             void IObjectMemberImporter.Import(ImportContext context, JsonReader reader, object target)
             {
-                ImportContext = context;
-                ImportReader = reader;
-                ImportTarget = target;
+                ImportArgs = new object[] { context, reader, target };
                 ImportedValue = context.Import(typeof(object), reader);
+                _sequence.Add(this);
             }
         }
 
         private sealed class TestPropertyDescriptor : PropertyDescriptor, IServiceProvider
         {
-            public object Value;
-
-            private IDictionary _services;
+            private readonly IDictionary _services;
             private readonly Type _propertyType;
 
             public TestPropertyDescriptor(string name, Type type, IDictionary services) : base(name, null)
@@ -391,7 +398,7 @@ namespace Jayrock.Json.Conversion.Converters
             }
             
             public override bool IsReadOnly { get { return false; } }
-            public override void SetValue(object component, object value) { Value = value; }
+            public override void SetValue(object component, object value) { }
 
             object IServiceProvider.GetService(Type serviceType)
             {
