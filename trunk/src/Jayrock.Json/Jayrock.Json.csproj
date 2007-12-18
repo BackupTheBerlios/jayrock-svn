@@ -336,6 +336,10 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Json\Conversion\JsonDefaultValueAttribue.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                <File
                     RelPath = "Json\Conversion\JsonExportAttribue.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
