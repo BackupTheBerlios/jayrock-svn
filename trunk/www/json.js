@@ -154,11 +154,13 @@ var JSON = function () {
         eval: function (text, filter) {
 
             function walk(k, v) {
-                var i;
+                var i, n;
                 if (v && typeof v === 'object') {
                     for (i in v) {
                         if (Object.prototype.hasOwnProperty.apply(v, [i])) {
-                            v[i] = walk(i, v[i]);
+                            n = walk(i, v[i]);
+                            if (n !== undefined)
+                                v[i] = n;
                         }
                     }
                 }
@@ -179,9 +181,9 @@ var JSON = function () {
             // we look to see if any non-JSON characters remain. If not, then
             // the text is safe for eval.
 
-            if (!/^[,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t]*$/.test(text.
+            if (!/^[,:{}\[\]0-9.\-+eE \n\r\t]*$/.test(text.
                 replace(/\\./g, '@').
-                replace(/"[^"\\\n\r]*"/g, ''))) {
+                replace(/"[^"\\\n\r]*"|true|false|null/g, ''))) {
                 throw new SyntaxError("eval");
             }
 
