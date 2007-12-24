@@ -167,23 +167,23 @@ var JSON = function () {
                 return filter(k, v);
             }
 
-            // Parsing happens in three stages. In the first stage, we run the
-            // text against a regular expression which looks for non-JSON
-            // characters. We are especially concerned with '()' and 'new'
-            // because they can cause invocation, and '=' because it can cause
-            // mutation. But just to be safe, we will reject all unexpected
-            // characters.
+            // Parsing happens in three stages. In the first stage, we run the text against
+            // regular expressions that look for non-JSON patterns. We are especially
+            // concerned with '()' and 'new' because they can cause invocation, and '='
+            // because it can cause mutation. But just to be safe, we want to reject all
+            // unexpected forms.
 
-            // We split the first stage into 3 regexp operations in order to
-            // work around crippling deficiencies in Safari's regexp engine.
-            // First we replace all backslash pairs with '@' (a non-JSON
-            // character). Second we delete all of the string literals. Third,
-            // we look to see if any non-JSON characters remain. If not, then
-            // the text is safe for eval.
+            // We split the first stage into 4 regexp operations in order to work around
+            // crippling inefficiencies in IE's and Safari's regexp engines. First we
+            // replace all backslash pairs with '@' (a non-JSON character). Second, we
+            // replace all simple value tokens with ']' characters. Third, we delete all
+            // open brackets that follow a colon or comma or that begin the text. Finally,
+            // we look to see that the remaining characters are only whitespace or ']' or
+            // ',' or ':' or '{' or '}'. If that is so, then the text is safe for eval.
 
-            if (!/^[,:{}\[\]0-9.\-+eE \n\r\t]*$/.test(text.
-                replace(/\\./g, '@').
-                replace(/"[^"\\\n\r]*"|true|false|null/g, ''))) {
+            if (!/^[\],:{}\s]*$/.test(text.replace(/\\./g, '@').
+                replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(:?[eE][+\-]?\d+)?/g, ']').
+                replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
                 throw new SyntaxError("eval");
             }
 
