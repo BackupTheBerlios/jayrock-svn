@@ -93,5 +93,12 @@ namespace Jayrock
         {
             UnixTime.ToDateTime(0, 1000);
         }
+
+        [ Test ]
+        public void Maximum()
+        {
+            Assert.AreEqual(new DateTime(3000, 12, 31, 23, 59, 59),
+                UnixTime.ToDateTime(32535215999L).ToUniversalTime());
+        }
     }
 }

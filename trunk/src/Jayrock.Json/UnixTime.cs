@@ -38,6 +38,10 @@ namespace Jayrock
         /// represents the same time in local time with a maximum
         /// precision of a milliseconds.
         /// </summary>
+        /// <remarks>
+        /// This method works with time expressed up through 
+        /// 23:59:59, December 31, 3000, UTC.
+        /// </remarks>
         
         public static DateTime ToDateTime(double time)
         {
@@ -49,6 +53,10 @@ namespace Jayrock
         /// represents the same time in local time with a maximum
         /// precision of a second.
         /// </summary>
+        /// <remarks>
+        /// This method works with time expressed up through 
+        /// 23:59:59, December 31, 3000, UTC.
+        /// </remarks>
 
         public static DateTime ToDateTime(long time)
         {
@@ -63,7 +71,8 @@ namespace Jayrock
         /// </summary>
         /// <remarks>
         /// See <a href="http://en.wikipedia.org/wiki/Unix_time">Unix time on Wikipedia</a>
-        /// for more information.
+        /// for more information. This method works with time expressed 
+        /// up through 23:59:59, December 31, 3000, UTC.
         /// </remarks>
 
         public static DateTime ToDateTime(long time, int ms)
