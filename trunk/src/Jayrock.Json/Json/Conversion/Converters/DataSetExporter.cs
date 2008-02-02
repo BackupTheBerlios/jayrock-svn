@@ -58,7 +58,19 @@ namespace Jayrock.Json.Conversion.Converters
             foreach (DataTable table in dataSet.Tables)
             {
                 writer.WriteMember(table.TableName);
-                DataTableExporter.ExportTable(context, table, writer);
+
+                //
+                // If there is an exporter (perhaps an override) for the 
+                // DataTable in effect then use it. Otherwise our 
+                // DataTableExporter.
+                //
+
+                IExporter tableExporter = context.FindExporter(table.GetType());
+                
+                if (tableExporter != null)
+                    tableExporter.Export(context, table, writer);
+                else
+                    DataTableExporter.ExportTable(context, table, writer);
             }
     
             writer.WriteEndObject();

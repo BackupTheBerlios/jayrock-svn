@@ -53,7 +53,20 @@ namespace Jayrock.Json.Conversion.Converters
             Debug.Assert(table != null);
             Debug.Assert(writer != null);
 
-            DataViewExporter.ExportView(context, table.DefaultView, writer);
+            DataView view = table.DefaultView;
+
+            //
+            // If there is an exporter (perhaps an override) for the 
+            // DataView in effect then use it. Otherwise our 
+            // DataViewExporter.
+            //
+
+            IExporter exporter = context.FindExporter(view.GetType());
+            
+            if (exporter != null)
+                exporter.Export(context, view, writer);
+            else
+                DataViewExporter.ExportView(context, view, writer);
        }
     }
 }
