@@ -630,7 +630,18 @@ namespace Jayrock.Json
         {
             Read(@"'\u1'");
         }
-        
+
+        [Test, ExpectedException(typeof(JsonException), "The text '-Infinity' has the incorrect syntax for a number.")]
+        public void NegativeInfinityBug()
+        {
+            //
+            // Exercises bug #13333
+            // http://developer.berlios.de/bugs/?func=detailbug&bug_id=13333&group_id=4638
+            //
+
+            CreateReader("-Infinity").Read();
+        }
+
         private void AssertTokenText(JsonTokenClass token, string text)
         {
             Assert.IsTrue(_reader.Read());

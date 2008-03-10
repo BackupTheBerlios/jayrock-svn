@@ -167,7 +167,9 @@ namespace Jayrock.Json
             if ((b >= '0' && b <= '9') || b == '.' || b == '-' || b == '+')
             {
                 double unused;
-                if (!double.TryParse(s, NumberStyles.Float, CultureInfo.InvariantCulture, out unused))
+
+                if ((b == '-' && s.Length >= 2 && s[1] == 'I') // rule out -Infinity that double parsing allows
+                    || !double.TryParse(s, NumberStyles.Float, CultureInfo.InvariantCulture, out unused))
                     throw new JsonException(string.Format("The text '{0}' has the incorrect syntax for a number.", s));
 
                 return Yield(JsonToken.Number(s));
