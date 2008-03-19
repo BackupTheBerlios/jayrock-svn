@@ -25,7 +25,6 @@ namespace Jayrock.Json.Conversion.Converters
     #region Imports
 
     using System;
-    using System.Diagnostics;
     using System.Globalization;
 
     #endregion
@@ -150,7 +149,7 @@ namespace Jayrock.Json.Conversion.Converters
 
         protected override object ConvertFromString(string s)
         {
-            return Convert.ToDecimal(s, CultureInfo.InvariantCulture);
+            return decimal.Parse(s, NumberStyles.Number | NumberStyles.Float, CultureInfo.InvariantCulture);
         }
     }
 }

@@ -82,6 +82,17 @@ namespace Jayrock.Json.Conversion.Converters
             AssertImport(0, "false");
         }
 
+        [ Test ]
+        public void ImportDecimalUsingExponentialNotation()
+        {
+            //
+            // Exercises bug #13396
+            // http://developer.berlios.de/bugs/?func=detailbug&bug_id=13396&group_id=4638
+            //
+
+            AssertImport(7.25e-5m, "7.25e-005");
+        }
+
         private static void AssertImport(object expected, string input)
         {
             JsonTextReader reader = new JsonTextReader(new StringReader(input));
