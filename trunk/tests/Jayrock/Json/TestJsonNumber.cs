@@ -146,53 +146,5 @@ namespace Jayrock.Json
         {
             return new JsonNumber(s);
         }
-
-        private sealed class TestJsonWriter : JsonWriterBase
-        {
-            public string WrittenValue;
-            
-            protected override void WriteStartObjectImpl()
-            {
-                throw new NotImplementedException();
-            }
-
-            protected override void WriteEndObjectImpl()
-            {
-                throw new NotImplementedException();
-            }
-
-            protected override void WriteMemberImpl(string name)
-            {
-                throw new NotImplementedException();
-            }
-
-            protected override void WriteStartArrayImpl()
-            {
-            }
-
-            protected override void WriteEndArrayImpl()
-            {
-            }
-
-            protected override void WriteStringImpl(string value)
-            {
-                throw new NotImplementedException();
-            }
-
-            protected override void WriteNumberImpl(string value)
-            {
-                WrittenValue = value;
-            }
-
-            protected override void WriteBooleanImpl(bool value)
-            {
-                throw new NotImplementedException();
-            }
-
-            protected override void WriteNullImpl()
-            {
-                throw new NotImplementedException();
-            }
-        }
     }
 }
