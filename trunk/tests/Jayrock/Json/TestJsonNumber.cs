@@ -25,7 +25,6 @@ namespace Jayrock.Json
     #region Imports
 
     using System;
-    using Jayrock.Json.Conversion;
     using NUnit.Framework;
 
     #endregion
@@ -142,6 +141,17 @@ namespace Jayrock.Json
             Assert.AreEqual(TypeCode.Object, n.GetTypeCode());
         }
         
+        [ Test ]
+        public void ConversionToDecimalUsingExponentialNotation()
+        {
+            //
+            // Exercises bug #13407
+            // http://developer.berlios.de/bugs/?func=detailbug&bug_id=13407&group_id=4638
+            //
+
+            Assert.AreEqual(7.25e-5m, Number("7.25e-005").ToDecimal());
+        }
+
         private static JsonNumber Number(string s)
         {
             return new JsonNumber(s);

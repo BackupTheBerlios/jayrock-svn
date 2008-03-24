@@ -140,7 +140,7 @@ namespace Jayrock.Json
 
         public decimal ToDecimal()
         {
-            return Convert.ToDecimal(Value, CultureInfo.InvariantCulture);
+            return decimal.Parse(Value, NumberStyles.Float, CultureInfo.InvariantCulture);
         }
 
         public DateTime ToDateTime()
