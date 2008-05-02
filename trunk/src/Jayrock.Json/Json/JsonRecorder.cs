@@ -33,22 +33,23 @@ namespace Jayrock.Json
     [ Serializable ]
     public sealed class JsonRecorder : JsonWriterBase
     {
-        private ArrayList _tokenList;
-
-        private ArrayList TokenList
-        {
-            get
-            {
-                if (_tokenList == null)
-                    _tokenList = new ArrayList();
-
-                return _tokenList;
-            }
-        }
+        private int _count;
+        private JsonToken[] _tokens;
 
         private void Write(JsonToken token)
         {
-            TokenList.Add(token);
+            if (_tokens == null)
+            {
+                _tokens = new JsonToken[16];
+            }
+            else if (_count == _tokens.Length)
+            {
+                JsonToken[] tokens = new JsonToken[_tokens.Length * 2];
+                _tokens.CopyTo(tokens, 0);
+                _tokens = tokens;
+            }
+
+            _tokens[_count++] = token;
         }
 
         protected override void WriteStartObjectImpl()
@@ -98,12 +99,10 @@ namespace Jayrock.Json
 
         public JsonReader CreatePlayer()
         {
-            int count = _tokenList == null ? 0 : _tokenList.Count;
+            JsonToken[] tokens = new JsonToken[_count + 2];
             
-            JsonToken[] tokens = new JsonToken[count + 2];
-            
-            if (count > 0)
-                _tokenList.CopyTo(tokens, 1);
+            if (_count > 0)
+                Array.Copy(_tokens, 0, tokens, 1, _count);
             
             tokens[0] = JsonToken.BOF();
             tokens[tokens.Length - 1] = JsonToken.EOF();
