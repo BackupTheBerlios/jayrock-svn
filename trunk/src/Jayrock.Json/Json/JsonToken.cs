@@ -67,6 +67,21 @@ namespace Jayrock.Json
             return Text == null ? Class.Name : Class.Name + ":" + DebugString.Format(Text);
         }
         
+        public override int GetHashCode()
+        {
+            return Class.GetHashCode() ^ (Text == null ? 0 : Text.GetHashCode());
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj != null && obj is JsonToken ? Equals((JsonToken) obj) : false;
+        }
+
+        public bool Equals(JsonToken rhs)
+        {
+            return Class.Equals(rhs.Class) && (Text == null || Text.Equals(rhs.Text));
+        }
+
         //
         // Static methods for building tokens of various classes...
         //

@@ -129,5 +129,48 @@ namespace Jayrock.Json
             Assert.AreEqual("BOF", JsonToken.BOF().ToString());
             Assert.AreEqual("EOF", JsonToken.EOF().ToString());
         }
+
+        [ Test ]
+        public void EqualityWhenSameClassAndText()
+        {
+            Assert.IsTrue(JsonToken.String("hello").Equals(JsonToken.String("hello")));
+        }
+
+        [Test]
+        public void InEqualityWhenSameClassDifferentText()
+        {
+            Assert.IsFalse(JsonToken.String("hello").Equals(JsonToken.String("world")));
+        }
+
+        [Test]
+        public void InEqualityWhenDifferentClassSameText()
+        {
+            Assert.IsFalse(JsonToken.String("123").Equals(JsonToken.Number("123")));
+        }
+
+        [Test]
+        public void EqualityWithTextlessClass()
+        {
+            Assert.AreEqual(JsonToken.BOF(), JsonToken.BOF());
+        }
+
+        [Test]
+        public void InEqualityWithNull()
+        {
+            Assert.IsFalse(JsonToken.Null().Equals(null));
+        }
+
+        [Test]
+        public void InEqualityWithAnotherType()
+        {
+            Assert.IsFalse(JsonToken.Null().Equals(123));
+        }
+
+        [Test]
+        public void HashCodeNonZero()
+        {
+            Assert.AreNotEqual(0, JsonToken.EOF().GetHashCode());
+            Assert.AreNotEqual(0, JsonToken.String("string").GetHashCode());
+        }
     }
 }
