@@ -165,5 +165,26 @@ namespace Jayrock.Json
             stream.Seek(0, SeekOrigin.Begin);
             Assert.AreSame(JsonTokenClass.Null, formatter.Deserialize(stream));
         }
+
+        [ Test ]
+        public void EqualityByReference()
+        {
+            foreach (JsonTokenClass clazz in JsonTokenClass.All)
+                Assert.IsTrue(clazz.Equals(clazz), clazz.ToString());
+        }
+
+        [ Test ]
+        public void InequalityWithNull()
+        {
+            foreach (JsonTokenClass clazz in JsonTokenClass.All)
+                Assert.IsFalse(clazz.Equals(null), clazz.ToString());
+        }
+
+        [ Test ]
+        public void InequalityWithIncompatibleType()
+        {
+            foreach (JsonTokenClass clazz in JsonTokenClass.All)
+                Assert.IsFalse(clazz.Equals(new object()), clazz.ToString());
+        }
     }
 }
