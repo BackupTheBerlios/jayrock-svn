@@ -25,7 +25,9 @@
     implementation available over at http://www.json.org/json.js.
 */
 var JSON = function () {
-    var m = {
+    var cx = /[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,
+        escapeable = /[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,
+        meta = {   // table of character substitutions
             '\b': '\\b',
             '\t': '\\t',
             '\n': '\\n',
@@ -47,19 +49,16 @@ var JSON = function () {
                 // simply slap some quotes around it. Otherwise we must 
                 // also replace the offending characters with safe
                 // sequences.
-                if (/["\\\x00-\x1f]/.test(x)) {
-                    x = x.replace(/[\x00-\x1f\\"]/g, function (a) {
-                        var c = m[a];
-                        if (c) {
+                return escapeable.test(x) ?
+                    '"' + x.replace(escapeable, function (a) {
+                        var c = meta[a];
+                        if (typeof c === 'string') {
                             return c;
                         }
-                        c = a.charCodeAt();
-                        return '\\u00' +
-                            Math.floor(c / 16).toString(16) +
-                            (c % 16).toString(16);
-                    });
-                }
-                return '"' + x + '"';
+                        return '\\u' + ('0000' +
+                                (+(a.charCodeAt(0))).toString(16)).slice(-4);
+                    }) + '"' :
+                    '"' + x + '"';
             },
             object: function (x) {
                 if (x) {
@@ -151,29 +150,46 @@ var JSON = function () {
     Parse a JSON text, producing a JavaScript value.
     If the text is not JSON parseable, then a SyntaxError is thrown.
 */
-        eval: function (text, filter) {
+        eval: function (text, reviver) {
 
-            function walk(k, v) {
-                var i, n;
-                if (v && typeof v === 'object') {
-                    for (i in v) {
-                        if (Object.prototype.hasOwnProperty.apply(v, [i])) {
-                            n = walk(i, v[i]);
-                            if (n !== undefined)
-                                v[i] = n;
+            // The walk method is used to recursively walk the resulting structure so
+            // that modifications can be made.
+
+            function walk(holder, key) {
+                var k, v, value = holder[key];
+                if (value && typeof value === 'object') {
+                    for (k in value) {
+                        if (Object.hasOwnProperty.call(value, k)) {
+                            v = walk(value, k);
+                            if (v !== undefined) {
+                                value[k] = v;
+                            } else {
+                                delete value[k];
+                            }
                         }
                     }
                 }
-                return filter(k, v);
+                return reviver.call(holder, key, value);
             }
 
-            // Parsing happens in three stages. In the first stage, we run the text against
+            // Parsing happens in three stages. In the first stage, we replace certain
+            // Unicode characters with escape sequences. JavaScript handles many characters
+            // incorrectly, either silently deleting them, or treating them as line endings.
+
+            if (cx.test(text)) {
+                text = text.replace(cx, function (a) {
+                    return '\\u' + ('0000' +
+                            (+(a.charCodeAt(0))).toString(16)).slice(-4);
+                });
+            }
+
+            // In the second stage, we run the text against
             // regular expressions that look for non-JSON patterns. We are especially
             // concerned with '()' and 'new' because they can cause invocation, and '='
             // because it can cause mutation. But just to be safe, we want to reject all
             // unexpected forms.
 
-            // We split the first stage into 4 regexp operations in order to work around
+            // We split the second stage into 4 regexp operations in order to work around
             // crippling inefficiencies in IE's and Safari's regexp engines. First we
             // replace all backslash pairs with '@' (a non-JSON character). Second, we
             // replace all simple value tokens with ']' characters. Third, we delete all
@@ -181,28 +197,24 @@ var JSON = function () {
             // we look to see that the remaining characters are only whitespace or ']' or
             // ',' or ':' or '{' or '}'. If that is so, then the text is safe for eval.
 
-            if (!/^[\],:{}\s]*$/.test(text.replace(/\\./g, '@').
-                replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(:?[eE][+\-]?\d+)?/g, ']').
+            if (!/^[\],:{}\s]*$/.test(text.replace(/\\["\\\/bfnrtu]/g, '@').
+                replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']').
                 replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
                 throw new SyntaxError("eval");
             }
 
-            // In the second stage we use the eval function to compile the 
-            // text into a JavaScript structure. The '{' operator is subject 
-            // to a syntactic ambiguity in JavaScript: it can begin a block 
-            // or an object literal. We wrap the text in parens to eliminate 
-            // the ambiguity.
+            // In the third stage we use the eval function to compile the text into a
+            // JavaScript structure. The '{' operator is subject to a syntactic ambiguity
+            // in JavaScript: it can begin a block or an object literal. We wrap the text
+            // in parens to eliminate the ambiguity.
 
             var result = eval('(' + text + ')');
 
-            // In the optional third stage, we recursively walk the new
-            // structure, passing each name/value pair to a filter function 
-            // for possible transformation.
+            // In the optional fourth stage, we recursively walk the new structure, passing
+            // each name/value pair to a reviver function for possible transformation.
 
-            if (typeof filter === 'function')
-                result = walk('', result);
-
-            return result;
+            return typeof reviver === 'function' ?
+                walk({'': result}, '') : result;
         },
 
         parse: function (text) {
