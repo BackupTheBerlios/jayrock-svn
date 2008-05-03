@@ -53,7 +53,7 @@ namespace Jayrock.Json
         public JsonObject() {}
 
         /// <summary>
-        /// Construct a JObject from a IDictionary
+        /// Construct a JsonObject from a IDictionary
         /// </summary>
 
         public JsonObject(IDictionary members)
@@ -111,8 +111,8 @@ namespace Jayrock.Json
         /// <summary>
         /// Accumulate values under a key. It is similar to the Put method except
         /// that if there is already an object stored under the key then a
-        /// JArray is stored under the key to hold all of the accumulated values.
-        /// If there is already a JArray, then the new value is appended to it.
+        /// JsonArray is stored under the key to hold all of the accumulated values.
+        /// If there is already a JsonArray, then the new value is appended to it.
         /// In contrast, the Put method replaces the previous value.
         /// </summary>
 
@@ -146,8 +146,8 @@ namespace Jayrock.Json
         }
 
         /// <summary>
-        /// Put a key/value pair in the JObject. If the value is null,
-        /// then the key will be removed from the JObject if it is present.
+        /// Put a key/value pair in the JsonObject. If the value is null,
+        /// then the key will be removed from the JsonObject if it is present.
         /// </summary>
 
         public virtual void Put(string name, object value)
@@ -186,8 +186,8 @@ namespace Jayrock.Json
         }
 
         /// <summary>
-        /// Produce a JArray containing the names of the elements of this
-        /// JObject.
+        /// Produce a JsonArray containing the names of the elements of this
+        /// JsonObject.
         /// </summary>
 
         public virtual JsonArray GetNamesArray()
