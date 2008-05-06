@@ -29,8 +29,20 @@ namespace Jayrock.Json
     using System.IO;
 
     #endregion
-    
-    internal sealed class BufferedCharReader
+
+    /// <summary>
+    /// This type supports the Jayrock JSON infrastructure and is not 
+    /// intended to be used directly from your code. 
+    /// Beware! There be dragons!
+    /// </summary>    
+    /// <remarks>
+    /// This type may become inaccessible in the future. It is public
+    /// for the purpose of unit testing.
+    /// </remarks>
+
+    // TODO: Make internal and use InternalsVisibleToAttribute when code base has been upgraded to .NET 2.0.
+
+    public sealed class BufferedCharReader
     {
         private readonly TextReader _reader;
         private readonly int _bufferSize;
@@ -39,6 +51,11 @@ namespace Jayrock.Json
         private int _end;
         private bool _backed;
         private char _backup;
+        private int _charCount;
+        private int _lineNumber;
+        private int _linePosition;
+        private int _lastLinePosition;
+        private bool _sawLineFeed = true;
 
         public const char EOF = (char) 0;
 
@@ -52,6 +69,10 @@ namespace Jayrock.Json
             _reader = reader;
             _bufferSize = Math.Max(256, bufferSize);
         }
+
+        public int CharCount { get { return _charCount; } }
+        public int LineNumber { get { return _lineNumber; } }
+        public int LinePosition { get { return _linePosition; } }
 
         /// <summary>
         /// Back up one character. This provides a sort of lookahead capability,
@@ -67,10 +88,22 @@ namespace Jayrock.Json
         {
             Debug.Assert(!_backed);
 
-            if (_index > 0)
+            if (_index <= 0) 
+                return;
+
+            char ch = _buffer[_index - 1];
+            
+            _backup = ch;
+            _backed = true;
+            
+            _charCount--;
+            _linePosition--;
+            
+            if (_linePosition == 0)
             {
-                _backup = _buffer[_index - 1];
-                _backed = true;
+                _lineNumber--;
+                _linePosition = _lastLinePosition;
+                _sawLineFeed = true;
             }
         }
 
@@ -82,6 +115,8 @@ namespace Jayrock.Json
         
         public bool More()
         {
+            // FIXME: Bug here? Assume one char stream. Does Next() -> Back() -> More() == false?
+
             if (_index == _end)
             {
                 if (_buffer == null)
@@ -93,7 +128,7 @@ namespace Jayrock.Json
                 if (_end == 0)
                     return false;
             }
-            
+
             return true;
         }
 
@@ -104,16 +139,41 @@ namespace Jayrock.Json
         
         public char Next()
         {
+            char ch;
+
             if (_backed)
             {
                 _backed = false;
-                return _backup;    
+                ch = _backup;
             }
-            
-            if (!More())
-                return EOF;
+            else
+            {
+                if (!More())
+                    return EOF;
 
-            char ch = _buffer[_index++];
+                ch = _buffer[_index++];
+            }
+
+            return UpdateCounters(ch);
+        }
+
+        private char UpdateCounters(char ch) 
+        {
+            _charCount++;
+
+            if (_sawLineFeed)
+            {
+                _lineNumber++;
+                _lastLinePosition = _linePosition;
+                _linePosition = 1;
+                _sawLineFeed = false;
+            }
+            else
+            {
+                _linePosition++;
+            }
+
+            _sawLineFeed = ch == '\n';
             return ch;
         }
     }

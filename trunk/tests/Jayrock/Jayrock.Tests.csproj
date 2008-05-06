@@ -104,6 +104,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Json\TestBufferedCharReader.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Json\TestJsonArray.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
