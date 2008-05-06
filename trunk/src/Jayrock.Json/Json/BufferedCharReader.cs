@@ -34,13 +34,13 @@ namespace Jayrock.Json
     
     internal sealed class BufferedCharReader
     {
-        private TextReader _reader;
+        private readonly TextReader _reader;
+        private readonly int _bufferSize;
         private char[] _buffer;
         private int _index;
         private int _end;
         private bool _backed;
         private char _backup;
-        private int _bufferSize;
 
         public const char EOF = (char) 0;
 
