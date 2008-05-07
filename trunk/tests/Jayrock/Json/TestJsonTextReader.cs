@@ -631,7 +631,7 @@ namespace Jayrock.Json
             Read(@"'\u1'");
         }
 
-        [Test, ExpectedException(typeof(JsonException), "The text '-Infinity' has the incorrect syntax for a number.")]
+        [Test]
         public void NegativeInfinityBug()
         {
             //
@@ -639,7 +639,17 @@ namespace Jayrock.Json
             // http://developer.berlios.de/bugs/?func=detailbug&bug_id=13333&group_id=4638
             //
 
-            CreateReader("-Infinity").Read();
+            try
+            {
+                CreateReader("-Infinity").Read();
+                Assert.Fail("Expected exception of type {0}.", typeof(JsonException));
+            }
+            catch (JsonException e)
+            {
+                Assert.AreEqual(
+                    "The text '-Infinity' has the incorrect syntax for a number.", 
+                    e.Message.Substring(0, e.Message.IndexOf('.') + 1));
+            }
         }
 
         private void AssertTokenText(JsonTokenClass token, string text)

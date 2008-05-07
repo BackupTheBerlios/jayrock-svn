@@ -61,6 +61,9 @@ namespace Jayrock.Json
             Push(ParseMethod);
         }
 
+        public int LineNumber { get { return _reader.LineNumber; } }
+        public int LinePosition { get { return _reader.LinePosition; } }
+
         /// <summary>
         /// Reads the next token and returns it.
         /// </summary>
@@ -143,7 +146,7 @@ namespace Jayrock.Json
             string s = sb.ToString().Trim();
 
             if (s.Length == 0)
-                throw new JsonException("Missing value.");
+                throw SyntaxError("Missing value.");
             
             
             //
@@ -170,7 +173,7 @@ namespace Jayrock.Json
 
                 if ((b == '-' && s.Length >= 2 && s[1] == 'I') // rule out -Infinity that double parsing allows
                     || !double.TryParse(s, NumberStyles.Float, CultureInfo.InvariantCulture, out unused))
-                    throw new JsonException(string.Format("The text '{0}' has the incorrect syntax for a number.", s));
+                    throw SyntaxError(string.Format("The text '{0}' has the incorrect syntax for a number.", s));
 
                 return Yield(JsonToken.Number(s));
             }
@@ -198,7 +201,7 @@ namespace Jayrock.Json
         private JsonToken ParseArray()
         {
             if (NextClean() != '[')
-                throw new JsonException("An array must start with '['.");
+                throw SyntaxError("An array must start with '['.");
 
             return Yield(JsonToken.Array(), ParseArrayFirstMethod);
         }
@@ -253,7 +256,7 @@ namespace Jayrock.Json
                 }
 
                 default:
-                    throw new JsonException("Expected a ',' or ']'.");
+                    throw SyntaxError("Expected a ',' or ']'.");
             }
 
             Push(ParseArrayNextMethod);
@@ -276,7 +279,7 @@ namespace Jayrock.Json
         private JsonToken ParseObject()
         {
             if (NextClean() != '{')
-                throw new JsonException("An object must begin with '{'.");
+                throw SyntaxError("An object must begin with '{'.");
 
             return Yield(JsonToken.Object(), ParseObjectMemberMethod);
         }
@@ -294,7 +297,7 @@ namespace Jayrock.Json
                 return Yield(JsonToken.EndObject());
 
             if (ch == BufferedCharReader.EOF)
-                throw new JsonException("An object must end with '}'.");
+                throw SyntaxError("An object must end with '}'.");
 
             _reader.Back();
             string name = Parse().Text;
@@ -320,7 +323,7 @@ namespace Jayrock.Json
                     _reader.Back();
             }
             else if (ch != ':')
-                throw new JsonException("Expected a ':' after a key.");
+                throw SyntaxError("Expected a ':' after a key.");
 
             Push(ParseNextMemberMethod);
             return Parse();
@@ -351,7 +354,7 @@ namespace Jayrock.Json
                     return Yield(JsonToken.EndObject());
 
                 default:
-                    throw new JsonException("Expected a ',' or '}'.");
+                    throw SyntaxError("Expected a ',' or '}'.");
             }
 
             _reader.Back();
@@ -430,7 +433,7 @@ namespace Jayrock.Json
                                 ch = _reader.Next();
 
                                 if (ch == BufferedCharReader.EOF)
-                                    throw new JsonException("Unclosed comment.");
+                                    throw SyntaxError("Unclosed comment.");
 
                                 if (ch == '*')
                                 {
@@ -472,7 +475,7 @@ namespace Jayrock.Json
             }
             catch (FormatException e)
             {
-                throw new JsonException(e.Message, e);
+                throw SyntaxError(e.Message, e);
             }
         }
         
@@ -490,6 +493,23 @@ namespace Jayrock.Json
         {
             Debug.Assert(_stack != null);
             return (Continuation) _stack.Pop();
+        }
+
+        private JsonException SyntaxError(string message)
+        {
+            return SyntaxError(message, null);
+        }
+
+        private JsonException SyntaxError(string message, Exception inner)
+        {
+            if (LineNumber > 0)
+            {
+                message = string.Format(
+                    "{0} See line {1}, position {2}.",
+                    message, LineNumber.ToString("N0"), LinePosition.ToString("N0"));
+            }
+
+            return new JsonException(message, inner);
         }
     }
 }
