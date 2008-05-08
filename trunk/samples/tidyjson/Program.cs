@@ -56,8 +56,28 @@ namespace TidyJson
                     args = options.Parse(args);
                     
                     string path = args.Length > 0 ? args[0] : "-";
-                    PrettyColorPrint(path, Console.Out, options.Palette);
-                    
+
+                    try
+                    {
+                        PrettyColorPrint(path, Console.Out, options.Palette);
+                    }
+                    catch (JsonException e)
+                    {
+                        //
+                        // In case of JsonException, we don't display the
+                        // base exception since the root cause would not provide
+                        // line and position information and which JsonException
+                        // does. For example, "Unterminated string" has the
+                        // root case of FormatException, but which bubble as
+                        // JsonException with line and position about where the
+                        // error was found in the source.
+                        //
+
+                        Console.Error.WriteLine(e.Message);
+                        Trace.WriteLine(e.ToString());
+                        return 2;
+                    }
+
                     return 0;
                 }
                 finally
@@ -69,7 +89,7 @@ namespace TidyJson
             {
                 Console.Error.WriteLine(e.GetBaseException().Message);
                 Trace.WriteLine(e.ToString());
-                return -1;
+                return 1;
             }
         }
 
