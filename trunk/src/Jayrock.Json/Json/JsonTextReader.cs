@@ -546,14 +546,21 @@ namespace Jayrock.Json
 
             long num = 0;
 
-            for (int i = 1; i < s.Length; i++)
+            try
             {
-                char ch = s[i];
+                for (int i = 1; i < s.Length; i++)
+                {
+                    char ch = s[i];
 
-                if (ch < '0' || ch > '8')
-                    return s;
+                    if (ch < '0' || ch > '8')
+                        return s;
 
-                num = num << 3 | ((uint) ch - 0x30);
+                    num = checked(num * 8) | ((uint) ch - 0x30);
+                }
+            }
+            catch (OverflowException)
+            {
+                return s;
             }
 
             return num.ToString(CultureInfo.InvariantCulture);
@@ -568,6 +575,10 @@ namespace Jayrock.Json
             {
                 long num = long.Parse(s.Substring(2), NumberStyles.HexNumber, CultureInfo.InvariantCulture);
                 return num.ToString(CultureInfo.InvariantCulture);
+            }
+            catch (OverflowException)
+            {
+                return s;
             }
             catch (FormatException)
             {

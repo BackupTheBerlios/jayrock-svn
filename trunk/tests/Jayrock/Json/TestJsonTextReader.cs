@@ -692,6 +692,24 @@ namespace Jayrock.Json
             AssertEOF();
         }
 
+        [ Test ]
+        public void LongHexNumberSurfacesAsString()
+        {
+            string str = "0x" + new string('4', 100);
+            CreateReader(str);
+            AssertTokenText(JsonTokenClass.String, str);
+            AssertEOF();
+        }
+
+        [ Test ]
+        public void LongOctalNumberSurfacesAsString()
+        {
+            string str = "0" + new string('4', 100);
+            CreateReader(str);
+            AssertTokenText(JsonTokenClass.String, str);
+            AssertEOF();
+        }
+
         private void AssertTokenText(JsonTokenClass token, string text)
         {
             Assert.IsTrue(_reader.Read());
