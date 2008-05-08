@@ -30,6 +30,7 @@ namespace Jayrock.Json
     using System.Globalization;
     using System.IO;
     using System.Text;
+    using Diagnostics;
 
     #endregion
 
@@ -166,16 +167,41 @@ namespace Jayrock.Json
             //
             // Number
             //
+            // Try converting it. We support the 0- and 0x- conventions. 
+            // If a number cannot be produced, then the value will just
+            // be a string. Note that the 0-, 0x-, plus, and implied 
+            // string conventions are non-standard, but a JSON text parser 
+            // is free to accept non-JSON text forms as long as it accepts 
+            // all correct JSON text forms.
+            //
 
             if ((b >= '0' && b <= '9') || b == '.' || b == '-' || b == '+')
             {
-                double unused;
+                if (b == '0' && s.Length > 1)
+                {
+                    if (s.Length > 2 && (s[1] == 'x' || s[1] == 'X'))
+                    {
+                        string parsed = TryParseHex(s);
+                        if (!ReferenceEquals(parsed, s))
+                            return Yield(JsonToken.Number(parsed));
+                    }
+                    else
+                    {
+                        string parsed = TryParseOctal(s);
+                        if (!ReferenceEquals(parsed, s))
+                            return Yield(JsonToken.Number(parsed));
+                    }
+                }
+                else
+                {
+                    double unused;
 
-                if ((b == '-' && s.Length >= 2 && s[1] == 'I') // rule out -Infinity that double parsing allows
-                    || !double.TryParse(s, NumberStyles.Float, CultureInfo.InvariantCulture, out unused))
-                    throw SyntaxError(string.Format("The text '{0}' has the incorrect syntax for a number.", s));
+                    if ((b == '-' && s.Length >= 2 && s[1] == 'I') // rule out -Infinity that double parsing allows
+                        || !double.TryParse(s, NumberStyles.Float, CultureInfo.InvariantCulture, out unused))
+                        throw SyntaxError(string.Format("The text '{0}' has the incorrect syntax for a number.", s));
 
-                return Yield(JsonToken.Number(s));
+                    return Yield(JsonToken.Number(s));
+                }
             }
             
             //
@@ -510,6 +536,43 @@ namespace Jayrock.Json
             }
 
             return new JsonException(message, inner);
+        }
+
+        private static string TryParseOctal(string s)
+        {
+            Debug.Assert(s != null);
+            Debug.Assert(s[0] == '0');
+            Debug.Assert(s.Length > 1);
+
+            long num = 0;
+
+            for (int i = 1; i < s.Length; i++)
+            {
+                char ch = s[i];
+
+                if (ch < '0' || ch > '8')
+                    return s;
+
+                num = num << 3 | ((uint) ch - 0x30);
+            }
+
+            return num.ToString(CultureInfo.InvariantCulture);
+        }
+
+        private static string TryParseHex(string s)
+        {
+            Debug.Assert(s != null);
+            Debug.Assert(s.Length > 1);
+
+            try
+            {
+                long num = long.Parse(s.Substring(2), NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+                return num.ToString(CultureInfo.InvariantCulture);
+            }
+            catch (FormatException)
+            {
+                return s;
+            }
         }
     }
 }

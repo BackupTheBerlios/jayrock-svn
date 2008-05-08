@@ -652,6 +652,46 @@ namespace Jayrock.Json
             }
         }
 
+        [ Test ]
+        public void OctalNumber()
+        {
+            CreateReader("0123");
+            AssertTokenText(JsonTokenClass.Number, "83");
+            AssertEOF();
+        }
+
+        [ Test ]
+        public void BadOctalNumberSurfacesAsString()
+        {
+            CreateReader("0123456789");
+            AssertTokenText(JsonTokenClass.String, "0123456789");
+            AssertEOF();
+        }
+
+        [ Test ]
+        public void HexNumber()
+        {
+            CreateReader("0xc001ba55");
+            AssertTokenText(JsonTokenClass.Number, "3221338709");
+            AssertEOF();
+        }
+
+        [ Test ]
+        public void HexNumberWithBigX()
+        {
+            CreateReader("0Xc001ba55");
+            AssertTokenText(JsonTokenClass.Number, "3221338709");
+            AssertEOF();
+        }
+
+        [ Test ]
+        public void BadHexNumberSurfacesAsString()
+        {
+            CreateReader("0x1boo");
+            AssertTokenText(JsonTokenClass.String, "0x1boo");
+            AssertEOF();
+        }
+
         private void AssertTokenText(JsonTokenClass token, string text)
         {
             Assert.IsTrue(_reader.Read());
