@@ -48,42 +48,51 @@ namespace TidyJson
             {
                 ConsoleBrush defaultBrush = ConsoleBrush.Current;
 
+                ProgramOptions options = new ProgramOptions();
+                options.Help += delegate { Help(); Environment.Exit(0); };
+                options.Palette = JsonPalette.Auto(defaultBrush);
+                args = options.Parse(args);
+                
+                string path = args.Length > 0 ? args[0] : "-";
+
                 try
                 {
-                    ProgramOptions options = new ProgramOptions();
-                    options.Help += delegate { Help(); Environment.Exit(0); };
-                    options.Palette = JsonPalette.Auto(defaultBrush);
-                    args = options.Parse(args);
-                    
-                    string path = args.Length > 0 ? args[0] : "-";
-
                     try
                     {
                         PrettyColorPrint(path, Console.Out, options.Palette);
                     }
-                    catch (JsonException e)
+                    finally
                     {
                         //
-                        // In case of JsonException, we don't display the
-                        // base exception since the root cause would not provide
-                        // line and position information and which JsonException
-                        // does. For example, "Unterminated string" has the
-                        // root case of FormatException, but which bubble as
-                        // JsonException with line and position about where the
-                        // error was found in the source.
+                        // The location of this finally clause is significant
+                        // and should not be merged with the outer catch
+                        // block. The default brush needs to be restored
+                        // in case an error message is about to be printed 
+                        // and the standard output and error point to the 
+                        // same console device.
                         //
 
-                        Console.Error.WriteLine(e.Message);
-                        Trace.WriteLine(e.ToString());
-                        return 2;
+                        defaultBrush.Apply();
                     }
-
-                    return 0;
                 }
-                finally
+                catch (JsonException e)
                 {
-                    defaultBrush.Apply();
+                    //
+                    // In case of JsonException, we don't display the
+                    // base exception since the root cause would not provide
+                    // line and position information and which JsonException
+                    // does. For example, "Unterminated string" has the
+                    // root case of FormatException, but which bubble as
+                    // JsonException with line and position about where the
+                    // error was found in the source.
+                    //
+
+                    Console.Error.WriteLine(e.Message);
+                    Trace.WriteLine(e.ToString());
+                    return 2;
                 }
+
+                return 0;
             }
             catch (Exception e)
             {
