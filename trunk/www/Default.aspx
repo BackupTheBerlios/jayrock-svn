@@ -150,16 +150,16 @@
         <h2>
             Compiling with NAnt</h2>
         <p>
-            You do not need NAnt installed on your machine to compile Jayrock. The right and
-            required version of all required tools (<a href="http://nant.sourceforge.net/">NAnt</a>,
+            You do not need NAnt installed on your machine to compile Jayrock. The right 
+            of all required tools (<a href="http://nant.sourceforge.net/">NAnt</a>,
             <a href="http://www.nunit.org/">NUnit</a>, <a href="http://ncover.org/">NCover</a> and 
             <a href="http://www.kiwidude.com/blog/2006/01/ncoverexplorer-debut.html">NCoverExplorer</a>)
-            is already included under the <code>tools</code> directory under Jayrock. If you
+            is already included under the <code>tools</code> directory. If you
             are on the Windows platform, you can simply run the batch file <code>src\build.bat</code>
             to invoke NAnt and have it build all the targets. To invoke NAnt explicitly, otherwise,
             use the following command (assuming you are in the root of the working directory):</p>
         <p>
-            <code>tools\nant-0.85\NAnt /f:src\nant.build</code></p>
+            <code>tools\nant-0.86-beta1\NAnt /f:src\nant.build</code></p>
         <p>
             A full build runs the unit tests, creates a code coverage report from the tests
             and then goes on to compile the debug and release assemblies for Jayrock and Jayrock.Json.</p>
