@@ -139,27 +139,26 @@ namespace Jayrock.JsonRpc.Web
             //
 
             JsonRpcDispatcher dispatcher = new JsonRpcDispatcher(Service);
-            
-            dispatcher.RequireIdempotency = true;
-            
-            if (HttpRequestSecurity.IsLocal(Request))
-                dispatcher.SetLocalExecution();
-                        
-            if (padded)
+            using (new JsonRpcDispatchScope(dispatcher, Context))
             {
-                //
-                // For JSONP, see details here:
-                // http://bob.pythonmac.org/archives/2005/12/05/remote-json-jsonp/
-                //
+                dispatcher.RequireIdempotency = true;
 
-                Response.Write(callback);
-                Response.Write('(');
+                if (padded)
+                {
+                    //
+                    // For JSONP, see details here:
+                    // http://bob.pythonmac.org/archives/2005/12/05/remote-json-jsonp/
+                    //
+
+                    Response.Write(callback);
+                    Response.Write('(');
+                }
+
+                dispatcher.Process(new StringReader(writer.ToString()), Response.Output);
+
+                if (padded)
+                    Response.Write(')');
             }
-
-            dispatcher.Process(new StringReader(writer.ToString()), Response.Output);
-            
-            if (padded)
-                Response.Write(')');
         }
     }
 }

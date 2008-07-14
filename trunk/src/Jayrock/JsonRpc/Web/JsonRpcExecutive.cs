@@ -25,8 +25,10 @@ namespace Jayrock.JsonRpc.Web
     #region Imports
 
     using System;
+    using System.Collections;
     using System.IO;
     using System.Web;
+    using Jayrock.Json.Conversion;
     using Jayrock.Services;
 
     #endregion
@@ -64,13 +66,12 @@ namespace Jayrock.JsonRpc.Web
             // Delegate rest of the work to JsonRpcServer.
             //
 
-            JsonRpcDispatcher dispatcher = new JsonRpcDispatcher(Service);
-            
-            if (HttpRequestSecurity.IsLocal(Request))
-                dispatcher.SetLocalExecution();
-
-            using (TextReader reader = GetRequestReader())
-                dispatcher.Process(reader, Response.Output);
+            JsonRpcDispatcher dispatcher = new JsonRpcDispatcher(Service);            
+            using (new JsonRpcDispatchScope(dispatcher, Context))
+            {
+                using (TextReader reader = GetRequestReader())
+                    dispatcher.Process(reader, Response.Output);
+            }            
         }
 
         private TextReader GetRequestReader()
