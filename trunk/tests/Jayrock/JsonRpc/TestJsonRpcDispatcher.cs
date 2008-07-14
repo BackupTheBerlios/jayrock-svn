@@ -26,8 +26,6 @@ namespace Jayrock.JsonRpc
 
     using System;
     using System.Collections;
-    using System.IO;
-    using System.Reflection;
     using Jayrock.Json;
     using Jayrock.Json.Conversion;
     using Jayrock.Services;
@@ -231,7 +229,69 @@ namespace Jayrock.JsonRpc
             Assert.AreEqual("Hello", JsonRpcServices.GetResult((IDictionary) Parse(responseString)));
         }
 
-        private object Parse(string source)
+        [ Test ]
+        public void SetExportContext()
+        {
+            JsonRpcDispatcher dispatcher = new JsonRpcDispatcher(new TestService());
+            ExportContext context = new ExportContext();
+            dispatcher.ExportContext = context;
+            Assert.AreSame(context, dispatcher.ExportContext);
+        }
+
+        [ Test ]
+        public void SetImportContext()
+        {
+            JsonRpcDispatcher dispatcher = new JsonRpcDispatcher(new TestService());
+            ImportContext context = new ImportContext();
+            dispatcher.ImportContext = context;
+            Assert.AreSame(context, dispatcher.ImportContext);
+        }
+
+        [ Test ]
+        public void CustomImportContextUsedDuringRequestProcessing()
+        {
+            JsonRpcDispatcher dispatcher = new JsonRpcDispatcher(new TestService());
+            TestImportContext context = new TestImportContext();
+            Assert.IsFalse(context.ImportCalled);
+            dispatcher.ImportContext = context;
+            dispatcher.Process("{ id: 1, method: Dummy }");
+            Assert.IsTrue(context.ImportCalled);
+        }
+
+        [ Test ]
+        public void CustomExportContextUsedDuringRequestProcessing()
+        {
+            JsonRpcDispatcher dispatcher = new JsonRpcDispatcher(new TestService());
+            TestExportContext context = new TestExportContext();
+            Assert.IsFalse(context.ExportCalled);
+            dispatcher.ExportContext = context;
+            dispatcher.Process("{ id: 1, method: Dummy }");
+            Assert.IsTrue(context.ExportCalled);
+        }
+
+        public class TestImportContext : ImportContext
+        {
+            public bool ImportCalled;
+
+            public override object Import(Type type, JsonReader reader)
+            {
+                ImportCalled = true;
+                return base.Import(type, reader);
+            }
+        }
+
+        public class TestExportContext : ExportContext
+        {
+            public bool ExportCalled;
+            
+            public override void Export(object value, JsonWriter writer)
+            {
+                ExportCalled = true;
+                base.Export(value, writer);
+            }
+        }
+
+        private static object Parse(string source)
         {
             return JsonConvert.Import(source);
         }
