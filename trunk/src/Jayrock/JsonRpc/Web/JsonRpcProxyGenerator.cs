@@ -228,7 +228,12 @@ namespace Jayrock.JsonRpc.Web
         {
             if (sender.readyState == /* complete */ 4)
             {
-                sender.onreadystatechange = null; // Avoid IE leak
+                try { 
+                    sender.onreadystatechange = null; // Avoid IE7 leak (bug #12964)
+                } 
+                catch (e) { 
+                    /* IE 6/Mobile throws for onreadystatechange = null */ 
+                }
 
                 var response = sender.status == 200 ? 
                     JSON.eval(sender.responseText) : {};
