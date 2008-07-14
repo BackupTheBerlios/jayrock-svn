@@ -49,6 +49,8 @@ namespace Jayrock.JsonRpc
         private string _serviceName;
         private bool _localExecution;
         private bool _requireIdempotency;
+        private ExportContext _exportContext;
+        private ImportContext _importContext;
 
         public JsonRpcDispatcher(IService service) :
             this(service, null) {}
@@ -103,6 +105,18 @@ namespace Jayrock.JsonRpc
 
                 return _serviceName;
             }
+        }
+
+        public ExportContext ExportContext
+        {
+            get { return _exportContext; }
+            set { _exportContext = value; }
+        }
+
+        public ImportContext ImportContext
+        {
+            get { return _importContext; }
+            set { _importContext = value; }
         }
 
         public virtual string Process(string request)
@@ -260,7 +274,9 @@ namespace Jayrock.JsonRpc
             if (reader == null)
                 reader = new JsonTextReader(input);
     
-            ImportContext importContext = new ImportContext();
+            ImportContext importContext = ImportContext;
+            if (importContext == null)
+                importContext = new ImportContext();
     
             JsonObject request = new JsonObject();
             Method method = null;
@@ -365,7 +381,10 @@ namespace Jayrock.JsonRpc
             if (writer == null)
                 writer = new JsonTextWriter(output);
 
-            ExportContext exportContext = new ExportContext();
+            ExportContext exportContext = ExportContext;
+            if (exportContext == null)
+                exportContext = new ExportContext();
+
             exportContext.Export(response, writer);
         }
 
