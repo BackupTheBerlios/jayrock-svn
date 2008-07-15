@@ -78,19 +78,6 @@
 
     <property name="build.dir.path" value="${path::combine(project.basedir, '../build')}" />
 
-    <!-- Mailing -->
-
-    <property name="smtp.server" value="" />
-    <if test="${environment::variable-exists('SMTPSERVER')}">
-        <property name="smtp.server" value="${environment::get-variable('SMTPSERVER')}" />
-    </if>
-    <property name="mail.from" value="buildserver@jayrock.org" />
-    <property name="mail.to" value="atif.aziz@skybow.com" />
-
-    <!-- Draco (build server) -->
-
-    <property name="draco" value="false" overwrite="false" />
-
     <!--======================== PROPERTY SECTION ========================-->
 
     <target name="clean">
@@ -221,7 +208,6 @@
     <target name="cover" depends="compile-test" if="${platform::is-win32()}">
         <exec program="${ncover.console.exe.path}" commandline='/q /w "${bin.test.dir.path}" /o "${project.basedir}/coverage.xml" /a ${output.assembly.name};${output.jsonassembly.name} /c "${nunit.console.exe.path}" "\"${output.testassembly.path}\""' />
         <exec program="${ncoverexplorer.console.exe.path}" commandline='"${project.basedir}/coverage.xml" /html:coverage-report.html /report:2 /excluded /p:${project.name} /minCoverage:85 "/c:${project.basedir}/NCoverExplorer.config"' />
-        <call target="draco" if="${draco}" />
     </target>
 
     <target name="build" depends="test debug release">
@@ -305,21 +291,6 @@
 
     </target>
 
-    <target name="draco">
-        <fail if="${string::get-length(smtp.server) == 0}"
-            message="You must specify an SMTP server host value via the SMTPSERVER environment variable for this build target to succeed." />
-        <mail
-            from="${mail.from}"
-            tolist="${mail.to}"
-            subject="Jayrock coverage for build ${build.id}"
-            format="Html"
-            mailhost="${smtp.server}">
-            <files>
-                <include name="${project.basedir}/coverage-report.htm" />
-            </files>
-        </mail>
-    </target>
-
     <target name="props">
 
         <!-- 
@@ -353,12 +324,6 @@
 
         <echo message="www.dir.path = ${www.dir.path}" />
         <echo message="www.dir.path = ${www.bin.dir.path}" />
-
-        <echo message="smtp.server = ${smtp.server}" />
-        <echo message="mail.from = ${mail.from}" />
-        <echo message="mail.to = ${mail.to}" />
-
-        <echo message="draco = ${draco}" />
 
     </target>
 
