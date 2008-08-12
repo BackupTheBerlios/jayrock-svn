@@ -63,7 +63,7 @@ namespace Jayrock.Json.Conversion
             return importer.Import(this, reader);
         }
 
-#if NET_2_0
+#if !NET_1_0 && !NET_1_1
 
         public virtual T Import<T>(JsonReader reader)
         {

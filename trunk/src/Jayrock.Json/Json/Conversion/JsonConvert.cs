@@ -106,7 +106,7 @@ namespace Jayrock.Json.Conversion
             return context.Import(type, reader);
         }
 
-#if NET_2_0
+#if !NET_1_0 && !NET_1_1
 
         //
         // Generic versions of Import methods.
