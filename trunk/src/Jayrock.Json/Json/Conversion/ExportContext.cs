@@ -139,7 +139,11 @@ namespace Jayrock.Json.Conversion
                     return new ComponentExporter(type);
                 }
             }
-            
+
+            CustomTypeDescriptor anonymousClass = CustomTypeDescriptor.TryCreateForAnonymousClass(type);
+            if (anonymousClass != null)
+                return new ComponentExporter(type, anonymousClass);
+
             return new StringExporter(type);
         }
 

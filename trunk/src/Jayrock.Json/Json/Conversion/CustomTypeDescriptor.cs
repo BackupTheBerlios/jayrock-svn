@@ -62,11 +62,14 @@ namespace Jayrock.Json.Conversion
         public CustomTypeDescriptor(Type type, MemberInfo[] members) :
             this(type, members, null) {}
 
-        public CustomTypeDescriptor(Type type, MemberInfo[] members, string[] names)
+        public CustomTypeDescriptor(Type type, MemberInfo[] members, string[] names) :
+            this(type, LikeAnonymousClass(type), members, names) {}
+
+        private CustomTypeDescriptor(Type type, bool isAnonymousClass, MemberInfo[] members, string[] names)
         {
             if (type == null) 
                 throw new ArgumentNullException("type");
-            
+
             //
             // No members supplied? Get all public, instance-level fields and 
             // properties of the type that are not marked with the JsonIgnore
@@ -136,17 +139,31 @@ namespace Jayrock.Json.Conversion
                     // attribute applied then include it anyhow (assuming
                     // that the type author probably has customizations
                     // that know how to deal with the sceanrio more 
-                    // accurately).
+                    // accurately). What's more, if the type is anonymous 
+                    // then the rule that the proerty must be writeable is
+                    // also bypassed.
                     //
 
                     if (property.DeclaringType != type && property.ReflectedType != type)
                         throw new ArgumentException(null, "members");
 
                     if ((property.CanRead) &&
-                        (property.CanWrite || property.IsDefined(typeof(JsonExportAttribute), true)) &&
+                        (isAnonymousClass || property.CanWrite || property.IsDefined(typeof(JsonExportAttribute), true)) &&
                         property.GetIndexParameters().Length == 0)
                     {
-                        descriptor = new TypePropertyDescriptor(property, name);
+                        //
+                        // Properties of an anonymous class will always use 
+                        // their original property name so that no 
+                        // transformation (like auto camel-casing) is 
+                        // applied. The rationale for the exception here is
+                        // that since the user does not have a chance to
+                        // decorate properties of an anonymous class with
+                        // attributes, there is no way an overriding policy
+                        // can be implemented.
+                        //
+
+                        descriptor = new TypePropertyDescriptor(property, 
+                            isAnonymousClass ? Mask.EmptyString(name, property.Name) : name);
                     }
                 }
                 
@@ -160,6 +177,15 @@ namespace Jayrock.Json.Conversion
             }
                 
             _properties = logicalProperties;
+        }
+
+        public static CustomTypeDescriptor TryCreateForAnonymousClass(Type type)
+        {
+            if (type == null)
+                throw new ArgumentNullException("type");
+
+            bool like = LikeAnonymousClass(type);
+            return like ? new CustomTypeDescriptor(type, like, null, null) : null;
         }
 
         public static PropertyDescriptor CreateProperty(FieldInfo field)
@@ -186,6 +212,57 @@ namespace Jayrock.Json.Conversion
         public PropertyDescriptorCollection GetProperties(Attribute[] attributes)
         {
             throw new NotImplementedException(); // FIXME: Incomplete implementation!
+        }
+
+        /// <summary>
+        /// Forward-compatible way to see if the given type is an anonymous 
+        /// class (introduced since C# 3.0). 
+        /// </summary>
+        /// <remarks>
+        /// There is no sure shot method so we have rely to rely on a 
+        /// heuristic approach by looking for a few known characteristics.
+        /// Note also that we take a "duck" approach to look for the 
+        /// CompilerGenerated attribute under .NET Framework 1.x, which does 
+        /// not seem like an appaling idea considering that the C# compiler 
+        /// does the with ExtensionAttribute when it comes to extension 
+        /// methods.
+        /// </remarks>
+        ///
+
+        internal static bool LikeAnonymousClass(Type type)
+        {
+            Debug.Assert(type != null);
+
+            return type.IsNotPublic && type.IsClass && type.IsSealed
+                && type.GetConstructor(Type.EmptyTypes) == null
+#if NET_1_0 || NET_1_1
+                && AnyObjectByTypeName(type.GetCustomAttributes(false),
+                       "System.Runtime.CompilerServices.CompilerGeneratedAttribute")
+#else
+                && type.IsGenericType
+                && type.IsDefined(typeof(System.Runtime.CompilerServices.CompilerGeneratedAttribute), false)
+#endif
+                ;
+        }
+
+        private static bool AnyObjectByTypeName(object[] objects, string typeNameSought)
+        {
+            return FindFirstObjectByTypeName(objects, typeNameSought) != null;
+        }
+
+        private static object FindFirstObjectByTypeName(object[] objects, string typeNameSought)
+        {
+            Debug.Assert(objects != null);
+            Debug.Assert(typeNameSought != null);
+            Debug.Assert(typeNameSought.Length > 0);
+
+            foreach (object obj in objects)
+            {
+                if (obj != null && 0 == string.CompareOrdinal(obj.GetType().FullName, typeNameSought))
+                    return obj;
+            }
+
+            return null;
         }
 
         #region Uninteresting implementations of ICustomTypeDescriptor members

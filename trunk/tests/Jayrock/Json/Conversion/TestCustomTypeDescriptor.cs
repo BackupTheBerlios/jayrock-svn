@@ -27,6 +27,7 @@ namespace Jayrock.Json.Conversion
     using System;
     using System.ComponentModel;
     using System.ComponentModel.Design;
+    using System.Runtime.CompilerServices;
     using Jayrock.Json.Conversion.Converters;
     using NUnit.Framework;
 
@@ -215,6 +216,22 @@ namespace Jayrock.Json.Conversion
             Assert.AreEqual(1, properties.Count);
         }
 
+        [ Test ]
+        public void AnonymousClassPropertiesExcepted()
+        {
+#if NET_1_0 || NET_1_1
+            CustomTypeDescriptor anon = CustomTypeDescriptor.TryCreateForAnonymousClass(typeof(AnonymousThing));
+#else
+            CustomTypeDescriptor anon = CustomTypeDescriptor.TryCreateForAnonymousClass(typeof(AnonymousThing<string>));
+#endif
+            Assert.IsNotNull(anon);
+            PropertyDescriptorCollection properties = anon.GetProperties();
+            Assert.AreEqual(1, properties.Count);
+            PropertyDescriptor property = properties[0];
+            Assert.AreEqual("Value", property.Name);
+            Assert.IsTrue(property.IsReadOnly);
+        }
+
         private static void AddServiceToServiceContainer(IServiceContainer sc) 
         {
             object service = new object();
@@ -306,5 +323,42 @@ namespace Jayrock.Json.Conversion
                 BaseImpl.SetValue(obj, ">>" + value);
             }
         }
-    }        
+    }
+
+#if NET_1_0 || NET_1_1
+    [CompilerGenerated]
+    internal sealed class AnonymousThing
+    {
+        private readonly string _value;
+
+        AnonymousThing(string value)
+        {
+            _value = value;
+        }
+
+        public string Value { get { return _value; } }
+    }
+#else
+    [CompilerGenerated]
+    internal sealed class AnonymousThing<T>
+    {
+        private readonly T _value;
+
+        AnonymousThing(T value)
+        {
+            _value = value;
+        }
+
+        public T Value { get { return _value; } }
+    }
+#endif
 }
+
+#if NET_1_0 || NET_1_1
+namespace System.Runtime.CompilerServices
+{
+    [SerializableAttribute] 
+    [AttributeUsageAttribute(AttributeTargets.All, Inherited=true)] 
+    internal sealed class CompilerGeneratedAttribute : Attribute {}
+}
+#endif
