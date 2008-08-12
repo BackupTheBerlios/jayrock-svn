@@ -94,7 +94,13 @@
         </delete>
     </target>
 
-    <target name="debug">
+    <target name="init">
+        <property name="define.framework" value="NET_1_0" if="${'net-1.0' == nant.settings.currentframework}" />
+        <property name="define.framework" value="NET_1_1" if="${'net-1.1' == nant.settings.currentframework}" />
+        <property name="define.framework" value="NET_2_0" overwrite="false" />
+    </target>
+
+    <target name="debug" depends="init">
         <property name="output.dir.path" value="${bin.debug.dir.path}" />
         <property name="debuginfo" value="Full" />
         <property name="optimize" value="false" />
@@ -103,7 +109,7 @@
         <call target="update-web" />
     </target>
 
-    <target name="release">
+    <target name="release" depends="init" >
         <property name="output.dir.path" value="${bin.release.dir.path}" />
         <property name="debuginfo" value="PdbOnly" />
         <property name="optimize" value="true" />
@@ -119,7 +125,7 @@
 
         <mkdir dir="${output.dir.path}" />
 
-        <csc target="library" debug="${debuginfo}" optimize="${optimize}" define="${define.symbols}" output="${jayrock.json.dll.path}">
+        <csc target="library" debug="${debuginfo}" define="${define.framework},${define.symbols}" optimize="${optimize}" output="${jayrock.json.dll.path}">
             <sources basedir="${project.basedir}">
                 <include name="Common/**/*.cs" />
                 <include name="Jayrock.Json/**/*.cs" />
@@ -135,7 +141,7 @@
             </nowarn>
         </csc>
 
-        <csc target="library" debug="${debuginfo}" define="${define.symbols}" output="${path::combine(output.dir.path, 'Jayrock.dll')}">
+        <csc target="library" debug="${debuginfo}" define="${define.framework},${define.symbols}" output="${path::combine(output.dir.path, 'Jayrock.dll')}">
             <sources basedir="${project.basedir}">
                 <include name="Common/**/*.cs" />
                 <include name="Jayrock/**/*.cs" />
@@ -167,7 +173,7 @@
 
         <mkdir dir="${bin.test.dir.path}" />
 
-        <csc target="library" debug="Enable" output="${output.testassembly.path}">
+        <csc target="library" define="${define.framework}" debug="Enable" output="${output.testassembly.path}">
             <sources basedir="../tests">
                 <include name="Jayrock/**/*.cs" />
             </sources>
