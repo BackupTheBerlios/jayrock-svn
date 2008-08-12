@@ -34,4 +34,4 @@ using ComVisible = System.Runtime.InteropServices.ComVisibleAttribute;
 // Version information
 //
 
-[assembly: AssemblyFileVersion("0.9.10312.1548")]
+[assembly: AssemblyFileVersion("0.9.10312.2155")]
