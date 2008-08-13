@@ -25,9 +25,6 @@ namespace Jayrock.JsonRpc.Web
     #region Imports
 
     using System;
-    using System.IO;
-    using System.Security;
-    using System.Web;
     using Jayrock.Services;
 
     #endregion
@@ -57,12 +54,12 @@ namespace Jayrock.JsonRpc.Web
             foreach (Method method in serviceClass.GetMethods())
                 WriteMethod(writer, method);
             
-            WriteClassTail(writer, serviceClass);
+            WriteClassTail(writer);
 
             WriteEpilog(writer);
         }
 
-        private void WriteProlog(IndentedTextWriter writer)
+        private static void WriteProlog(IndentedTextWriter writer)
         {
             writer.WriteLine("import simplejson");
             writer.WriteLine("import urllib");
@@ -111,7 +108,7 @@ namespace Jayrock.JsonRpc.Web
             writer.WriteLine();
         }
 
-        private void WriteMethod(IndentedTextWriter writer, Method method)
+        private static void WriteMethod(IndentedTextWriter writer, Method method)
         {
             string clientMethodName = method.Name.Replace(".", "_");
 
@@ -154,7 +151,7 @@ namespace Jayrock.JsonRpc.Web
             writer.WriteLine();
         }
 
-        private void WriteClassTail(IndentedTextWriter writer, ServiceClass serviceClass)
+        private static void WriteClassTail(IndentedTextWriter writer)
         {
             writer.WriteLine(@"def __call(self, method, params):
         self.__id = self.__id + 1
@@ -166,7 +163,7 @@ namespace Jayrock.JsonRpc.Web
             writer.Indent--;
         }
 
-        private void WriteEpilog(IndentedTextWriter writer)
+        private static void WriteEpilog(IndentedTextWriter writer)
         {
             writer.WriteLine(@"class Error(Exception):
     """"""Exception raised when an error occurs calling a JSON-RPC service.""""""
