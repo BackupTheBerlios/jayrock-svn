@@ -27,6 +27,7 @@ namespace Jayrock.JsonRpc.Web
     using System;
     using System.Diagnostics;
     using System.Globalization;
+    using System.IO;
     using Jayrock.Json.Conversion;
     using Jayrock.Services;
 
@@ -75,6 +76,15 @@ namespace Jayrock.JsonRpc.Web
                 Version2(Service.GetClass(), url, writer);
             else
                 Version1(Service.GetClass(), url, writer);
+        }
+
+        public static void Generate(ServiceClass service, Uri url, TextWriter writer)
+        {
+            if (service == null) throw new ArgumentNullException("service");
+            if (url == null) throw new ArgumentNullException("url");
+            if (writer == null) throw new ArgumentNullException("writer");
+
+            Version1(service, url, new IndentedTextWriter(writer));
         }
 
         private static void Version1(ServiceClass service, Uri url, IndentedTextWriter writer)
