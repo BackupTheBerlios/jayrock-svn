@@ -24,7 +24,10 @@
     NOTE: This implementation is hand-synchronized with the reference 
     implementation available over at http://www.json.org/json.js.
 */
-var JSON = function () {
+
+/*jslint evil: true */
+
+var JSON = function() {
     var cx = /[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,
         escapeable = /[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,
         meta = {   // table of character substitutions
@@ -55,12 +58,15 @@ var JSON = function () {
                         if (typeof c === 'string') {
                             return c;
                         }
-                        return '\\u' + ('0000' +
-                                (+(a.charCodeAt(0))).toString(16)).slice(-4);
+                        return '\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
                     }) + '"' :
                     '"' + x + '"';
             },
             object: function (x) {
+                function p(n) {
+                    // Format integers to have at least two digits.
+                    return n < 10 ? '0' + n : n;
+                }
                 if (x) {
                     var a = [], b, f, i, l, v;
                     if (x instanceof Array) {
@@ -71,7 +77,7 @@ var JSON = function () {
                             f = s[typeof v];
                             if (f) {
                                 v = f(v);
-                                if (typeof v == 'string') {
+                                if (typeof v === 'string') {
                                     if (b) {
                                         a[a.length] = ',';
                                     }
@@ -82,9 +88,8 @@ var JSON = function () {
                         }
                         a[a.length] = ']';
                     } else if (x instanceof Date) {
-                        function p(n) { return n < 10 ? '0' + n : n; };
                         var tz = x.getTimezoneOffset();
-                        if (tz != 0) {
+                        if (tz !== 0) {
                             var tzh = Math.floor(Math.abs(tz) / 60);
                             var tzm = Math.abs(tz) % 60;
                             tz = (tz < 0 ? '+' : '-') + p(tzh) + ':' + p(tzm);
@@ -111,7 +116,7 @@ var JSON = function () {
                                 f = s[typeof v];
                                 if (f) {
                                     v = f(v);
-                                    if (typeof v == 'string') {
+                                    if (typeof v === 'string') {
                                         if (b) {
                                             a[a.length] = ',';
                                         }
@@ -140,7 +145,7 @@ var JSON = function () {
             var f = s[typeof v];
             if (f) {
                 v = f(v);
-                if (typeof v == 'string') {
+                if (typeof v === 'string') {
                     return v;
                 }
             }
@@ -150,7 +155,7 @@ var JSON = function () {
     Parse a JSON text, producing a JavaScript value.
     If the text is not JSON parseable, then a SyntaxError is thrown.
 */
-        eval: function (text, reviver) {
+        'eval': function (text, reviver) {
 
             // The walk method is used to recursively walk the resulting structure so
             // that modifications can be made.
@@ -178,8 +183,8 @@ var JSON = function () {
 
             if (cx.test(text)) {
                 text = text.replace(cx, function (a) {
-                    return '\\u' + ('0000' +
-                            (+(a.charCodeAt(0))).toString(16)).slice(-4);
+                    return '\\u' +
+                            ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
                 });
             }
 
@@ -218,8 +223,10 @@ var JSON = function () {
         },
 
         parse: function (text) {
-            var at = 0;
-            var ch = ' ';
+            var at = 0,     // The index of the current character
+                ch = ' ',   // The current character
+                result,     // The final result
+                value;      // The value function
 
             function error(m) {
                 var e = new SyntaxError(m);
@@ -238,17 +245,17 @@ var JSON = function () {
                 while (ch) {
                     if (ch <= ' ') {
                         next();
-                    } else if (ch == '/') {
+                    } else if (ch === '/') {
                         switch (next()) {
                             case '/':
-                                while (next() && ch != '\n' && ch != '\r') {}
+                                while (next() && ch !== '\n' && ch !== '\r') { }
                                 break;
                             case '*':
                                 next();
                                 for (;;) {
                                     if (ch) {
-                                        if (ch == '*') {
-                                            if (next() == '/') {
+                                        if (ch === '*') {
+                                            if (next() === '/') {
                                                 next();
                                                 break;
                                             }
@@ -272,12 +279,12 @@ var JSON = function () {
             function string() {
                 var i, s = '', t, u;
 
-                if (ch == '"') {
+                if (ch === '"') {
     outer:          while (next()) {
-                        if (ch == '"') {
+                        if (ch === '"') {
                             next();
                             return s;
-                        } else if (ch == '\\') {
+                        } else if (ch === '\\') {
                             switch (next()) {
                             case 'b':
                                 s += '\b';
@@ -319,20 +326,20 @@ var JSON = function () {
             function array() {
                 var a = [];
 
-                if (ch == '[') {
+                if (ch === '[') {
                     next();
                     white();
-                    if (ch == ']') {
+                    if (ch === ']') {
                         next();
                         return a;
                     }
                     while (ch) {
                         a.push(value());
                         white();
-                        if (ch == ']') {
+                        if (ch === ']') {
                             next();
                             return a;
-                        } else if (ch != ',') {
+                        } else if (ch !== ',') {
                             break;
                         }
                         next();
@@ -345,26 +352,26 @@ var JSON = function () {
             function object() {
                 var k, o = {};
 
-                if (ch == '{') {
+                if (ch === '{') {
                     next();
                     white();
-                    if (ch == '}') {
+                    if (ch === '}') {
                         next();
                         return o;
                     }
                     while (ch) {
                         k = string();
                         white();
-                        if (ch != ':') {
+                        if (ch !== ':') {
                             break;
                         }
                         next();
                         o[k] = value();
                         white();
-                        if (ch == '}') {
+                        if (ch === '}') {
                             next();
                             return o;
-                        } else if (ch != ',') {
+                        } else if (ch !== ',') {
                             break;
                         }
                         next();
@@ -376,7 +383,7 @@ var JSON = function () {
 
             function number() {
                 var n = '', v;
-                if (ch == '-') {
+                if (ch === '-') {
                     n = '-';
                     next();
                 }
@@ -384,16 +391,16 @@ var JSON = function () {
                     n += ch;
                     next();
                 }
-                if (ch == '.') {
+                if (ch === '.') {
                     n += '.';
                     while (next() && ch >= '0' && ch <= '9') {
                         n += ch;
                     }
                 }
-                if (ch == 'e' || ch == 'E') {
+                if (ch === 'e' || ch === 'E') {
                     n += 'e';
                     next();
-                    if (ch == '-' || ch == '+') {
+                    if (ch === '-' || ch === '+') {
                         n += ch;
                         next();
                     }
@@ -413,20 +420,20 @@ var JSON = function () {
             function word() {
                 switch (ch) {
                     case 't':
-                        if (next() == 'r' && next() == 'u' && next() == 'e') {
+                        if (next() === 'r' && next() === 'u' && next() === 'e') {
                             next();
                             return true;
                         }
                         break;
                     case 'f':
-                        if (next() == 'a' && next() == 'l' && next() == 's' &&
-                                next() == 'e') {
+                        if (next() === 'a' && next() === 'l' && next() === 's' &&
+                                next() === 'e') {
                             next();
                             return false;
                         }
                         break;
                     case 'n':
-                        if (next() == 'u' && next() == 'l' && next() == 'l') {
+                        if (next() === 'u' && next() === 'l' && next() === 'l') {
                             next();
                             return null;
                         }
@@ -435,7 +442,7 @@ var JSON = function () {
                 error("Syntax error");
             }
 
-            function value() {
+            value = function() {
                 white();
                 switch (ch) {
                     case '{':
@@ -449,9 +456,14 @@ var JSON = function () {
                     default:
                         return ch >= '0' && ch <= '9' ? number() : word();
                 }
-            }
+            };
 
-            return value();
+            result = value();
+            white();
+            if (ch) {
+                error("Syntax error");
+            }
+            return result;
         }
     };
 }();
